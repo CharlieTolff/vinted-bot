@@ -1,0 +1,61 @@
+name: Bevaka Vinted
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"   # var 5:e minut (GitHub kan ibland vara några minuter sen)
+  workflow_dispatch:         # gör att du kan starta den för hand under fliken Actions
+  push:
+    branches: [main]         # kör direkt när alarmen ändras
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bevaka
+  cancel-in-progress: false
+
+jobs:
+  bevaka:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      # sedda.json minns vilka annonser du redan fått, traffar.json är det hemsidan visar
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            sedda.json
+            traffar.json
+          key: minne-${{ github.run_id }}
+          restore-keys: minne-
+
+      - name: Sök på Vinted och skicka kap till Telegram
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 vinted_bot.py --en-gang
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            sedda.json
+            traffar.json
+          key: minne-${{ github.run_id }}
+
+      - name: Bygg hemsidan
+        run: |
+          mkdir -p _site
+          cp hemsida/index.html sokningar.json _site/
+          cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - uses: actions/deploy-pages@v4

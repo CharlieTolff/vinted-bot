@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vinted-alarm</title>
+<style>
+:root{--bg:#f6f5f2;--kort:#fff;--text:#1d1d1b;--svag:#6b6a66;--linje:#e3e1dc;--acc:#0b7a75;--kap:#d6452f;--knapp:#1d1d1b;--knapptext:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--kort:#222220;--text:#efeee9;--svag:#a3a19b;--linje:#353431;--acc:#3fb8af;--kap:#ff6b52;--knapp:#efeee9;--knapptext:#161615}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:20px 16px 8px;max-width:1200px;margin:auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+h1{font-size:22px;margin:0}
+.svag{color:var(--svag);font-size:13px}
+main{max-width:1200px;margin:auto;padding:0 16px 40px}
+button,.knapp{font:inherit;border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer}
+button.primar{background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
+button.fara{color:var(--kap)}
+.flikar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.flik{border-radius:999px}
+.flik.vald{background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
+.antal{opacity:.7;margin-left:4px}
+.ny{background:var(--acc);color:#fff;border-radius:999px;padding:0 7px;font-size:12px;margin-left:6px}
+.rad{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 16px}
+.galler{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.annons{background:var(--kort);border:1px solid var(--linje);border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative}
+.annons img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--linje);display:block}
+.annons .info{padding:8px 10px 10px}
+.pris{font-weight:700;font-size:17px}
+.titel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kapmark{position:absolute;top:8px;left:8px;background:var(--kap);color:#fff;font-weight:700;font-size:12px;border-radius:6px;padding:2px 7px}
+.nymark{position:absolute;top:8px;right:8px;background:var(--acc);color:#fff;font-size:12px;border-radius:6px;padding:2px 7px}
+.panel{background:var(--kort);border:1px solid var(--linje);border-radius:12px;padding:16px;margin:12px 0}
+.alarm{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--linje);padding:10px 0;flex-wrap:wrap}
+.alarm:first-of-type{border-top:0}
+form{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--svag)}
+input,select{font:inherit;padding:7px 9px;border-radius:8px;border:1px solid var(--linje);background:var(--bg);color:var(--text)}
+.bred{grid-column:1/-1}
+.checkar{display:flex;flex-wrap:wrap;gap:10px;color:var(--text)}
+.checkar label{flex-direction:row;align-items:center;color:var(--text)}
+.medd{padding:10px 12px;border-radius:8px;background:var(--bg);margin:10px 0}
+.tom{padding:40px 0;text-align:center;color:var(--svag)}
+dialog{border:none;border-radius:12px;background:var(--kort);color:var(--text);max-width:720px;width:calc(100% - 32px)}
+dialog::backdrop{background:#0006}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>Vinted-alarm</h1><div class="svag" id="uppdaterad"></div></div>
+  <div class="rad" style="margin:0">
+    <button id="visaAlarm">⚙️ Mina alarm</button>
+  </div>
+</header>
+<main>
+  <section id="alarmpanel" class="panel" hidden>
+    <div class="rad" style="justify-content:space-between;margin-top:0">
+      <strong>Mina alarm</strong>
+      <button class="primar" id="nyttAlarm">+ Nytt alarm</button>
+    </div>
+    <div id="alarmlista"></div>
+    <div id="nyckelruta" class="medd" hidden>
+      <p style="margin-top:0">För att spara alarm härifrån behöver sidan en GitHub-nyckel (görs bara en gång per dator). Klistra in den här:</p>
+      <div class="rad" style="margin:0"><input id="nyckel" type="password" placeholder="github_pat_..." style="flex:1;min-width:200px"><button class="primar" id="sparaNyckel">Spara nyckel</button></div>
+    </div>
+    <div id="status" class="svag"></div>
+  </section>
+
+  <div class="flikar" id="flikar"></div>
+  <div class="rad">
+    <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" id="baraKap"> Visa bara kap</label>
+    <span class="svag" id="vanligt"></span>
+  </div>
+  <div class="galler" id="galler"></div>
+</main>
+
+<dialog id="dialog">
+  <h2 id="dialogtitel" style="margin-top:0">Nytt alarm</h2>
+  <form id="formular" method="dialog">
+    <label>Namn<input name="namn" required placeholder="Nudie jeans under 200 kr"></label>
+    <label>Sökord<input name="sokord" placeholder="nudie jeans"></label>
+    <label class="bred">…eller en sök-länk från Vinted (valfritt)<input name="url" placeholder="https://www.vinted.se/catalog?..."></label>
+    <label>Maxpris (kr)<input name="maxpris" type="number" min="0"></label>
+    <label>Minpris (kr)<input name="minpris" type="number" min="0"></label>
+    <label>Märke måste innehålla<input name="marke" placeholder="Nudie"></label>
+    <label>Storlekar (komma emellan)<input name="storlekar" placeholder="W30, W31, M"></label>
+    <label class="bred">Ord som sorteras bort (komma emellan)<input name="uteslut" placeholder="t-shirt, jacka"></label>
+    <div class="bred"><div class="svag" style="margin-bottom:4px">Skick (inget ikryssat = alla)</div><div class="checkar" id="skickrutor"></div></div>
+    <label>Kap-pris: notis om priset är högst (kr)<input name="kappris" type="number" min="0" placeholder="tomt = halva vanliga priset"></label>
+    <label>Telegram-notiser<select name="telegram"><option value="kap">Bara kap</option><option value="alla">Alla nya träffar</option><option value="av">Inga</option></select></label>
+    <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" name="aktiv" checked> Alarmet är på</label>
+    <div class="bred rad" style="justify-content:flex-end;margin:0">
+      <button type="button" id="avbryt">Avbryt</button>
+      <button class="primar" type="submit">Spara</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
+const ago = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
+const REPO = ago + "/" + (location.pathname.split("/")[1] || "vinted-bot");
+const FIL = "sokningar.json";
+const $ = id => document.getElementById(id);
+const las = (k, std) => { try { return JSON.parse(localStorage.getItem(k)) ?? std } catch { return std } };
+const skriv = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} };
+
+let traffar = {}, alarm = [], vald = las("vald", null), sett = las("sett", {});
+let redigerar = -1;
+
+function esc(t){ return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
+function namnPa(a){ return a.namn || a.sokord || "sökning" }
+function tid(iso){ const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString("sv-SE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) }
+
+async function hamta(){
+  const [t, s] = await Promise.all([
+    fetch("traffar.json", {cache:"no-store"}).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+    hamtaAlarm()
+  ]);
+  traffar = t; alarm = s;
+  const tider = Object.values(traffar).map(x => x.uppdaterad).filter(Boolean).sort();
+  $("uppdaterad").textContent = tider.length ? "Senast sökt " + tid(tider.at(-1)) + " · uppdateras var 5:e minut" : "Inga sökningar har körts än";
+  if (!vald || !traffar[vald]) vald = Object.keys(traffar)[0] || null;
+  rita(); ritaAlarm();
+}
+
+async function hamtaAlarm(){
+  const nyckel = las("nyckel", "");
+  if (nyckel && ago) {
+    try {
+      const r = await gh("GET", `/repos/${REPO}/contents/${FIL}`);
+      return JSON.parse(avkoda(r.content));
+    } catch (e) {}
+  }
+  return fetch(FIL, {cache:"no-store"}).then(r => r.ok ? r.json() : []).catch(() => []);
+}
+
+function rita(){
+  const namn = Object.keys(traffar);
+  $("flikar").innerHTML = namn.map(n => {
+    const lista = traffar[n].annonser || [];
+    const nya = lista.filter(a => a.hittad > (sett[n] || "")).length;
+    return `<button class="flik ${n === vald ? "vald" : ""}" data-n="${esc(n)}">${esc(n)}<span class="antal">${lista.length}</span>${nya && sett[n] ? `<span class="ny">${nya} nya</span>` : ""}</button>`;
+  }).join("");
+  document.querySelectorAll(".flik").forEach(b => b.onclick = () => { markeraSett(); vald = b.dataset.n; skriv("vald", vald); rita(); });
+  if (!vald) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter första sökningen.</div>`; $("vanligt").textContent = ""; return; }
+  const data = traffar[vald];
+  $("vanligt").textContent = data.vanligt_pris ? `Vanligt pris just nu: ca ${Math.round(data.vanligt_pris)} kr` : "";
+  let lista = data.annonser || [];
+  if ($("baraKap").checked) lista = lista.filter(a => a.kap);
+  const forra = sett[vald] || "";
+  $("galler").innerHTML = lista.length ? lista.map(a => `
+    <a class="annons" href="${esc(a.lank)}" target="_blank" rel="noopener">
+      ${a.kap ? `<span class="kapmark">🔥 KAP</span>` : ""}
+      ${forra && a.hittad > forra ? `<span class="nymark">Ny</span>` : ""}
+      <img src="${esc(a.bild)}" alt="" loading="lazy" referrerpolicy="no-referrer">
+      <div class="info">
+        <div class="pris">${Math.round(a.pris)} kr</div>
+        <div class="titel">${esc(a.titel)}</div>
+        <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}</div>
+        <div class="svag">${tid(a.hittad)}</div>
+      </div>
+    </a>`).join("") : `<div class="tom">Inga träffar här än.</div>`;
+}
+
+function markeraSett(){ if (vald && traffar[vald]) { sett[vald] = traffar[vald].uppdaterad; skriv("sett", sett); } }
+addEventListener("beforeunload", markeraSett);
+$("baraKap").onchange = rita;
+
+function ritaAlarm(){
+  $("alarmlista").innerHTML = alarm.length ? alarm.map((a, i) => `
+    <div class="alarm">
+      <div><strong>${esc(namnPa(a))}</strong>${a.aktiv === false ? ` <span class="svag">(avstängt)</span>` : ""}<br>
+      <span class="svag">${esc([a.sokord || (a.url ? "Vinted-länk" : ""), a.maxpris ? "max " + a.maxpris + " kr" : "", a.kappris ? "kap ≤ " + a.kappris + " kr" : "kap = halva priset", {kap:"Telegram: bara kap", alla:"Telegram: alla", av:"Telegram: av"}[a.telegram || "kap"]].filter(Boolean).join(" · "))}</span></div>
+      <div class="rad" style="margin:0"><button data-r="${i}">Ändra</button><button class="fara" data-t="${i}">Ta bort</button></div>
+    </div>`).join("") : `<p class="svag">Inga alarm än.</p>`;
+  document.querySelectorAll("[data-r]").forEach(b => b.onclick = () => oppna(+b.dataset.r));
+  document.querySelectorAll("[data-t]").forEach(b => b.onclick = async () => {
+    if (!confirm("Ta bort " + namnPa(alarm[+b.dataset.t]) + "?")) return;
+    const ny = alarm.filter((_, i) => i !== +b.dataset.t);
+    await spara(ny);
+  });
+  $("nyckelruta").hidden = !!las("nyckel", "");
+}
+
+$("visaAlarm").onclick = () => { $("alarmpanel").hidden = !$("alarmpanel").hidden; };
+$("sparaNyckel").onclick = () => { skriv("nyckel", $("nyckel").value.trim()); $("nyckel").value = ""; ritaAlarm(); status("Nyckeln är sparad i den här webbläsaren."); };
+$("nyttAlarm").onclick = () => oppna(-1);
+$("avbryt").onclick = () => $("dialog").close();
+$("skickrutor").innerHTML = SKICK.map(s => `<label><input type="checkbox" value="${s}"> ${s}</label>`).join("");
+
+function oppna(i){
+  redigerar = i;
+  const a = i >= 0 ? alarm[i] : {telegram:"kap"};
+  const f = $("formular");
+  $("dialogtitel").textContent = i >= 0 ? "Ändra alarm" : "Nytt alarm";
+  for (const k of ["namn","sokord","url","maxpris","minpris","marke","kappris"]) f[k].value = a[k] ?? "";
+  f.storlekar.value = (a.storlekar || []).join(", ");
+  f.uteslut.value = (a.uteslut || []).join(", ");
+  f.telegram.value = a.telegram || "kap";
+  f.aktiv.checked = a.aktiv !== false;
+  $("skickrutor").querySelectorAll("input").forEach(c => c.checked = (a.skick || []).includes(c.value));
+  $("dialog").showModal();
+}
+
+$("formular").onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target, lista = v => v.split(",").map(x => x.trim()).filter(Boolean);
+  if (!f.sokord.value.trim() && !f.url.value.trim()) { alert("Skriv ett sökord eller klistra in en Vinted-länk."); return; }
+  const a = { namn: f.namn.value.trim() };
+  if (f.url.value.trim()) a.url = f.url.value.trim(); else a.sokord = f.sokord.value.trim();
+  for (const k of ["maxpris","minpris","kappris"]) if (f[k].value) a[k] = Number(f[k].value);
+  if (f.marke.value.trim()) a.marke = f.marke.value.trim();
+  a.storlekar = lista(f.storlekar.value);
+  a.skick = [...$("skickrutor").querySelectorAll("input:checked")].map(c => c.value);
+  a.uteslut = lista(f.uteslut.value);
+  a.telegram = f.telegram.value;
+  a.aktiv = f.aktiv.checked;
+  const ny = alarm.slice();
+  if (redigerar >= 0) ny[redigerar] = a; else ny.push(a);
+  if (await spara(ny)) $("dialog").close();
+};
+
+function status(t){ $("status").textContent = t; }
+function avkoda(b64){ return new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\n/g, "")), c => c.charCodeAt(0))); }
+function koda(text){ return btoa(String.fromCharCode(...new TextEncoder().encode(text))); }
+
+async function gh(metod, vag, kropp){
+  const r = await fetch("https://api.github.com" + vag, {
+    method: metod, cache: "no-store",
+    headers: { Authorization: "Bearer " + las("nyckel", ""), Accept: "application/vnd.github+json" },
+    body: kropp ? JSON.stringify(kropp) : undefined
+  });
+  if (!r.ok) throw new Error(r.status);
+  return r.status === 204 ? null : r.json();
+}
+
+async function spara(ny){
+  if (!las("nyckel", "")) { $("alarmpanel").hidden = false; ritaAlarm(); alert("Lägg först in din GitHub-nyckel under Mina alarm."); return false; }
+  status("Sparar…");
+  try {
+    const nu = await gh("GET", `/repos/${REPO}/contents/${FIL}`);
+    await gh("PUT", `/repos/${REPO}/contents/${FIL}`, { message: "Ändra alarm från hemsidan", content: koda(JSON.stringify(ny, null, 2) + "\n"), sha: nu.sha });
+    alarm = ny; ritaAlarm();
+    try { await gh("POST", `/repos/${REPO}/actions/workflows/bevaka.yml/dispatches`, { ref: "main" }); } catch (e) {}
+    status("Sparat! Nya träffar visas här inom några minuter.");
+    return true;
+  } catch (e) {
+    status("Kunde inte spara (" + e.message + "). Kolla att nyckeln stämmer.");
+    if (e.message === "401") { skriv("nyckel", ""); ritaAlarm(); }
+    return false;
+  }
+}
+
+hamta();
+setInterval(hamta, 120000);
+</script>
+</body>
+</html>

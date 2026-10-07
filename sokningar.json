@@ -1,0 +1,22 @@
+[
+  {
+    "namn": "Nudie jeans under 200 kr",
+    "sokord": "nudie jeans",
+    "maxpris": 200,
+    "marke": "Nudie",
+    "storlekar": [],
+    "skick": [],
+    "uteslut": [
+      "t-shirt",
+      "tröja",
+      "jacka",
+      "jakke",
+      "skjorta",
+      "hoodie",
+      "keps",
+      "shorts"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  }
+]
