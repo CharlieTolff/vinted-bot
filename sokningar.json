@@ -409,5 +409,48 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "overshirt",
+    "sokord": "Overshirt herr",
+    "maxpris": 200,
+    "kappris": 50,
+    "min_betyg": 3.5,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "maste": [
+      "Overshirt"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
