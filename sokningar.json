@@ -578,6 +578,17 @@
       "FI",
       "PL"
     ],
+    "marke": [
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Brioni",
+      "Ermenegildo Zegna",
+      "Boglioli",
+      "Lardini",
+      "Tiger of Sweden",
+      "Oscar Jacobson",
+      "Suitsupply"
+    ],
     "storlekar": [
       "S",
       "M",
@@ -589,6 +600,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -600,18 +612,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "Brioni",
-      "Ermenegildo Zegna",
-      "Boglioli",
-      "Lardini",
-      "Tiger of Sweden",
-      "Oscar Jacobson",
-      "Suitsupply"
-    ]
+    "aktiv": true
   },
   {
     "namn": "Toppmärken dunjacka",
