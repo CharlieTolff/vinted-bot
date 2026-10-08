@@ -65,6 +65,7 @@ PRIS_DAGAR = 30           # vanligt pris räknas på priser från de senaste 30 
 MIN_PRISER = 8            # så många priser behövs innan vi säger vad det vanliga priset är
 SALJARE_DAGAR = 7         # så länge vi litar på en säljares omdömen innan vi kollar igen
 MAX_SALJARKOLLAR = 20     # säljare vi högst slår upp per alarm och runda
+MAX_ANNONSKOLLAR = 12     # annonser på hemsidan vi kollar per runda om de är sålda eller borttagna
 STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
 STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
 MARKNAD_TIMMAR = 6        # så ofta vi kollar om vad liknande saker säljs för
@@ -149,6 +150,20 @@ class Vinted:
             "kollad": time.time(),
         }
 
+    def finns_kvar(self, id_):
+        """False om annonsen är såld, dold eller borttagen på Vinted."""
+        try:
+            text = sidans_data(self.hamta(VINTED + "/items/%s" % id_))
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 410):
+                return False
+            raise
+        m = re.search(r'"can_buy":(true|false)[^{}]*?"is_hidden":(true|false),"is_reserved":(true|false),"item_id":"%s"' % id_, text)
+        if m:
+            kan_kopa, dold, reserverad = (x == "true" for x in m.groups())
+            return not dold and (kan_kopa or reserverad)
+        return not re.search(r'"item_id":"%s"[^{}]*"title":"Såld"' % id_, text)
+
     def sok(self, url):
         if not self.har_kakor:
             self.hamta(VINTED + "/")  # ger oss kakorna Vinted kräver
@@ -212,10 +227,15 @@ def kategori_ids(s):
     return valda or [kon[""]]
 
 
+def sidans_data(sida):
+    """Vinted bäddar in sidans data som JSON-bitar i HTML:en."""
+    bitar = re.findall(r'self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)', sida)
+    return "".join(json.loads(b) for b in bitar)
+
+
 def annonser_fran_sida(sida):
     """Plockar ut annonserna ur sökresultatets HTML (Vinted bäddar in dem som JSON)."""
-    bitar = re.findall(r'self\.__next_f\.push\(\[1,("(?:[^"\\]|\\.)*")\]\)', sida)
-    text = "".join(json.loads(b) for b in bitar)
+    text = sidans_data(sida)
     avkodare = json.JSONDecoder()
     annonser = {}
     for m in re.finditer(r'"productItem":', text):
@@ -511,9 +531,43 @@ def hitta_marke_ids(vinted, s, minne):
     return ids
 
 
+def rensa_salda(vinted, traffar_lista, aktiva, nu_sek):
+    """Tar bort annonser från hemsidan som är sålda eller borttagna på Vinted.
+    Varje runda kollas de annonser som gått längst utan koll."""
+    alla = [a for d in traffar_lista.values() for a in d.get("annonser", [])]
+    for a in alla:
+        if str(a["id"]) in aktiva:
+            a["kollad"] = nu_sek
+    borta = set()
+    att_kolla = sorted((a for a in alla if a.get("kollad", 0) < nu_sek), key=lambda a: a.get("kollad", 0))
+    kollade = set()
+    for a in att_kolla:
+        id_ = str(a["id"])
+        if id_ in kollade:
+            continue
+        if len(kollade) >= MAX_ANNONSKOLLAR:
+            break
+        kollade.add(id_)
+        try:
+            if not vinted.finns_kvar(id_):
+                borta.add(id_)
+        except Exception as e:  # t.ex. Vinted bromsar, försök igen nästa runda
+            logg("Kunde inte kolla annons %s: %s" % (id_, e))
+            break
+        time.sleep(random.uniform(2, 3))
+    for a in alla:
+        if str(a["id"]) in kollade:
+            a["kollad"] = nu_sek
+    for d in traffar_lista.values():
+        d["annonser"] = [a for a in d.get("annonser", []) if str(a["id"]) not in borta]
+    if kollade:
+        logg("Kollade %d annonser på hemsidan, %d var sålda eller borttagna." % (len(kollade), len(borta)))
+
+
 def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
     nu = time.strftime("%Y-%m-%dT%H:%M:%S%z")
     nu_sek = time.time()
+    aktiva = set()  # annonser som syns i sökningarna just nu, alltså inte sålda
     for s in sokningar:
         if s.get("aktiv") is False:
             continue
@@ -536,6 +590,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
             logg("Fel vid sökning '%s': %s" % (namn, e))
             continue
         traffar = [a for a in annonser if matchar(a, s)]
+        aktiva.update(str(a["id"]) for a in annonser)
         tidigare = sedda.get(namn)
         # Ändrat alarm (t.ex. annan kategori) räknas som nytt, så du inte får en massa notiser.
         andrat = minne["sokningar"].get(namn) not in (None, url)
@@ -592,6 +647,8 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
         ids = [str(a["id"]) for a in annonser if str(a["id"]) not in vanta] + list(tidigare or [])
         sedda[namn] = list(dict.fromkeys(ids))[:MAX_SEDDA_PER_SOKNING]
         time.sleep(random.uniform(2, 5))  # lite paus mellan sökningar
+    if not test:
+        rensa_salda(vinted, traffar_lista, aktiva, nu_sek)
     # Släng hemsidans listor för alarm som tagits bort.
     aktuella = {alarm_namn(s) for s in sokningar}
     for namn in list(traffar_lista):

@@ -5,7 +5,7 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 ## Hemsidan och Telegram
 - `hemsida/index.html` är din alarm-sida. Där lägger du till alarm och ser alla träffar.
 - Telegram skickar bara **kap**: priset är högst ditt kap-pris, eller (utan kap-pris) högst hälften av vanliga priset för sökningen. Per alarm kan du välja "Bara kap", "Alla nya träffar" eller "Inga".
-- `traffar.json` skapas automatiskt och är det hemsidan visar.
+- `traffar.json` skapas automatiskt och är det hemsidan visar. Varje runda kollar boten några av annonserna på hemsidan och tar bort de som är sålda eller borttagna på Vinted.
 - På GitHub körs allt var 5:e minut av `.github/workflows/bevaka.yml`.
 
 ## Filer
