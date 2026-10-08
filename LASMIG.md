@@ -13,12 +13,16 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - `sokningar.json` – dina bevakningar. Ändra här, ändringen gäller från nästa runda.
 - `installningar.json` – Telegram-token, chat-id och hur ofta det ska sökas.
 - `sedda.json` – skapas automatiskt och minns vilka annonser du redan fått.
+- `minne.json` – skapas automatiskt och minns priser, säljare och märken.
 
 ## En bevakning
 ```json
 {
   "namn": "Nudie jeans under 200 kr",
   "sokord": "nudie jeans",
+  "kon": "herr",
+  "kategorier": ["klader"],
+  "lander": ["SE", "DK", "FI"],
   "maxpris": 200,
   "minpris": 50,
   "marke": "Nudie",
@@ -26,14 +30,25 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
   "skick": ["Ny med prislapp", "Ny utan prislapp", "Mycket bra"],
   "uteslut": ["t-shirt", "jacka"],
   "kappris": 120,
+  "saljpris": 450,
+  "frakt": 60,
+  "min_betyg": 4.5,
   "telegram": "kap",
   "aktiv": true
 }
 ```
-Allt utom `namn` och `sokord` kan lämnas bort. Tom lista betyder "alla".
-Skick som finns: Ny med prislapp, Ny utan prislapp, Mycket bra, Bra, Tillfredsställande.
+Allt utom `namn` och `sokord` kan lämnas bort. Tom lista betyder "alla". Enklast är att ändra på hemsidan.
 
-Vill du ha Vinteds egna filter (kategori, färg osv.)? Gör sökningen på vinted.se, kopiera länken och skriv
+- `kon` och `kategorier`: "herr" eller "dam", och kategorierna klader, skor, accessoarer (och vaskor för dam).
+  Botten använder Vinteds egna filter, så du får bara rätt sorts saker.
+- `marke`: botten slår upp märket hos Vinted och söker bara på det märket.
+- `skick`: används också som Vinted-filter. Skick som finns: Ny med prislapp, Ny utan prislapp, Mycket bra, Bra, Tillfredsställande.
+- `lander`: vilka länder säljaren ska bo i. På svenska Vinted kan du köpa från SE (Sverige), DK (Danmark), FI (Finland) och PL (Polen).
+- `min_betyg`: säljare med lägre snittbetyg (stjärnor) hoppas över. Säljare utan omdömen är okej. 0 stänger av.
+- `saljpris` och `frakt`: används för att räkna vinsten i notisen: säljpris − (pris + Vinteds avgift + frakt).
+- Vanligt pris räknas på alarmets träffar de senaste 30 dagarna (minst 8 st), och kap räknas mot det.
+
+Vill du ha andra filter från Vinted (färg osv.)? Gör sökningen på vinted.se, kopiera länken och skriv
 `"url": "https://www.vinted.se/catalog?..."` i stället för `sokord`.
 
 ## Skaffa en Telegram-bot (5 min)
