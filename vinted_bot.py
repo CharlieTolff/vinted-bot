@@ -60,6 +60,11 @@ SALJARE_DAGAR = 7         # så länge vi litar på en säljares omdömen innan 
 MAX_SALJARKOLLAR = 20     # säljare vi högst slår upp per alarm och runda
 STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
 STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
+MARKNAD_TIMMAR = 6        # så ofta vi kollar om vad liknande saker säljs för
+MARKNAD_MIN = 8           # så många liknande annonser behövs för att uppskatta ett säljpris
+MARKNAD_ANDEL = 0.4       # säljpris = 40 % av liknande annonser är billigare (dyra annonser blir ofta inte sålda)
+# Skicket påverkar vad du kan sälja för, jämfört med en vanlig "Mycket bra"-annons.
+SKICK_FAKTOR = {"Ny med prislapp": 1.2, "Ny utan prislapp": 1.1, "Mycket bra": 1.0, "Bra": 0.85, "Tillfredsställande": 0.65}
 
 
 def logg(text):
@@ -340,13 +345,78 @@ def ar_kap(annons, s, vanligt_pris):
     return bool(vanligt_pris) and annons["pris"] <= vanligt_pris * KAP_ANDEL
 
 
-def vinst(annons, s):
-    """Ungefärlig vinst om du köper (pris + avgift + frakt) och säljer för ditt säljpris."""
-    if not s.get("saljpris"):
+def percentil(tal, andel):
+    tal = sorted(tal)
+    return tal[min(len(tal) - 1, int(len(tal) * andel))] if tal else None
+
+
+def marknad_urls(s, marke_ids):
+    """Samma sökning som alarmet men utan prisgränser, sorterad som Vinted själv tycker är relevant."""
+    utan_pris = {k: v for k, v in s.items() if k not in ("maxpris", "minpris")}
+    urls = []
+    for ord_ in lista(s.get("sokord")) or [""]:
+        delar = urllib.parse.urlsplit(sok_url(utan_pris, marke_ids, ord_))
+        par = [(k, v) for k, v in urllib.parse.parse_qsl(delar.query)
+               if k not in ("order", "price_to", "price_from")]
+        urls.append(VINTED + delar.path + "?" + urllib.parse.urlencode(par))
+    return urls
+
+
+def kolla_marknad(vinted, s, marke_ids, minne, namn):
+    """Vad liknande saker brukar säljas för och hur eftertraktade de är (sparas några timmar)."""
+    urls = marknad_urls(s, marke_ids)
+    gammal = minne["marknad"].get(namn)
+    if gammal and gammal["url"] == "\n".join(urls) and time.time() - gammal["tid"] < MARKNAD_TIMMAR * 3600:
+        return gammal
+    utan_pris = {k: v for k, v in s.items() if k not in ("maxpris", "minpris")}
+    hittade = {}
+    for u in urls:
+        try:
+            for a in vinted.sok(u):
+                if matchar(a, utan_pris):
+                    hittade.setdefault(a["id"], a)
+        except Exception as e:
+            logg("Kunde inte kolla marknadspriset för '%s': %s" % (namn, e))
+            return gammal
+        time.sleep(random.uniform(1, 3))
+    annonser = list(hittade.values())
+    # Räkna om till "Mycket bra"-skick så att olika skick blir jämförbara.
+    priser = [a["pris"] / SKICK_FAKTOR.get(a["skick"], 1.0) for a in annonser]
+    gillas = sorted(a["gillas"] for a in annonser)
+    marknad = {
+        "url": "\n".join(urls),
+        "tid": time.time(),
+        "antal": len(annonser),
+        "pris": round(percentil(priser, MARKNAD_ANDEL)) if len(priser) >= MARKNAD_MIN else None,
+        "gillas": median(gillas) if gillas else 0,
+    }
+    minne["marknad"][namn] = marknad
+    return marknad
+
+
+def efterfragan(gillas):
+    """Hur många som brukar gilla liknande annonser säger hur eftertraktat det är."""
+    if gillas >= 15:
+        return "hög"
+    if gillas >= 5:
+        return "medel"
+    return "låg"
+
+
+def uppskattat_saljpris(annons, marknad):
+    if not marknad or not marknad.get("pris"):
+        return None
+    pris = marknad["pris"] * SKICK_FAKTOR.get(annons["skick"], 1.0)
+    return round(pris / 10) * 10
+
+
+def vinst(annons, saljpris, s):
+    """Ungefärlig vinst om du köper (pris + avgift + frakt) och säljer för det uppskattade priset."""
+    if not saljpris:
         return None
     frakt = s.get("frakt", STANDARD_FRAKT) or 0
     kostnad = (annons["pris_totalt"] or annons["pris"]) + float(frakt)
-    return float(s["saljpris"]) - kostnad
+    return saljpris - kostnad
 
 
 def vanligt_pris(prislista, nu):
@@ -534,7 +604,7 @@ def main():
     sedda = las_json(SEDDA_FIL, {})
     traffar_lista = las_json(TRAFFAR_FIL, {})
     minne = las_json(MINNE_FIL, {})
-    for k in ("priser", "saljare", "marken", "sokningar"):
+    for k in ("priser", "saljare", "marken", "sokningar", "marknad"):
         minne.setdefault(k, {})
     while True:
         sokningar = las_json(SOKNINGAR_FIL, [])  # läses om varje runda, så ändringar slår igenom direkt
