@@ -46,10 +46,10 @@
     "aktiv": true
   },
   {
-    "namn": "Ralph lauren skjorta under 150kr",
+    "namn": "Ralph lauren skjorta under 100kr",
     "sokord": "skjorta",
-    "maxpris": 150,
-    "saljpris": 399,
+    "maxpris": 100,
+    "saljpris": 300,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
