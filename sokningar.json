@@ -365,5 +365,49 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Herno plagg",
+    "sokord": "Herno",
+    "maxpris": 350,
+    "kappris": 125,
+    "min_betyg": 4.5,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Herno",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "maste": [
+      "Herno"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
