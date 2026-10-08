@@ -566,6 +566,10 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
 
         gamla = traffar_lista.get(namn, {}).get("annonser", [])
         kanda = {str(a["id"]) for a in nya_pa_sidan}
+        # Räkna om säljpris och vinst även för annonser som redan ligger på hemsidan.
+        for a in gamla:
+            a["saljpris"] = uppskattat_saljpris(a, marknad)
+            a["vinst"] = vinst(a, a["saljpris"], s)
         traffar_lista[namn] = {
             "vanligt_pris": vanligt,
             "saljpris": (marknad or {}).get("pris"),
