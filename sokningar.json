@@ -525,6 +525,16 @@
       "FI",
       "PL"
     ],
+    "marke": [
+      "Barbour",
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "RRL",
+      "Belstaff",
+      "Filson",
+      "Engineered Garments",
+      "Beams Plus"
+    ],
     "storlekar": [
       "S",
       "M",
@@ -536,6 +546,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -547,17 +558,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Barbour",
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "RRL",
-      "Belstaff",
-      "Filson",
-      "Engineered Garments",
-      "Beams Plus"
-    ]
+    "aktiv": true
   },
   {
     "namn": "Toppmärken blazer",
