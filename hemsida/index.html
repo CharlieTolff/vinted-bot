@@ -3,86 +3,152 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vinted-alarm</title>
+<title>Valto Resell · Vinted-alarm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f5f2;--kort:#fff;--text:#1d1d1b;--svag:#6b6a66;--linje:#e3e1dc;--acc:#0b7a75;--kap:#d6452f;--knapp:#1d1d1b;--knapptext:#fff}
-@media (prefers-color-scheme:dark){:root{--bg:#161615;--kort:#222220;--text:#efeee9;--svag:#a3a19b;--linje:#353431;--acc:#3fb8af;--kap:#ff6b52;--knapp:#efeee9;--knapptext:#161615}}
+/* Valto Resell: svart och guld */
+:root{
+  --bg:#f4f1ea;--kort:#ffffff;--kort2:#faf8f3;--text:#151413;--svag:#6f6a61;--linje:#e4dfd3;
+  --guld:#a8823a;--guldljus:#d9b86c;--guldtext:#7a5d22;
+  --plus:#1f8a5b;--minus:#c2412d;--kap:#c2412d;
+  --meny:#0f0f0f;--menytext:#ece6d8;--menysvag:#8f887b;--menylinje:#26241f;--menyval:#1c1b18;
+  --skugga:0 1px 2px rgba(20,18,12,.06),0 4px 14px rgba(20,18,12,.06);
+  --skugga2:0 2px 4px rgba(20,18,12,.08),0 12px 28px rgba(20,18,12,.12);
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0c0c0b;--kort:#171614;--kort2:#1d1c19;--text:#f1ece1;--svag:#9d968a;--linje:#2b2925;
+  --guld:#d4af5f;--guldljus:#e8cd8a;--guldtext:#e2c27c;
+  --plus:#4cc38a;--minus:#ff7a62;--kap:#ff7a62;
+  --meny:#080807;--menyval:#191815;--menylinje:#24221e;
+  --skugga:0 1px 2px rgba(0,0,0,.4);--skugga2:0 10px 30px rgba(0,0,0,.5);
+}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 .layout{display:flex;min-height:100vh}
-aside{width:220px;flex:none;background:var(--kort);border-right:1px solid var(--linje);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:14px 10px}
-.menytopp{display:flex;justify-content:space-between;align-items:center;padding:2px 6px 12px;font-size:16px}
-.nytt{width:100%;margin-bottom:10px}
+
+/* Meny */
+aside{width:232px;flex:none;background:var(--meny);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:18px 12px}
+.menytopp{display:flex;justify-content:space-between;align-items:flex-start;padding:2px 8px 18px}
+.marke{display:flex;flex-direction:column;line-height:1.15}
+.marke b{font-family:"Playfair Display",Georgia,serif;font-size:21px;letter-spacing:.02em;color:var(--guldljus)}
+.marke span{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--menysvag);margin-top:4px}
+aside .ikon{color:var(--menytext)}
+.nytt{width:100%;margin-bottom:14px}
+.rubrikliten{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--menysvag);padding:0 10px 6px}
 nav{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
-.menyval{display:flex;align-items:center;gap:6px;width:100%;text-align:left;border:0;background:none;border-radius:8px;padding:8px 8px;font-size:14px}
-.menyval:hover{background:var(--bg)}
-.menyval.vald{background:var(--bg);font-weight:600}
+.menyval{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;color:var(--menytext);border-radius:10px;padding:9px 10px;font-size:14px;position:relative}
+.menyval:hover{background:var(--menyval)}
+.menyval.vald{background:var(--menyval);font-weight:600}
+.menyval.vald::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--guld)}
 .menyval .namn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.menyval.av .namn{color:var(--svag)}
-.menyval .antal{font-size:12px;color:var(--svag);opacity:1;margin:0}
-.menyfot{border-top:1px solid var(--linje);padding:10px 6px 0;display:flex;flex-direction:column;gap:6px}
-.menyfot input{width:100%}
-.ikon{border:0;background:none;font-size:20px;padding:2px 8px;line-height:1}
+.menyval.av .namn{color:var(--menysvag)}
+.menyval .antal{font-size:12px;color:var(--menysvag);margin:0;font-variant-numeric:tabular-nums}
+.menyval .ny{background:var(--guld);color:#111;font-weight:700}
+.menyfot{border-top:1px solid var(--menylinje);padding:12px 8px 0;display:flex;flex-direction:column;gap:8px}
+.menyfot .svag{color:var(--menysvag)}
+.menyfot input{width:100%;background:var(--menyval);border-color:var(--menylinje);color:var(--menytext)}
+.ikon{border:0;background:none;font-size:20px;padding:2px 8px;line-height:1;box-shadow:none}
 .baramobil{display:none}
 #skugga{display:none}
-.topp{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0 16px}
-h1{font-size:21px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media (max-width:760px){
-  aside{position:fixed;left:0;top:0;z-index:20;transform:translateX(-100%);transition:transform .2s}
-  body.menyoppen aside{transform:none;box-shadow:0 0 30px #0003}
-  body.menyoppen #skugga{display:block;position:fixed;inset:0;background:#0004;z-index:10}
-  .baramobil{display:inline-block}
-}
+
+/* Huvuddel */
+main{flex:1;min-width:0;padding:0 28px 48px}
+.topp{display:flex;flex-wrap:wrap;gap:14px;align-items:center;padding:26px 0 18px;margin-bottom:20px;border-bottom:1px solid var(--linje)}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;font-weight:700;margin:0 0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.005em}
+.statistik{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--kort);border:1px solid var(--linje);border-radius:999px;padding:4px 11px;font-size:13px;color:var(--svag)}
+.chip b{color:var(--text);font-weight:600}
+.chip.guld{border-color:color-mix(in srgb,var(--guld) 45%,var(--linje));background:color-mix(in srgb,var(--guld) 10%,var(--kort))}
+.chip.guld b{color:var(--guldtext)}
+.prick{width:8px;height:8px;border-radius:50%;display:inline-block}
 .svag{color:var(--svag);font-size:13px}
-main{flex:1;min-width:0;padding:0 16px 40px}
-button,.knapp{font:inherit;border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer}
-button.primar{background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
-button.fara{color:var(--kap)}
-.antal{opacity:.7;margin-left:4px}
-.ny{background:var(--acc);color:#fff;border-radius:999px;padding:0 7px;font-size:12px;margin-left:6px}
-.rad{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 16px}
-.galler{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
-.annons{background:var(--kort);border:1px solid var(--linje);border-radius:10px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative}
-.annons img{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--linje);display:block}
-.annons .info{padding:8px 10px 10px}
-.pris{font-weight:700;font-size:17px}
-.titel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kapmark{position:absolute;top:8px;left:8px;background:var(--kap);color:#fff;font-weight:700;font-size:12px;border-radius:6px;padding:2px 7px}
-.nymark{position:absolute;top:8px;right:8px;background:var(--acc);color:#fff;font-size:12px;border-radius:6px;padding:2px 7px}
-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--svag)}
-input,select{font:inherit;padding:7px 9px;border-radius:8px;border:1px solid var(--linje);background:var(--bg);color:var(--text)}
+@media (max-width:760px){
+  aside{position:fixed;left:0;top:0;z-index:20;transform:translateX(-100%);transition:transform .22s ease}
+  body.menyoppen aside{transform:none;box-shadow:0 0 40px #0008}
+  body.menyoppen #skugga{display:block;position:fixed;inset:0;background:#0006;z-index:10}
+  .baramobil{display:inline-block}
+  main{padding:0 16px 40px}
+  .topp{padding-top:16px}
+  h1{font-size:23px}
+}
+
+/* Knappar */
+button,.knapp{font:inherit;font-size:14px;font-weight:500;border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:10px;padding:8px 14px;cursor:pointer;transition:background .15s,border-color .15s,transform .1s}
+button:hover{border-color:var(--guld)}
+button:active{transform:translateY(1px)}
+button.primar{background:linear-gradient(180deg,var(--guldljus),var(--guld));color:#111;border-color:transparent;font-weight:600}
+button.primar:hover{filter:brightness(1.05)}
+button.fara{color:var(--minus)}
+button.fara:hover{border-color:var(--minus)}
+.ny{background:var(--guld);color:#111;border-radius:999px;padding:0 7px;font-size:11px;font-weight:700;margin-left:6px}
+.rad{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 16px}
+.vaxla{display:inline-flex;align-items:center;gap:8px;font-size:14px;color:var(--text);cursor:pointer;flex-direction:row}
+.vaxla input{appearance:none;width:34px;height:20px;border-radius:999px;background:var(--linje);position:relative;cursor:pointer;margin:0;padding:0;border:0;transition:background .15s}
+.vaxla input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px #0003}
+.vaxla input:checked{background:var(--guld)}
+.vaxla input:checked::after{left:16px}
+
+/* Annonser */
+.galler{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px}
+.annons{background:var(--kort);border:1px solid var(--linje);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;position:relative;box-shadow:var(--skugga);transition:transform .18s ease,box-shadow .18s ease,border-color .18s}
+.annons:hover{transform:translateY(-3px);box-shadow:var(--skugga2);border-color:color-mix(in srgb,var(--guld) 40%,var(--linje))}
+.bildram{overflow:hidden;background:var(--kort2)}
+.annons img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .35s ease}
+.annons:hover img{transform:scale(1.04)}
+.annons .info{padding:11px 12px 13px;display:flex;flex-direction:column;gap:3px}
+.prisrad{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.pris{font-weight:700;font-size:19px;letter-spacing:-.01em}
+.titel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.kapmark{position:absolute;top:10px;left:10px;background:linear-gradient(180deg,var(--guldljus),var(--guld));color:#111;font-weight:700;font-size:12px;letter-spacing:.04em;border-radius:999px;padding:3px 10px;box-shadow:0 2px 8px #0003;z-index:1}
+.nymark{position:absolute;top:10px;right:10px;background:#111;color:var(--guldljus);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:3px 9px;z-index:1}
+.vinst{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;font-weight:600;font-size:12.5px;border-radius:999px;padding:2px 9px;margin:3px 0 2px;color:var(--plus);background:color-mix(in srgb,var(--plus) 12%,transparent)}
+.vinst.minus{color:var(--minus);background:color-mix(in srgb,var(--minus) 12%,transparent)}
+.tom{grid-column:1/-1;padding:60px 0;text-align:center;color:var(--svag)}
+
+/* Formulär */
+dialog{border:1px solid var(--linje);border-radius:18px;background:var(--kort);color:var(--text);max-width:760px;width:calc(100% - 24px);padding:26px 26px 22px;box-shadow:var(--skugga2)}
+dialog::backdrop{background:#000a;backdrop-filter:blur(3px)}
+dialog h2{font-family:"Playfair Display",Georgia,serif;font-size:24px}
+form{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--svag)}
+input,select{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;border:1px solid var(--linje);background:var(--kort2);color:var(--text)}
+input:focus,select:focus{outline:2px solid color-mix(in srgb,var(--guld) 55%,transparent);outline-offset:1px;border-color:var(--guld)}
 .bred{grid-column:1/-1}
-.checkar{display:flex;flex-wrap:wrap;gap:10px;color:var(--text)}
-.checkar label{flex-direction:row;align-items:center;color:var(--text)}
 .val{display:flex;gap:6px;flex-wrap:wrap}
-.val label{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--linje);border-radius:999px;padding:6px 12px;color:var(--text);cursor:pointer}
-.val label:has(input:checked){background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
+.val label{flex-direction:row;align-items:center;gap:7px;border:1px solid var(--linje);border-radius:999px;padding:6px 13px;color:var(--text);cursor:pointer;background:var(--kort2);font-size:13.5px;transition:background .12s,border-color .12s}
+.val label:hover{border-color:var(--guld)}
+.val label:has(input:checked){background:#141414;color:var(--guldljus);border-color:#141414}
 .val input{position:absolute;opacity:0;pointer-events:none}
-h3{font-size:15px;margin:10px 0 -4px;padding-top:12px;border-top:1px solid var(--linje)}
-.falt{font-size:13px;color:var(--text);font-weight:600;margin-bottom:6px}
+.farg{width:14px;height:14px;border-radius:50%;border:1px solid #0002;display:inline-block;flex:none}
+.val label:has(input:checked) .farg{box-shadow:0 0 0 2px var(--guldljus)}
+h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guldtext);margin:14px 0 -2px;padding-top:16px;border-top:1px solid var(--linje)}
+.falt{font-size:13.5px;color:var(--text);font-weight:600;margin-bottom:7px}
 .hjalp{font-size:12px;color:var(--svag);margin-top:6px}
-.grupp{margin-bottom:10px}
-.taggar .ruta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid var(--linje);border-radius:8px;background:var(--bg);padding:6px}
+.grupp{margin-bottom:12px}
+.taggar .ruta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid var(--linje);border-radius:10px;background:var(--kort2);padding:6px}
+.taggar .ruta:focus-within{border-color:var(--guld)}
 .taggar .ruta input{border:0;background:transparent;flex:1;min-width:120px;padding:4px}
 .taggar .ruta input:focus{outline:none}
-.tagg{display:inline-flex;align-items:center;gap:4px;background:var(--kort);border:1px solid var(--linje);border-radius:6px;padding:3px 4px 3px 9px;font-size:14px}
-.tagg button{border:0;background:none;padding:0 5px;color:var(--svag);font-size:15px;line-height:1}
-.forslag{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.forslag button{border-radius:999px;padding:3px 10px;font-size:13px;color:var(--svag)}
-.vinst{color:var(--acc);font-weight:600;font-size:13px}
-.vinst.minus{color:var(--kap)}
-.medd{padding:10px 12px;border-radius:8px;background:var(--bg);margin:10px 0}
-.tom{grid-column:1/-1;padding:40px 0;text-align:center;color:var(--svag)}
-dialog{border:none;border-radius:12px;background:var(--kort);color:var(--text);max-width:720px;width:calc(100% - 32px)}
-dialog::backdrop{background:#0006}
+.tagg{display:inline-flex;align-items:center;gap:4px;background:#141414;color:var(--guldljus);border-radius:8px;padding:3px 4px 3px 10px;font-size:13.5px}
+.tagg button{border:0;background:none;padding:0 5px;color:inherit;opacity:.7;font-size:15px;line-height:1}
+.forslag{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.forslag button{border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--svag);background:transparent}
+.medd{padding:10px 12px;border-radius:10px;background:var(--kort2);margin:10px 0}
+@media (max-width:760px){
+  .galler{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .annons .info{padding:9px 10px 11px}
+  .pris{font-size:17px}
+}
 </style>
 </head>
 <body>
 <div class="layout">
 <aside id="meny">
-  <div class="menytopp"><strong>Vinted-alarm</strong><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
+  <div class="menytopp"><div class="marke"><b>Valto Resell</b><span>Vinted-alarm</span></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
   <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
+  <div class="rubrikliten">Mina alarm</div>
   <nav id="alarmlista"></nav>
   <div class="menyfot">
     <div id="nyckelruta" hidden>
@@ -98,9 +164,9 @@ dialog::backdrop{background:#0006}
 <main>
   <div class="topp">
     <button id="oppnaMeny" class="baramobil ikon" aria-label="Visa alarmen">☰</button>
-    <div style="min-width:0"><h1 id="rubrik">Vinted-alarm</h1><div class="svag" id="vanligt"></div></div>
+    <div style="min-width:0"><h1 id="rubrik">Vinted-alarm</h1><div class="statistik" id="vanligt"></div></div>
     <div class="rad" style="margin:0 0 0 auto">
-      <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text);font-size:14px"><input type="checkbox" id="baraKap"> Bara kap</label>
+      <label class="vaxla"><input type="checkbox" id="baraKap"> Bara kap</label>
       <button id="andra" hidden>Ändra</button>
       <button class="fara" id="tabort" hidden>Ta bort</button>
     </div>
@@ -130,9 +196,10 @@ dialog::backdrop{background:#0006}
     <div class="bred"><div class="falt">Kategori <span class="svag">(inget valt = allt)</span></div><div class="val" id="kategorirutor"></div></div>
     <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div></div>
 
-    <h3 class="bred">Storlek och skick</h3>
+    <h3 class="bred">Storlek, färg och skick</h3>
     <div class="bred" id="storleksgrupper"></div>
     <div class="bred"><div class="falt">Annan storlek</div><div class="taggar" id="t-storlek"></div></div>
+    <div class="bred"><div class="falt">Färg <span class="svag">(inget valt = alla)</span></div><div class="val" id="fargrutor"></div></div>
     <div class="bred"><div class="falt">Skick <span class="svag">(inget valt = alla)</span></div><div class="val" id="skickrutor"></div></div>
 
     <h3 class="bred">Pris och vinst</h3>
@@ -170,6 +237,7 @@ const FORSLAG = {
   storlek: [],
   maste: [],
 };
+const FARGER = {Svart:"#000000","Grå":"#919191",Vit:"#ffffff","Crèmefärgad":"#f8f8e1",Beige:"#f4e0c8",Aprikos:"#ffcc98",Orange:"#ffa500",Korall:"#fe7f5d","Röd":"#cc3300","Vinröd":"#ae2e3d",Rosa:"#ff0080",Ros:"#ffccca",Lila:"#800080",Syrenlila:"#d297d2","Ljusblå":"#89cff0","Blå":"#007bc4","Marinblå":"#35358d",Turkos:"#b7dee8",Mint:"#a2ffbc","Grön":"#369a3d","Mörkgrön":"#356639",Khaki:"#86814a",Brun:"#663300",Senapsgul:"#e5b539",Gul:"#fff200",Silver:"#dddddd",Guld:"#be9927","Flerfärgad":"conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935)",Genomskinlig:"repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/7px 7px"};
 const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
 const ago = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
 const REPO = ago + "/" + (location.pathname.split("/")[1] || "vinted-bot");
@@ -219,23 +287,25 @@ function rita(){
   const i = valtAlarmIndex();
   $("andra").hidden = $("tabort").hidden = i < 0;
   $("rubrik").textContent = vald || "Vinted-alarm";
-  document.title = vald ? vald + " · Vinted-alarm" : "Vinted-alarm";
-  if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").textContent = ""; return; }
+  document.title = vald ? vald + " · Valto Resell" : "Valto Resell · Vinted-alarm";
+  if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").innerHTML = ""; return; }
   const data = traffar[vald];
-  if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").textContent = ""; return; }
-  $("vanligt").textContent = [
-    data.saljpris ? `Du kan sälja för ca ${Math.round(data.saljpris / 10) * 10} kr` : "",
-    data.vanligt_pris ? `Brukar kosta att köpa: ca ${Math.round(data.vanligt_pris)} kr` : "",
-    data.efterfragan ? `Efterfrågan: ${data.efterfragan}` : "",
-  ].filter(Boolean).join(" · ");
+  if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").innerHTML = ""; return; }
+  const PRICK = {"hög": "var(--plus)", "medel": "var(--guld)", "låg": "var(--svag)"};
+  $("vanligt").innerHTML = [
+    data.saljpris ? `<span class="chip guld">Sälj för ca <b>${Math.round(data.saljpris / 10) * 10} kr</b></span>` : "",
+    data.vanligt_pris ? `<span class="chip">Brukar kosta ca <b>${Math.round(data.vanligt_pris)} kr</b></span>` : "",
+    data.efterfragan ? `<span class="chip"><span class="prick" style="background:${PRICK[data.efterfragan] || "var(--svag)"}"></span>Efterfrågan <b>${esc(data.efterfragan)}</b></span>` : "",
+    `<span class="chip"><b>${(data.annonser || []).length}</b> träffar</span>`,
+  ].join("");
   let lista = data.annonser || [];
   if ($("baraKap").checked) lista = lista.filter(a => a.kap);
   const forra = sett[vald] || "";
   $("galler").innerHTML = lista.length ? lista.map(a => `
     <a class="annons" href="${esc(a.lank)}" target="_blank" rel="noopener">
-      ${a.kap ? `<span class="kapmark">🔥 KAP</span>` : ""}
+      ${a.kap ? `<span class="kapmark">KAP</span>` : ""}
       ${forra && a.hittad > forra ? `<span class="nymark">Ny</span>` : ""}
-      <img src="${esc(a.bild)}" alt="" loading="lazy" referrerpolicy="no-referrer">
+      <div class="bildram"><img src="${esc(a.bild)}" alt="" loading="lazy" referrerpolicy="no-referrer"></div>
       <div class="info">
         <div class="pris">${Math.round(a.pris)} kr</div>
         <div class="titel">${esc(a.titel)}</div>
@@ -273,6 +343,7 @@ $("stangMeny").onclick = $("skugga").onclick = () => document.body.classList.rem
 $("sparaNyckel").onclick = () => { skriv("nyckel", $("nyckel").value.trim()); $("nyckel").value = ""; ritaAlarm(); status("Nyckeln är sparad i den här webbläsaren."); };
 $("nyttAlarm").onclick = () => oppna(-1);
 $("avbryt").onclick = () => $("dialog").close();
+$("fargrutor").innerHTML = Object.entries(FARGER).map(([n, f]) => `<label><input type="checkbox" value="${n}"><span class="farg" style="background:${f}"></span>${n}</label>`).join("");
 $("skickrutor").innerHTML = SKICK.map(s => `<label><input type="checkbox" value="${s}"> ${s}</label>`).join("");
 $("storleksgrupper").innerHTML = Object.entries(STORLEKAR).map(([rubrik, lista]) => `<div class="grupp"><div class="falt">${rubrik}</div><div class="val">${lista.map(v => `<label><input type="checkbox" value="${v}"> ${v}</label>`).join("")}</div></div>`).join("");
 
@@ -335,6 +406,7 @@ function oppna(i){
   f.telegram.value = a.telegram || "kap";
   f.aktiv.checked = a.aktiv !== false;
   $("skickrutor").querySelectorAll("input").forEach(c => c.checked = (a.skick || []).includes(c.value));
+  $("fargrutor").querySelectorAll("input").forEach(c => c.checked = [].concat(a.farger || []).includes(c.value));
   $("dialog").showModal();
 }
 
@@ -353,6 +425,7 @@ $("formular").onsubmit = async e => {
   if (taggar.marke.length) a.marke = enEllerLista(taggar.marke);
   a.storlekar = [...[...$("storleksgrupper").querySelectorAll("input:checked")].map(c => c.value), ...taggar.storlek];
   a.skick = [...$("skickrutor").querySelectorAll("input:checked")].map(c => c.value);
+  a.farger = [...$("fargrutor").querySelectorAll("input:checked")].map(c => c.value);
   a.uteslut = taggar.uteslut.slice();
   if (taggar.maste.length) a.maste = taggar.maste.slice();
   a.telegram = f.telegram.value;
