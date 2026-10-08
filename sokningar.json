@@ -88,9 +88,10 @@
   {
     "namn": "Stickad cardigan",
     "sokord": "stickad cardigan",
-    "maxpris": 350,
-    "saljpris": 599,
-    "min_betyg": 4,
+    "maxpris": 250,
+    "kappris": 100,
+    "saljpris": 400,
+    "min_betyg": 3.5,
     "kon": "herr",
     "kategorier": [
       "klader"
