@@ -151,14 +151,29 @@ class Vinted:
         return annonser_fran_sida(sida)
 
 
-def sok_url(s, marke_id=None):
+def lista(varde):
+    """Alarmfält kan vara en text eller en lista (t.ex. flera sökord eller märken)."""
+    if not varde:
+        return []
+    if isinstance(varde, str):
+        return [varde.strip()] if varde.strip() else []
+    return [str(v).strip() for v in varde if str(v).strip()]
+
+
+def alarm_namn(s):
+    return s.get("namn") or ", ".join(lista(s.get("sokord"))) or "sökning"
+
+
+def sok_url(s, marke_ids=(), sokord=None):
     if s.get("url"):
         # En sök-länk kopierad direkt från Vinted. Vi ser till att nyaste visas först.
         delar = urllib.parse.urlsplit(s["url"])
         par = [(k, v) for k, v in urllib.parse.parse_qsl(delar.query) if k != "order"]
         par.append(("order", "newest_first"))
         return VINTED + delar.path + "?" + urllib.parse.urlencode(par)
-    par = [("search_text", s.get("sokord", "")), ("order", "newest_first"), ("currency", "SEK")]
+    if sokord is None:
+        sokord = (lista(s.get("sokord")) or [""])[0]
+    par = [("search_text", sokord), ("order", "newest_first"), ("currency", "SEK")]
     if s.get("maxpris"):
         par.append(("price_to", s["maxpris"]))
     if s.get("minpris"):
@@ -166,7 +181,7 @@ def sok_url(s, marke_id=None):
     # Vinteds egna filter, så att sökningen bara ger rätt sorts saker från början.
     for k in kategori_ids(s):
         par.append(("catalog_ids[]", k))
-    if marke_id:
+    for marke_id in marke_ids:
         par.append(("brand_ids[]", marke_id))
     for skick in s.get("skick") or []:
         if skick in SKICK_ID:
@@ -223,17 +238,24 @@ def forenkla(a):
     }
 
 
+def storlek_delar(text):
+    """'46 | W30' -> {'46', 'w30'}, 'W30/L32' -> {'w30', 'l32'}, 'EU 36' -> {'eu 36', 'eu', '36'}."""
+    delar = {d.strip().lower() for d in re.split(r"[|·/,]", text) if d.strip()}
+    return delar | {o for d in delar for o in d.split()}
+
+
 def matchar(annons, s):
     """Filtren som Vinted-sökningen själv inte klarar av."""
     if s.get("maxpris") and annons["pris"] > float(s["maxpris"]):
         return False
     if s.get("minpris") and annons["pris"] < float(s["minpris"]):
         return False
-    if s.get("marke") and s["marke"].lower() not in annons["marke"].lower():
+    marken = lista(s.get("marke"))
+    if marken and not any(m.lower() in annons["marke"].lower() for m in marken):
         return False
     if s.get("storlekar"):
-        storlek = annons["storlek"].lower()
-        if not any(v.lower() in storlek for v in s["storlekar"]):
+        # Exakt storlek, så att "S" inte råkar matcha "XS" och "L" inte "XL".
+        if not any(storlek_delar(v) <= storlek_delar(annons["storlek"]) for v in s["storlekar"]):
             return False
     if s.get("skick") and annons["skick"] not in s["skick"]:
         return False
@@ -387,18 +409,22 @@ def ska_till_telegram(annons, s):
     return lage == "alla" or (lage == "kap" and annons["kap"])
 
 
-def hitta_marke_id(vinted, s, minne):
-    """Märket i alarmet som Vinteds märkesnummer (sparas så vi bara frågar en gång)."""
-    if not s.get("marke") or s.get("url"):
-        return None
-    nyckel = s["marke"].lower().strip()
-    if nyckel not in minne["marken"]:
-        try:
-            minne["marken"][nyckel] = vinted.marke_id(s["marke"])
-        except Exception as e:
-            logg("Kunde inte slå upp märket '%s': %s" % (s["marke"], e))
-            return None
-    return minne["marken"][nyckel]
+def hitta_marke_ids(vinted, s, minne):
+    """Märkena i alarmet som Vinteds märkesnummer (sparas så vi bara frågar en gång)."""
+    if s.get("url"):
+        return []
+    ids = []
+    for marke in lista(s.get("marke")):
+        nyckel = marke.lower()
+        if nyckel not in minne["marken"]:
+            try:
+                minne["marken"][nyckel] = vinted.marke_id(marke)
+            except Exception as e:
+                logg("Kunde inte slå upp märket '%s': %s" % (marke, e))
+                continue
+        if minne["marken"][nyckel]:
+            ids.append(minne["marken"][nyckel])
+    return ids
 
 
 def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
@@ -407,10 +433,21 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
     for s in sokningar:
         if s.get("aktiv") is False:
             continue
-        namn = s.get("namn") or s.get("sokord") or "sökning"
-        url = sok_url(s, hitta_marke_id(vinted, s, minne))
+        namn = alarm_namn(s)
+        # Ett sökord per sökning hos Vinted; träffarna slås ihop.
+        marke_ids = hitta_marke_ids(vinted, s, minne)
+        urls = [sok_url(s, marke_ids, ord_) for ord_ in (lista(s.get("sokord")) or [""])]
+        url = "\n".join(urls)
         try:
-            annonser = vinted.sok(url)
+            hittade = {}
+            for i, u in enumerate(urls):
+                if i:
+                    time.sleep(random.uniform(1, 3))
+                for a in vinted.sok(u):
+                    hittade.setdefault(a["id"], a)
+            annonser = list(hittade.values())
+            if len(urls) > 1:  # nyaste först (högre nummer = nyare annons)
+                annonser.sort(key=lambda a: a["id"], reverse=True)
         except Exception as e:  # nätverksfel, Vinted blockerar en stund, osv.
             logg("Fel vid sökning '%s': %s" % (namn, e))
             continue
@@ -465,7 +502,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
         sedda[namn] = list(dict.fromkeys(ids))[:MAX_SEDDA_PER_SOKNING]
         time.sleep(random.uniform(2, 5))  # lite paus mellan sökningar
     # Släng hemsidans listor för alarm som tagits bort.
-    aktuella = {s.get("namn") or s.get("sokord") or "sökning" for s in sokningar}
+    aktuella = {alarm_namn(s) for s in sokningar}
     for namn in list(traffar_lista):
         if namn not in aktuella:
             del traffar_lista[namn]
