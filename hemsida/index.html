@@ -224,8 +224,8 @@ function rita(){
   const data = traffar[vald];
   if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").textContent = ""; return; }
   $("vanligt").textContent = [
-    data.vanligt_pris ? `Vanligt pris just nu: ca ${Math.round(data.vanligt_pris)} kr` : "",
-    data.saljpris ? `Liknande säljs för ca ${Math.round(data.saljpris / 10) * 10} kr` : "",
+    data.saljpris ? `Du kan sälja för ca ${Math.round(data.saljpris / 10) * 10} kr` : "",
+    data.vanligt_pris ? `Brukar kosta att köpa: ca ${Math.round(data.vanligt_pris)} kr` : "",
     data.efterfragan ? `Efterfrågan: ${data.efterfragan}` : "",
   ].filter(Boolean).join(" · ");
   let lista = data.annonser || [];
@@ -239,7 +239,7 @@ function rita(){
       <div class="info">
         <div class="pris">${Math.round(a.pris)} kr</div>
         <div class="titel">${esc(a.titel)}</div>
-        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Kan säljas för ca ${Math.round(a.saljpris)} kr</div>` : ""}
+        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Sälj för ca ${Math.round(a.saljpris)} kr</div>` : ""}
         <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}</div>
         ${a.saljare ? `<div class="svag">${FLAGGA[a.saljare.land] || ""} ${a.saljare.omdomen ? "⭐ " + a.saljare.betyg.toFixed(1) + " (" + a.saljare.omdomen + ")" : "Inga omdömen än"}${a.gillas ? " · ♥ " + a.gillas : ""}</div>` : ""}
         <div class="svag">${tid(a.hittad)}</div>
