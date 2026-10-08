@@ -46,6 +46,13 @@ KAP_ANDEL = 0.5  # utan kap-pris: kap om priset är högst hälften av det vanli
 
 # Vinteds egna nummer för skick, kategorier och länder (samma på alla Vinted-sidor).
 SKICK_ID = {"Ny med prislapp": 6, "Ny utan prislapp": 1, "Mycket bra": 2, "Bra": 3, "Tillfredsställande": 4}
+# Vinteds färgfilter (color_ids).
+FARG_ID = {
+    "Svart": 1, "Grå": 3, "Vit": 12, "Crèmefärgad": 20, "Beige": 4, "Aprikos": 21, "Orange": 11,
+    "Korall": 22, "Röd": 7, "Vinröd": 23, "Rosa": 5, "Ros": 24, "Lila": 6, "Syrenlila": 25,
+    "Ljusblå": 26, "Blå": 9, "Marinblå": 27, "Turkos": 17, "Mint": 30, "Grön": 10, "Mörkgrön": 28,
+    "Khaki": 16, "Brun": 2, "Senapsgul": 29, "Gul": 8, "Silver": 13, "Guld": 14, "Flerfärgad": 15, "Genomskinlig": 32,
+}
 KATEGORI_ID = {
     "herr": {"": 5, "klader": 2050, "skor": 1231, "accessoarer": 82},
     "dam": {"": 1904, "klader": 4, "skor": 16, "vaskor": 19, "accessoarer": 1187},
@@ -191,6 +198,9 @@ def sok_url(s, marke_ids=(), sokord=None):
     for skick in s.get("skick") or []:
         if skick in SKICK_ID:
             par.append(("status_ids[]", SKICK_ID[skick]))
+    for farg in lista(s.get("farger")):
+        if farg in FARG_ID:
+            par.append(("color_ids[]", FARG_ID[farg]))
     return VINTED + "/catalog?" + urllib.parse.urlencode(par)
 
 
