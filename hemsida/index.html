@@ -10,29 +10,23 @@
 <style>
 /* Valto Resell: svart och guld */
 :root{
-  --bg:#f4f1ea;--kort:#ffffff;--kort2:#faf8f3;--text:#151413;--svag:#6f6a61;--linje:#e4dfd3;
+  color-scheme:light;
+  --bg:#f9f7f2;--kort:#ffffff;--kort2:#faf8f3;--text:#151413;--svag:#6f6a61;--linje:#e4dfd3;
   --guld:#a8823a;--guldljus:#d9b86c;--guldtext:#7a5d22;
   --plus:#1f8a5b;--minus:#c2412d;--kap:#c2412d;
-  --meny:#0f0f0f;--menytext:#ece6d8;--menysvag:#8f887b;--menylinje:#26241f;--menyval:#1c1b18;
+  --meny:#ffffff;--menytext:#1d1b17;--menysvag:#8a8478;--menylinje:#ece6da;--menyval:#f4efe4;
   --skugga:0 1px 2px rgba(20,18,12,.06),0 4px 14px rgba(20,18,12,.06);
   --skugga2:0 2px 4px rgba(20,18,12,.08),0 12px 28px rgba(20,18,12,.12);
 }
-@media (prefers-color-scheme:dark){:root{
-  --bg:#0c0c0b;--kort:#171614;--kort2:#1d1c19;--text:#f1ece1;--svag:#9d968a;--linje:#2b2925;
-  --guld:#d4af5f;--guldljus:#e8cd8a;--guldtext:#e2c27c;
-  --plus:#4cc38a;--minus:#ff7a62;--kap:#ff7a62;
-  --meny:#080807;--menyval:#191815;--menylinje:#24221e;
-  --skugga:0 1px 2px rgba(0,0,0,.4);--skugga2:0 10px 30px rgba(0,0,0,.5);
-}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 .layout{display:flex;min-height:100vh}
 
 /* Meny */
-aside{width:232px;flex:none;background:var(--meny);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:18px 12px}
+aside{width:232px;flex:none;background:var(--meny);border-right:1px solid var(--linje);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:18px 12px}
 .menytopp{display:flex;justify-content:space-between;align-items:flex-start;padding:2px 8px 18px}
 .marke{display:flex;flex-direction:column;line-height:1.15}
-.marke b{font-family:"Playfair Display",Georgia,serif;font-size:21px;letter-spacing:.02em;color:var(--guldljus)}
+.marke b{font-family:"Playfair Display",Georgia,serif;font-size:21px;letter-spacing:.02em;color:var(--guldtext)}
 .marke span{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--menysvag);margin-top:4px}
 aside .ikon{color:var(--menytext)}
 .nytt{width:100%;margin-bottom:14px}
