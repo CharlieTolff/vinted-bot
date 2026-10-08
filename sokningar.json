@@ -460,7 +460,7 @@
       "shirt jacket"
     ],
     "maxpris": 400,
-    "min_betyg": 4,
+    "min_betyg": 3.5,
     "kon": "herr",
     "kategorier": [
       "klader"
@@ -470,6 +470,15 @@
       "DK",
       "FI",
       "PL"
+    ],
+    "marke": [
+      "Stone Island",
+      "C.P. Company",
+      "Our Legacy",
+      "Norse Projects",
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Barbour"
     ],
     "storlekar": [
       "S",
@@ -482,6 +491,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -493,16 +503,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Stone Island",
-      "C.P. Company",
-      "Our Legacy",
-      "Norse Projects",
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "Barbour"
-    ]
+    "aktiv": true
   },
   {
     "namn": "Toppmärken fieldjacket",
