@@ -694,6 +694,17 @@
       "FI",
       "PL"
     ],
+    "marke": [
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Loro Piana",
+      "Brunello Cucinelli",
+      "John Smedley",
+      "Gant",
+      "Morris",
+      "Stenströms",
+      "Oscar Jacobson"
+    ],
     "storlekar": [
       "S",
       "M",
@@ -705,6 +716,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -716,17 +728,6 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "Loro Piana",
-      "Brunello Cucinelli",
-      "John Smedley",
-      "Gant",
-      "Morris",
-      "Stenströms",
-      "Oscar Jacobson"
-    ]
+    "aktiv": true
   }
 ]
