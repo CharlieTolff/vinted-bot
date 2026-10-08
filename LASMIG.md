@@ -41,7 +41,9 @@ Allt utom `namn` och `sokord` kan lämnas bort. Tom lista betyder "alla". Enklas
 
 - `kon` och `kategorier`: "herr" eller "dam", och kategorierna klader, skor, accessoarer (och vaskor för dam).
   Botten använder Vinteds egna filter, så du får bara rätt sorts saker.
+- `sokord` och `marke` kan vara en text eller en lista, t.ex. `["skjorta", "oxford"]`. Ett sökord räcker för träff, och flera märken bevakas samtidigt.
 - `marke`: botten slår upp märket hos Vinted och söker bara på det märket.
+- `storlekar`: måste stämma exakt, så "S" träffar inte "XS".
 - `skick`: används också som Vinted-filter. Skick som finns: Ny med prislapp, Ny utan prislapp, Mycket bra, Bra, Tillfredsställande.
 - `lander`: vilka länder säljaren ska bo i. På svenska Vinted kan du köpa från SE (Sverige), DK (Danmark), FI (Finland) och PL (Polen).
 - `min_betyg`: säljare med lägre snittbetyg (stjärnor) hoppas över. Säljare utan omdömen är okej. 0 stänger av.

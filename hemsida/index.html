@@ -43,6 +43,17 @@ input,select{font:inherit;padding:7px 9px;border-radius:8px;border:1px solid var
 .val label{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--linje);border-radius:999px;padding:6px 12px;color:var(--text);cursor:pointer}
 .val label:has(input:checked){background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
 .val input{position:absolute;opacity:0;pointer-events:none}
+h3{font-size:15px;margin:10px 0 -4px;padding-top:12px;border-top:1px solid var(--linje)}
+.falt{font-size:13px;color:var(--text);font-weight:600;margin-bottom:6px}
+.hjalp{font-size:12px;color:var(--svag);margin-top:6px}
+.grupp{margin-bottom:10px}
+.taggar .ruta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid var(--linje);border-radius:8px;background:var(--bg);padding:6px}
+.taggar .ruta input{border:0;background:transparent;flex:1;min-width:120px;padding:4px}
+.taggar .ruta input:focus{outline:none}
+.tagg{display:inline-flex;align-items:center;gap:4px;background:var(--kort);border:1px solid var(--linje);border-radius:6px;padding:3px 4px 3px 9px;font-size:14px}
+.tagg button{border:0;background:none;padding:0 5px;color:var(--svag);font-size:15px;line-height:1}
+.forslag{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.forslag button{border-radius:999px;padding:3px 10px;font-size:13px;color:var(--svag)}
 .vinst{color:var(--acc);font-weight:600;font-size:13px}
 .vinst.minus{color:var(--kap)}
 .medd{padding:10px 12px;border-radius:8px;background:var(--bg);margin:10px 0}
@@ -83,22 +94,36 @@ dialog::backdrop{background:#0006}
 <dialog id="dialog">
   <h2 id="dialogtitel" style="margin-top:0">Nytt alarm</h2>
   <form id="formular" method="dialog">
-    <label>Namn<input name="namn" required placeholder="Nudie jeans under 200 kr"></label>
-    <label>Sökord<input name="sokord" placeholder="nudie jeans"></label>
-    <label class="bred">…eller en sök-länk från Vinted (valfritt)<input name="url" placeholder="https://www.vinted.se/catalog?..."></label>
+    <label class="bred">Namn<input name="namn" required placeholder="Nudie jeans under 200 kr"></label>
+
+    <h3 class="bred">Vad letar du efter?</h3>
+    <div class="bred"><div class="falt">Sökord</div><div class="taggar" id="t-sokord"></div>
+      <div class="hjalp">Ett av orden i sökningen räcker för att larma dig. Skriv och tryck Enter.</div></div>
+    <div class="bred"><div class="falt">Märken</div><div class="taggar" id="t-marke"></div>
+      <div class="hjalp">Lägg till flera för att bevaka dem samtidigt. Tomt = alla märken.</div></div>
+    <div class="bred"><div class="falt">Ta bort annonser med de här orden</div><div class="taggar" id="t-uteslut"></div>
+      <div class="hjalp">Finns ordet i titeln sorteras annonsen bort.</div></div>
+    <label class="bred">…eller klistra in en sök-länk från Vinted (valfritt)<input name="url" placeholder="https://www.vinted.se/catalog?..."></label>
+
+    <h3 class="bred">Vem och var</h3>
+    <div class="bred"><div class="falt">Herr eller dam</div><div class="val" id="konrutor"></div></div>
+    <div class="bred"><div class="falt">Kategori <span class="svag">(inget valt = allt)</span></div><div class="val" id="kategorirutor"></div></div>
+    <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div></div>
+
+    <h3 class="bred">Storlek och skick</h3>
+    <div class="bred" id="storleksgrupper"></div>
+    <div class="bred"><div class="falt">Annan storlek</div><div class="taggar" id="t-storlek"></div></div>
+    <div class="bred"><div class="falt">Skick <span class="svag">(inget valt = alla)</span></div><div class="val" id="skickrutor"></div></div>
+
+    <h3 class="bred">Pris och vinst</h3>
     <label>Maxpris (kr)<input name="maxpris" type="number" min="0"></label>
     <label>Minpris (kr)<input name="minpris" type="number" min="0"></label>
-    <div class="bred"><div class="svag" style="margin-bottom:4px">Herr eller dam</div><div class="val" id="konrutor"></div></div>
-    <div class="bred"><div class="svag" style="margin-bottom:4px">Kategori (inget ikryssat = allt)</div><div class="val" id="kategorirutor"></div></div>
-    <div class="bred"><div class="svag" style="margin-bottom:4px">Säljaren ska bo i (inget ikryssat = alla länder du kan köpa från)</div><div class="val" id="landrutor"></div></div>
-    <label>Märke<input name="marke" placeholder="Nudie"></label>
-    <label>Storlekar (komma emellan)<input name="storlekar" placeholder="W30, W31, M"></label>
-    <label class="bred">Ord som sorteras bort (komma emellan)<input name="uteslut" placeholder="t-shirt, jacka"></label>
-    <div class="bred"><div class="svag" style="margin-bottom:4px">Skick (inget ikryssat = alla)</div><div class="checkar" id="skickrutor"></div></div>
     <label>Kap-pris: notis om priset är högst (kr)<input name="kappris" type="number" min="0" placeholder="tomt = halva vanliga priset"></label>
     <label>Ditt säljpris (kr), för att räkna vinst<input name="saljpris" type="number" min="0" placeholder="t.ex. 450"></label>
     <label>Frakt när du köper (kr)<input name="frakt" type="number" min="0" placeholder="60"></label>
     <label>Hoppa över säljare med betyg under<select name="min_betyg"><option value="4.5">4,5 stjärnor</option><option value="4">4 stjärnor</option><option value="3.5">3,5 stjärnor</option><option value="0">Hoppa inte över någon</option></select></label>
+
+    <h3 class="bred">Notiser</h3>
     <label>Telegram-notiser<select name="telegram"><option value="kap">Bara kap</option><option value="alla">Alla nya träffar</option><option value="av">Inga</option></select></label>
     <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" name="aktiv" checked> Alarmet är på</label>
     <div class="bred rad" style="justify-content:flex-end;margin:0">
@@ -113,6 +138,18 @@ const KON = {"": "Alla", herr: "Herr", dam: "Dam"};
 const KATEGORIER = {herr: {klader:"Kläder", skor:"Skor", accessoarer:"Accessoarer"}, dam: {klader:"Kläder", skor:"Skor", vaskor:"Väskor", accessoarer:"Accessoarer"}};
 const LANDER = {SE:"🇸🇪 Sverige", DK:"🇩🇰 Danmark", FI:"🇫🇮 Finland", PL:"🇵🇱 Polen"};
 const FLAGGA = {SE:"🇸🇪", DK:"🇩🇰", FI:"🇫🇮", PL:"🇵🇱"};
+const STORLEKAR = {
+  "Tröjor, skjortor och jackor": ["XXS","XS","S","M","L","XL","XXL","XXXL"],
+  "Jeans och byxor": ["W26","W27","W28","W29","W30","W31","W32","W33","W34","W36","W38","W40"],
+  "Skor": ["38","39","40","41","42","43","44","45","46"],
+};
+const ALLA_STORLEKAR = Object.values(STORLEKAR).flat();
+const FORSLAG = {
+  sokord: ["vintage","jeans","skjorta","hoodie","jacka","stickad tröja","oxford","raw denim"],
+  marke: ["Ralph Lauren","Nudie Jeans","Stone Island","Carhartt","Levi's","Acne Studios","Our Legacy","Arc'teryx","Moncler","Louis Vuitton"],
+  uteslut: ["fake","replica","inspired","defekt","trasig","fläck","barn","dam"],
+  storlek: [],
+};
 const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
 const ago = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
 const REPO = ago + "/" + (location.pathname.split("/")[1] || "vinted-bot");
@@ -125,7 +162,7 @@ let traffar = {}, alarm = [], vald = las("vald", null), sett = las("sett", {});
 let redigerar = -1;
 
 function esc(t){ return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
-function namnPa(a){ return a.namn || a.sokord || "sökning" }
+function namnPa(a){ return a.namn || [].concat(a.sokord || []).join(", ") || "sökning" }
 function tid(iso){ const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString("sv-SE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}) }
 
 async function hamta(){
@@ -189,7 +226,7 @@ function ritaAlarm(){
   $("alarmlista").innerHTML = alarm.length ? alarm.map((a, i) => `
     <div class="alarm">
       <div><strong>${esc(namnPa(a))}</strong>${a.aktiv === false ? ` <span class="svag">(avstängt)</span>` : ""}<br>
-      <span class="svag">${esc([a.sokord || (a.url ? "Vinted-länk" : ""), a.kon ? KON[a.kon] : "", (a.lander || []).map(l => FLAGGA[l]).join(""), a.maxpris ? "max " + a.maxpris + " kr" : "", a.kappris ? "kap ≤ " + a.kappris + " kr" : "kap = halva priset", {kap:"Telegram: bara kap", alla:"Telegram: alla", av:"Telegram: av"}[a.telegram || "kap"]].filter(Boolean).join(" · "))}</span></div>
+      <span class="svag">${esc([[].concat(a.sokord || []).join(", ") || (a.url ? "Vinted-länk" : ""), a.kon ? KON[a.kon] : "", (a.lander || []).map(l => FLAGGA[l]).join(""), a.maxpris ? "max " + a.maxpris + " kr" : "", a.kappris ? "kap ≤ " + a.kappris + " kr" : "kap = halva priset", {kap:"Telegram: bara kap", alla:"Telegram: alla", av:"Telegram: av"}[a.telegram || "kap"]].filter(Boolean).join(" · "))}</span></div>
       <div class="rad" style="margin:0"><button data-r="${i}">Ändra</button><button class="fara" data-t="${i}">Ta bort</button></div>
     </div>`).join("") : `<p class="svag">Inga alarm än.</p>`;
   document.querySelectorAll("[data-r]").forEach(b => b.onclick = () => oppna(+b.dataset.r));
@@ -206,6 +243,39 @@ $("sparaNyckel").onclick = () => { skriv("nyckel", $("nyckel").value.trim()); $(
 $("nyttAlarm").onclick = () => oppna(-1);
 $("avbryt").onclick = () => $("dialog").close();
 $("skickrutor").innerHTML = SKICK.map(s => `<label><input type="checkbox" value="${s}"> ${s}</label>`).join("");
+$("storleksgrupper").innerHTML = Object.entries(STORLEKAR).map(([rubrik, lista]) => `<div class="grupp"><div class="falt">${rubrik}</div><div class="val">${lista.map(v => `<label><input type="checkbox" value="${v}"> ${v}</label>`).join("")}</div></div>`).join("");
+
+// Taggfält: skriv och tryck Enter (eller komma), ta bort med ×, klicka på + för förslag.
+const taggar = {};
+function taggfalt(namn, platshallare){
+  const ruta = $("t-" + namn);
+  ruta.innerHTML = `<div class="ruta"><input placeholder="${platshallare}"></div><div class="forslag"></div>`;
+  const inp = ruta.querySelector("input");
+  const lagg = v => { v = v.trim(); if (v && !taggar[namn].some(x => x.toLowerCase() === v.toLowerCase())) taggar[namn].push(v); ritaTaggar(namn); };
+  inp.onkeydown = e => {
+    if (e.key === "Enter" || e.key === ",") { e.preventDefault(); lagg(inp.value); inp.value = ""; }
+    else if (e.key === "Backspace" && !inp.value && taggar[namn].length) { taggar[namn].pop(); ritaTaggar(namn); }
+  };
+  inp.onblur = () => { if (inp.value.trim()) { lagg(inp.value); inp.value = ""; } };
+  ruta.onclick = e => {
+    const b = e.target.closest("button"); if (!b) { if (e.target.classList.contains("ruta")) inp.focus(); return; }
+    if (b.dataset.bort != null) taggar[namn].splice(+b.dataset.bort, 1);
+    if (b.dataset.lagg != null) taggar[namn].push(b.dataset.lagg);
+    ritaTaggar(namn);
+  };
+}
+function ritaTaggar(namn){
+  const ruta = $("t-" + namn), inp = ruta.querySelector("input");
+  ruta.querySelectorAll(".tagg").forEach(t => t.remove());
+  inp.insertAdjacentHTML("beforebegin", taggar[namn].map((v, i) => `<span class="tagg">${esc(v)}<button type="button" data-bort="${i}" aria-label="Ta bort ${esc(v)}">×</button></span>`).join(""));
+  const valda = taggar[namn].map(v => v.toLowerCase());
+  ruta.querySelector(".forslag").innerHTML = FORSLAG[namn].filter(v => !valda.includes(v.toLowerCase())).map(v => `<button type="button" data-lagg="${esc(v)}">+ ${esc(v)}</button>`).join("");
+}
+taggfalt("sokord", "t.ex. nudie jeans");
+taggfalt("marke", "t.ex. Ralph Lauren");
+taggfalt("uteslut", "t.ex. t-shirt");
+taggfalt("storlek", "t.ex. 48 eller W30/L32");
+const somLista = v => Array.isArray(v) ? v : (v ? [v] : []);
 $("konrutor").innerHTML = Object.entries(KON).map(([k, t]) => `<label><input type="radio" name="kon" value="${k}"> ${t}</label>`).join("");
 $("landrutor").innerHTML = Object.entries(LANDER).map(([k, t]) => `<label><input type="checkbox" value="${k}"> ${t}</label>`).join("");
 const valdKon = () => ($("konrutor").querySelector("input:checked") || {}).value || "";
@@ -220,13 +290,16 @@ function oppna(i){
   const a = i >= 0 ? alarm[i] : {telegram:"kap"};
   const f = $("formular");
   $("dialogtitel").textContent = i >= 0 ? "Ändra alarm" : "Nytt alarm";
-  for (const k of ["namn","sokord","url","maxpris","minpris","marke","kappris","saljpris","frakt"]) f[k].value = a[k] ?? "";
+  for (const k of ["namn","url","maxpris","minpris","kappris","saljpris","frakt"]) f[k].value = a[k] ?? "";
+  const storlekar = a.storlekar || [];
+  $("storleksgrupper").querySelectorAll("input").forEach(c => c.checked = storlekar.some(v => v.toLowerCase() === c.value.toLowerCase()));
+  taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice();
+  taggar.storlek = storlekar.filter(v => !ALLA_STORLEKAR.some(x => x.toLowerCase() === v.toLowerCase()));
+  ["sokord","marke","uteslut","storlek"].forEach(ritaTaggar);
   f.min_betyg.value = String(a.min_betyg ?? 4.5);
   $("konrutor").querySelectorAll("input").forEach(c => c.checked = c.value === (a.kon || ""));
   ritaKategorier(a.kategorier || []);
   $("landrutor").querySelectorAll("input").forEach(c => c.checked = (a.lander || []).includes(c.value));
-  f.storlekar.value = (a.storlekar || []).join(", ");
-  f.uteslut.value = (a.uteslut || []).join(", ");
   f.telegram.value = a.telegram || "kap";
   f.aktiv.checked = a.aktiv !== false;
   $("skickrutor").querySelectorAll("input").forEach(c => c.checked = (a.skick || []).includes(c.value));
@@ -235,18 +308,20 @@ function oppna(i){
 
 $("formular").onsubmit = async e => {
   e.preventDefault();
-  const f = e.target, lista = v => v.split(",").map(x => x.trim()).filter(Boolean);
-  if (!f.sokord.value.trim() && !f.url.value.trim()) { alert("Skriv ett sökord eller klistra in en Vinted-länk."); return; }
+  const f = e.target, enEllerLista = l => l.length === 1 ? l[0] : l;
+  // Text som skrivits men inte bekräftats med Enter tas också med.
+  document.querySelectorAll(".taggar input").forEach(i => i.blur());
+  if (!taggar.sokord.length && !taggar.marke.length && !f.url.value.trim()) { alert("Lägg till ett sökord eller märke, eller klistra in en Vinted-länk."); return; }
   const a = { namn: f.namn.value.trim() };
-  if (f.url.value.trim()) a.url = f.url.value.trim(); else a.sokord = f.sokord.value.trim();
+  if (f.url.value.trim()) a.url = f.url.value.trim(); else a.sokord = enEllerLista(taggar.sokord);
   for (const k of ["maxpris","minpris","kappris","saljpris","frakt"]) if (f[k].value) a[k] = Number(f[k].value);
   a.min_betyg = Number(f.min_betyg.value);
   if (valdKon()) { a.kon = valdKon(); a.kategorier = [...$("kategorirutor").querySelectorAll("input:checked")].map(c => c.value); }
   a.lander = [...$("landrutor").querySelectorAll("input:checked")].map(c => c.value);
-  if (f.marke.value.trim()) a.marke = f.marke.value.trim();
-  a.storlekar = lista(f.storlekar.value);
+  if (taggar.marke.length) a.marke = enEllerLista(taggar.marke);
+  a.storlekar = [...[...$("storleksgrupper").querySelectorAll("input:checked")].map(c => c.value), ...taggar.storlek];
   a.skick = [...$("skickrutor").querySelectorAll("input:checked")].map(c => c.value);
-  a.uteslut = lista(f.uteslut.value);
+  a.uteslut = taggar.uteslut.slice();
   a.telegram = f.telegram.value;
   a.aktiv = f.aktiv.checked;
   const ny = alarm.slice();
