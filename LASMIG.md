@@ -30,7 +30,6 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
   "skick": ["Ny med prislapp", "Ny utan prislapp", "Mycket bra"],
   "uteslut": ["t-shirt", "jacka"],
   "kappris": 120,
-  "saljpris": 450,
   "frakt": 60,
   "min_betyg": 4.5,
   "telegram": "kap",
@@ -47,7 +46,9 @@ Allt utom `namn` och `sokord` kan lämnas bort. Tom lista betyder "alla". Enklas
 - `skick`: används också som Vinted-filter. Skick som finns: Ny med prislapp, Ny utan prislapp, Mycket bra, Bra, Tillfredsställande.
 - `lander`: vilka länder säljaren ska bo i. På svenska Vinted kan du köpa från SE (Sverige), DK (Danmark), FI (Finland) och PL (Polen).
 - `min_betyg`: säljare med lägre snittbetyg (stjärnor) hoppas över. Säljare utan omdömen är okej. 0 stänger av.
-- `saljpris` och `frakt`: används för att räkna vinsten i notisen: säljpris − (pris + Vinteds avgift + frakt).
+- Säljpriset uppskattas automatiskt: botten söker (var 6:e timme) på samma sak utan prisgräns och tar priset där
+  40 % av liknande annonser är billigare, justerat för skicket. Vinsten = säljpris − (pris + Vinteds avgift + `frakt`).
+- Efterfrågan (låg/medel/hög) räknas på hur många som brukar gilla liknande annonser.
 - Vanligt pris räknas på alarmets träffar de senaste 30 dagarna (minst 8 st), och kap räknas mot det.
 
 Vill du ha andra filter från Vinted (färg osv.)? Gör sökningen på vinted.se, kopiera länken och skriv

@@ -137,7 +137,6 @@ dialog::backdrop{background:#0006}
     <label>Maxpris (kr)<input name="maxpris" type="number" min="0"></label>
     <label>Minpris (kr)<input name="minpris" type="number" min="0"></label>
     <label>Kap-pris: notis om priset är högst (kr)<input name="kappris" type="number" min="0" placeholder="tomt = halva vanliga priset"></label>
-    <label>Ditt säljpris (kr), för att räkna vinst<input name="saljpris" type="number" min="0" placeholder="t.ex. 450"></label>
     <label>Frakt när du köper (kr)<input name="frakt" type="number" min="0" placeholder="60"></label>
     <label>Hoppa över säljare med betyg under<select name="min_betyg"><option value="4.5">4,5 stjärnor</option><option value="4">4 stjärnor</option><option value="3.5">3,5 stjärnor</option><option value="0">Hoppa inte över någon</option></select></label>
 
@@ -221,7 +220,11 @@ function rita(){
   if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").textContent = ""; return; }
   const data = traffar[vald];
   if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").textContent = ""; return; }
-  $("vanligt").textContent = data.vanligt_pris ? `Vanligt pris just nu: ca ${Math.round(data.vanligt_pris)} kr` : "";
+  $("vanligt").textContent = [
+    data.vanligt_pris ? `Vanligt pris just nu: ca ${Math.round(data.vanligt_pris)} kr` : "",
+    data.saljpris ? `Liknande säljs för ca ${Math.round(data.saljpris / 10) * 10} kr` : "",
+    data.efterfragan ? `Efterfrågan: ${data.efterfragan}` : "",
+  ].filter(Boolean).join(" · ");
   let lista = data.annonser || [];
   if ($("baraKap").checked) lista = lista.filter(a => a.kap);
   const forra = sett[vald] || "";
@@ -233,7 +236,7 @@ function rita(){
       <div class="info">
         <div class="pris">${Math.round(a.pris)} kr</div>
         <div class="titel">${esc(a.titel)}</div>
-        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div>` : ""}
+        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Kan säljas för ca ${Math.round(a.saljpris)} kr</div>` : ""}
         <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}</div>
         ${a.saljare ? `<div class="svag">${FLAGGA[a.saljare.land] || ""} ${a.saljare.omdomen ? "⭐ " + a.saljare.betyg.toFixed(1) + " (" + a.saljare.omdomen + ")" : "Inga omdömen än"}${a.gillas ? " · ♥ " + a.gillas : ""}</div>` : ""}
         <div class="svag">${tid(a.hittad)}</div>
@@ -315,7 +318,7 @@ function oppna(i){
   const a = i >= 0 ? alarm[i] : {telegram:"kap"};
   const f = $("formular");
   $("dialogtitel").textContent = i >= 0 ? "Ändra alarm" : "Nytt alarm";
-  for (const k of ["namn","url","maxpris","minpris","kappris","saljpris","frakt"]) f[k].value = a[k] ?? "";
+  for (const k of ["namn","url","maxpris","minpris","kappris","frakt"]) f[k].value = a[k] ?? "";
   const storlekar = a.storlekar || [];
   $("storleksgrupper").querySelectorAll("input").forEach(c => c.checked = storlekar.some(v => v.toLowerCase() === c.value.toLowerCase()));
   taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice();
@@ -339,7 +342,7 @@ $("formular").onsubmit = async e => {
   if (!taggar.sokord.length && !taggar.marke.length && !f.url.value.trim()) { alert("Lägg till ett sökord eller märke, eller klistra in en Vinted-länk."); return; }
   const a = { namn: f.namn.value.trim() };
   if (f.url.value.trim()) a.url = f.url.value.trim(); else a.sokord = enEllerLista(taggar.sokord);
-  for (const k of ["maxpris","minpris","kappris","saljpris","frakt"]) if (f[k].value) a[k] = Number(f[k].value);
+  for (const k of ["maxpris","minpris","kappris","frakt"]) if (f[k].value) a[k] = Number(f[k].value);
   a.min_betyg = Number(f.min_betyg.value);
   if (valdKon()) { a.kon = valdKon(); a.kategorier = [...$("kategorirutor").querySelectorAll("input:checked")].map(c => c.value); }
   a.lander = [...$("landrutor").querySelectorAll("input:checked")].map(c => c.value);

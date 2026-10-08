@@ -288,7 +288,7 @@ def skicka_notis(inst, annons, sokning_namn):
     if annons.get("kap"):
         rader.insert(0, "🔥 <b>KAP!</b>")
     if annons.get("vinst") is not None:
-        rader.append("📈 Vinst ca <b>%+.0f kr</b> om du säljer för %.0f kr" % (annons["vinst"], annons["saljpris"]))
+        rader.append("📈 Vinst ca <b>%+.0f kr</b> (liknande säljs för ca %.0f kr)" % (annons["vinst"], annons["saljpris"]))
     info = " · ".join(x for x in [annons["marke"], annons["storlek"], annons["skick"]] if x)
     if info:
         rader.append(html.escape(info))
@@ -541,10 +541,11 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
             logg("'%s': första körningen, %d nuvarande träffar sparas som redan sedda." % (namn, len(traffar)))
         else:
             nya = nya_pa_sidan = godkanda
+        marknad = kolla_marknad(vinted, s, marke_ids, minne, namn)
         for a in traffar:
             a["kap"] = ar_kap(a, s, vanligt)
-            a["vinst"] = vinst(a, s)
-            a["saljpris"] = s.get("saljpris")
+            a["saljpris"] = uppskattat_saljpris(a, marknad)
+            a["vinst"] = vinst(a, a["saljpris"], s)
             a["hittad"] = nu
 
         if test:
@@ -563,6 +564,8 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
         kanda = {str(a["id"]) for a in nya_pa_sidan}
         traffar_lista[namn] = {
             "vanligt_pris": vanligt,
+            "saljpris": (marknad or {}).get("pris"),
+            "efterfragan": efterfragan(marknad["gillas"]) if marknad else None,
             "uppdaterad": nu,
             "annonser": (nya_pa_sidan + [a for a in gamla if str(a["id"]) not in kanda])[:MAX_TRAFFAR_PER_SOKNING],
         }
@@ -576,7 +579,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
     for namn in list(traffar_lista):
         if namn not in aktuella:
             del traffar_lista[namn]
-    for falt in ("priser", "sokningar"):
+    for falt in ("priser", "sokningar", "marknad"):
         for namn in list(minne[falt]):
             if namn not in aktuella:
                 del minne[falt][namn]
