@@ -681,7 +681,8 @@
       "sweater",
       "kabelstickad"
     ],
-    "maxpris": 400,
+    "maxpris": 200,
+    "kappris": 75,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
