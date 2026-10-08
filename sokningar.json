@@ -212,7 +212,7 @@
   },
   {
     "namn": "Nudie jeans Regular Alf",
-    "sokord": "jeans",
+    "sokord": "regular alf",
     "min_betyg": 3.5,
     "kon": "herr",
     "kategorier": [
@@ -243,6 +243,9 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "regular alf"
+    ]
   }
 ]
