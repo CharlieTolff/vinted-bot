@@ -65,7 +65,7 @@ PRIS_DAGAR = 30           # vanligt pris räknas på priser från de senaste 30 
 MIN_PRISER = 8            # så många priser behövs innan vi säger vad det vanliga priset är
 SALJARE_DAGAR = 7         # så länge vi litar på en säljares omdömen innan vi kollar igen
 MAX_SALJARKOLLAR = 20     # säljare vi högst slår upp per alarm och runda
-MAX_ANNONSKOLLAR = 25     # annonser på hemsidan vi kollar per runda om de är sålda eller borttagna
+MAX_ANNONSKOLLAR = 12     # annonser på hemsidan vi kollar per runda om de är sålda eller borttagna
 STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
 STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
 MARKNAD_TIMMAR = 6        # så ofta vi kollar om vad liknande saker säljs för
@@ -554,7 +554,7 @@ def rensa_salda(vinted, traffar_lista, aktiva, nu_sek):
         except Exception as e:  # t.ex. Vinted bromsar, försök igen nästa runda
             logg("Kunde inte kolla annons %s: %s" % (id_, e))
             break
-        time.sleep(random.uniform(1, 2))
+        time.sleep(random.uniform(2, 3))
     for a in alla:
         if str(a["id"]) in kollade:
             a["kollad"] = nu_sek
