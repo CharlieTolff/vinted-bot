@@ -44,5 +44,45 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Ralph lauren skjorta under 150",
+    "sokord": "skjorta",
+    "maxpris": 150,
+    "saljpris": 399,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Ralph Lauren",
+    "storlekar": [
+      "S",
+      "M"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
