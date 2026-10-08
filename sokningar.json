@@ -84,5 +84,45 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Stickad cardigan",
+    "sokord": "stickad cardigan",
+    "maxpris": 350,
+    "saljpris": 599,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
