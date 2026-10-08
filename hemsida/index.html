@@ -9,16 +9,35 @@
 @media (prefers-color-scheme:dark){:root{--bg:#161615;--kort:#222220;--text:#efeee9;--svag:#a3a19b;--linje:#353431;--acc:#3fb8af;--kap:#ff6b52;--knapp:#efeee9;--knapptext:#161615}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
-header{padding:20px 16px 8px;max-width:1200px;margin:auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
-h1{font-size:22px;margin:0}
+.layout{display:flex;min-height:100vh}
+aside{width:220px;flex:none;background:var(--kort);border-right:1px solid var(--linje);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:14px 10px}
+.menytopp{display:flex;justify-content:space-between;align-items:center;padding:2px 6px 12px;font-size:16px}
+.nytt{width:100%;margin-bottom:10px}
+nav{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.menyval{display:flex;align-items:center;gap:6px;width:100%;text-align:left;border:0;background:none;border-radius:8px;padding:8px 8px;font-size:14px}
+.menyval:hover{background:var(--bg)}
+.menyval.vald{background:var(--bg);font-weight:600}
+.menyval .namn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.menyval.av .namn{color:var(--svag)}
+.menyval .antal{font-size:12px;color:var(--svag);opacity:1;margin:0}
+.menyfot{border-top:1px solid var(--linje);padding:10px 6px 0;display:flex;flex-direction:column;gap:6px}
+.menyfot input{width:100%}
+.ikon{border:0;background:none;font-size:20px;padding:2px 8px;line-height:1}
+.baramobil{display:none}
+#skugga{display:none}
+.topp{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0 16px}
+h1{font-size:21px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:760px){
+  aside{position:fixed;left:0;top:0;z-index:20;transform:translateX(-100%);transition:transform .2s}
+  body.menyoppen aside{transform:none;box-shadow:0 0 30px #0003}
+  body.menyoppen #skugga{display:block;position:fixed;inset:0;background:#0004;z-index:10}
+  .baramobil{display:inline-block}
+}
 .svag{color:var(--svag);font-size:13px}
-main{max-width:1200px;margin:auto;padding:0 16px 40px}
+main{flex:1;min-width:0;padding:0 16px 40px}
 button,.knapp{font:inherit;border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer}
 button.primar{background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
 button.fara{color:var(--kap)}
-.flikar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.flik{border-radius:999px}
-.flik.vald{background:var(--knapp);color:var(--knapptext);border-color:var(--knapp)}
 .antal{opacity:.7;margin-left:4px}
 .ny{background:var(--acc);color:#fff;border-radius:999px;padding:0 7px;font-size:12px;margin-left:6px}
 .rad{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:8px 0 16px}
@@ -30,9 +49,6 @@ button.fara{color:var(--kap)}
 .titel{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kapmark{position:absolute;top:8px;left:8px;background:var(--kap);color:#fff;font-weight:700;font-size:12px;border-radius:6px;padding:2px 7px}
 .nymark{position:absolute;top:8px;right:8px;background:var(--acc);color:#fff;font-size:12px;border-radius:6px;padding:2px 7px}
-.panel{background:var(--kort);border:1px solid var(--linje);border-radius:12px;padding:16px;margin:12px 0}
-.alarm{display:flex;justify-content:space-between;gap:12px;align-items:center;border-top:1px solid var(--linje);padding:10px 0;flex-wrap:wrap}
-.alarm:first-of-type{border-top:0}
 form{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--svag)}
 input,select{font:inherit;padding:7px 9px;border-radius:8px;border:1px solid var(--linje);background:var(--bg);color:var(--text)}
@@ -57,39 +73,41 @@ h3{font-size:15px;margin:10px 0 -4px;padding-top:12px;border-top:1px solid var(-
 .vinst{color:var(--acc);font-weight:600;font-size:13px}
 .vinst.minus{color:var(--kap)}
 .medd{padding:10px 12px;border-radius:8px;background:var(--bg);margin:10px 0}
-.tom{padding:40px 0;text-align:center;color:var(--svag)}
+.tom{grid-column:1/-1;padding:40px 0;text-align:center;color:var(--svag)}
 dialog{border:none;border-radius:12px;background:var(--kort);color:var(--text);max-width:720px;width:calc(100% - 32px)}
 dialog::backdrop{background:#0006}
 </style>
 </head>
 <body>
-<header>
-  <div><h1>Vinted-alarm</h1><div class="svag" id="uppdaterad"></div></div>
-  <div class="rad" style="margin:0">
-    <button id="visaAlarm">⚙️ Mina alarm</button>
-  </div>
-</header>
-<main>
-  <section id="alarmpanel" class="panel" hidden>
-    <div class="rad" style="justify-content:space-between;margin-top:0">
-      <strong>Mina alarm</strong>
-      <button class="primar" id="nyttAlarm">+ Nytt alarm</button>
-    </div>
-    <div id="alarmlista"></div>
-    <div id="nyckelruta" class="medd" hidden>
-      <p style="margin-top:0">För att spara alarm härifrån behöver sidan en GitHub-nyckel (görs bara en gång per dator). Klistra in den här:</p>
-      <div class="rad" style="margin:0"><input id="nyckel" type="password" placeholder="github_pat_..." style="flex:1;min-width:200px"><button class="primar" id="sparaNyckel">Spara nyckel</button></div>
+<div class="layout">
+<aside id="meny">
+  <div class="menytopp"><strong>Vinted-alarm</strong><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
+  <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
+  <nav id="alarmlista"></nav>
+  <div class="menyfot">
+    <div id="nyckelruta" hidden>
+      <div class="svag" style="margin-bottom:6px">För att spara alarm härifrån behövs en GitHub-nyckel (en gång per dator).</div>
+      <input id="nyckel" type="password" placeholder="github_pat_...">
+      <button class="primar" id="sparaNyckel" style="margin-top:6px;width:100%">Spara nyckel</button>
     </div>
     <div id="status" class="svag"></div>
-  </section>
-
-  <div class="flikar" id="flikar"></div>
-  <div class="rad">
-    <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text)"><input type="checkbox" id="baraKap"> Visa bara kap</label>
-    <span class="svag" id="vanligt"></span>
+    <div class="svag" id="uppdaterad"></div>
+  </div>
+</aside>
+<div id="skugga"></div>
+<main>
+  <div class="topp">
+    <button id="oppnaMeny" class="baramobil ikon" aria-label="Visa alarmen">☰</button>
+    <div style="min-width:0"><h1 id="rubrik">Vinted-alarm</h1><div class="svag" id="vanligt"></div></div>
+    <div class="rad" style="margin:0 0 0 auto">
+      <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text);font-size:14px"><input type="checkbox" id="baraKap"> Bara kap</label>
+      <button id="andra" hidden>Ändra</button>
+      <button class="fara" id="tabort" hidden>Ta bort</button>
+    </div>
   </div>
   <div class="galler" id="galler"></div>
 </main>
+</div>
 
 <dialog id="dialog">
   <h2 id="dialogtitel" style="margin-top:0">Nytt alarm</h2>
@@ -173,8 +191,8 @@ async function hamta(){
   traffar = t; alarm = s;
   const tider = Object.values(traffar).map(x => x.uppdaterad).filter(Boolean).sort();
   $("uppdaterad").textContent = tider.length ? "Senast sökt " + tid(tider.at(-1)) + " · uppdateras var 5:e minut" : "Inga sökningar har körts än";
-  if (!vald || !traffar[vald]) vald = Object.keys(traffar)[0] || null;
-  rita(); ritaAlarm();
+  if (!vald || !alarmNamn().includes(vald)) vald = alarmNamn()[0] || null;
+  rita();
 }
 
 async function hamtaAlarm(){
@@ -188,16 +206,21 @@ async function hamtaAlarm(){
   return fetch(FIL, {cache:"no-store"}).then(r => r.ok ? r.json() : []).catch(() => []);
 }
 
+function alarmNamn(){
+  // Alarmen i den ordning du lagt dem (eller träfflistorna om alarmen inte gick att läsa).
+  return alarm.length ? alarm.map(namnPa) : Object.keys(traffar);
+}
+const valtAlarmIndex = () => alarm.findIndex(a => namnPa(a) === vald);
+
 function rita(){
-  const namn = Object.keys(traffar);
-  $("flikar").innerHTML = namn.map(n => {
-    const lista = traffar[n].annonser || [];
-    const nya = lista.filter(a => a.hittad > (sett[n] || "")).length;
-    return `<button class="flik ${n === vald ? "vald" : ""}" data-n="${esc(n)}">${esc(n)}<span class="antal">${lista.length}</span>${nya && sett[n] ? `<span class="ny">${nya} nya</span>` : ""}</button>`;
-  }).join("");
-  document.querySelectorAll(".flik").forEach(b => b.onclick = () => { markeraSett(); vald = b.dataset.n; skriv("vald", vald); rita(); });
-  if (!vald) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter första sökningen.</div>`; $("vanligt").textContent = ""; return; }
+  ritaAlarm();
+  const i = valtAlarmIndex();
+  $("andra").hidden = $("tabort").hidden = i < 0;
+  $("rubrik").textContent = vald || "Vinted-alarm";
+  document.title = vald ? vald + " · Vinted-alarm" : "Vinted-alarm";
+  if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").textContent = ""; return; }
   const data = traffar[vald];
+  if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").textContent = ""; return; }
   $("vanligt").textContent = data.vanligt_pris ? `Vanligt pris just nu: ca ${Math.round(data.vanligt_pris)} kr` : "";
   let lista = data.annonser || [];
   if ($("baraKap").checked) lista = lista.filter(a => a.kap);
@@ -223,22 +246,24 @@ addEventListener("beforeunload", markeraSett);
 $("baraKap").onchange = rita;
 
 function ritaAlarm(){
-  $("alarmlista").innerHTML = alarm.length ? alarm.map((a, i) => `
-    <div class="alarm">
-      <div><strong>${esc(namnPa(a))}</strong>${a.aktiv === false ? ` <span class="svag">(avstängt)</span>` : ""}<br>
-      <span class="svag">${esc([[].concat(a.sokord || []).join(", ") || (a.url ? "Vinted-länk" : ""), a.kon ? KON[a.kon] : "", (a.lander || []).map(l => FLAGGA[l]).join(""), a.maxpris ? "max " + a.maxpris + " kr" : "", a.kappris ? "kap ≤ " + a.kappris + " kr" : "kap = halva priset", {kap:"Telegram: bara kap", alla:"Telegram: alla", av:"Telegram: av"}[a.telegram || "kap"]].filter(Boolean).join(" · "))}</span></div>
-      <div class="rad" style="margin:0"><button data-r="${i}">Ändra</button><button class="fara" data-t="${i}">Ta bort</button></div>
-    </div>`).join("") : `<p class="svag">Inga alarm än.</p>`;
-  document.querySelectorAll("[data-r]").forEach(b => b.onclick = () => oppna(+b.dataset.r));
-  document.querySelectorAll("[data-t]").forEach(b => b.onclick = async () => {
-    if (!confirm("Ta bort " + namnPa(alarm[+b.dataset.t]) + "?")) return;
-    const ny = alarm.filter((_, i) => i !== +b.dataset.t);
-    await spara(ny);
-  });
+  $("alarmlista").innerHTML = alarmNamn().map(n => {
+    const a = alarm.find(x => namnPa(x) === n), lista = (traffar[n] || {}).annonser || [];
+    const nya = sett[n] ? lista.filter(x => x.hittad > sett[n]).length : 0;
+    return `<button class="menyval ${n === vald ? "vald" : ""} ${a && a.aktiv === false ? "av" : ""}" data-n="${esc(n)}" title="${esc(n)}">
+      <span class="namn">${esc(n)}</span>${nya ? `<span class="ny">${nya}</span>` : `<span class="antal">${a && a.aktiv === false ? "av" : lista.length}</span>`}</button>`;
+  }).join("");
+  document.querySelectorAll(".menyval").forEach(b => b.onclick = () => { markeraSett(); vald = b.dataset.n; skriv("vald", vald); document.body.classList.remove("menyoppen"); rita(); scrollTo(0, 0); });
   $("nyckelruta").hidden = !!las("nyckel", "");
 }
 
-$("visaAlarm").onclick = () => { $("alarmpanel").hidden = !$("alarmpanel").hidden; };
+$("andra").onclick = () => { const i = valtAlarmIndex(); if (i >= 0) oppna(i); };
+$("tabort").onclick = async () => {
+  const i = valtAlarmIndex(); if (i < 0 || !confirm("Ta bort " + vald + "?")) return;
+  redigerar = -2;
+  await spara(alarm.filter((_, j) => j !== i));
+};
+$("oppnaMeny").onclick = () => document.body.classList.add("menyoppen");
+$("stangMeny").onclick = $("skugga").onclick = () => document.body.classList.remove("menyoppen");
 $("sparaNyckel").onclick = () => { skriv("nyckel", $("nyckel").value.trim()); $("nyckel").value = ""; ritaAlarm(); status("Nyckeln är sparad i den här webbläsaren."); };
 $("nyttAlarm").onclick = () => oppna(-1);
 $("avbryt").onclick = () => $("dialog").close();
@@ -344,12 +369,17 @@ async function gh(metod, vag, kropp){
 }
 
 async function spara(ny){
-  if (!las("nyckel", "")) { $("alarmpanel").hidden = false; ritaAlarm(); alert("Lägg först in din GitHub-nyckel under Mina alarm."); return false; }
+  if (!las("nyckel", "")) { ritaAlarm(); document.body.classList.add("menyoppen"); alert("Lägg först in din GitHub-nyckel längst ner i menyn."); return false; }
   status("Sparar…");
   try {
     const nu = await gh("GET", `/repos/${REPO}/contents/${FIL}`);
     await gh("PUT", `/repos/${REPO}/contents/${FIL}`, { message: "Ändra alarm från hemsidan", content: koda(JSON.stringify(ny, null, 2) + "\n"), sha: nu.sha });
-    alarm = ny; ritaAlarm();
+    alarm = ny;
+    if (redigerar >= 0 && ny[redigerar]) vald = namnPa(ny[redigerar]);  // ändrat alarm (namnet kan ha bytts)
+    else if (redigerar === -1 && ny.length) vald = namnPa(ny.at(-1));   // nytt alarm
+    if (!alarmNamn().includes(vald)) vald = alarmNamn()[0] || null;     // borttaget alarm
+    skriv("vald", vald);
+    rita();
     try { await gh("POST", `/repos/${REPO}/actions/workflows/bevaka.yml/dispatches`, { ref: "main" }); } catch (e) {}
     status("Sparat! Nya träffar visas här inom några minuter.");
     return true;
