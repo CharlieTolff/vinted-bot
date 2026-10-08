@@ -25,12 +25,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # sedda.json minns vilka annonser du redan fått, traffar.json är det hemsidan visar
+      # sedda.json minns vilka annonser du redan fått, traffar.json är det hemsidan visar,
+      # minne.json minns priser (för vanligt pris), säljare och märken
       - uses: actions/cache/restore@v4
         with:
           path: |
             sedda.json
             traffar.json
+            minne.json
           key: minne-${{ github.run_id }}
           restore-keys: minne-
 
@@ -46,6 +48,7 @@ jobs:
           path: |
             sedda.json
             traffar.json
+            minne.json
           key: minne-${{ github.run_id }}
 
       - name: Bygg hemsidan

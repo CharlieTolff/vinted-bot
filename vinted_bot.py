@@ -32,6 +32,7 @@ SOKNINGAR_FIL = os.path.join(MAPP, "sokningar.json")
 INSTALLNINGAR_FIL = os.path.join(MAPP, "installningar.json")
 SEDDA_FIL = os.path.join(MAPP, "sedda.json")
 TRAFFAR_FIL = os.path.join(MAPP, "traffar.json")  # det hemsidan visar
+MINNE_FIL = os.path.join(MAPP, "minne.json")  # priser, säljare och märken som boten minns
 
 VINTED = "https://www.vinted.se"
 WEBBLASARE = (
@@ -42,6 +43,23 @@ SKICK = ["Ny med prislapp", "Ny utan prislapp", "Mycket bra", "Bra", "Tillfredss
 MAX_SEDDA_PER_SOKNING = 3000
 MAX_TRAFFAR_PER_SOKNING = 200
 KAP_ANDEL = 0.5  # utan kap-pris: kap om priset är högst hälften av det vanliga priset
+
+# Vinteds egna nummer för skick, kategorier och länder (samma på alla Vinted-sidor).
+SKICK_ID = {"Ny med prislapp": 6, "Ny utan prislapp": 1, "Mycket bra": 2, "Bra": 3, "Tillfredsställande": 4}
+KATEGORI_ID = {
+    "herr": {"": 5, "klader": 2050, "skor": 1231, "accessoarer": 82},
+    "dam": {"": 1904, "klader": 4, "skor": 16, "vaskor": 19, "accessoarer": 1187},
+}
+# Länderna som säljer på svenska Vinted, alltså de du kan köpa från.
+LANDER = {"SE": "🇸🇪 Sverige", "DK": "🇩🇰 Danmark", "FI": "🇫🇮 Finland", "PL": "🇵🇱 Polen"}
+FLAGGA = {"SE": "🇸🇪", "DK": "🇩🇰", "FI": "🇫🇮", "PL": "🇵🇱"}
+
+PRIS_DAGAR = 30           # vanligt pris räknas på priser från de senaste 30 dagarna
+MIN_PRISER = 8            # så många priser behövs innan vi säger vad det vanliga priset är
+SALJARE_DAGAR = 7         # så länge vi litar på en säljares omdömen innan vi kollar igen
+MAX_SALJARKOLLAR = 20     # säljare vi högst slår upp per alarm och runda
+STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
+STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
 
 
 def logg(text):
@@ -90,12 +108,41 @@ class Vinted:
         with self.oppnare.open(req, timeout=30) as svar:
             return svar.read().decode("utf-8", errors="replace")
 
-    def sok(self, sokning):
+    def api(self, vag):
+        if not self.har_kakor:
+            self.hamta(VINTED + "/")
+            self.har_kakor = True
+        req = urllib.request.Request(VINTED + vag, headers={"User-Agent": WEBBLASARE, "Accept": "application/json"})
+        with self.oppnare.open(req, timeout=30) as svar:
+            return json.load(svar)
+
+    def marke_id(self, namn):
+        """Vinteds nummer för ett märke, t.ex. "Nudie" -> 95256 (Nudie Jeans)."""
+        marken = self.api("/api/v2/brands?" + urllib.parse.urlencode({"keyword": namn})).get("brands") or []
+        namn = namn.lower().strip()
+        for m in marken:
+            if m.get("title", "").lower() == namn:
+                return m["id"]
+        for m in marken:  # annars det största märket som innehåller ordet
+            if namn in m.get("title", "").lower():
+                return m["id"]
+        return None
+
+    def saljare(self, uid):
+        u = self.api("/api/v2/users/%s" % uid).get("user") or {}
+        return {
+            "land": u.get("country_code") or "",
+            "betyg": round(float(u.get("feedback_reputation") or 0) * 5, 1),
+            "omdomen": int(u.get("feedback_count") or 0),
+            "kollad": time.time(),
+        }
+
+    def sok(self, url):
         if not self.har_kakor:
             self.hamta(VINTED + "/")  # ger oss kakorna Vinted kräver
             self.har_kakor = True
         try:
-            sida = self.hamta(sok_url(sokning))
+            sida = self.hamta(url)
         except urllib.error.HTTPError as e:
             if e.code in (401, 403):
                 self.kakor.clear()  # hämta nya kakor nästa gång
@@ -104,19 +151,35 @@ class Vinted:
         return annonser_fran_sida(sida)
 
 
-def sok_url(s):
+def sok_url(s, marke_id=None):
     if s.get("url"):
         # En sök-länk kopierad direkt från Vinted. Vi ser till att nyaste visas först.
         delar = urllib.parse.urlsplit(s["url"])
         par = [(k, v) for k, v in urllib.parse.parse_qsl(delar.query) if k != "order"]
         par.append(("order", "newest_first"))
         return VINTED + delar.path + "?" + urllib.parse.urlencode(par)
-    par = {"search_text": s.get("sokord", ""), "order": "newest_first", "currency": "SEK"}
+    par = [("search_text", s.get("sokord", "")), ("order", "newest_first"), ("currency", "SEK")]
     if s.get("maxpris"):
-        par["price_to"] = s["maxpris"]
+        par.append(("price_to", s["maxpris"]))
     if s.get("minpris"):
-        par["price_from"] = s["minpris"]
+        par.append(("price_from", s["minpris"]))
+    # Vinteds egna filter, så att sökningen bara ger rätt sorts saker från början.
+    for k in kategori_ids(s):
+        par.append(("catalog_ids[]", k))
+    if marke_id:
+        par.append(("brand_ids[]", marke_id))
+    for skick in s.get("skick") or []:
+        if skick in SKICK_ID:
+            par.append(("status_ids[]", SKICK_ID[skick]))
     return VINTED + "/catalog?" + urllib.parse.urlencode(par)
+
+
+def kategori_ids(s):
+    kon = KATEGORI_ID.get(s.get("kon") or "")
+    if not kon:
+        return []
+    valda = [kon[k] for k in s.get("kategorier") or [] if k in kon and k]
+    return valda or [kon[""]]
 
 
 def annonser_fran_sida(sida):
@@ -146,6 +209,8 @@ def forenkla(a):
     bild = bild or a.get("thumbnailUrl") or ""
     total = (a.get("totalItemPrice") or {}).get("amount")
     return {
+        "saljare_id": (a.get("user") or {}).get("id"),
+        "gillas": a.get("favouriteCount") or 0,
         "id": a["id"],
         "titel": a.get("title", ""),
         "marke": box.get("firstLine") or "",
@@ -195,9 +260,15 @@ def skicka_notis(inst, annons, sokning_namn):
     ]
     if annons.get("kap"):
         rader.insert(0, "🔥 <b>KAP!</b>")
+    if annons.get("vinst") is not None:
+        rader.append("📈 Vinst ca <b>%+.0f kr</b> om du säljer för %.0f kr" % (annons["vinst"], annons["saljpris"]))
     info = " · ".join(x for x in [annons["marke"], annons["storlek"], annons["skick"]] if x)
     if info:
         rader.append(html.escape(info))
+    saljare = annons.get("saljare")
+    if saljare:
+        om = "⭐ %.1f (%d omdömen)" % (saljare["betyg"], saljare["omdomen"]) if saljare["omdomen"] else "Inga omdömen än"
+        rader.append(" ".join(x for x in [FLAGGA.get(saljare["land"], ""), om] if x))
     rader.append('🔗 <a href="%s">Öppna på Vinted</a>' % annons["lank"])
     rader.append("<i>Sökning: %s</i>" % html.escape(sokning_namn))
     text = "\n".join(rader)
@@ -247,35 +318,126 @@ def ar_kap(annons, s, vanligt_pris):
     return bool(vanligt_pris) and annons["pris"] <= vanligt_pris * KAP_ANDEL
 
 
+def vinst(annons, s):
+    """Ungefärlig vinst om du köper (pris + avgift + frakt) och säljer för ditt säljpris."""
+    if not s.get("saljpris"):
+        return None
+    frakt = s.get("frakt", STANDARD_FRAKT) or 0
+    kostnad = (annons["pris_totalt"] or annons["pris"]) + float(frakt)
+    return float(s["saljpris"]) - kostnad
+
+
+def vanligt_pris(prislista, nu):
+    """Medianpriset för alarmets träffar de senaste 30 dagarna (minst 8 olika annonser)."""
+    grans = nu - PRIS_DAGAR * 86400
+    priser = [p for p, t in prislista.values() if t >= grans]
+    return median(priser) if len(priser) >= MIN_PRISER else None
+
+
+def minns_priser(prislista, traffar, nu):
+    for a in traffar:
+        prislista.setdefault(str(a["id"]), [a["pris"], nu])
+    grans = nu - PRIS_DAGAR * 86400
+    for k in [k for k, (_, t) in prislista.items() if t < grans]:
+        del prislista[k]
+
+
+def saljare_ok(info, s):
+    """Godkänd säljare: rätt land och inte dåliga omdömen. Säljare utan omdömen är okej."""
+    lander = s.get("lander") or []
+    if lander and info["land"] not in lander:
+        return False
+    lagst = s.get("min_betyg", STANDARD_BETYG)
+    if lagst and info["omdomen"] > 0 and info["betyg"] < float(lagst):
+        return False
+    return True
+
+
+def kolla_saljare(vinted, annonser, s, saljarminne):
+    """Slår upp säljarna (land och omdömen). Ger tillbaka (godkända, ej_kollade)."""
+    godkanda, ej_kollade, uppslag = [], [], 0
+    for a in annonser:
+        uid = str(a.get("saljare_id") or "")
+        info = saljarminne.get(uid)
+        if not uid:
+            godkanda.append(a)
+            continue
+        if not info or time.time() - info["kollad"] > SALJARE_DAGAR * 86400:
+            if uppslag >= MAX_SALJARKOLLAR:
+                ej_kollade.append(a)
+                continue
+            try:
+                uppslag += 1
+                info = vinted.saljare(uid)
+                saljarminne[uid] = info
+                time.sleep(random.uniform(0.6, 1.2))
+            except Exception as e:
+                logg("Kunde inte kolla säljare %s: %s" % (uid, e))
+                ej_kollade.append(a)
+                uppslag = MAX_SALJARKOLLAR  # Vinted bromsar, försök igen nästa runda
+                continue
+        a["saljare"] = {k: info[k] for k in ("land", "betyg", "omdomen")}
+        if saljare_ok(info, s):
+            godkanda.append(a)
+    return godkanda, ej_kollade
+
+
 def ska_till_telegram(annons, s):
     lage = s.get("telegram", "kap")  # "kap", "alla" eller "av"
     return lage == "alla" or (lage == "kap" and annons["kap"])
 
 
-def en_runda(vinted, inst, sokningar, sedda, traffar_lista, test=False):
+def hitta_marke_id(vinted, s, minne):
+    """Märket i alarmet som Vinteds märkesnummer (sparas så vi bara frågar en gång)."""
+    if not s.get("marke") or s.get("url"):
+        return None
+    nyckel = s["marke"].lower().strip()
+    if nyckel not in minne["marken"]:
+        try:
+            minne["marken"][nyckel] = vinted.marke_id(s["marke"])
+        except Exception as e:
+            logg("Kunde inte slå upp märket '%s': %s" % (s["marke"], e))
+            return None
+    return minne["marken"][nyckel]
+
+
+def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
     nu = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    nu_sek = time.time()
     for s in sokningar:
         if s.get("aktiv") is False:
             continue
         namn = s.get("namn") or s.get("sokord") or "sökning"
+        url = sok_url(s, hitta_marke_id(vinted, s, minne))
         try:
-            annonser = vinted.sok(s)
+            annonser = vinted.sok(url)
         except Exception as e:  # nätverksfel, Vinted blockerar en stund, osv.
             logg("Fel vid sökning '%s': %s" % (namn, e))
             continue
         traffar = [a for a in annonser if matchar(a, s)]
-        # Vanligt pris = medianpriset bland träffarna (minst 5 st). Visas också på hemsidan.
-        priser = [a["pris"] for a in traffar]
-        vanligt = median(priser) if len(priser) >= 5 else None
         tidigare = sedda.get(namn)
-        nya = [a for a in traffar if tidigare is not None and str(a["id"]) not in tidigare]
-        if tidigare is None:  # första gången: visa nuvarande träffar på hemsidan, men ingen notis
-            nya_pa_sidan = traffar
+        # Ändrat alarm (t.ex. annan kategori) räknas som nytt, så du inte får en massa notiser.
+        andrat = minne["sokningar"].get(namn) not in (None, url)
+        forsta = tidigare is None or andrat
+        minne["sokningar"][namn] = url
+        # Vanligt pris = medianpriset av alla träffar de senaste 30 dagarna. Visas också på hemsidan.
+        if andrat:
+            minne["priser"][namn] = {}
+        prislista = minne["priser"].setdefault(namn, {})
+        minns_priser(prislista, traffar, nu_sek)
+        vanligt = vanligt_pris(prislista, nu_sek)
+        okanda = [a for a in traffar if forsta or str(a["id"]) not in tidigare]
+        # Kolla säljarnas land och omdömen. De vi inte hann kolla försöker vi med nästa runda.
+        godkanda, ej_kollade = kolla_saljare(vinted, okanda, s, minne["saljare"])
+        if forsta:  # första gången: visa nuvarande träffar på hemsidan, men ingen notis
+            nya, nya_pa_sidan, ej_kollade = [], godkanda, []
             logg("'%s': första körningen, %d nuvarande träffar sparas som redan sedda." % (namn, len(traffar)))
         else:
-            nya_pa_sidan = nya
+            nya = nya_pa_sidan = godkanda
         for a in traffar:
             a["kap"] = ar_kap(a, s, vanligt)
+            a["vinst"] = vinst(a, s)
+            a["saljpris"] = s.get("saljpris")
             a["hittad"] = nu
 
         if test:
@@ -298,7 +460,8 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, test=False):
             "annonser": (nya_pa_sidan + [a for a in gamla if str(a["id"]) not in kanda])[:MAX_TRAFFAR_PER_SOKNING],
         }
 
-        ids = [str(a["id"]) for a in annonser] + list(tidigare or [])
+        vanta = {str(a["id"]) for a in ej_kollade}
+        ids = [str(a["id"]) for a in annonser if str(a["id"]) not in vanta] + list(tidigare or [])
         sedda[namn] = list(dict.fromkeys(ids))[:MAX_SEDDA_PER_SOKNING]
         time.sleep(random.uniform(2, 5))  # lite paus mellan sökningar
     # Släng hemsidans listor för alarm som tagits bort.
@@ -306,8 +469,15 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, test=False):
     for namn in list(traffar_lista):
         if namn not in aktuella:
             del traffar_lista[namn]
+    for falt in ("priser", "sokningar"):
+        for namn in list(minne[falt]):
+            if namn not in aktuella:
+                del minne[falt][namn]
+    grans = nu_sek - SALJARE_DAGAR * 86400
+    minne["saljare"] = {k: v for k, v in minne["saljare"].items() if v["kollad"] >= grans}
     spara_json(SEDDA_FIL, sedda)
     spara_json(TRAFFAR_FIL, traffar_lista)
+    spara_json(MINNE_FIL, minne)
 
 
 def main():
@@ -326,9 +496,12 @@ def main():
     vinted = Vinted()
     sedda = las_json(SEDDA_FIL, {})
     traffar_lista = las_json(TRAFFAR_FIL, {})
+    minne = las_json(MINNE_FIL, {})
+    for k in ("priser", "saljare", "marken", "sokningar"):
+        minne.setdefault(k, {})
     while True:
         sokningar = las_json(SOKNINGAR_FIL, [])  # läses om varje runda, så ändringar slår igenom direkt
-        en_runda(vinted, inst, sokningar, sedda, traffar_lista, test=arg.test)
+        en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=arg.test)
         if arg.en_gang or arg.test:
             break
         vanta = inst["intervall_sekunder"] + random.uniform(-20, 20)
