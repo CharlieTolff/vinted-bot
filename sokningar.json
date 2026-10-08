@@ -633,6 +633,14 @@
       "FI",
       "PL"
     ],
+    "marke": [
+      "Moncler",
+      "Canada Goose",
+      "The North Face",
+      "Arc'teryx",
+      "Pyrenex",
+      "Woolrich"
+    ],
     "storlekar": [
       "S",
       "M",
@@ -643,6 +651,16 @@
       "Ny utan prislapp",
       "Mycket bra",
       "Bra"
+    ],
+    "farger": [
+      "Svart",
+      "Grå",
+      "Vit",
+      "Crèmefärgad",
+      "Röd",
+      "Vinröd",
+      "Blå",
+      "Marinblå"
     ],
     "uteslut": [
       "fake",
@@ -655,15 +673,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Moncler",
-      "Canada Goose",
-      "The North Face",
-      "Arc'teryx",
-      "Pyrenex",
-      "Woolrich"
-    ]
+    "aktiv": true
   },
   {
     "namn": "Toppmärken stickat",
