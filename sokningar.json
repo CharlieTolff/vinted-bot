@@ -209,5 +209,40 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Nudie jeans Regular Alf",
+    "sokord": "jeans",
+    "min_betyg": 3.5,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Nudie Jeans",
+    "storlekar": [
+      "W30",
+      "W31",
+      "W32",
+      "W33"
+    ],
+    "skick": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
