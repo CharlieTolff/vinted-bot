@@ -86,11 +86,10 @@
     "aktiv": true
   },
   {
-    "namn": "Stickad cardigan",
-    "sokord": "stickad cardigan",
+    "namn": "Stickad blazer",
+    "sokord": "stickad blazer",
     "maxpris": 250,
     "kappris": 40,
-    "saljpris": 400,
     "min_betyg": 3.5,
     "kon": "herr",
     "kategorier": [
