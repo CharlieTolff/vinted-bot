@@ -267,6 +267,10 @@ def matchar(annons, s):
     titel = annons["titel"].lower()
     if any(ord_.lower() in titel for ord_ in s.get("uteslut", [])):
         return False
+    # "Måste stå i titeln": minst en av fraserna, med alla dess ord (t.ex. "regular alf").
+    maste = lista(s.get("maste"))
+    if maste and not any(all(o in titel for o in fras.lower().split()) for fras in maste):
+        return False
     return True
 
 

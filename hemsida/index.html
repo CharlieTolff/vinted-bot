@@ -117,6 +117,8 @@ dialog::backdrop{background:#0006}
     <h3 class="bred">Vad letar du efter?</h3>
     <div class="bred"><div class="falt">Sökord</div><div class="taggar" id="t-sokord"></div>
       <div class="hjalp">Ett av orden i sökningen räcker för att larma dig. Skriv och tryck Enter.</div></div>
+    <div class="bred"><div class="falt">Måste stå i titeln</div><div class="taggar" id="t-maste"></div>
+      <div class="hjalp">För en viss modell, t.ex. "regular alf". Alla ord måste finnas i annonsens titel. Har du flera räcker en av dem.</div></div>
     <div class="bred"><div class="falt">Märken</div><div class="taggar" id="t-marke"></div>
       <div class="hjalp">Lägg till flera för att bevaka dem samtidigt. Tomt = alla märken.</div></div>
     <div class="bred"><div class="falt">Ta bort annonser med de här orden</div><div class="taggar" id="t-uteslut"></div>
@@ -166,6 +168,7 @@ const FORSLAG = {
   marke: ["Ralph Lauren","Nudie Jeans","Stone Island","Carhartt","Levi's","Acne Studios","Our Legacy","Arc'teryx","Moncler","Louis Vuitton"],
   uteslut: ["fake","replica","inspired","defekt","trasig","fläck","barn","dam"],
   storlek: [],
+  maste: [],
 };
 const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
 const ago = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
@@ -301,6 +304,7 @@ function ritaTaggar(namn){
 }
 taggfalt("sokord", "t.ex. nudie jeans");
 taggfalt("marke", "t.ex. Ralph Lauren");
+taggfalt("maste", "t.ex. regular alf");
 taggfalt("uteslut", "t.ex. t-shirt");
 taggfalt("storlek", "t.ex. 48 eller W30/L32");
 const somLista = v => Array.isArray(v) ? v : (v ? [v] : []);
@@ -321,9 +325,9 @@ function oppna(i){
   for (const k of ["namn","url","maxpris","minpris","kappris","frakt"]) f[k].value = a[k] ?? "";
   const storlekar = a.storlekar || [];
   $("storleksgrupper").querySelectorAll("input").forEach(c => c.checked = storlekar.some(v => v.toLowerCase() === c.value.toLowerCase()));
-  taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice();
+  taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice(); taggar.maste = (a.maste || []).slice();
   taggar.storlek = storlekar.filter(v => !ALLA_STORLEKAR.some(x => x.toLowerCase() === v.toLowerCase()));
-  ["sokord","marke","uteslut","storlek"].forEach(ritaTaggar);
+  ["sokord","marke","uteslut","storlek","maste"].forEach(ritaTaggar);
   f.min_betyg.value = String(a.min_betyg ?? 4.5);
   $("konrutor").querySelectorAll("input").forEach(c => c.checked = c.value === (a.kon || ""));
   ritaKategorier(a.kategorier || []);
@@ -350,6 +354,7 @@ $("formular").onsubmit = async e => {
   a.storlekar = [...[...$("storleksgrupper").querySelectorAll("input:checked")].map(c => c.value), ...taggar.storlek];
   a.skick = [...$("skickrutor").querySelectorAll("input:checked")].map(c => c.value);
   a.uteslut = taggar.uteslut.slice();
+  if (taggar.maste.length) a.maste = taggar.maste.slice();
   a.telegram = f.telegram.value;
   a.aktiv = f.aktiv.checked;
   const ny = alarm.slice();
