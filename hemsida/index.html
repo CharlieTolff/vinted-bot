@@ -72,9 +72,6 @@ h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;font-weight:700;m
   main{padding:0 16px 40px}
   .topp{padding-top:16px}
   h1{font-size:23px}
-  .galler{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .annons .info{padding:9px 10px 11px}
-  .pris{font-size:17px}
 }
 
 /* Knappar */
@@ -139,6 +136,11 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 .forslag{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
 .forslag button{border-radius:999px;padding:3px 11px;font-size:12.5px;color:var(--svag);background:transparent}
 .medd{padding:10px 12px;border-radius:10px;background:var(--kort2);margin:10px 0}
+@media (max-width:760px){
+  .galler{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .annons .info{padding:9px 10px 11px}
+  .pris{font-size:17px}
+}
 </style>
 </head>
 <body>
