@@ -452,5 +452,268 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Toppmärken overshirt",
+    "sokord": [
+      "overshirt",
+      "shirt jacket"
+    ],
+    "maxpris": 400,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Stone Island",
+      "C.P. Company",
+      "Our Legacy",
+      "Norse Projects",
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Barbour"
+    ]
+  },
+  {
+    "namn": "Toppmärken fieldjacket",
+    "sokord": [
+      "field jacket",
+      "fältjacka",
+      "bedale",
+      "beaufort"
+    ],
+    "maxpris": 800,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Barbour",
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "RRL",
+      "Belstaff",
+      "Filson",
+      "Engineered Garments",
+      "Beams Plus"
+    ]
+  },
+  {
+    "namn": "Toppmärken blazer",
+    "sokord": [
+      "blazer",
+      "kavaj"
+    ],
+    "maxpris": 600,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Brioni",
+      "Ermenegildo Zegna",
+      "Boglioli",
+      "Lardini",
+      "Tiger of Sweden",
+      "Oscar Jacobson",
+      "Suitsupply"
+    ]
+  },
+  {
+    "namn": "Toppmärken dunjacka",
+    "sokord": [
+      "dunjacka",
+      "down jacket",
+      "puffer"
+    ],
+    "maxpris": 1500,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Moncler",
+      "Canada Goose",
+      "The North Face",
+      "Arc'teryx",
+      "Pyrenex",
+      "Woolrich"
+    ]
+  },
+  {
+    "namn": "Toppmärken stickat",
+    "sokord": [
+      "stickad tröja",
+      "sweater",
+      "kabelstickad"
+    ],
+    "maxpris": 400,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Ralph Lauren",
+      "Polo Ralph Lauren",
+      "Loro Piana",
+      "Brunello Cucinelli",
+      "John Smedley",
+      "Gant",
+      "Morris",
+      "Stenströms",
+      "Oscar Jacobson"
+    ]
   }
 ]
