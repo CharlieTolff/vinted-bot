@@ -1,0 +1,3593 @@
+{
+ "_start": [
+  1791640616.964829,
+  10317517012
+ ],
+ "J.Lindeberg": {
+  "tradera": {
+   "antal_salda": 476,
+   "p10": 50,
+   "p25": 100,
+   "median": 193,
+   "p75": 300,
+   "p90": 500,
+   "datum": [
+    "2026-05-10",
+    "2026-10-09"
+   ],
+   "osalda_i_urval": 160,
+   "osalda_median": 200,
+   "exempel": [
+    [
+     3100,
+     "J.Lindeberg Golfbag",
+     "2026-06-23"
+    ],
+    [
+     600,
+     "J.Lindeberg grön tröja, storlek M",
+     "2026-08-23"
+    ],
+    [
+     420,
+     "*NYA* J Lindeberg golfbyxor 32/32",
+     "2026-07-14"
+    ],
+    [
+     349,
+     "Ny Sierra Pleated Golf Skirt, XS J Lindeberg",
+     "2026-07-26"
+    ],
+    [
+     300,
+     "J.Lindeberg grå tröja",
+     "2026-08-10"
+    ],
+    [
+     250,
+     "J.Lindeberg tröja stl L",
+     "2026-10-09"
+    ],
+    [
+     220,
+     "J.Lindeberg pikétröja",
+     "2026-07-06"
+    ],
+    [
+     200,
+     "J. Lindeberg mörkblå jacka, storlek XXL",
+     "2026-06-18"
+    ],
+    [
+     179,
+     "J.Lindeberg w34",
+     "2026-09-10"
+    ],
+    [
+     150,
+     "J.Lindeberg svart jacka, storlek S",
+     "2026-06-28"
+    ],
+    [
+     131,
+     "Ecco Sandaler Bruna och J Lindeberg keps",
+     "2026-07-26"
+    ],
+    [
+     104,
+     "J. Lindeberg mörkröd/lila pikétröja, storlek L",
+     "2026-07-26"
+    ],
+    [
+     89,
+     "Chinos J. Lindeberg",
+     "2026-09-08"
+    ],
+    [
+     70,
+     "J.Lindeberg svart tröja, storlek L",
+     "2026-10-07"
+    ],
+    [
+     50,
+     "J.Lindeberg vit shorts",
+     "2026-07-30"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10293857167,
+   "id_max": 10317513036,
+   "nya_pris_p10": 99,
+   "nya_pris_p25": 150,
+   "nya_pris_median": 295,
+   "nya_lista": [
+    [
+     50.0,
+     "Vit skjorta J.Lindeberg",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     68.24,
+     "Jeans",
+     "Bra",
+     "Onesize"
+    ],
+    [
+     75.0,
+     "T-shirt från J Lindeberg",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     77.0,
+     "J.Lindeberg linneskjorta herr",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     80.0,
+     "J.Lindeberg skjorta",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     81.38,
+     "J3700 lindeberg lekka kurtka rozpinana b",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     85.0,
+     "J.Lindeberg piké",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     85.0,
+     "Kortärmad piké - J.Lindeberg",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     90.0,
+     "Jeansskjorta J.Lindeberg",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     99.0,
+     "J Lindeberg piké",
+     "Tillfredsställande",
+     "L"
+    ],
+    [
+     100.0,
+     "Tröja",
+     "Bra",
+     "L"
+    ],
+    [
+     100.0,
+     "Vringad tröja J.Lindeberg",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     100.76,
+     "Sweter J. Linderberg M",
+     "Bra",
+     "M"
+    ],
+    [
+     110.0,
+     "Randig skjorta",
+     "Bra",
+     "S"
+    ],
+    [
+     113.34,
+     "Chinos J.Lindeberg, 48",
+     "Bra",
+     "M"
+    ],
+    [
+     113.34,
+     "J. Lindeberg hoodie, M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     113.34,
+     "J.Lindeberg poolopaita",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     120.0,
+     "Klasssisk skjorta från J.Lindeberg - Sli",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     130.0,
+     "Blå pikétröja från J.Lindeberg",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     140.0,
+     "Linneskjorta",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     145.0,
+     "J.Lindeberg Tröja",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     149.0,
+     "J Lindeberg piké",
+     "Bra",
+     "L"
+    ],
+    [
+     149.0,
+     "J Lindeberg piké",
+     "Bra",
+     "M"
+    ],
+    [
+     149.0,
+     "J Lindeberg piké",
+     "Bra",
+     "M"
+    ],
+    [
+     150.0,
+     "J.Lindeberg skjorta 40 slim",
+     "Ny utan prislapp",
+     "40 cm"
+    ]
+   ]
+  }
+ },
+ "Massimo Dutti herr": {
+  "tradera": {
+   "antal_salda": 15,
+   "p10": 52,
+   "p25": 79,
+   "median": 100,
+   "p75": 249,
+   "p90": 299,
+   "datum": [
+    "2026-06-14",
+    "2026-10-09"
+   ],
+   "osalda_i_urval": 4,
+   "osalda_median": 400,
+   "exempel": [
+    [
+     350,
+     "Massimo Dutti Herr Kostymbyxor - Super 130’s Wool ",
+     "2026-07-28"
+    ],
+    [
+     299,
+     "Massimo Dutti grå skjorta herr L – Finest Fabric m",
+     "2026-09-16"
+    ],
+    [
+     249,
+     "Massimo Dutti mörk beige ull tröja strl M herr zip",
+     "2026-08-29"
+    ],
+    [
+     249,
+     "Massimo Dutti ull pikétröja strl M herr mörkgrön k",
+     "2026-08-23"
+    ],
+    [
+     200,
+     "Massimo Dutti ull & kashmir V-ringad tröja – XL",
+     "2026-09-30"
+    ],
+    [
+     199,
+     "Klädpaket strl M skjortor tröjor piké Massimo Dutt",
+     "2026-09-24"
+    ],
+    [
+     150,
+     "Massimo Dutti - Super 130’s Wool",
+     "2026-09-21"
+    ],
+    [
+     100,
+     "Massimo Dutti Kostym - Mörkblå - Strl 46 Nyskick 1",
+     "2026-08-14"
+    ],
+    [
+     100,
+     "Massimo Dutti gråa byxor, storlek 38",
+     "2026-06-20"
+    ],
+    [
+     99,
+     "Massimo Dutti grön kofta strl S herr finstickad tr",
+     "2026-10-06"
+    ],
+    [
+     92,
+     "1 KR MASSIMO DUTTI PIKÉTRÖJA I BOMULL ST: MEDIUM /",
+     "2026-06-17"
+    ],
+    [
+     79,
+     "Massimo Dutti bomulls tröja strl M herr benvit/ sv",
+     "2026-10-04"
+    ],
+    [
+     69,
+     "Massimo Dutti skjorta herr S – beige – stilren & p",
+     "2026-07-10"
+    ],
+    [
+     52,
+     "Massimo Dutti Kostymskjorta Vit Herr Stl.43",
+     "2026-06-14"
+    ],
+    [
+     50,
+     "Massimo Dutti lila skjorta, storlek 42 (skjortstor",
+     "2026-10-09"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10313839072,
+   "id_max": 10317525838,
+   "nya_pris_p10": 65,
+   "nya_pris_p25": 103,
+   "nya_pris_median": 227,
+   "nya_lista": [
+    [
+     23.25,
+     "Massimo Dutti koszulka polo z długim ręk",
+     "Bra",
+     "L"
+    ],
+    [
+     31.0,
+     "Spodnie męskie rozmiar 34",
+     "Bra",
+     "50 | W34"
+    ],
+    [
+     38.75,
+     "Koszula",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     38.75,
+     "Massimo Dutti męska koszulka polo granat",
+     "Bra",
+     "L"
+    ],
+    [
+     45.49,
+     "Slim fit massimo Dutti MEN pants",
+     "Mycket bra",
+     "42 | W26"
+    ],
+    [
+     51.67,
+     "Koszula męska Massimo Dutti",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     51.67,
+     "Sweter Massimo Dutti",
+     "Bra",
+     "M"
+    ],
+    [
+     56.84,
+     "Jeansy Massimo Dutti r. 27 s niebieskie ",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     60.66,
+     "Massimo Dutti shirt",
+     "Mycket bra",
+     "38 cm"
+    ],
+    [
+     64.59,
+     "Szary sweter Massimo Dutti Rozmiar L",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     68.24,
+     "Massimo Dutti skjorte i hør",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     72.34,
+     "Massimo Dutti elegancka bluzka polo graf",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     75.0,
+     "Massimo Dutti trousers",
+     "Bra",
+     "42 | W26"
+    ],
+    [
+     75.82,
+     "Very good condition massing dutti blue",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     76.0,
+     "Massimo Dutti Herr Piké | Size XL",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     77.5,
+     "Koszula męska Massimo Dutti paski fiolet",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     77.5,
+     "Spodnie len bawełna Massimo Dutti",
+     "Mycket bra",
+     "48 | W32"
+    ],
+    [
+     77.5,
+     "Sweterkowa bluza Massimo Dutti rozmiar M",
+     "Bra",
+     "M"
+    ],
+    [
+     77.5,
+     "Tshirt Massimo Dutti",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     90.42,
+     "Czarna marynarka",
+     "Mycket bra",
+     "46"
+    ],
+    [
+     90.42,
+     "Massimo Dutti jeansy damskie slim fit 36",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     90.68,
+     "Massimo dutti neule",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     100.0,
+     "Herrkavaj",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     100.76,
+     "Spodnie rozm m stan idelny",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     103.34,
+     "Massimo Dutti 44 koszula męska niebieska",
+     "Mycket bra",
+     "XL"
+    ]
+   ]
+  }
+ },
+ "A.P.C.": {
+  "tradera": {
+   "antal_salda": 66,
+   "p10": 99,
+   "p25": 150,
+   "median": 245,
+   "p75": 399,
+   "p90": 650,
+   "datum": [
+    "2026-06-14",
+    "2026-10-10"
+   ],
+   "osalda_i_urval": 101,
+   "osalda_median": 450,
+   "exempel": [
+    [
+     1250,
+     "A.P.C. KID CUDI röd jacka, storlek XS",
+     "2026-08-13"
+    ],
+    [
+     825,
+     "NY! A.P.C. Ninon Totebag",
+     "2026-09-17"
+    ],
+    [
+     600,
+     "A.P.C. mörkblå denim jeans, storlek 31",
+     "2026-09-28"
+    ],
+    [
+     450,
+     "A.P.C denim jeans 36 indigo",
+     "2026-08-30"
+    ],
+    [
+     399,
+     "A.P.C. mörkblå rock, storlek M",
+     "2026-09-19"
+    ],
+    [
+     350,
+     "A.P.C. mörkbrun byxor, storlek 48 MANCHESTER LIMIT",
+     "2026-07-21"
+    ],
+    [
+     325,
+     "A.P.C.",
+     "2026-07-29"
+    ],
+    [
+     270,
+     "A.P.C denim jeans 36 indigo",
+     "2026-09-15"
+    ],
+    [
+     245,
+     "A.P.C. grå skjorta, storlek L",
+     "2026-06-25"
+    ],
+    [
+     215,
+     "A.P.C. Derbyskor i svart, storlek 45",
+     "2026-06-16"
+    ],
+    [
+     200,
+     "A.P.C. blå jeans, storlek 36",
+     "2026-07-25"
+    ],
+    [
+     180,
+     "A.P.C. grå t-shirt, storlek L",
+     "2026-07-01"
+    ],
+    [
+     170,
+     "A.P.C. mörkblå tröja, storlek S",
+     "2026-09-16"
+    ],
+    [
+     146,
+     "A.P.C. svart t-shirt, storlek L NYSKICK!",
+     "2026-10-03"
+    ],
+    [
+     110,
+     "A.P.C. skjorta strl L",
+     "2026-10-10"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10197782052,
+   "id_max": 10317387925,
+   "nya_pris_p10": 207,
+   "nya_pris_p25": 318,
+   "nya_pris_median": 523,
+   "nya_lista": [
+    [
+     129.17,
+     "Czarna męska bluza klasyczna A.P.C. Rue ",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     134.96,
+     "APC T-shirt Lyseblå",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     152.43,
+     "Szare proste spodnie chino A.P.C. low st",
+     "Mycket bra",
+     "44 | W28"
+    ],
+    [
+     154.98,
+     "Spodnie jeansy A.P.C. Petit New Standard",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     193.76,
+     "apc crewneck archive avant garde crewnec",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     200.0,
+     "Tröja grön APC",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     204.1,
+     "A.P.C Rue Madame Paris khaki oliwkowy cr",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     204.1,
+     "Bluza dzianinowa A.C.P. męska M wełniana",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     205.0,
+     "A P C jeans",
+     "Mycket bra",
+     "48 | W31"
+    ],
+    [
+     206.68,
+     "A.P.C Paris shirt koszula flanelowa og v",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     218.0,
+     "T-shirt från A.P.C med digital camo",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     248.01,
+     "A.P.C jeans męskie, rozmiar 29",
+     "Mycket bra",
+     "46 | W29"
+    ],
+    [
+     253.18,
+     "A.P.C spodnie z zakładkami",
+     "Mycket bra",
+     "50 | W34"
+    ],
+    [
+     255.77,
+     "Miętowa nocy cropped bluza crewneck APC ",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     255.77,
+     "Spodnie męskie dżinsowe jeansy A.P.C. Pe",
+     "Bra",
+     "46 | W30"
+    ],
+    [
+     258.35,
+     "A.P.C. Navy Blue Long Sleeve",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     258.35,
+     "Oryginalna sztruksowa koszula APC stan b",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     272.95,
+     "Sweatshirt fra APC",
+     "Bra",
+     "L"
+    ],
+    [
+     303.28,
+     "A.P.C Flannel Shirt",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     303.28,
+     "A.P.C Flannel shirt",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     305.0,
+     "A.P.C",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     307.43,
+     "Koszula męska firmy A.P.C, rozmiar M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     310.02,
+     "APC fire lava pattern sweatshirt jumper ",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     310.02,
+     "Apc 31 blue denim jeans japan selvedge",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     318.45,
+     "APC Petit New Standard 29",
+     "Mycket bra",
+     "46 | W29"
+    ]
+   ]
+  }
+ },
+ "Dondup": {
+  "tradera": {
+   "antal_salda": 69,
+   "p10": 79,
+   "p25": 149,
+   "median": 270,
+   "p75": 430,
+   "p90": 608,
+   "datum": [
+    "2026-06-13",
+    "2026-10-10"
+   ],
+   "osalda_i_urval": 80,
+   "osalda_median": 399,
+   "exempel": [
+    [
+     13500,
+     "Dondup Jeans Bulk",
+     "2026-08-10"
+    ],
+    [
+     650,
+     "Dondup skepparkavaj peacoat storlek 50",
+     "2026-09-08"
+    ],
+    [
+     499,
+     "Dondup svart kavaj",
+     "2026-08-26"
+    ],
+    [
+     499,
+     "Dondup beige byxor, storlek 30",
+     "2026-08-19"
+    ],
+    [
+     450,
+     "Dondup George-jeans",
+     "2026-09-26"
+    ],
+    [
+     400,
+     "Dondup svarta jeans, storlek 34",
+     "2026-09-08"
+    ],
+    [
+     399,
+     "Dondup Jeans George",
+     "2026-08-30"
+    ],
+    [
+     370,
+     "Dondup blå jeans, storlek 31",
+     "2026-08-07"
+    ],
+    [
+     300,
+     "Dondup svart skinnjacka storlek 50 / L",
+     "2026-08-30"
+    ],
+    [
+     250,
+     "DONDUP. Underbar ljusgrå tröja i mjuk ull. Size, S",
+     "2026-09-24"
+    ],
+    [
+     214,
+     "Design, Dondup. Läcker vit skjorta med öppen rygg ",
+     "2026-08-31"
+    ],
+    [
+     199,
+     "DONDUP sweatshirt M",
+     "2026-08-03"
+    ],
+    [
+     170,
+     "DONDUP blå jeansjacka, storlek M",
+     "2026-06-13"
+    ],
+    [
+     125,
+     "Dondup blå jeans, storlek 29",
+     "2026-08-09"
+    ],
+    [
+     100,
+     "Dondup blåa jeans, storlek 28",
+     "2026-07-12"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10280205089,
+   "id_max": 10317524037,
+   "nya_pris_p10": 256,
+   "nya_pris_p25": 429,
+   "nya_pris_median": 521,
+   "nya_lista": [
+    [
+     75.82,
+     "Dondup bukser",
+     "Mycket bra",
+     "50 | W34"
+    ],
+    [
+     103.34,
+     "Męskie Spodnie Chino Dondup Ciemnozielon",
+     "Ny utan prislapp",
+     "XS"
+    ],
+    [
+     110.0,
+     "Dondup jeans",
+     "Bra",
+     "44 | W27"
+    ],
+    [
+     149.0,
+     "Dondup",
+     "Mycket bra",
+     "48 | W32"
+    ],
+    [
+     150.0,
+     "Dondup jeans",
+     "Mycket bra",
+     "44 | W27"
+    ],
+    [
+     180.0,
+     "DonDup tröja",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     199.0,
+     "Dondup Tröja",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     218.0,
+     "Dondup",
+     "Mycket bra",
+     "50 | W34"
+    ],
+    [
+     249.0,
+     "Dondup Jeans",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     255.77,
+     "Dondup meg",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     280.0,
+     "Off-white sweatshirt från det italienska",
+     "Bra",
+     "S"
+    ],
+    [
+     300.0,
+     "Dondup sweatshirt",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     301.77,
+     "Dondup chinos",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     320.0,
+     "Dondup T-shirt",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     329.0,
+     "Dondup jeans",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     359.0,
+     "Dondup Jeans",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     399.0,
+     "Dondup George",
+     "Mycket bra",
+     "50 | W35"
+    ],
+    [
+     399.0,
+     "Dondup Monroe Jeans",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     399.0,
+     "Donups",
+     "Mycket bra",
+     "50 | W33"
+    ],
+    [
+     400.0,
+     "Dondup jeans",
+     "Bra",
+     "S"
+    ],
+    [
+     400.0,
+     "Dondup jeans",
+     "Ny utan prislapp",
+     "46 | W29"
+    ],
+    [
+     400.0,
+     "Dondup jeans",
+     "Ny utan prislapp",
+     "50 | W34"
+    ],
+    [
+     400.0,
+     "Dondups storlek S med slitningar",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     420.0,
+     "Dondup jeans W33 – blå slim fit",
+     "Bra",
+     "50 | W33"
+    ],
+    [
+     429.0,
+     "DonDup Jeans",
+     "Mycket bra",
+     "46 | W29"
+    ]
+   ]
+  }
+ },
+ "Duno": {
+  "tradera": {
+   "antal_salda": 0,
+   "p10": null,
+   "p25": null,
+   "median": null,
+   "p75": null,
+   "p90": null,
+   "datum": null,
+   "osalda_i_urval": 3,
+   "osalda_median": 2250,
+   "exempel": []
+  },
+  "vinted": {
+   "nya": 80,
+   "id_min": 5070161015,
+   "id_max": 10290915724,
+   "nya_pris_p10": 455,
+   "nya_pris_p25": 750,
+   "nya_pris_median": 1213,
+   "nya_lista": [
+    [
+     166.81,
+     "Duno Cardigan",
+     "Bra",
+     "XL"
+    ],
+    [
+     271.27,
+     "Duno płaszcz Premium",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     303.28,
+     "Duno forårsjakke",
+     "Bra",
+     "L"
+    ],
+    [
+     303.28,
+     "Duno golf buks",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     379.1,
+     "Grøn DUNO frakke",
+     "Bra",
+     "XL"
+    ],
+    [
+     450.0,
+     "Duno Jacka -50",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     454.92,
+     "Din jakke fra DUNO",
+     "Bra",
+     "L"
+    ],
+    [
+     454.92,
+     "Duno blue Navy trenchcoat",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     454.92,
+     "Duno jakke",
+     "Bra",
+     "XL"
+    ],
+    [
+     462.44,
+     "DUNO kurtka pikowana rozmiar 56",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     490.86,
+     "Bluza typu sweatshirt | nowa | casual / ",
+     "Ny med prislapp",
+     "L"
+    ],
+    [
+     530.74,
+     "Duno vinterjakke",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     550.0,
+     "Duno Down jacket size 48 / M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     606.56,
+     "DUNI Jakke En jakke i to",
+     "Mycket bra",
+     "Onesize"
+    ],
+    [
+     606.56,
+     "Duno Jakke",
+     "Bra",
+     "M"
+    ],
+    [
+     606.56,
+     "Duno jakke",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     606.56,
+     "Duno jakke",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     626.0,
+     "DUNU väst",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     682.38,
+     "Dunjakke",
+     "Bra",
+     "M"
+    ],
+    [
+     700.0,
+     "Vinterjacka DUNO",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     750.0,
+     "DUNO väst",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     758.2,
+     "Dunno jakke",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     758.2,
+     "Duno Frakke",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     758.2,
+     "Sort Duno vinter jakke",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     850.0,
+     "Jacka från Duno",
+     "Bra",
+     "S"
+    ]
+   ]
+  }
+ },
+ "Mason's": {
+  "tradera": {
+   "antal_salda": 157,
+   "p10": 50,
+   "p25": 75,
+   "median": 140,
+   "p75": 265,
+   "p90": 405,
+   "datum": [
+    "2026-04-17",
+    "2026-10-09"
+   ],
+   "osalda_i_urval": 80,
+   "osalda_median": 199,
+   "exempel": [
+    [
+     1695,
+     "Mason's Christmas Village serveringsfat",
+     "2026-09-30"
+    ],
+    [
+     456,
+     "3 x vintage Mason's Christmas Village / 1983 / 27 ",
+     "2026-09-22"
+    ],
+    [
+     351,
+     "Mason's Patent Ironstone Vista England serveringsf",
+     "2026-08-07"
+    ],
+    [
+     299,
+     "Vintage smörask med fat-Mason’s Ironstone ”Vista” ",
+     "2026-07-17"
+    ],
+    [
+     259,
+     "Mason's Vista England tekopp med fat",
+     "2026-07-02"
+    ],
+    [
+     201,
+     "Mason's 'Vista' - två frukosttallrikar",
+     "2026-07-11"
+    ],
+    [
+     175,
+     "Uppläggningsfat / Fruit Basket - Mason's Patent Ir",
+     "2026-08-09"
+    ],
+    [
+     150,
+     "Mason's Ironstone Teddy Bears Barnservis",
+     "2026-08-16"
+    ],
+    [
+     136,
+     "Mason's Patent Ironstone \"Ascot\" bricka",
+     "2026-07-05"
+    ],
+    [
+     110,
+     "Mason's Vista England serveringsfat - retro",
+     "2026-09-19"
+    ],
+    [
+     98,
+     "Mason's Patent Ironstone England 2 st förrättstall",
+     "2026-08-03"
+    ],
+    [
+     80,
+     "Mason's Ironstone serveringsfat",
+     "2026-08-18"
+    ],
+    [
+     75,
+     "Två skålar med rött mönster, MASON’S , VISTA , ENG",
+     "2026-07-10"
+    ],
+    [
+     65,
+     "Masons Byxor Khaki Herr Stl. 46",
+     "2026-07-05"
+    ],
+    [
+     50,
+     "Mason's minnesask för bröllopet mellan Prins Charl",
+     "2026-04-17"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 9628031079,
+   "id_max": 10308233125,
+   "nya_pris_p10": 65,
+   "nya_pris_p25": 104,
+   "nya_pris_median": 220,
+   "nya_lista": [
+    [
+     40.0,
+     "Shorts herr",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     45.49,
+     "Jeans",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     50.0,
+     "Chinos",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     54.0,
+     "Mason’s herrchinos grå – storlek 48",
+     "Bra",
+     "50 | W33"
+    ],
+    [
+     54.25,
+     "Spodenki",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     56.11,
+     "Mason's - Pants",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     56.11,
+     "Mason’s, bukser, str. 52",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     56.11,
+     "Mason’s, bukser, str. 52",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     56.84,
+     "Spodnie Mason’s Historical Archive Cargo",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     64.59,
+     "Damskie spodnie Mason's  40",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     64.59,
+     "MASON’S eleganckie chinosy męskie | beżo",
+     "Mycket bra",
+     "46 | W30"
+    ],
+    [
+     67.17,
+     "Marynarka męska Mason’s",
+     "Ny utan prislapp",
+     "46"
+    ],
+    [
+     68.0,
+     "Byxor",
+     "Mycket bra",
+     "48 | W31"
+    ],
+    [
+     75.82,
+     "Mason hør bukser fra Italien 52",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     77.5,
+     "Spodnie Mason’s",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     77.5,
+     "Spodnie męskie Mason’s",
+     "Mycket bra",
+     "52 | W36"
+    ],
+    [
+     90.0,
+     "Ljusblå Manson’s chinos storlek 46",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     90.0,
+     "Manson’s  grå chinos",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     90.16,
+     "Spodnie chinosy Mason’s W32 Vintage Prem",
+     "Mycket bra",
+     "48 | W32"
+    ],
+    [
+     90.42,
+     "Bardzo ładne nowe markowe eleganckie spo",
+     "Ny utan prislapp",
+     "58 | W42"
+    ],
+    [
+     97.0,
+     "Chinos",
+     "Ny utan prislapp",
+     "52 | W36"
+    ],
+    [
+     98.17,
+     "Spodnie masons męskie Czarne luxury arch",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     103.31,
+     "Spodnie sztruksowe Mason's rozmiar 50 W3",
+     "Mycket bra",
+     "50 | W34"
+    ],
+    [
+     103.34,
+     "Spodnie",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     104.0,
+     "Cardigan",
+     "Mycket bra",
+     "S"
+    ]
+   ]
+  }
+ },
+ "Woolrich": {
+  "tradera": {
+   "antal_salda": 114,
+   "p10": 31,
+   "p25": 130,
+   "median": 299,
+   "p75": 599,
+   "p90": 1295,
+   "datum": [
+    "2026-04-19",
+    "2026-10-08"
+   ],
+   "osalda_i_urval": 80,
+   "osalda_median": 650,
+   "exempel": [
+    [
+     2995,
+     "1990s | Woolrich | duster coat w/ Aztec wool liner",
+     "2026-06-29"
+    ],
+    [
+     1500,
+     "Woolrich 1980's Vintage Aztec Shawl Collar Vest",
+     "2026-07-03"
+    ],
+    [
+     1000,
+     "Woolrich blå jacka, storlek S",
+     "2026-09-20"
+    ],
+    [
+     850,
+     "WOOLRICH dunjacka strl M svart vinterjacka dam par",
+     "2026-09-11"
+    ],
+    [
+     599,
+     "Woolrich, Vintage 1970s Traditional Red Lumberjack",
+     "2026-07-04"
+    ],
+    [
+     500,
+     "Woolrich John Rich & Bros Röd vinterjacka dam/unis",
+     "2026-10-04"
+    ],
+    [
+     440,
+     "Woolrich blå jacka, storlek M",
+     "2026-09-09"
+    ],
+    [
+     324,
+     "Woolrich \"Trout Run\" Plaid Flannel Shirt - Size XL",
+     "2026-09-17"
+    ],
+    [
+     299,
+     "Woolrich Rutig Flanell skjorta Storlek XL",
+     "2026-07-16"
+    ],
+    [
+     269,
+     "Woolrich flanell skjorta Storlek L",
+     "2026-09-06"
+    ],
+    [
+     194,
+     "Woolrich Plaid Flannel Shirt - Size L",
+     "2026-09-28"
+    ],
+    [
+     159,
+     "Woolrich skjorta XL",
+     "2026-08-24"
+    ],
+    [
+     133,
+     "Sweatshirt, Woolrich, grå, stl. S",
+     "2026-08-02"
+    ],
+    [
+     79,
+     "Woolrich Piké Tröja Herr Storlek M Beige Grön Polo",
+     "2026-08-28"
+    ],
+    [
+     60,
+     "Woolrich flerfärgad skjorta, storlek L",
+     "2026-08-18"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10149132125,
+   "id_max": 10317521117,
+   "nya_pris_p10": 170,
+   "nya_pris_p25": 385,
+   "nya_pris_median": 799,
+   "nya_lista": [
+    [
+     51.67,
+     "t-shirt woolrich",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     70.0,
+     "Flanellskjorta",
+     "Ny utan prislapp",
+     "41 cm"
+    ],
+    [
+     77.5,
+     "Sweter",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     90.42,
+     "Marynarka wełniana marcus dobraną",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     103.34,
+     "Koszula Woolrich",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     106.15,
+     "Woolrich chinos, waist size 30",
+     "Bra",
+     "46 | W30"
+    ],
+    [
+     126.59,
+     "Szara bluza rozpinana Woolrich",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     128.92,
+     "bluza vintage Wollrich",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     158.68,
+     "Woolrich Jeans | M",
+     "Bra",
+     "M"
+    ],
+    [
+     170.02,
+     "Paksu toppatakki",
+     "Ny med prislapp",
+     "S"
+    ],
+    [
+     178.26,
+     "Woolrich Koszulka Polo Vintage Drobna Kr",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     178.26,
+     "Woolrich Polo Shirt Men XL White Cotton ",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     178.26,
+     "Woolrich Tropical Leaf Print Shirt Blue ",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     204.1,
+     "Koszula flanelowa Woolrich w kratę męska",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     229.93,
+     "Woolrich Bluzka Longsleeve Męski L Ciemn",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     249.0,
+     "Woolrich T-shirt",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     250.0,
+     "Väst woolrich strl M herr",
+     "Bra",
+     "M"
+    ],
+    [
+     258.35,
+     "Cotton rich spodnie chinos bezowe męskie",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     258.35,
+     "Kurtka puchowa Woolrich Arctic Parka S R",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     294.69,
+     "Woolrich Untuvatakki",
+     "Bra",
+     "L"
+    ],
+    [
+     299.0,
+     "Grå woolrich T-shirt",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     303.28,
+     "Woolrich jakke",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     309.99,
+     "Kurtka Woolrich Vintage M Granatowo Czer",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     340.03,
+     "Vintage Woolrich Chunky Knit Sweater Gre",
+     "Bra",
+     "XL"
+    ],
+    [
+     384.94,
+     "Męska Kurtka Woolrich John Rich & Bros H",
+     "Mycket bra",
+     "M"
+    ]
+   ]
+  }
+ },
+ "Gaastra": {
+  "tradera": {
+   "antal_salda": 7,
+   "p10": 40,
+   "p25": 65,
+   "median": 99,
+   "p75": 200,
+   "p90": 222,
+   "datum": [
+    "2026-07-18",
+    "2026-09-26"
+   ],
+   "osalda_i_urval": 19,
+   "osalda_median": 175,
+   "exempel": [
+    [
+     222,
+     "Gaastra dam grön bomberjacka, storlek S",
+     "2026-08-11"
+    ],
+    [
+     200,
+     "Gaastra ljusrosa jacka",
+     "2026-09-04"
+    ],
+    [
+     146,
+     "Gaastra Sneakers, Vit, EUR 41",
+     "2026-08-06"
+    ],
+    [
+     99,
+     "Gaastra röd, blå skjorta, storlek M",
+     "2026-09-26"
+    ],
+    [
+     90,
+     "GAASTRA SYC Bay of Palma seglars jacka - storlek X",
+     "2026-09-03"
+    ],
+    [
+     65,
+     "Gaastra blå segling , vindtät bomberjacka, storlek",
+     "2026-09-11"
+    ],
+    [
+     40,
+     "Gaastra blå fleecejacka, storlek 122/128",
+     "2026-07-18"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 9921861673,
+   "id_max": 10311651044,
+   "nya_pris_p10": 52,
+   "nya_pris_p25": 76,
+   "nya_pris_median": 116,
+   "nya_lista": [
+    [
+     15.5,
+     "Koszula Gaastra, rozmiar M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     20.0,
+     "Pikétröja",
+     "Bra",
+     "XXL"
+    ],
+    [
+     25.83,
+     "Koszula męska Gaastra",
+     "Bra",
+     "XL"
+    ],
+    [
+     30.0,
+     "Skjorta",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     33.36,
+     "Mørkeblå trøje",
+     "Bra",
+     "L"
+    ],
+    [
+     38.73,
+     "Biała koszulka Polo marki gaastra",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     38.75,
+     "Bordowa koszula damska Gaastra rozmiar 3",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     51.67,
+     "Koszula Gaastra",
+     "Bra",
+     "XL"
+    ],
+    [
+     51.67,
+     "Koszula męska Gaastra rozm. M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     51.67,
+     "Męska koszulka polo Gaastra Port Vauban ",
+     "Mycket bra",
+     "XXL"
+    ],
+    [
+     54.0,
+     "Gaastra kortärmad skjorta, rutig marinbl",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     54.25,
+     "Koszula",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     59.42,
+     "Koszula męska 100% Bawełna.",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     64.59,
+     "Gaastra koszula męska L",
+     "Bra",
+     "L"
+    ],
+    [
+     64.59,
+     "Koszula męska L",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     64.59,
+     "Koszulka polo",
+     "Ny utan prislapp",
+     "M"
+    ],
+    [
+     64.59,
+     "Spodenki szorty chinosy bermudy Gaastra ",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     64.59,
+     "Sweter męski Gaastra bordowy burgund okr",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     72.34,
+     "Koszula w kratę Gaastra Royal Yacht Club",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     74.92,
+     "Gaastra Kurtka polarowa XL szara przejśc",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     74.92,
+     "Gaastra koszula męska granatowa elegant ",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     74.92,
+     "Koszula męska xl",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     74.92,
+     "gaastra koszula lniana łososiowa 100% le",
+     "Bra",
+     "L"
+    ],
+    [
+     75.82,
+     "Ternet skjorte i blå og rød",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     76.0,
+     "Gaastra full zip hoodie",
+     "Tillfredsställande",
+     "L"
+    ]
+   ]
+  }
+ },
+ "Filippa K herr": {
+  "tradera": {
+   "antal_salda": 12,
+   "p10": 30,
+   "p25": 80,
+   "median": 130,
+   "p75": 395,
+   "p90": 724,
+   "datum": [
+    "2026-07-01",
+    "2026-10-10"
+   ],
+   "osalda_i_urval": 24,
+   "osalda_median": 249,
+   "exempel": [
+    [
+     1500,
+     "Filippa K vår/höst jacka/ kappa/ peacoat i ull sto",
+     "2026-09-09"
+    ],
+    [
+     724,
+     "Klädpaket herr – Gran Sasso, CDLP, Filippa K, Ralp",
+     "2026-10-04"
+    ],
+    [
+     395,
+     "Filippa K grå ullmixbyxor herr strl 52 – resår & d",
+     "2026-10-10"
+    ],
+    [
+     395,
+     "Modern Teknisk Parkas Filippa K L/XL Kvalité Desig",
+     "2026-07-01"
+    ],
+    [
+     199,
+     "Filippa K ljusgrå byxor Herr",
+     "2026-09-10"
+    ],
+    [
+     130,
+     "Filippa K Vit Skjorta Herr – Storlek Medium – Klas",
+     "2026-08-13"
+    ],
+    [
+     129,
+     "Filippa K vit långärmad tröja Stl L",
+     "2026-07-15"
+    ],
+    [
+     129,
+     "Filippa K vit långärmad tröja Stl L",
+     "2026-10-01"
+    ],
+    [
+     80,
+     "Filippa K skjorta herr small",
+     "2026-09-03"
+    ],
+    [
+     50,
+     "Filippa K ulltröja / stickad pullover, 100% lammul",
+     "2026-08-30"
+    ],
+    [
+     30,
+     "Filippa K orange t-shirt",
+     "2026-08-20"
+    ],
+    [
+     20,
+     "Filippa K rostbrun skjorta, storlek XS Herr",
+     "2026-08-21"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10276431909,
+   "id_max": 10317516916,
+   "nya_pris_p10": 101,
+   "nya_pris_p25": 150,
+   "nya_pris_median": 209,
+   "nya_lista": [
+    [
+     38.0,
+     "Fin byxa",
+     "Mycket bra",
+     "50 | W33"
+    ],
+    [
+     43.92,
+     "Spodnie - Wełna - Filiippa K",
+     "Bra",
+     "XL"
+    ],
+    [
+     50.0,
+     "Grå skjorta",
+     "Tillfredsställande",
+     "M"
+    ],
+    [
+     60.0,
+     "Filippa K skjorta",
+     "Bra",
+     "M"
+    ],
+    [
+     72.0,
+     "Blå oxfordskjorta Filippa K",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     75.0,
+     "Filippa K skjorta",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     79.34,
+     "Filippa K poolopaita, beige, S",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     90.42,
+     "Grafitowe Jeansy FIlippa K W31 L34 S/M",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     100.0,
+     "Filippa K pikétröja",
+     "Mycket bra",
+     "XXL"
+    ],
+    [
+     100.76,
+     "Koszula męska Filippa K S",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     103.34,
+     "Filippa K koszula w paski bawełna basic ",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     103.34,
+     "Modna koszula marki premium Filippa K ro",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     106.15,
+     "Filippa K tee",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     108.51,
+     "Koszula Filippa K Męska rozmiar M Granat",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     120.0,
+     "Filippa K oxford shirt, XS",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     120.0,
+     "Kostymbyxor",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     120.0,
+     "Skjorta Filippa K",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     125.0,
+     "Filippa K Philip Shirt",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     134.34,
+     "Spodnie Filippa K męskie chinosy 52 L by",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     135.0,
+     "Filippa K Tim Oxford Shirt",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     142.09,
+     "Filippa K koszula męska M khaki / oliwko",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     150.0,
+     "Beige T-shirt Filippa K",
+     "Ny utan prislapp",
+     "XS"
+    ],
+    [
+     150.0,
+     "Filippa K jeans",
+     "Bra",
+     "S"
+    ],
+    [
+     150.0,
+     "Filippa K mörka, raka jeans",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     150.0,
+     "Filippa K skjorta, Bomull och linne. Sto",
+     "Mycket bra",
+     "S"
+    ]
+   ]
+  }
+ },
+ "Norse Projects": {
+  "tradera": {
+   "antal_salda": 36,
+   "p10": 100,
+   "p25": 149,
+   "median": 200,
+   "p75": 311,
+   "p90": 500,
+   "datum": [
+    "2026-06-15",
+    "2026-10-06"
+   ],
+   "osalda_i_urval": 17,
+   "osalda_median": 443,
+   "exempel": [
+    [
+     599,
+     "Stickad piké/kofta, Norse Projects. Strl M.",
+     "2026-06-15"
+    ],
+    [
+     511,
+     "Norse Projects ullstickat – mörkgrått – stl. M – 1",
+     "2026-07-01"
+    ],
+    [
+     470,
+     "Norse Projects ull tröja M",
+     "2026-08-03"
+    ],
+    [
+     400,
+     "Norse Projects Boiled Wool Dual Neck Zip Jacket",
+     "2026-08-19"
+    ],
+    [
+     311,
+     "Norse Projects grön jacka, storlek M",
+     "2026-08-17"
+    ],
+    [
+     300,
+     "Norse Projects Aske Perforated L/S Tee ljusgrå lån",
+     "2026-08-18"
+    ],
+    [
+     250,
+     "Norse Projects blå keps",
+     "2026-06-21"
+    ],
+    [
+     225,
+     "Norse Projects Gustav crew neck sweater navy blue ",
+     "2026-08-30"
+    ],
+    [
+     206,
+     "Norse projects keps",
+     "2026-06-20"
+    ],
+    [
+     195,
+     "Norse Projects Corduroy Långärmad Skjorta Grå Herr",
+     "2026-07-26"
+    ],
+    [
+     159,
+     "Norse Projects oxford skjorta XL",
+     "2026-07-20"
+    ],
+    [
+     149,
+     "Norse Projects gröna byxor, storlek XL",
+     "2026-08-06"
+    ],
+    [
+     149,
+     "Norse Projects manchester skjorta L",
+     "2026-08-25"
+    ],
+    [
+     149,
+     "Norse Projects oxford skjorta L",
+     "2026-09-29"
+    ],
+    [
+     149,
+     "Norse Projects heavy shirt skjorta M",
+     "2026-09-29"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10280887122,
+   "id_max": 10317520820,
+   "nya_pris_p10": 258,
+   "nya_pris_p25": 341,
+   "nya_pris_median": 455,
+   "nya_lista": [
+    [
+     75.82,
+     "Norse Projects tee",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     113.34,
+     "Norse Projects Patrik LS Tee",
+     "Tillfredsställande",
+     "L"
+    ],
+    [
+     151.64,
+     "Norse projects",
+     "Bra",
+     "M"
+    ],
+    [
+     152.43,
+     "Norse Projects Logo Sweatshirt Crewneck ",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     159.22,
+     "Norse projects",
+     "Ny utan prislapp",
+     "XS"
+    ],
+    [
+     204.1,
+     "Norse Projects vagn serif logo sweatshir",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     206.68,
+     "Koszula Norse Projects",
+     "Bra",
+     "XL"
+    ],
+    [
+     241.11,
+     "Lindberg skjorte",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     255.77,
+     "Norse project kąpielówki",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     258.35,
+     "Czarna bluza Norse Projects L | Minimali",
+     "Bra",
+     "L"
+    ],
+    [
+     265.37,
+     "Norse projects",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     283.36,
+     "Norse Projects Collegeshirt",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     295.7,
+     "Niche Van laack Henley",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     300.0,
+     "Norse Projects rugbytröja",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     301.77,
+     "Navy overshirt",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     301.77,
+     "Norse project sweater",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     301.77,
+     "Norse projekts t shirt",
+     "Bra",
+     "L"
+    ],
+    [
+     303.28,
+     "Woodbird jakke",
+     "Bra",
+     "M"
+    ],
+    [
+     307.43,
+     "Norse Projects Magne Fine Waffle zip har",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     326.03,
+     "Mega dope strikket  longsleeve",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     326.03,
+     "Norse skjorte",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     333.53,
+     "North projekts trøje",
+     "Ny utan prislapp",
+     "S"
+    ],
+    [
+     335.85,
+     "Bluza Norse Projects Off white",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     341.19,
+     "Beige Chinos (M)",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     341.19,
+     "Stilet t-shirt",
+     "Ny utan prislapp",
+     "M"
+    ]
+   ]
+  }
+ },
+ "Sail Racing": {
+  "tradera": {
+   "antal_salda": 239,
+   "p10": 50,
+   "p25": 100,
+   "median": 190,
+   "p75": 380,
+   "p90": 650,
+   "datum": [
+    "2026-05-11",
+    "2026-10-09"
+   ],
+   "osalda_i_urval": 80,
+   "osalda_median": 299,
+   "exempel": [
+    [
+     2700,
+     "Sail Racing svart jacka",
+     "2026-09-12"
+    ],
+    [
+     800,
+     "Sail Racing svart vinterjacka",
+     "2026-07-23"
+    ],
+    [
+     550,
+     "Sail Racing svart vindjacka",
+     "2026-08-09"
+    ],
+    [
+     440,
+     "Sail Racing väst , storlek XXL",
+     "2026-08-05"
+    ],
+    [
+     370,
+     "Sail Racing Duffelväska Svart",
+     "2026-08-30"
+    ],
+    [
+     300,
+     "Sail Racing spray backpack Ryggsäck NY",
+     "2026-09-13"
+    ],
+    [
+     269,
+     "Sail Racing Red Bull Racing mörkblå keps ny",
+     "2026-08-13"
+    ],
+    [
+     220,
+     "Gant och Sail Racing tröjor",
+     "2026-08-17"
+    ],
+    [
+     180,
+     "Sail Racing röd keps NY",
+     "2026-06-21"
+    ],
+    [
+     150,
+     "Sail Racing vit skaljacka",
+     "2026-07-29"
+    ],
+    [
+     125,
+     "Sail Racing keps",
+     "2026-08-15"
+    ],
+    [
+     108,
+     "Sail Racing gråa badshorts, storlek 170",
+     "2026-07-21"
+    ],
+    [
+     100,
+     "Sail Racing mörkgrå huvtröja",
+     "2026-10-06"
+    ],
+    [
+     80,
+     "Sail Racing svart keps, storlek ONE SIZE",
+     "2026-05-11"
+    ],
+    [
+     60,
+     "Sail Racing blå keps, storlek ONE SIZE",
+     "2026-06-30"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 10303037722,
+   "id_max": 10317484186,
+   "nya_pris_p10": 75,
+   "nya_pris_p25": 150,
+   "nya_pris_median": 350,
+   "nya_lista": [
+    [
+     38.75,
+     "bluza sail racing r.m",
+     "Bra",
+     "M"
+    ],
+    [
+     45.0,
+     "Sail Racing Piké",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     50.0,
+     "Sail Racing piké",
+     "Bra",
+     "S"
+    ],
+    [
+     50.0,
+     "Svart T-shirt från Sail Racing",
+     "Bra",
+     "M"
+    ],
+    [
+     59.0,
+     "Sail Racing polo",
+     "Bra",
+     "S"
+    ],
+    [
+     60.0,
+     "Sail racing hoodie",
+     "Bra",
+     "XS"
+    ],
+    [
+     60.0,
+     "Sail racing piké",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     70.0,
+     "Pikétröja Sail Racing stl XS",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     75.0,
+     "Långärmad tröja",
+     "Tillfredsställande",
+     "L"
+    ],
+    [
+     75.0,
+     "Sail Racing Hoodie storlek M",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     78.0,
+     "Ljusblå sail racing hoddie",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     89.0,
+     "Sail Racing T-shirt L",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     90.0,
+     "Sail racing tröja",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     99.0,
+     "Sail Racing Hoodie",
+     "Bra",
+     "M"
+    ],
+    [
+     100.0,
+     "Sail racing",
+     "Tillfredsställande",
+     "S"
+    ],
+    [
+     100.0,
+     "Sail racing hoodie",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     100.0,
+     "Sail racing zip hoodie",
+     "Mycket bra",
+     "XXL"
+    ],
+    [
+     100.0,
+     "Tröja sail racing",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     137.0,
+     "Sail Racing Herrtröja Storlek S – Svart ",
+     "Mycket bra",
+     "S"
+    ],
+    [
+     149.0,
+     "Sailracing tröja",
+     "Bra",
+     "XS"
+    ],
+    [
+     149.0,
+     "Svart Sail Racing ZipHoodie",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     150.0,
+     "Rosa sail racing piké",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     150.0,
+     "Sail Racing kofta",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     150.0,
+     "Sail Racing pikétröja",
+     "Mycket bra",
+     "XS"
+    ],
+    [
+     150.0,
+     "Sail racing shorts",
+     "Mycket bra",
+     "XS"
+    ]
+   ]
+  }
+ },
+ "Vaxjacka utan märke": {
+  "tradera": {
+   "antal_salda": 22,
+   "p10": 555,
+   "p25": 875,
+   "median": 2150,
+   "p75": 2721,
+   "p90": 2857,
+   "datum": [
+    "2026-06-17",
+    "2026-10-10"
+   ],
+   "osalda_i_urval": 14,
+   "osalda_median": 2195,
+   "exempel": [
+    [
+     3700,
+     "Barbour Classic Wax Mac Sage XL – Ny med tags – Or",
+     "2026-09-17"
+    ],
+    [
+     3500,
+     "Barbour Beaufort Vaxjacka med Polarquilt Väst Stor",
+     "2026-10-04"
+    ],
+    [
+     2857,
+     "Barbour Ashby, olivgrön vaxjacka, storlek M",
+     "2026-09-16"
+    ],
+    [
+     2820,
+     "Barbour Border oljerock vaxjacka toppskick C44 XL/",
+     "2026-10-04"
+    ],
+    [
+     2751,
+     "Barbour Ashby klassisk mörkgrön vaxjacka, storlek ",
+     "2026-06-17"
+    ],
+    [
+     2721,
+     "Barbour Beaufort, svart vaxjacka, storlek C46/117C",
+     "2026-10-10"
+    ],
+    [
+     2720,
+     "Barbour Beadnell, olivgrön vaxjacka, storlek UK 10",
+     "2026-10-10"
+    ],
+    [
+     2708,
+     "Barbour Beaufort Vaxjacka (L/XL)",
+     "2026-09-26"
+    ],
+    [
+     2500,
+     "Barbour Vaxjacka med avtagbar huva och quiltad väs",
+     "2026-09-02"
+    ],
+    [
+     2340,
+     "Barbour Northumbria vax jacka 40 olive",
+     "2026-10-04"
+    ],
+    [
+     2150,
+     "Barbour Bristol Wax Jacket XXL – Olive",
+     "2026-09-29"
+    ],
+    [
+     2000,
+     "Vintage army Barbour waxed Motorcycle Jacket, C34/",
+     "2026-08-11"
+    ],
+    [
+     1900,
+     "Barbour Border blå/svart vaxjacka stl C46(?)",
+     "2026-10-04"
+    ],
+    [
+     1580,
+     "Barbour International Wax Jacket – Svart – Perfekt",
+     "2026-08-16"
+    ],
+    [
+     1032,
+     "Vintage John Partridge Vaxad Jacka Olivgrön Manche",
+     "2026-09-14"
+    ]
+   ]
+  },
+  "vinted": {
+   "nya": 96,
+   "id_min": 9991124701,
+   "id_max": 10316540391,
+   "nya_pris_p10": 55,
+   "nya_pris_p25": 100,
+   "nya_pris_median": 195,
+   "nya_lista": [
+    [
+     20.0,
+     "Regn och vindjacka Herr",
+     "Tillfredsställande",
+     "M"
+    ],
+    [
+     20.0,
+     "Tunn träningsjacka",
+     "Ny utan prislapp",
+     "L"
+    ],
+    [
+     25.0,
+     "Herr jacka",
+     "Bra",
+     "L"
+    ],
+    [
+     30.0,
+     "Skaljacka",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     40.0,
+     "Dunjacka S",
+     "Bra",
+     "S"
+    ],
+    [
+     40.0,
+     "Jacka decathlon",
+     "Bra",
+     "XXL"
+    ],
+    [
+     40.0,
+     "Veidec racing jacka",
+     "Bra",
+     "XXL"
+    ],
+    [
+     50.0,
+     "Jacka Swedemount strl 46",
+     "Bra",
+     "L"
+    ],
+    [
+     50.0,
+     "Vindjacka skate/punk",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     55.0,
+     "Orange jacka",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     60.0,
+     "Lättvikts jacka",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     68.0,
+     "Chili Charcoal Fleccejacka l",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     68.0,
+     "Grön ridjacka",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     80.0,
+     "Lättviktsjacka",
+     "Mycket bra",
+     "M"
+    ],
+    [
+     80.0,
+     "Neomondo - Funktionsjacka",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     80.0,
+     "Vinterjacka",
+     "Bra",
+     "L"
+    ],
+    [
+     80.0,
+     "Wesc jacka",
+     "Bra",
+     "L"
+    ],
+    [
+     82.0,
+     "Snygg vindjacka",
+     "Bra",
+     "L"
+    ],
+    [
+     99.0,
+     "Stormberg vind och regnjacka",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     100.0,
+     "Craft träningsjacka XL",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     100.0,
+     "Jacka",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     100.0,
+     "Jacka",
+     "Mycket bra",
+     "XL"
+    ],
+    [
+     100.0,
+     "Jacka dam",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     100.0,
+     "Skid/vinterjacka",
+     "Mycket bra",
+     "L"
+    ],
+    [
+     100.0,
+     "Stormberg jacka",
+     "Mycket bra",
+     "L"
+    ]
+   ]
+  }
+ },
+ "_slut": [
+  1791640842.2650168,
+  10317584359
+ ],
+ "_flashback": {
+  "/t3584842": [
+   "Ni som k�per saker fr�n diverse loppisar och sedan s�ljer vidare p� Tradera och dylikt, hur g�r ni? I och med att man som privatperson endast f�r s�lja privata saker skattefritt f�r ett belopp av typ 30k och i typ 30 olika annonser s� �r detta n�got man snabbt uppn�r. Hur g�r ni som k�per och s�ljer vidare, har ni skapat ett f�retag eller dylikt? �r det mycket arbete? Vill s�klart g�ra detta lagligt men samtidigt f� ut s� mycket pengar p� det som m�jligt, s� �terigen, hur g�r ni? Tack p� f�rhand!",
+   "Man h�ller k�ften och anv�nder flera sajter samt partner/bekanta? P� Skatteverket kan du l�sa om var gr�nserna f�r hobbyverksamhet g�r",
+   "skatte verket har varken resurser eller lust o h�lla koll p� allt skit som s�ljs p� loppisar :P ja har kr�ngt begagnade prylar o en del bilar f�r �ver 100 tusen o inte skattat en krona =)",
+   "kontanter kontanter kontanter OK?",
+   "Citat: Ursprungligen postat av TreRaggmunkar",
+   "Fattar sj�lva aff�rsid�en, f�rs�ka hitta prylar folk s�ljer som de �r underv�rderade. Men ni som pysslar med detta, �r ni insatta i de prylar ni flippar eller har ni bara l�rt er ett s�tt? Hur hittar man de saker man kan tj�na pengar p�?",
+   "Citat: Ursprungligen postat av Ananarchistmind",
+   "Jag har k�pt, fixat till och s�lt saker de senaste 15 �ren. K�per p� loppis, auktioner, Facebook etc. S�ljer c:a 10-20% p� Tradera/blocket/Vinted etc. Runt 50% p� marketplace eller i grupper p� Facebook. Resten g�r p� vanlig bordsloppis/soptippen. 1. B�rjade med att k�pa allt m�jligt skrot till sjukt l�ga priser (blandl�da 50:- med 30-100 saker i) 2. Kollade upp v�rdet p� varje enskild sak - v�ldigt tidskr�vande. 3. F�rs�kte s�lja varje enskild sak - V�ldigt tidskr�vande i b�rjan d� man beh�ver l�sa p� lite f�r att kunna skriva en bra annons. 4. B�rjade f� intresse f�r vissa saker och f�rs�kte satsa p� dom, f�r jag gillade dom. (Var ingen bra ide, betalade mer �n jag borde och blev sv�rare att s�lja) 5. B�rjade se �ver vad som var l�tt att fynda och s�lde bra, fokuserade p� dessa. (Nu b�rjar det rulla p�) 6. Fortsatte med steg 1 under tiden (k�pa, v�rdera, leta info, f�rs�ka s�lja) och l�t vinsten fr�n 5. Betala detta. 7. Drar in cirka 2-5000/m�nad extra i vinst, det har blivit en hobby och r�knat p� antal timmar nedlagt s� �r v�l min timl�n runt ~175-200:-/timme svart. Har b�rjat fundera p� om jag ska k�ra seri�st och f�rbereder inf�r det nu, enligt min kalkyl b�r jag kunna �ka om",
+   "Citat: Ursprungligen postat av hejaaaa312",
+   "Citat: Ursprungligen postat av chaoswithin",
+   "Citat: Ursprungligen postat av Ananarchistmind",
+   "Citat: Ursprungligen postat av chaoswithin",
+   "Citat: Ursprungligen postat av chaoswithin",
+   "Citat: Ursprungligen postat av hejaaaa312",
+   "En sl�kting g�r p� SOCIALEN som betalar Hyra El v�rd omsorg typ 18.000:- m.m samtidigt som hen k�per och s�ljer begagnad Vinyl (LP) f�r tusentals kronor svart varje m�nad. Bara annonserna lokalpressen k�per/s�ljer kostar 14K per �r vissa vinylplattor g�r f�r tusentals kronor p� typ auktionssajterna. DU betalar!",
+   "Citat: Ursprungligen postat av TOMATJI104",
+   "Citat: Ursprungligen postat av TOMATJI104",
+   "Citat: Ursprungligen postat av TOMATJI104",
+   "Bara ett till�gg f�r ordningens skull. Eftersom skattemyndigheter etc hovrar ovanf�r en, �r det viktigt att f�ra bokf�ring. Beh�ver inte vara j�tteavancerat. men det g�ller att ha nedskrivet p� vad man har gjort. Det �r sj�lvklart den dagen man betalar skatt, men ocks� - n�r man �nnu inte beh�ver betala skatt. T�nk om man f�r en anm�lan p� sig fr�n en avundsjuk granne, och skattmasen vill syna n�rmare. d� g�ller det att bevisa tex ens omkostnader, som g�r att vinsten �r n�rmast symboliskt. H�r t�nker jag n�rmast p� en kompis, som var kattuppf�dare. Det l�ter s� bra med 10 per kattunge... Men inr�knad omkostnader hade han knappt n�gon vinst... Och fick g� sin holmg�ng mot skattmasen. V�r hobbys�ljare har n�got liknande. JAG tex har just nu p� mitt s�ljkonto 3000 kronor inbetalda pengar. En ok liten extra f�rtj�nst, eller hur? Problemet �r att de betalar ju ocks� f�r fraktp�sen. Och ink�pspriset... Det reella nettot �r allts� h�gst h�lften av de pengarna som finns p� s�ljkontot. Men en kul hobby �r det.",
+   "Citat: Ursprungligen postat av AcS",
+   "Min hobby �r bl.a. loppisar. Jag s�ljer f�r mycket mindre �n 50 000 per �r. Man m�ste veta vilka saker som �r v�rdefulla ocks�, s� jag h�ller p� att l�sa om antikviteter. Dock hittade jag detta f�r en tia; https://i.imgur.com/34nW6Hv.jpg En judiskt sedertallrik, som jag r�knar med att f� minst runt 2 000 kr f�r. H�r har den s�lts f�r $415; https://www.skinnerinc.com/auctions/2402/lots/368 Jag kunde inget om det, utan tyckte bara den s�g sp�nnande ut o bildgooglade p� den n�r jag kom hem. En miss jag gjorde var att inte k�pa en silversk�l, d� 1 200 kr var lite f�r mycket f�r mig just d�. Men det var 338 g silver o bara silverv�rdet �r runt 3 000 kr. Hittills i �r har jag bara tj�nat ca 200 kr p� att s�lja loppisgrejer. K�pte en vandringspokal f�r 500 kr o f�rs�kte f�rst s�lja den f�r 2 500 kr, sen 1 500 kr, men det h�gsta budet jag fick var 700 kr. Men jag har lite ovanor ocks�, som att k�pa p� mig alla GPS:er jag hittar f�r under 100 kr. Inbillar mig att jag kan s�lja de dyrare, d� nypris f�rvisso �r flera tusen. Men alla nya bilar har ju inbyggd GPS, s� efterfr�gan �r l�g. Kanske var f�r att jag f�rst k�pte en ny handh�llen GPS f�r runt 2 500 kr f�r 1,5 �r sen, s� blir jag f�rbann",
+   "Finns det n�gon sajt f�r andrahands marknaden som tar emot PayPal?",
+   "Citat: Ursprungligen postat av Extremefly",
+   "Citat: Ursprungligen postat av DrWang",
+   "Citat: Ursprungligen postat av Extremefly",
+   "Ibland hittar jag typ �defekta� gr�sklippare/trimmers etc som n�n gammal �nka s�ljer otroligt billigt p� marketplace. G�ra rent f�rgasaren hj�lper i princip alltid. Och vipps g�r det att g�ra skapligt i vinst.",
+   "Citat: Ursprungligen postat av hejaaaa312",
+   "Citat: Ursprungligen postat av Batleika",
+   "Citat: Ursprungligen postat av peller",
+   "Citat: Ursprungligen postat av Batleika",
+   "Citat: Ursprungligen postat av peller",
+   "Citat: Ursprungligen postat av StinkStifelz",
+   "Citat: Ursprungligen postat av chaoswithin",
+   "S� fort man har k�pt in n�got i syfte att s�lja det vidare �r det ju n�ringsverksamhet. Och s� har det alltid varit enligt lagen. Det enda som �r nytt nu �r att plattformar ska rapportera f�rs�ljning till skatteverket. Det �r ju enbart s�dant man en g�ng har k�pt in till sig sj�lv och sedan s�ljer vidare l�ngre fram som man har r�tt att s�lja upp till en viss summa. Sedan kommer alltid omfattningen att vara intressant f�r skatteverket. I slut�ndan �r det alltid s� att det �r skatteverket som best�mmer. Det var en kvinna som s�lde av en stor samling med klisterm�rken som blev skattskyldig som n�ringsidkare. Tror hon s�lt runt 100 000 st. En bed�mning man exempelvis kan g�ra �r ju exempelvis varf�r personen m�ste s�lja ut tiotusentals klisterm�rken under ett enda �r? �r man bara samlare �r det mer rimligt att man s�ljer av under l�ngre tid. En annan sak de kan kolla �r ju om den misst�nkte n�ringsidkaren har k�pt in saker under �ret, av samma typ som denne s�ljer av. Sedan finns ju alltid varianten att deklarera en hobby. Om man samlar p� n�got och k�per in lotter med flera saker i men d�r man bara var ute efter n�gon enstaka pryl. D� kan du s�lja av det andra och skatta f�r den hobb",
+   "Det �r ju verkligen sann samh�llsnytta du g�r ocks�. Ist�llet f�r att tv� k�per en ny pryl blir det nu bara en som g�r det. Citat: Ursprungligen postat av StinkStifelz",
+   "Citat: Ursprungligen postat av noden"
+  ],
+  "/t3707442": [
+   "Har second hand spelat ut sin roll som �terf�rs�ljare av begagnat idag? Som bekant s� �r ju fr�mst lokal- och personalkostnaderna de tv� tunga kostnadsposterna i butiksledet, vilket ju �ven sl�r mot second hand trots intentionen att det ska vara l�ga priset just f�r att det �r begagnade varor och inte nya. Samtidigt s� har ju massproduktionen lett fram till dagens l�ge d�r produktionskostnaden f�r en vara �r v�ldigt l�g men d�r f�rs�ljningskostnaderna �r desto h�gre, dvs. h�g bruttomarginal men l�g vinstmarginal, med f�ljd att en stor del av priset p� varan till kund beh�ver t�ckas av kostnader f�r bl.a. personal, lokal osv. vilket ju ger en liten prisdiff mellan nya och begagnade varor om det g�r via butiksledet? J�mf�r med att k�pa saker p� typ Blocket eller Tradera, d� �r det enbart varan och ev. kostnad f�r transport man ska ta h�jd f�r, och d� priserna p� begagnat �r betydligt l�gre �n nytillverkat s� blir det en attraktiv aff�r, man kan i m�nga fall f� typ 50-80% rabatt trots bra skick just f�r att andrahandsv�rdet p� \"n�stan allt\" man k�per �r mycket l�gt. Dvs. k�pa begagnat direkt mellan privatpersoner �r fortfarande attraktivt men inte via butik som s�ljer begagnat. K�nns ",
+   "Det �r v�l popul�rare �n n�gonsin? Dvs fler �n n�gonsin har som n�je att g� p� Myrorna etc.",
+   "Citat: Ursprungligen postat av Bimbodeluxe",
+   "Citat: Ursprungligen postat av Bimbodeluxe",
+   "Citat: Ursprungligen postat av Pontiac-Garage",
+   "Jag tror rubriken b�r r�ttas till , l�mpligen till \"Har Second Hand-butiken spelat ut in roll\" eller �n b�ttre \"Har den fysiska Second Hand Butiken Spelat Ut Sin Roll Idag?\". F�r man f�r v�l anta, om �n tr�dstartarens tr�dstart �r lite grumlig (och tyv�rr faktiskt kan missuppfattas) att det �r second i butiksform som menas och inte sj�lva \"second hand\" i sig? Second hand �r ju hetare �n n�gonsin i det n�rmaste, dels f�r att m�nga anser att slit-och-sl�ng �r fel i s� m�nga led ur moralisk milj�m�ssig synpunkt, men ocks� att m�nga g�r p� kn�na ekonomiskt idag, plus att m�jligheten till att k�pa just second hand �r st�rre �n n�gonsin, via fr�mst Tradera, Blocket, Facebook Market och liknande. D�remot �r ju de sm� loppmarknaderna �verfl�diga idag (i viss m�n �ven typ Myrorna) och saknar i viss m�n existensber�ttigande, den personalen borde med f�rdel och l�tthet flyttas till yrken d�r det finns skriande behov.",
+   "Citat: Ursprungligen postat av 53....so what",
+   "Citat: Ursprungligen postat av ZebranJanne",
+   "Citat: Ursprungligen postat av ZebranJanne",
+   "Fr�msta problemet med second-hand butiker imo �r att allt f�r m�nga butiksansvariga f�r dessa tror sig vara antikhandlare, och s�tter priserna d�refter.",
+   "Citat: Ursprungligen postat av Pontiac-Garage",
+   "Citat: Ursprungligen postat av 53....so what"
+  ]
+ },
+ "_reddit": {
+  "poster": [],
+  "kommentarer": {}
+ },
+ "_bareli": {
+  "plick_lankar": [
+   [
+    "https://p-cdn.plick.se/assets/web-36052495763596f7533798ee994e0e488498c3b7b5ec2e40fc7bc3ac547d98fc.css",
+    "   "
+   ],
+   [
+    "https://p-cdn.plick.se/assets/lexxy-b6d290759f198d6e4693db48dd68b62b5f1d706cf12f96dd26ecaf3e27b56f96.css",
+    "   "
+   ],
+   [
+    "https://p-cdn.plick.se/assets/hotwire_combobox-e665125fd4e049539813618b456f62a6de9d051bf9d0df51af3b576fa72be29a.css",
+    "   "
+   ],
+   [
+    "/",
+    "   "
+   ],
+   [
+    "/login",
+    "Logga in"
+   ],
+   [
+    "/kategorier/mode",
+    "Mode"
+   ],
+   [
+    "/kategorier/elektronik",
+    "Elektronik"
+   ],
+   [
+    "/m%C3%A4rkeskl%C3%A4der",
+    "Märken"
+   ],
+   [
+    "/om-oss",
+    "Om oss"
+   ],
+   [
+    "/nybegagnat",
+    "Nybegagnat"
+   ],
+   [
+    "/live",
+    "Live shower"
+   ],
+   [
+    "/vanliga-fragor",
+    "Vanliga frågor"
+   ],
+   [
+    "/presentkort",
+    "Presentkort"
+   ],
+   [
+    "/kategorier/accessoarer",
+    "Accessoarer"
+   ],
+   [
+    "/kategorier/klader",
+    "Kläder"
+   ],
+   [
+    "/kategorier/vaskor",
+    "Väskor"
+   ],
+   [
+    "/kategorier/skor",
+    "Skor"
+   ],
+   [
+    "/kategorier/balten-skarp",
+    "Bälten &amp; Skärp"
+   ],
+   [
+    "/kategorier/solglasogon",
+    "Solglasögon"
+   ],
+   [
+    "/kategorier/halsdukar-sjalar",
+    "Halsdukar &amp; Sjalar"
+   ],
+   [
+    "/kategorier/huvudbonader",
+    "Huvudbonader"
+   ],
+   [
+    "/kategorier/haraccessoarer",
+    "Håraccessoarer"
+   ],
+   [
+    "/kategorier/klockor",
+    "Klockor"
+   ],
+   [
+    "/kategorier/handskar-vantar",
+    "Handskar &amp; Vantar"
+   ],
+   [
+    "/kategorier/accessoarer-maskerad-cosplay",
+    "Maskerad &amp; Cosplay"
+   ],
+   [
+    "/kategorier/diadem",
+    "Diadem"
+   ],
+   [
+    "/kategorier/smycken",
+    "Smycken"
+   ],
+   [
+    "/kategorier/maskerad-cosplay",
+    "Maskerad &amp; Cosplay"
+   ],
+   [
+    "/kategorier/sovklader-loungewear",
+    "Sovkläder &amp; Loungewear"
+   ],
+   [
+    "/kategorier/underklader",
+    "Underkläder"
+   ],
+   [
+    "/kategorier/shorts",
+    "Shorts"
+   ],
+   [
+    "/kategorier/vastar",
+    "Västar"
+   ],
+   [
+    "/kategorier/blusar",
+    "Blusar"
+   ],
+   [
+    "/kategorier/badklader",
+    "Badkläder"
+   ],
+   [
+    "/kategorier/klanningar",
+    "Klänningar"
+   ],
+   [
+    "/kategorier/toppar",
+    "Toppar"
+   ],
+   [
+    "/kategorier/t-shirts",
+    "T-shirts"
+   ],
+   [
+    "/kategorier/skjortor",
+    "Skjortor"
+   ],
+   [
+    "/kategorier/byxor",
+    "Jeans &amp; Byxor"
+   ],
+   [
+    "/kategorier/kjolar",
+    "Kjolar"
+   ],
+   [
+    "/kategorier/jackor",
+    "Jackor"
+   ],
+   [
+    "/kategorier/huvtrojor",
+    "Hoodies"
+   ],
+   [
+    "/kategorier/trojor",
+    "Tröjor &amp; Koftor"
+   ],
+   [
+    "/kategorier/stickat",
+    "Stickat"
+   ],
+   [
+    "/kategorier/kostymer",
+    "Kostymer"
+   ],
+   [
+    "/kategorier/kuvertvaskor",
+    "Kuvertväskor"
+   ],
+   [
+    "/kategorier/handvaskor",
+    "Handväskor"
+   ],
+   [
+    "/kategorier/ryggsackar",
+    "Ryggsäckar"
+   ],
+   [
+    "/kategorier/axelvaskor",
+    "Axelväskor"
+   ],
+   [
+    "/kategorier/datorvaskor",
+    "Datorväskor"
+   ],
+   [
+    "/kategorier/portfoljer",
+    "Portföljer"
+   ],
+   [
+    "/kategorier/resvaskor",
+    "Resväskor"
+   ],
+   [
+    "/kategorier/planbocker",
+    "Plånböcker"
+   ],
+   [
+    "/kategorier/shoppingvaskor",
+    "Shoppingväskor"
+   ],
+   [
+    "/kategorier/kangor",
+    "Kängor"
+   ],
+   [
+    "/kategorier/ballerinaskor",
+    "Ballerinaskor"
+   ],
+   [
+    "/kategorier/pumps",
+    "Pumps"
+   ],
+   [
+    "/kategorier/boots",
+    "Boots"
+   ],
+   [
+    "/kategorier/loafers",
+    "Loafers"
+   ],
+   [
+    "/kategorier/sandaler",
+    "Sandaler"
+   ],
+   [
+    "/kategorier/sneakers",
+    "Sneakers"
+   ],
+   [
+    "/kategorier/stovlar",
+    "Stövlar"
+   ],
+   [
+    "/kategorier/tofflor",
+    "Tofflor"
+   ],
+   [
+    "/kategorier/spel-konsoler",
+    "Spel &amp; konsoler"
+   ],
+   [
+    "/kategorier/kameror",
+    "Kameror"
+   ],
+   [
+    "/kategorier/datorer",
+    "Datorer"
+   ],
+   [
+    "/kategorier/mobiltelefoner-och-tillbehor",
+    "Mobiltelefoner &amp; Tillbehör"
+   ],
+   [
+    "/kategorier/horlurar",
+    "Hörlurar"
+   ],
+   [
+    "/kategorier/wearables",
+    "Wearables"
+   ],
+   [
+    "/kategorier/horlurar-hogtalare",
+    "Hörlurar &amp; högtalare"
+   ],
+   [
+    "/kategorier/handkontroller",
+    "Handkontroller"
+   ],
+   [
+    "/kategorier/vr-glasogon",
+    "Vr-glasögon"
+   ],
+   [
+    "/kategorier/konsoler",
+    "Konsoler"
+   ],
+   [
+    "/kategorier/spel",
+    "Spel"
+   ],
+   [
+    "/kategorier/ovrigt-inom-spel-konsoler",
+    "Övrigt Inom Spel &amp; Konsoler"
+   ],
+   [
+    "/kategorier/ovrigt-inom-kameror",
+    "Övrigt Inom Kameror"
+   ],
+   [
+    "/kategorier/digitalkameror",
+    "Digitalkameror"
+   ],
+   [
+    "/kategorier/systemkameror",
+    "Systemkameror"
+   ],
+   [
+    "/kategorier/ovrigt-inom-datorer",
+    "Övrigt Inom Datorer"
+   ],
+   [
+    "/kategorier/stationara-datorer",
+    "Stationära datorer"
+   ],
+   [
+    "/kategorier/barbara-datorer",
+    "Bärbara datorer"
+   ],
+   [
+    "/kategorier/ovrigt-inom-mobiltelefoner-tillbehor",
+    "Övrigt Inom Mobiltelefoner &amp; Tillbehör"
+   ],
+   [
+    "/kategorier/mobiltelefoner",
+    "Mobiltelefoner"
+   ],
+   [
+    "/kategorier/mobilskal",
+    "Mobilskal"
+   ],
+   [
+    "/kategorier/skarmskydd",
+    "Skärmskydd"
+   ],
+   [
+    "/kategorier/smarta-glasogon",
+    "Smarta glasögon"
+   ],
+   [
+    "/kategorier/ovrigt-inom-wearables",
+    "Övrigt Inom Wearables"
+   ],
+   [
+    "/kategorier/smartklockor",
+    "Smartklockor"
+   ],
+   [
+    "/kategorier/pulsmatare",
+    "Pulsmätare"
+   ],
+   [
+    "/kategorier/tradlosa-hogtalare",
+    "Trådlösa högtalare"
+   ],
+   [
+    "/kategorier/barbara-hogtalare",
+    "Bärbara högtalare"
+   ],
+   [
+    "/kategorier/horlurar-in-ear",
+    "Hörlurar &amp; in-ear"
+   ],
+   [
+    "/kategorier/ovrigt-inom-horlurar-hogtalare",
+    "Övrigt Inom Hörlurar &amp; Högtalare"
+   ],
+   [
+    "/s%C3%A4ljare/0j1zn/ratings",
+    "(329)"
+   ],
+   [
+    "/signup",
+    "+ Följ"
+   ],
+   [
+    "/profiler/barelicloset",
+    "   "
+   ],
+   [
+    "/skjortor/ralph-lauren-skjorta-PANy6VlQ0O3OmXrw8eLp",
+    "   "
+   ],
+   [
+    "/skjortor/a-p-c-flannel-skjorta-rA2mbE7RQdK94ly1BM34",
+    "   "
+   ],
+   [
+    "/stickat/dondup-stickad-cardigan-ByxzZp70JV1koXw4WkgR",
+    "   "
+   ],
+   [
+    "/skjortor/nudie-flannel-skjorta-kNbeVnX2yxeZd5J2vW1q",
+    "   "
+   ],
+   [
+    "/overshirts/mason-s-overshirt-YbnQmk7jkpyPW5BM4pgd",
+    "   "
+   ],
+   [
+    "/stickat/massimo-dutti-stickad-overshirt-WxrV917nnByQ470K6zwo",
+    "   "
+   ],
+   [
+    "/cardigan-jackor/boggi-milano-vast-PANy6VlQ0O3eKXrw8eLp",
+    "   "
+   ],
+   [
+    "/jeansjackor/j-lindeberg-jeansjacka-kNbeVnX2yxeQ95J2vW1q",
+    "   "
+   ],
+   [
+    "/skjortor/jlindeberg-s-KD4PyJlb4jyJa5erNaO9",
+    "   "
+   ],
+   [
+    "/overshirts/j-lindeberg-overshirt-zpERrV5E2droDXeQdbOK",
+    "   "
+   ],
+   [
+    "/cardigan-jackor/massimo-dutti-xl-gwPWe17mjMyro5A8OEGb",
+    "   "
+   ],
+   [
+    "/overshirts/jlindeberg-s-pawNM17eqwBrz7oDVeyK",
+    "   "
+   ],
+   [
+    "/overshirts/jlindeberg-s-ORjkdWlNxPqKj5e8gKzq",
+    "   "
+   ],
+   [
+    "/stickat/sams%C3%B8e-sams%C3%B8e-m-9rA4VNXYd4gM95aW1ROB",
+    "   "
+   ],
+   [
+    "/trojor/j-lindeberg-stickad-cardigan-mrkx4n7Lo2QJBlpv8RaY",
+    "   "
+   ],
+   [
+    "/overshirts/sams%C3%B8e-sams%C3%B8e-m-VmMBYOldMwynO7yvWLNA",
+    "   "
+   ],
+   [
+    "/skjortor/gaastra-flannel-skjorta-r9nAdMlKQrNJo5E460qK",
+    "   "
+   ],
+   [
+    "/cardigan-jackor/j-lindeberg-jacka-Pxm3DaXPadJ3OlLrJkq2",
+    "   "
+   ],
+   [
+    "/skjortor/j-lindeberg-skjorta-mrkx4n7Lo2QkBlpv8RaY",
+    "   "
+   ],
+   [
+    "/cardigan-jackor/duno-jacka-YbnQmk7jkpynr5BM4pgd",
+    "   "
+   ],
+   [
+    "/overshirts/j-lindeberg-overshirt-d3PJjvXBjEwE3XV128wp",
+    "   "
+   ],
+   [
+    "/jeansjackor/jlindeberg-xs-zPYwGjX14yZyR5KD02r3",
+    "   "
+   ],
+   [
+    "/overshirts/tommy-hilfiger-fieldjacket-zpERrV5E2drdaXeQdbOK",
+    "   "
+   ],
+   [
+    "/stickat/j-lindeberg-stickad-troja-rA2mbE7RQdKNqly1BM34",
+    "   "
+   ],
+   [
+    "/s%C3%A4ljare/0j1zn/produkter?page=2",
+    "   "
+   ],
+   [
+    "/cookie-policy",
+    "Cookie policy"
+   ],
+   [
+    "mailto:support@plick.se",
+    "support@plick.se"
+   ],
+   [
+    "/jobb",
+    "Jobb via plick"
+   ],
+   [
+    "/advertising",
+    "Annonsera på plick"
+   ],
+   [
+    "mailto:press@plick.se",
+    "press@plick.se"
+   ],
+   [
+    "https://itunes.apple.com/app/apple-store/id640623690?pt=1472900&amp;ct=Marketplace&amp;mt=8",
+    "   "
+   ],
+   [
+    "https://play.google.com/store/apps/details?id=swace.se.plick",
+    "   "
+   ],
+   [
+    "https://app.plick.se/profiler/barelicloset?utm_medium=app-banner&amp;utm_source=plick.se",
+    "Fortsätt i appen →"
+   ]
+  ],
+  "plick_text": " Barelicloset - | Plick category-menu#deactivate\"> dialog#close:stop click@document->dialog#closeOnClickOutside\" > dialog#toggle\"> Sök dialog#close\" > Sök Passform Man Unisex Kvinna Kategorier Mode Övrigt Inom Mode Accessoarer Övrigt inom Accessoarer Bälten & Skärp Solglasögon Halsdukar & Sjalar Huvudbonader Håraccessoarer Klockor Handskar & Vantar Maskerad & Cosplay Diadem Smycken Kläder Maskerad & Cosplay Sovkläder & Loungewear Övrigt Inom Kläder Underkläder Shorts Västar Blusar Badkläder Klänningar Toppar T-shirts Skjortor Jeans & Byxor Kjolar Jackor Hoodies Tröjor & Koftor Stickat Kostymer Väskor Övrigt Inom Väskor Kuvertväskor Handväskor Ryggsäckar Axelväskor Datorväskor Portföljer Resväskor Plånböcker Shoppingväskor Skor Kängor Övrigt inom skor Ballerinaskor Pumps Boots Loafers Sandaler Sneakers Stövlar Tofflor Sportkläder Kläder Skor Fotbollsskor Övrigt Inom Sportswear Skönhet Övrigt Inom Skönhet Bas Highlighter Face Mist Övrigt Inom Bas Toner Primer Bronzer Concealer Foundation Rouge Parfym Ögon Övrigt Inom Ögon Mascara Eyeliner Ögonbrynsgel Ögonfransserum Ögonskugga Ögonbrynspenna Läppar Övrigt Inom Läppar Läppstift Läppglans Läppenna Läppbalsam Naglar Övrigt Inom Naglar Nagellack Press-on naglar Verktyg & Tillbehör Ögonskuggsborste Sminkborste Ögonfransböjare Övrigt Inom Verktyg & Tillbehör Pennvässare Sminkspegel Sminkkylskåp Beautyblender Böcker Övrigt inom böcker Skönlitteratur Kurslitteratur Elektronik Annat Inom Elektronik Spel & konsoler Handkontroller Vr-glasögon Konsoler Spel Övrigt Inom Spel & Konsoler Kameror Övrigt Inom Kameror Digitalkameror Systemkameror Datorer Övrigt Inom Datorer Stationära datorer Bärbara datorer Mobiltelefoner & Tillbehör Övrigt Inom Mobiltelefoner & Tillbehör Mobiltelefoner Mobilskal Skärmskydd Hörlurar Wearables Smarta glasögon Övrigt Inom Wearables Smartklockor Pulsmätare Hörlurar & högtalare Trådlösa högtalare Bärbara högtalare Hörlurar & in-ear Övrigt Inom Hörlurar & Högtalare Övrigt Herrkläder XXS XS S M L XL XXL+ Damkläder XXS XS S M L XL XXL+ Damskor 35 36 37 38 39 40 41 42 43+ Herrskor 37 38 39 40 41 42 43 44 45+ Dambyxor midja W22 W23 W24 W25 W26 W27 W28 W29 W30 W31 W32 W33 W34 W35 W36 W37 W38 W39 W40+ Herrbyxor midja W26 W27 W28 W29 W30 W31 W32 W33 W34 W35 W36 W37 W38 W39 W40 W41 W42+ Logga in Mode Elektronik Märken Om oss Nybegagnat Live shower Vanliga frågor Presentkort Accessoarer Kläder Väskor Skor Bälten & Skärp Solglasögon Halsdukar & Sjalar Huvudbonader Håraccessoarer Klockor Handskar & Vantar Maskerad & Cosplay Diadem Smycken Maskerad & Cosplay Sovkläder & Loungewear Underkläder Shorts Västar Blusar Badkläder Klänningar Toppar T-shirts Skjortor Jeans & Byxor Kjolar Jackor Hoodies Tröjor & Koftor Stickat Kostymer Kuvertväskor Handväskor Ryggsäckar Axelväskor Datorväskor Portföljer Resväskor Plånböcker Shoppingväskor Kängor Ballerinaskor Pumps Boots Loafers Sandaler Sneakers Stövlar Tofflor Spel & konsoler Kameror Datorer Mobiltelefoner & Tillbehör Hörlurar Wearables Hörlurar & högtalare Handkontroller Vr-glasögon Konsoler Spel Övrigt Inom Spel & Konsoler Övrigt Inom Kameror Digitalkameror Systemkameror Övrigt Inom Datorer Stationära datorer Bärbara datorer Övrigt Inom Mobiltelefoner & Tillbehör Mobiltelefoner Mobilskal Skärmskydd Smarta glasögon Övrigt Inom Wearables Smartklockor Pulsmätare Trådlösa högtalare Bärbara högtalare Hörlurar & in-ear Övrigt Inom Hörlurar & Högtalare Logga in Mode Elektronik Märken Om oss Nybegagnat Live shower Vanliga frågor Presentkort Barelicloset @barelicloset (329) + Följ | Senast aktiv: Denna vecka 3221 följare • 0 följer • 0 annonser Säljer numera endast i bulk till ett fåtal stora kunder. Barelicloset Såld Ralph Lauren S 150 SEK Barelicloset Såld A.P.C S 450 SEK Barelicloset Såld Dondup L 500 SEK Barelicloset Såld Nudie S 420 SEK Barelicloset Såld Mason’s L 500 SEK Barelicloset Såld Massimo Dutti XL 420 SEK Barelicloset Såld Boggi XL 350 SEK Barelicloset Såld J.Lindeberg XS 450 SEK Barelicloset Såld J.Lindeberg S 400 SEK Barelicloset Såld J.Lindeberg M 550 SEK Barelicloset Såld Massimo Dutti XL 600 SEK Barelicloset Såld J.Lindeberg S 200 SEK Barelicloset Såld J.Lindeberg S 450 SEK Barelicloset Såld Samsøe Samsøe M 500 SEK Barelicloset Såld J.Lindeberg XS 450 SEK Barelicloset Såld Samsøe Samsøe M 400 SEK Barelicloset Såld Gaastra M 320 SEK Barelicloset Såld J.Lindeberg S 550 SEK Barelicloset Såld J.Lindeberg L 300 SEK Barelicloset Såld Duno S 550 SEK Barelicloset Såld J.Lindeberg M 550 SEK Barelicloset Såld J.Lindeberg XS 450 SEK Barelicloset Såld Tommy Hilfiger S 550 SEK Barelicloset Såld J.Lindeberg XL 400 SEK Visa mer flash#show\"> Om oss Plick är sedan 2013 en av Sveriges största nischmarknadsplatser för kläder, skor och accessoarer. Köp, sälj & upptäck second-hand - bra för både miljön och din plånbok. cookie-consent#show\">Hantera cookies Cookie policy Kontakt Plick AB Kungsgatan 28 753 21 Uppsala support@plick.se Jobb via plick Annonsera på plick Press press@plick.se Fortsätt i appen → ",
+  "plick_alt": [
+   "plick home",
+   "Barelicloset",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "Barelicloset",
+   "Gilla",
+   "iOS app on App Store",
+   "Android app on Google Play"
+  ],
+  "se_lankar": [
+   [
+    "https://barelicloset.se",
+    "   "
+   ],
+   [
+    "/favicon.png",
+    "\n  "
+   ],
+   [
+    "https://lovable.dev/projects/lovp_4y9wy8qb7a8shr32m0crcybc8r?utm_source=lovable-badge",
+    "\n\t\t"
+   ]
+  ],
+  "se_text": " BareliCloset | Exklusiv second hand Edit with ",
+  "se_alt": [],
+  "wayback_lankar": [
+   [
+    "https://web.archive.org/web/20260215111654/https://barelicloset.se/",
+    "   "
+   ],
+   [
+    "https://web.archive.org/web/20260215111654im_/https://storage.googleapis.com/gpt-engineer-file-uploads/RfBdszFyVkM6xAQkM4cKMRplnc12/uploads/1770131264232-ChatGPT Image 3 feb. 2026 16_07_02.png",
+    "\n  "
+   ],
+   [
+    "/web/20260215111654*/https://barelicloset.se/",
+    "7 captures"
+   ],
+   [
+    "#",
+    "   "
+   ],
+   [
+    "https://archive.org/account/login.php",
+    "   "
+   ],
+   [
+    "/web/20260215111654/http://web.archive.org/screenshot/https://barelicloset.se/",
+    "   "
+   ]
+  ],
+  "wayback_text": " BareliCloset | Exklusiv second hand 7 captures 12 Jul 2025 - 28 May 2026 Jan FEB Mar 15 2025 2026 2027 success fail About this capture TIMESTAMPS The Wayback Machine - https://web.archive.org/web/20260215111654/https://barelicloset.se/ ",
+  "wayback_alt": [
+   "Wayback Machine",
+   "loading"
+  ],
+  "wayback_shop": "HTTP Error 429: Too Many Requests"
+ }
+}
