@@ -1,51 +1,5 @@
 [
   {
-    "namn": "Nudie jeans under 200 kr",
-    "sokord": "nudie jeans",
-    "maxpris": 200,
-    "saljpris": 450,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Nudie",
-    "storlekar": [
-      "M",
-      "W30",
-      "W31",
-      "W32",
-      "W33"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "t-shirt",
-      "tröja",
-      "jacka",
-      "jakke",
-      "skjorta",
-      "hoodie",
-      "keps",
-      "shorts",
-      "fake",
-      "dam",
-      "skinny"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Ralph lauren skjorta under 100kr",
     "sokord": "skjorta",
     "maxpris": 100,
@@ -65,287 +19,6 @@
     "storlekar": [
       "S",
       "M"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Stickad blazer",
-    "sokord": "stickad blazer",
-    "maxpris": 250,
-    "kappris": 40,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Ralph lauren hoodie",
-    "sokord": "hoodie",
-    "maxpris": 250,
-    "kappris": 100,
-    "saljpris": 450,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Ralph Lauren",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Morris hoodie",
-    "sokord": "Hoodie",
-    "maxpris": 350,
-    "kappris": 150,
-    "saljpris": 399,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Morris",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Nudie jeans Regular Alf",
-    "sokord": "regular alf",
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Nudie Jeans",
-    "storlekar": [
-      "W30",
-      "W31",
-      "W32",
-      "W33"
-    ],
-    "skick": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "regular alf"
-    ]
-  },
-  {
-    "namn": "Ralph lauren dunjacka",
-    "sokord": "dunjacka",
-    "maxpris": 1000,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Ralph Lauren",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Field jacket",
-    "sokord": "Field jacket",
-    "maxpris": 400,
-    "kappris": 150,
-    "min_betyg": 4.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Hollister hoodie",
-    "sokord": "Hoodie",
-    "maxpris": 400,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI"
-    ],
-    "marke": "Hollister",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
     ],
     "skick": [
       "Ny med prislapp",
@@ -411,55 +84,12 @@
     "aktiv": true
   },
   {
-    "namn": "Overshirts",
-    "sokord": "Overshirt herr",
-    "maxpris": 200,
-    "kappris": 50,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "maste": [
-      "Overshirt"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Toppmärken overshirt",
     "sokord": [
       "overshirt",
       "shirt jacket"
     ],
-    "maxpris": 400,
+    "maxpris": 300,
     "min_betyg": 3.5,
     "kon": "herr",
     "kategorier": [
@@ -566,7 +196,7 @@
       "blazer",
       "kavaj"
     ],
-    "maxpris": 600,
+    "maxpris": 300,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -584,10 +214,7 @@
       "Brioni",
       "Ermenegildo Zegna",
       "Boglioli",
-      "Lardini",
-      "Tiger of Sweden",
-      "Oscar Jacobson",
-      "Suitsupply"
+      "Lardini"
     ],
     "storlekar": [
       "S",
@@ -621,7 +248,7 @@
       "down jacket",
       "puffer"
     ],
-    "maxpris": 1500,
+    "maxpris": 600,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -634,7 +261,6 @@
       "PL"
     ],
     "marke": [
-      "Canada Goose",
       "Arc'teryx",
       "Pyrenex",
       "Woolrich"
@@ -680,7 +306,7 @@
       "sweater",
       "kabelstickad"
     ],
-    "maxpris": 200,
+    "maxpris": 130,
     "kappris": 75,
     "min_betyg": 4,
     "kon": "herr",
@@ -697,11 +323,7 @@
       "Ralph Lauren",
       "Polo Ralph Lauren",
       "Loro Piana",
-      "Brunello Cucinelli",
-      "John Smedley",
-      "Morris",
-      "Stenströms",
-      "Oscar Jacobson"
+      "Brunello Cucinelli"
     ],
     "storlekar": [
       "S",
