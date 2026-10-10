@@ -653,49 +653,6 @@
     "aktiv": true
   },
   {
-    "namn": "Fjällräven byxor Keb/Vidda",
-    "sokord": "",
-    "maxpris": 300,
-    "kappris": 220,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Fjällräven",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "keb",
-      "vidda",
-      "barents"
-    ]
-  },
-  {
     "namn": "Patagonia fleece",
     "sokord": "",
     "maxpris": 250,
@@ -984,152 +941,6 @@
     "aktiv": true
   },
   {
-    "namn": "Woolpower",
-    "sokord": "",
-    "maxpris": 200,
-    "kappris": 150,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Woolpower",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "strumpor",
-      "socks",
-      "halskrage",
-      "mössa",
-      "bokserki",
-      "kalsonger",
-      "boxer",
-      "vantar",
-      "innervantar",
-      "underställ"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Hermès slips",
-    "sokord": "",
-    "maxpris": 250,
-    "kappris": 180,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "accessoarer"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Hermès",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "slips",
-      "tie",
-      "krawat",
-      "cravate",
-      "solmio",
-      "slipsi"
-    ]
-  },
-  {
-    "namn": "Paraboot & Church's",
-    "sokord": "",
-    "maxpris": 450,
-    "kappris": 300,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "skor"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Paraboot",
-      "Church's"
-    ],
-    "storlekar": [
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Louis Vuitton plånbok",
     "sokord": "",
     "maxpris": 500,
@@ -1229,448 +1040,6 @@
     ],
     "telegram": "kap",
     "aktiv": true
-  },
-  {
-    "namn": "Totême dam",
-    "sokord": "",
-    "maxpris": 350,
-    "kappris": 250,
-    "min_betyg": 4,
-    "kon": "dam",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Totême",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "style",
-      "typ",
-      "liknande",
-      "bikini",
-      "t-shirt",
-      "koszulka",
-      "strumpbyxor"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Burberry trenchcoat",
-    "sokord": "trench",
-    "maxpris": 500,
-    "kappris": 350,
-    "min_betyg": 4,
-    "kon": "dam",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Burberry",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "style",
-      "typ",
-      "liknande",
-      "halsduk",
-      "scarf",
-      "dziewczęcy",
-      "chłopięcy",
-      "dziecięcy",
-      "lasten"
-    ],
-    "maste": [
-      "trench",
-      "kappa",
-      "coat",
-      "rock",
-      "płaszcz",
-      "plaszcz",
-      "frakke",
-      "takki"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Max Mara kappa",
-    "sokord": "",
-    "maxpris": 500,
-    "kappris": 350,
-    "min_betyg": 4,
-    "kon": "dam",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Max Mara",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "style",
-      "typ",
-      "liknande",
-      "weekend",
-      "marella",
-      "marynarka",
-      "żakiet",
-      "zakiet",
-      "blazer",
-      "kavaj",
-      "pennyblack"
-    ],
-    "maste": [
-      "kappa",
-      "coat",
-      "rock",
-      "trench",
-      "płaszcz",
-      "plaszcz",
-      "frakke",
-      "takki",
-      "jacka",
-      "jacket",
-      "manuela",
-      "101801",
-      "teddy"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "By Malene Birger",
-    "sokord": "",
-    "maxpris": 150,
-    "kappris": 100,
-    "min_betyg": 4,
-    "kon": "dam",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "By Malene Birger",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Mulberry väska",
-    "sokord": "",
-    "maxpris": 600,
-    "kappris": 400,
-    "min_betyg": 4.5,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Mulberry",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "1:1",
-      "dupe",
-      "style",
-      "typ",
-      "liknande",
-      "look alike",
-      "box",
-      "kartong",
-      "dustbag",
-      "dust bag",
-      "pudełko",
-      "kvitto",
-      "receipt",
-      "w stylu",
-      "stylu",
-      "nyckelhållare",
-      "taskepynt",
-      "taskelås",
-      "pynt",
-      "charm",
-      "lås"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "väska",
-      "bag",
-      "torebka",
-      "taske",
-      "laukku",
-      "bayswater",
-      "alexa",
-      "lily",
-      "darley",
-      "roxanne",
-      "plånbok",
-      "wallet",
-      "portfel",
-      "tote",
-      "satchel",
-      "handväska",
-      "axelväska",
-      "crossbody"
-    ]
-  },
-  {
-    "namn": "Coach väska",
-    "sokord": "",
-    "maxpris": 300,
-    "kappris": 200,
-    "min_betyg": 4.5,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Coach",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "1:1",
-      "dupe",
-      "style",
-      "typ",
-      "liknande",
-      "look alike",
-      "box",
-      "kartong",
-      "dustbag",
-      "dust bag",
-      "pudełko",
-      "kvitto",
-      "receipt"
-    ],
-    "maste": [
-      "väska",
-      "bag",
-      "tabby",
-      "torebka",
-      "taske",
-      "laukku",
-      "handväska",
-      "axelväska",
-      "crossbody",
-      "tote"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Crockett & Jones / Tricker's",
-    "sokord": "",
-    "maxpris": 500,
-    "kappris": 350,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "skor"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Crockett & Jones",
-      "Tricker's"
-    ],
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "skokräm",
-      "skoblock",
-      "shoe tree"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Blundstone",
-    "sokord": "",
-    "maxpris": 250,
-    "kappris": 180,
-    "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Blundstone",
-    "storlekar": [
-      "37",
-      "38",
-      "39",
-      "40",
-      "41",
-      "42",
-      "43",
-      "44",
-      "45",
-      "46"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "sweter",
-      "bluz",
-      "koszul",
-      "tröja"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "blundstone",
-      "boot",
-      "støvl",
-      "stövl",
-      "känga",
-      "kängor",
-      "chelsea",
-      "sko",
-      "buty",
-      "kengät"
-    ]
   },
   {
     "namn": "New Balance 990/2002R/1906R",
@@ -1773,5 +1142,334 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Sverige landslagströja retro",
+    "sokord": [
+      "sverige 1994",
+      "sverige retro",
+      "sverige vintage"
+    ],
+    "maxpris": 300,
+    "kappris": 200,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [],
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "1:1",
+      "kopia",
+      "remake",
+      "reprint",
+      "kids",
+      "junior",
+      "dam",
+      "style",
+      "typ",
+      "t-shirt",
+      "tee",
+      "dam",
+      "handboll",
+      "hockey",
+      "bandy",
+      "innebandy",
+      "2018",
+      "2020",
+      "2021",
+      "2022",
+      "2023",
+      "2024",
+      "2025",
+      "2026",
+      "22/23",
+      "23/24",
+      "24/25",
+      "träning",
+      "halsduk",
+      "scarf",
+      "dziecięca",
+      "dziecieca",
+      "domar",
+      "made in sweden",
+      "kavaj",
+      "militär",
+      "bluza",
+      "ireland",
+      "track suit",
+      "tracksuit"
+    ],
+    "maste": [
+      "sverige 94",
+      "sverige 1992",
+      "sverige em 92",
+      "sverige 1990",
+      "sverige 1988",
+      "sverige 1986",
+      "sverige retro",
+      "sverige vintage",
+      "sweden 94",
+      "sweden 1992",
+      "sweden em 92",
+      "sweden 1990",
+      "sweden 1988",
+      "sweden 1986",
+      "sweden retro",
+      "sweden vintage",
+      "ruotsi 94",
+      "ruotsi 1992",
+      "ruotsi em 92",
+      "ruotsi 1990",
+      "ruotsi 1988",
+      "ruotsi 1986",
+      "ruotsi retro",
+      "ruotsi vintage",
+      "szwecja 94",
+      "szwecja 1992",
+      "szwecja em 92",
+      "szwecja 1990",
+      "szwecja 1988",
+      "szwecja 1986",
+      "szwecja retro",
+      "szwecja vintage",
+      "landslag 94",
+      "landslag 1992",
+      "landslag em 92",
+      "landslag 1990",
+      "landslag 1988",
+      "landslag 1986",
+      "landslag retro",
+      "landslag vintage",
+      "brolin",
+      "dahlin",
+      "ravelli",
+      "thern",
+      "limpar"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Adidas Samba/Gazelle/Spezial",
+    "sokord": [
+      "samba",
+      "gazelle"
+    ],
+    "maxpris": 130,
+    "kappris": 90,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "adidas",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "kids",
+      "junior",
+      "1:1",
+      "style",
+      "typ",
+      "liknande",
+      "dam"
+    ],
+    "maste": [
+      "samba",
+      "gazelle",
+      "spezial"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Stone Island tröjor & övrigt",
+    "sokord": "",
+    "maxpris": 350,
+    "kappris": 250,
+    "min_betyg": 4.5,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Stone Island",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "patch",
+      "badge",
+      "1:1",
+      "jacka",
+      "jacket",
+      "kurtka",
+      "jakke",
+      "takki",
+      "parka",
+      "overshirt",
+      "skjortjacka",
+      "t-shirt",
+      "tee",
+      "koszulka",
+      "polo",
+      "pike",
+      "piké",
+      "pikétröja",
+      "pique",
+      "piqué"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "bluza",
+      "sweatshirt",
+      "sweat",
+      "crewneck",
+      "tröja",
+      "stickad",
+      "knit",
+      "sweter",
+      "neule",
+      "genser",
+      "cardigan",
+      "collegetröja"
+    ]
+  },
+  {
+    "namn": "Oakley",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4.5,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Oakley",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "1:1",
+      "style",
+      "typ",
+      "liknande",
+      "fodral",
+      "case",
+      "etui",
+      "box",
+      "pokrowiec",
+      "futerał",
+      "futeral",
+      "gogle",
+      "goggles",
+      "skidglasögon"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "solglasögon",
+      "sunglasses",
+      "okulary",
+      "aurinkolasit",
+      "solbriller",
+      "holbrook",
+      "frogskins",
+      "radar",
+      "juliet",
+      "romeo",
+      "x metal",
+      "penny",
+      "sutro",
+      "flak",
+      "jawbreaker",
+      "eyejacket",
+      "medusa",
+      "half jacket",
+      "m frame",
+      "glasögon"
+    ]
   }
 ]
