@@ -1,7 +1,7 @@
 import json, sys, time, collections
 sys.path.insert(0, ".")
 import vinted_bot as vb
-L = json.load(open("sokningar.json", encoding="utf-8"))[-11:]
+L = json.load(open("sokningar.json", encoding="utf-8"))[-10:]
 v = vb.Vinted()
 minne = {"marken": {}}
 for s in L:
