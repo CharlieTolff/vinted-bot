@@ -14,9 +14,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Runda 3
+      - name: Runda 4
         continue-on-error: true
-        run: python3 -m research.runda3
+        run: python3 -m research.runda4
       - name: Spara resultatet i grenen
         run: |
           git config user.name "github-actions"
