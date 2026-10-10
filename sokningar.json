@@ -1149,8 +1149,8 @@
       "sverige fotbollströja",
       "landslagströja"
     ],
-    "maxpris": 400,
-    "kappris": 250,
+    "maxpris": 300,
+    "kappris": 200,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -1187,25 +1187,23 @@
       "junior",
       "dam",
       "style",
-      "typ"
+      "typ",
+      "t-shirt",
+      "tee",
+      "dam",
+      "handboll",
+      "hockey",
+      "bandy",
+      "innebandy"
     ],
     "maste": [
-      "1994",
-      "vm 94",
-      "vm94",
-      "1992",
-      "em 92",
-      "1990",
-      "1988",
-      "1998",
-      "retro",
-      "vintage",
-      "brolin",
-      "dahlin",
-      "ravelli",
-      "ljungberg",
-      "thern",
-      "brolin"
+      "sverige",
+      "sweden",
+      "ruotsi",
+      "szwecja",
+      "sverig",
+      "landslag",
+      "svff"
     ],
     "telegram": "kap",
     "aktiv": true
@@ -1310,10 +1308,30 @@
       "takki",
       "parka",
       "overshirt",
-      "skjortjacka"
+      "skjortjacka",
+      "t-shirt",
+      "tee",
+      "koszulka",
+      "polo"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "bluza",
+      "sweatshirt",
+      "sweat",
+      "crewneck",
+      "tröja",
+      "stickad",
+      "knit",
+      "sweter",
+      "neule",
+      "genser",
+      "cardigan",
+      "collegetröja"
+    ]
   },
   {
     "namn": "Oakley",
@@ -1353,9 +1371,37 @@
       "fodral",
       "case",
       "etui",
-      "box"
+      "box",
+      "pokrowiec",
+      "futerał",
+      "futeral",
+      "gogle",
+      "goggles",
+      "skidglasögon"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "solglasögon",
+      "sunglasses",
+      "okulary",
+      "aurinkolasit",
+      "solbriller",
+      "holbrook",
+      "frogskins",
+      "radar",
+      "juliet",
+      "romeo",
+      "x metal",
+      "penny",
+      "sutro",
+      "flak",
+      "jawbreaker",
+      "eyejacket",
+      "medusa",
+      "half jacket",
+      "m frame",
+      "glasögon"
+    ]
   }
 ]

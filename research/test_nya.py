@@ -15,3 +15,4 @@ for s in L:
     for a in tr[:12]:
         print("     ", a["pris"], a["titel"][:55], "|", a["marke"], a["storlek"], a["skick"])
     time.sleep(2)
+# rerun
