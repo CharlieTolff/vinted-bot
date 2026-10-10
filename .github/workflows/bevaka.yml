@@ -19,7 +19,7 @@ concurrency:
 jobs:
   bevaka:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     environment:
       name: github-pages
     steps:

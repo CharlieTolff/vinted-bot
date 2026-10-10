@@ -1,0 +1,27 @@
+name: Testkörning nya alarm
+on:
+  push:
+    branches: [claude/resell-research-larm-fboog9]
+    paths: [".github/workflows/testkorning.yml"]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: En runda från noll, utan Telegram
+        run: |
+          start=$(date +%s)
+          python3 vinted_bot.py --en-gang 2>&1 | tail -60
+          echo "TID: $(( $(date +%s) - start )) s"
+          python3 - <<'PY'
+          import json
+          t=json.load(open("traffar.json"))
+          for n,d in t.items():
+              a=d.get("annonser",[])
+              print("ALARM", n, "| träffar:", len(a), "| säljpris:", d.get("saljpris"), "| efterfrågan:", d.get("efterfragan"))
+              for x in a[:4]:
+                  print("    ", x["pris"], x["titel"][:45], "|", x["marke"], "|", x["storlek"], "| vinst:", x.get("vinst"))
+          PY

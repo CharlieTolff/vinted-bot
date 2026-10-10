@@ -727,5 +727,841 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Barbour vaxjacka",
+    "sokord": "",
+    "maxpris": 800,
+    "kappris": 500,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Barbour",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "väst",
+      "vest",
+      "gilet",
+      "kamizelka",
+      "storm hood",
+      "liner",
+      "foder"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "vax",
+      "wax",
+      "bedale",
+      "beaufort",
+      "border",
+      "ashby",
+      "transport",
+      "northumbria",
+      "spey"
+    ]
+  },
+  {
+    "namn": "Vaxjacka utan märke (kan vara Barbour)",
+    "sokord": [
+      "vaxjacka",
+      "wax jacket"
+    ],
+    "maxpris": 400,
+    "kappris": 250,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "maste": [
+      "vax",
+      "wax"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Arc'teryx jackor",
+    "sokord": "",
+    "maxpris": 450,
+    "kappris": 300,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Arc'teryx",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "liknande",
+      "type",
+      "style"
+    ],
+    "maste": [
+      "jacka",
+      "jacket",
+      "jakke",
+      "kurtka",
+      "takki",
+      "parka",
+      "beta",
+      "atom",
+      "alpha",
+      "gamma",
+      "squamish",
+      "zeta",
+      "shell",
+      "hoody",
+      "hoodie"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Stone Island jackor",
+    "sokord": "",
+    "maxpris": 700,
+    "kappris": 500,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Stone Island",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "patch",
+      "badge",
+      "t-shirt",
+      "tee"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "jacka",
+      "jacket",
+      "jakke",
+      "kurtka",
+      "takki",
+      "parka",
+      "overshirt",
+      "skjortjacka"
+    ]
+  },
+  {
+    "namn": "Fjällräven Greenland jacka",
+    "sokord": "greenland",
+    "maxpris": 280,
+    "kappris": 200,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Fjällräven",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "väska",
+      "bag",
+      "hatt",
+      "mössa",
+      "vax"
+    ],
+    "maste": [
+      "jacka",
+      "jacket",
+      "jakke",
+      "kurtka",
+      "takki",
+      "parka",
+      "winter"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Fjällräven byxor Keb/Vidda",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Fjällräven",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "keb",
+      "vidda",
+      "barents"
+    ]
+  },
+  {
+    "namn": "Patagonia fleece",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Patagonia",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "fleece",
+      "retro",
+      "synchilla",
+      "better sweater",
+      "snap",
+      "polar"
+    ]
+  },
+  {
+    "namn": "Carhartt Detroit/Active",
+    "sokord": "",
+    "maxpris": 400,
+    "kappris": 300,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Carhartt",
+      "Carhartt WIP"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tee",
+      "keps",
+      "mössa",
+      "hoodie"
+    ],
+    "maste": [
+      "detroit",
+      "active",
+      "michigan"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Our Legacy",
+    "sokord": "",
+    "maxpris": 200,
+    "kappris": 140,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Our Legacy",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "C.P. Company",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 170,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "C.P. Company",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tee"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Acne Studios herr",
+    "sokord": "",
+    "maxpris": 180,
+    "kappris": 120,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Acne Studios",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Loro Piana & Brunello Cucinelli",
+    "sokord": "",
+    "maxpris": 400,
+    "kappris": 250,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Loro Piana",
+      "Brunello Cucinelli"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Woolpower",
+    "sokord": "",
+    "maxpris": 200,
+    "kappris": 150,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Woolpower",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "strumpor",
+      "socks",
+      "halskrage",
+      "mössa"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Hermès slips",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "accessoarer"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Hermès",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "slips",
+      "tie",
+      "krawat",
+      "cravate",
+      "solmio",
+      "slipsi"
+    ]
+  },
+  {
+    "namn": "Paraboot & Church's",
+    "sokord": "",
+    "maxpris": 450,
+    "kappris": 300,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Paraboot",
+      "Church's"
+    ],
+    "storlekar": [
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Louis Vuitton plånbok",
+    "sokord": "",
+    "maxpris": 500,
+    "kappris": 350,
+    "min_betyg": 4.5,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Louis Vuitton",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "väska",
+      "bag",
+      "1:1",
+      "box",
+      "kartong",
+      "dustbag"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "plånbok",
+      "wallet",
+      "korthållare",
+      "card holder",
+      "portfel",
+      "portefeuille",
+      "lompakko",
+      "pung",
+      "multiple",
+      "brazza",
+      "zippy",
+      "pocket organizer"
+    ]
+  },
+  {
+    "namn": "Birkenstock Boston",
+    "sokord": "boston",
+    "maxpris": 380,
+    "kappris": 280,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Birkenstock",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn"
+    ],
+    "maste": [
+      "boston"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
