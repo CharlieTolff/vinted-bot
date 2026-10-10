@@ -1229,5 +1229,509 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Totême dam",
+    "sokord": "",
+    "maxpris": 350,
+    "kappris": 250,
+    "min_betyg": 4,
+    "kon": "dam",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Totême",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "style",
+      "typ",
+      "liknande"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Burberry trenchcoat",
+    "sokord": "trench",
+    "maxpris": 500,
+    "kappris": 350,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Burberry",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "style",
+      "typ",
+      "liknande",
+      "halsduk",
+      "scarf"
+    ],
+    "maste": [
+      "trench",
+      "kappa",
+      "coat",
+      "rock",
+      "płaszcz",
+      "plaszcz",
+      "frakke",
+      "takki"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Max Mara kappa",
+    "sokord": "",
+    "maxpris": 500,
+    "kappris": 350,
+    "min_betyg": 4,
+    "kon": "dam",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Max Mara",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "style",
+      "typ",
+      "liknande",
+      "weekend"
+    ],
+    "maste": [
+      "kappa",
+      "coat",
+      "rock",
+      "trench",
+      "płaszcz",
+      "plaszcz",
+      "frakke",
+      "takki",
+      "jacka",
+      "jacket",
+      "manuela",
+      "101801",
+      "teddy"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "By Malene Birger",
+    "sokord": "",
+    "maxpris": 150,
+    "kappris": 100,
+    "min_betyg": 4,
+    "kon": "dam",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "By Malene Birger",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Mulberry väska",
+    "sokord": "",
+    "maxpris": 600,
+    "kappris": 400,
+    "min_betyg": 4.5,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Mulberry",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "1:1",
+      "dupe",
+      "style",
+      "typ",
+      "liknande",
+      "look alike",
+      "box",
+      "kartong",
+      "dustbag",
+      "dust bag",
+      "pudełko",
+      "kvitto",
+      "receipt"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Coach väska",
+    "sokord": "",
+    "maxpris": 300,
+    "kappris": 200,
+    "min_betyg": 4.5,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Coach",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "1:1",
+      "dupe",
+      "style",
+      "typ",
+      "liknande",
+      "look alike",
+      "box",
+      "kartong",
+      "dustbag",
+      "dust bag",
+      "pudełko",
+      "kvitto",
+      "receipt"
+    ],
+    "maste": [
+      "väska",
+      "bag",
+      "tabby",
+      "torebka",
+      "taske",
+      "laukku",
+      "handväska",
+      "axelväska",
+      "crossbody",
+      "tote"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Crockett & Jones / Tricker's",
+    "sokord": "",
+    "maxpris": 500,
+    "kappris": 350,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Crockett & Jones",
+      "Tricker's"
+    ],
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "skokräm",
+      "skoblock",
+      "shoe tree"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Blundstone",
+    "sokord": "",
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Blundstone",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Birkenstock London/Tokio/Zermatt",
+    "sokord": "",
+    "maxpris": 200,
+    "kappris": 150,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Birkenstock",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn"
+    ],
+    "maste": [
+      "london",
+      "tokio",
+      "tokyo",
+      "zermatt"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "New Balance 990/2002R/1906R",
+    "sokord": "",
+    "maxpris": 220,
+    "kappris": 160,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "New Balance",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "style",
+      "typ",
+      "liknande"
+    ],
+    "maste": [
+      "990",
+      "991",
+      "992",
+      "993",
+      "2002r",
+      "2002 r",
+      "1906r",
+      "1906 r"
+    ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Salomon XT-6",
+    "sokord": "",
+    "maxpris": 300,
+    "kappris": 220,
+    "min_betyg": 4,
+    "kon": "",
+    "kategorier": [],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Salomon",
+    "storlekar": [],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "style",
+      "typ",
+      "liknande"
+    ],
+    "maste": [
+      "xt-6",
+      "xt6",
+      "xt 6",
+      "xt-4",
+      "xt4",
+      "acs pro",
+      "acs +"
+    ],
+    "telegram": "kap",
+    "aktiv": true
   }
 ]
