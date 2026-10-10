@@ -1265,7 +1265,11 @@
       "barn",
       "style",
       "typ",
-      "liknande"
+      "liknande",
+      "bikini",
+      "t-shirt",
+      "koszulka",
+      "strumpbyxor"
     ],
     "telegram": "kap",
     "aktiv": true
@@ -1276,8 +1280,10 @@
     "maxpris": 500,
     "kappris": 350,
     "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
+    "kon": "dam",
+    "kategorier": [
+      "klader"
+    ],
     "lander": [
       "SE",
       "DK",
@@ -1305,7 +1311,11 @@
       "typ",
       "liknande",
       "halsduk",
-      "scarf"
+      "scarf",
+      "dziewczęcy",
+      "chłopięcy",
+      "dziecięcy",
+      "lasten"
     ],
     "maste": [
       "trench",
@@ -1356,7 +1366,14 @@
       "style",
       "typ",
       "liknande",
-      "weekend"
+      "weekend",
+      "marella",
+      "marynarka",
+      "żakiet",
+      "zakiet",
+      "blazer",
+      "kavaj",
+      "pennyblack"
     ],
     "maste": [
       "kappa",
@@ -1456,10 +1473,33 @@
       "dust bag",
       "pudełko",
       "kvitto",
-      "receipt"
+      "receipt",
+      "w stylu",
+      "stylu",
+      "nyckelhållare"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "väska",
+      "bag",
+      "torebka",
+      "taske",
+      "laukku",
+      "bayswater",
+      "alexa",
+      "lily",
+      "darley",
+      "roxanne",
+      "plånbok",
+      "wallet",
+      "portfel",
+      "tote",
+      "satchel",
+      "handväska",
+      "axelväska",
+      "crossbody"
+    ]
   },
   {
     "namn": "Coach väska",
@@ -1527,8 +1567,10 @@
     "maxpris": 500,
     "kappris": 350,
     "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
     "lander": [
       "SE",
       "DK",
@@ -1578,7 +1620,18 @@
       "PL"
     ],
     "marke": "Blundstone",
-    "storlekar": [],
+    "storlekar": [
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "46"
+    ],
     "skick": [
       "Ny med prislapp",
       "Ny utan prislapp",
@@ -1594,54 +1647,16 @@
       "trasig",
       "fläck",
       "barn"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
-    "namn": "Birkenstock London/Tokio/Zermatt",
-    "sokord": "",
-    "maxpris": 200,
-    "kappris": 150,
-    "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Birkenstock",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn"
-    ],
-    "maste": [
-      "london",
-      "tokio",
-      "tokyo",
-      "zermatt"
     ],
     "telegram": "kap",
     "aktiv": true
   },
   {
     "namn": "New Balance 990/2002R/1906R",
-    "sokord": "",
+    "sokord": [
+      "990",
+      "2002r"
+    ],
     "maxpris": 220,
     "kappris": 160,
     "min_betyg": 4,
@@ -1689,7 +1704,7 @@
   },
   {
     "namn": "Salomon XT-6",
-    "sokord": "",
+    "sokord": "xt-6",
     "maxpris": 300,
     "kappris": 220,
     "min_betyg": 4,
