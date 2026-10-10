@@ -14,12 +14,9 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Forum och reseller-sidor
+      - name: Runda 2
         continue-on-error: true
-        run: python3 research/forum.py
-      - name: Vinted och Tradera
-        continue-on-error: true
-        run: python3 -m research.marknadskoll
+        run: python3 -m research.runda2
       - name: Spara resultatet i grenen
         run: |
           git config user.name "github-actions"
