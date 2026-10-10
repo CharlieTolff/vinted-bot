@@ -1476,7 +1476,12 @@
       "receipt",
       "w stylu",
       "stylu",
-      "nyckelhållare"
+      "nyckelhållare",
+      "taskepynt",
+      "taskelås",
+      "pynt",
+      "charm",
+      "lås"
     ],
     "telegram": "kap",
     "aktiv": true,
@@ -1646,10 +1651,26 @@
       "defekt",
       "trasig",
       "fläck",
-      "barn"
+      "barn",
+      "sweter",
+      "bluz",
+      "koszul",
+      "tröja"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "blundstone",
+      "boot",
+      "støvl",
+      "stövl",
+      "känga",
+      "kängor",
+      "chelsea",
+      "sko",
+      "buty",
+      "kengät"
+    ]
   },
   {
     "namn": "New Balance 990/2002R/1906R",
@@ -1687,7 +1708,11 @@
       "barn",
       "style",
       "typ",
-      "liknande"
+      "liknande",
+      "kids",
+      "574",
+      "530",
+      "327"
     ],
     "maste": [
       "990",
