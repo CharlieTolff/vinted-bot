@@ -3,10 +3,10 @@ name: Marknadskoll (research)
 on:
   push:
     branches: [claude/resell-research-larm-fboog9]
-    paths: ["research/**", ".github/workflows/marknadskoll.yml"]
+    paths: ["research/**.py", ".github/workflows/marknadskoll.yml"]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   koll:
@@ -14,11 +14,16 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
-      - name: Kör research
+      - name: Forum och reseller-sidor
+        continue-on-error: true
+        run: python3 research/forum.py
+      - name: Vinted och Tradera
+        continue-on-error: true
+        run: python3 -m research.marknadskoll
+      - name: Spara resultatet i grenen
         run: |
-          python3 research/probe.py 2>&1 | tee research-out.txt
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: research-out
-          path: research-out.txt
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -f research/*.json || true
+          git commit -m "Research-resultat" || exit 0
+          git push
