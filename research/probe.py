@@ -1,11 +1,9 @@
-import json, re, sys, urllib.request, urllib.parse, time
+import json, re, sys, urllib.request, urllib.parse, time, html as H
 sys.path.insert(0, ".")
 import vinted_bot as vb
-
 UA = vb.WEBBLASARE
-def get(url, extra=None):
-    h = {"User-Agent": UA, "Accept": "text/html,application/json", "Accept-Language": "sv-SE,sv;q=0.9,en;q=0.8"}
-    h.update(extra or {})
+def get(url):
+    h = {"User-Agent": UA, "Accept": "text/html", "Accept-Language": "sv-SE,sv;q=0.9,en;q=0.8"}
     try:
         with urllib.request.urlopen(urllib.request.Request(url, headers=h), timeout=30) as r:
             return r.status, r.read().decode("utf-8", "replace")
@@ -14,47 +12,29 @@ def get(url, extra=None):
 
 v = vb.Vinted()
 sida = v.hamta(vb.VINTED + "/catalog?search_text=barbour&catalog_ids[]=2050")
-text = vb.sidans_data(sida)
-m = re.search(r'"productItem":', text)
-a, _ = json.JSONDecoder().raw_decode(text, m.end())
-print("VINTED HTML ITEM:", json.dumps(a)[:3000])
-print("N items html:", len(vb.annonser_fran_sida(sida)))
-try:
-    r = v.api("/api/v2/catalog/items?" + urllib.parse.urlencode({"search_text": "barbour", "per_page": 96, "catalog_ids": 2050}))
-    its = r.get("items") or []
-    print("API items:", len(its), "keys:", list(its[0].keys()) if its else None)
-    print("API ITEM:", json.dumps(its[0])[:2500] if its else r)
-    print("API pagination:", r.get("pagination"))
-except Exception as e:
-    print("API fail", e)
+t = vb.sidans_data(sida)
+for k in ["total_entries", "totalEntries", "total_pages", "pagination", "created_at", "timestamp"]:
+    i = t.find(k); print("VINTED", k, i, t[max(0,i-100):i+200].replace("\n"," ") if i >= 0 else "")
+st, b = get(vb.VINTED + "/items/10314966324")
+t2 = vb.sidans_data(b) if st == 200 else ""
+for k in ["created_at", "updated_at", "last_push_up", "view_count", "favourite_count", "timestamp"]:
+    i = t2.find(k); print("ITEM", k, t2[max(0,i-80):i+120] if i >= 0 else "-")
 
-for u in ["https://www.tradera.com/search?q=barbour%20bedale",
-          "https://www.tradera.com/search?q=barbour%20bedale&itemStatus=Ended",
-          "https://www.tradera.com/search?q=barbour%20bedale&itemStatus=Sold",
-          "https://www.tradera.com/search?q=barbour+bedale&sold=true"]:
-    st, b = get(u)
-    nd = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', b, re.S)
-    print("TRADERA", u, st, len(b), "nextdata" if nd else "no-nextdata")
-    if nd:
-        d = json.loads(nd.group(1))
-        s = json.dumps(d)
-        i = s.find("itemStatus")
-        print("  snippet:", s[:300])
-        print("  around items:", s[max(0, s.find('"items"')):s.find('"items"') + 2500])
-    else:
-        print("  body:", b[:500].replace("\n", " "))
-        for k in ["Såld", "Sold", "Avslutad", "price", "kr"]:
-            print("  ", k, b.count(k))
-    time.sleep(2)
+st, b = get("https://www.tradera.com/search?q=barbour%20bedale&itemStatus=Ended")
+t = vb.sidans_data(b)
+print("TRADERA data len", len(t))
+for k in ["Avslutad", "Såld", "itemId", "bidCount", "price", "isSold", "hasBids", "endDate"]:
+    i = t.find(k); print("TR", k, t.count(k), t[max(0,i-300):i+500].replace("\n"," ") if i >= 0 else "-")
+    print("----")
+i = b.find("Avslutad"); print("TR HTML around Avslutad:", re.sub(r"\s+", " ", b[max(0,i-1500):i+300]))
 
-st, b = get("https://www.ebay.co.uk/sch/i.html?_nkw=barbour+bedale&LH_Sold=1&LH_Complete=1&_ipg=60")
-print("EBAY", st, len(b), "prices:", re.findall(r's-item__price[^>]*>(?:<[^>]+>)*([^<]+)', b)[:20], "s-card", b.count("s-card"))
-print(b[:300])
-for u in ["https://www.reddit.com/r/Flipping/search.json?q=vinted&restrict_sr=1&sort=top&t=all&limit=5",
-          "https://old.reddit.com/r/Flipping/search.json?q=vinted&restrict_sr=1&limit=5"]:
-    st, b = get(u, {"User-Agent": "research-script/0.1 by valtoresell"})
-    print("REDDIT", u, st, b[:400])
-for u in ["https://www.flashback.org/sok/?query=vinted+resell", "https://plick.se/profiler/barelicloset",
-          "https://www.tiktok.com/discover/best-brands-to-resell-on-vinted"]:
-    st, b = get(u)
-    print("OTHER", u, st, len(b))
+for q in ["vinted+resell", "vinted+tjäna+pengar", "köpa+och+sälja+kläder+vinst", "secondhand+resell+märken"]:
+    st, b = get("https://www.flashback.org/sok/?query=" + q)
+    titles = re.findall(r'<a[^>]+href="(/t\d+)"[^>]*>([^<]+)</a>', b)
+    print("FLASHBACK", q, st, titles[:25])
+    if not titles: print(re.sub(r"\s+"," ",b[:1500]))
+st, b = get("https://plick.se/profiler/barelicloset")
+print("PLICK", re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", b))[:6000])
+st, b = get("https://www.tiktok.com/discover/best-brands-to-resell-on-vinted")
+txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", b))
+print("TIKTOK", txt[:5000])
