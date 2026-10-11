@@ -261,12 +261,12 @@
     "farger": []
   },
   {
-    "namn": "Italienska jackor & kavajer",
+    "namn": "Italienska jackor & overshirts",
     "sokord": [
       "overshirt",
       "jacka",
-      "kavaj",
-      "blazer"
+      "jersey blazer",
+      "stickad kavaj"
     ],
     "maxpris": 250,
     "kappris": 180,
@@ -317,7 +317,11 @@
       "trasig",
       "fläck",
       "barn",
-      "dam"
+      "dam",
+      "kostym",
+      "suit",
+      "garnitur",
+      "smoking"
     ],
     "maste": [
       "jacka",
@@ -325,25 +329,36 @@
       "jacket",
       "kurtka",
       "takki",
-      "overshirt",
-      "skjortjacka",
       "worker",
       "giacca",
-      "kavaj",
-      "blazer",
-      "marynarka",
-      "bleiseri"
+      "stickad",
+      "stickat",
+      "stickade",
+      "knit",
+      "strik",
+      "jersey",
+      "dzian",
+      "neule",
+      "cardigan",
+      "kofta",
+      "overshirt",
+      "skjortjacka",
+      "shirt jacket",
+      "unstructured",
+      "ostrukturerad"
     ],
     "telegram": "kap",
     "aktiv": true
   },
   {
-    "namn": "Kavaj, cardigan & stickat",
+    "namn": "Stickad kavaj, cardigan & overshirt",
     "sokord": [
       "stickad kavaj",
+      "jersey kavaj",
+      "knitted blazer",
       "cardigan",
       "stickad zip",
-      "knitted blazer"
+      "overshirt"
     ],
     "maxpris": 200,
     "kappris": 140,
@@ -396,10 +411,31 @@
       "trasig",
       "fläck",
       "barn",
-      "dam"
+      "dam",
+      "kostym",
+      "suit",
+      "garnitur",
+      "smoking"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "stickad",
+      "stickat",
+      "stickade",
+      "knit",
+      "strik",
+      "jersey",
+      "dzian",
+      "neule",
+      "cardigan",
+      "kofta",
+      "overshirt",
+      "skjortjacka",
+      "shirt jacket",
+      "unstructured",
+      "ostrukturerad"
+    ]
   },
   {
     "namn": "Italienska dunjackor & västar",
