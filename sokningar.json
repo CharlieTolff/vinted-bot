@@ -466,6 +466,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -476,8 +477,6 @@
       "barn",
       "dam"
     ],
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "jacka",
       "jakke",
@@ -493,7 +492,8 @@
       "marynarka",
       "bleiseri"
     ],
-    "farger": []
+    "telegram": "kap",
+    "aktiv": true
   },
   {
     "namn": "Kavaj, cardigan & stickat",
