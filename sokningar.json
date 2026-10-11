@@ -191,57 +191,6 @@
     "aktiv": true
   },
   {
-    "namn": "Toppmärken blazer",
-    "sokord": [
-      "blazer",
-      "kavaj"
-    ],
-    "maxpris": 300,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "Brioni",
-      "Ermenegildo Zegna",
-      "Boglioli",
-      "Lardini"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Barbour vaxjacka",
     "sokord": "",
     "maxpris": 800,
