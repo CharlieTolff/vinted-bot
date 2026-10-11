@@ -222,7 +222,11 @@
       "Samsøe Samsøe",
       "Sunflower",
       "A Day's March",
-      "Sandro"
+      "Sandro",
+      "Massimo Dutti",
+      "Hugo Boss",
+      "BOSS",
+      "Polo Ralph Lauren"
     ],
     "storlekar": [
       "S",
@@ -386,7 +390,11 @@
       "Colmar",
       "Peuterey",
       "Boglioli",
-      "Ralph Lauren"
+      "Ralph Lauren",
+      "Massimo Dutti",
+      "Hugo Boss",
+      "BOSS",
+      "Polo Ralph Lauren"
     ],
     "storlekar": [
       "S",
@@ -468,7 +476,10 @@
       "Ciesse Piumini",
       "Duvetica",
       "Aspesi",
-      "J.Lindeberg"
+      "J.Lindeberg",
+      "Hugo Boss",
+      "BOSS",
+      "Polo Ralph Lauren"
     ],
     "storlekar": [
       "S",
@@ -493,9 +504,33 @@
       "trasig",
       "fläck",
       "barn",
-      "dam"
+      "dam",
+      "kostym",
+      "suit",
+      "garnitur",
+      "t-shirt",
+      "byxor",
+      "spodnie",
+      "jeans"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "maste": [
+      "dun",
+      "puffer",
+      "down",
+      "väst",
+      "vest",
+      "kamizelka",
+      "liivi",
+      "jacka",
+      "jakke",
+      "jacket",
+      "kurtka",
+      "takki",
+      "pikowana",
+      "quilted",
+      "toppa"
+    ]
   }
 ]
