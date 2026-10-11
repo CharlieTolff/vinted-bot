@@ -1095,52 +1095,5 @@
     ],
     "telegram": "kap",
     "aktiv": true
-  },
-  {
-    "namn": "Salomon XT-6",
-    "sokord": "xt-6",
-    "maxpris": 300,
-    "kappris": 220,
-    "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Salomon",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "style",
-      "typ",
-      "liknande"
-    ],
-    "maste": [
-      "xt-6",
-      "xt6",
-      "xt 6",
-      "xt-4",
-      "xt4",
-      "acs pro",
-      "acs +"
-    ],
-    "telegram": "kap",
-    "aktiv": true
   }
 ]
