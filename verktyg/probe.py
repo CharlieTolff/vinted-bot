@@ -1,5 +1,5 @@
-"""Tillfälligt: testar datakällor från GitHub Actions."""
-import json, re, sys, urllib.parse, urllib.request, html as H
+"""Tillfälligt: testar datakällor från GitHub Actions (runda 2)."""
+import json, re, sys, time, urllib.parse, urllib.request, html as H
 sys.path.insert(0, ".")
 import vinted_bot as vb
 
@@ -13,84 +13,78 @@ def steg(namn, f):
     try:
         f()
     except Exception as e:
-        print("FEL", repr(e)[:500], flush=True)
+        import traceback; traceback.print_exc(); sys.stdout.flush()
 
 v = vb.Vinted()
 def vinted_kat():
-    for u in ["/api/v2/catalog/initializers", "/api/v2/catalogs"]:
-        try:
-            d = v.api(u)
-            s = json.dumps(d, ensure_ascii=False)
-            print(u, "len", len(s), s[:300])
-            def walk(n, path, depth=0):
-                if isinstance(n, dict):
-                    if "id" in n and "title" in n and isinstance(n.get("catalogs"), list):
-                        p = path + [n["title"]]
-                        if p[0] in ("Herr", "Män", "Men") or (len(p) > 1 and p[1] in ("Herr",)):
-                            if len(p) <= 4:
-                                print("KAT", n["id"], " > ".join(p))
-                        for c in n["catalogs"]:
-                            walk(c, p, depth+1)
-                        return
-                    for k, val in n.items():
-                        walk(val, path, depth)
-                elif isinstance(n, list):
-                    for x in n:
-                        walk(x, path, depth)
-            walk(d, [])
-            return
-        except Exception as e:
-            print(u, "FEL", repr(e)[:200])
+    sida = v.hamta(vb.VINTED + "/catalog?catalog_ids[]=2050")
+    t = vb.sidans_data(sida)
+    print("len", len(t))
+    for ord_ in ["Cardigans", "Koftor", "Stickat", "Skjortor", "Jeans", "Jackor", "Kavajer", "Tröjor", "Ytterkläder", "Västar", "Dunjackor", "Rockar", "Hoodies"]:
+        for m in re.finditer(r'"title":"%s"' % ord_, t):
+            print(ord_, "=>", t[max(0, m.start()-250):m.end()+120].replace("\n", " "))
+            break
+    # leta efter katalogträd i början av sidan
+    for k in ['"catalogTree"', '"catalogs":[', '"code":"MEN_', '"url":"/catalog/2050']:
+        i = t.find(k); print(k, i, t[max(0,i-100):i+500] if i >= 0 else "")
+    # en annons-nyckel
+    m = re.search(r'"productItem":', t)
+    sida = v.hamta(vb.VINTED + "/catalog?catalog_ids[]=2050&order=newest_first")
+    t2 = vb.sidans_data(sida)
+    m = re.search(r'"productItem":', t2)
+    a, _ = json.JSONDecoder().raw_decode(t2, m.end())
+    print("ITEM", json.dumps(a, ensure_ascii=False)[:2500])
 steg("vinted kategorier", vinted_kat)
 
-def vinted_sok():
-    bid = v.marke_id("J.Lindeberg"); print("brand", bid)
-    for par in ([("catalog_ids[]", 2050)], [("catalog_ids[]", 2050), ("brand_ids[]", bid)], [("search_text", "cardigan"), ("catalog_ids[]", 2050), ("brand_ids[]", bid)]):
-        u = vb.VINTED + "/catalog?" + urllib.parse.urlencode(par + [("order", "newest_first")])
-        sida = v.hamta(u)
-        t = vb.sidans_data(sida)
-        m = re.search(r'"pagination":(\{[^{}]*\})', t)
-        a = vb.annonser_fran_sida(sida)
-        print(par, m.group(1) if m else None, len(a), [x["pris"] for x in a[:8]], [x["gillas"] for x in a[:8]])
-    try:
-        d = v.api("/api/v2/catalog/items?" + urllib.parse.urlencode({"catalog_ids": "2050", "brand_ids": bid, "per_page": 96, "order": "newest_first"}))
-        print("api items", d.get("pagination"), len(d.get("items", [])))
-    except Exception as e:
-        print("api items FEL", repr(e)[:200])
-steg("vinted sök", vinted_sok)
+def vinted_sidor():
+    # Hur långt bak räcker 10 sidor av nyaste i herr-kläder? och sida 11?
+    for p in (1, 10, 11):
+        u = vb.VINTED + "/catalog?" + urllib.parse.urlencode([("catalog_ids[]", 2050), ("order", "newest_first"), ("page", p), ("search_text", "cardigan")])
+        sida = v.hamta(u); a = vb.annonser_fran_sida(sida)
+        t = vb.sidans_data(sida); m = re.search(r'"pagination":(\{[^{}]*\})', t)
+        print(p, m.group(1) if m else None, len(a), a[0]["id"] if a else None, a[-1]["id"] if a else None, [x["marke"] for x in a[:15]])
+        time.sleep(1.5)
+steg("vinted sidor", vinted_sidor)
 
-def tradera():
-    for status in ("Sold", "Active", "Unsold"):
-        u = "https://www.tradera.com/search?" + urllib.parse.urlencode({"q": "j.lindeberg cardigan", "itemStatus": status})
-        st, b = get(u)
-        t = vb.sidans_data(b)
-        i = t.find('"discover/receiveSearchResults"')
-        print(status, st, len(b), len(t), i)
-        if i >= 0:
-            j = t.find('"result":', i)
-            res, _ = json.JSONDecoder().raw_decode(t, j + 9)
+def tradera(q, status, extra=()):
+    u = "https://www.tradera.com/search?" + urllib.parse.urlencode([("q", q), ("itemStatus", status)] + list(extra))
+    st, b = get(u)
+    t = vb.sidans_data(b)
+    i = t.find('"discover/receiveSearchResults"')
+    j = t.find('"result":', i)
+    res, _ = json.JSONDecoder().raw_decode(t, j + 9)
+    return u, res
+
+def trad():
+    for q, extra in [("j.lindeberg cardigan", ()), ("j.lindeberg", ()), ("cardigan", ()), ('"j.lindeberg" cardigan', ()),
+                     ("j.lindeberg cardigan", (("sortBy", "EndDateDescending"),)), ("j.lindeberg cardigan", (("paging", "MjpBdWN0aW9ufDM5fDE5NjE6QXVjdGlvbg"),)),
+                     ("j.lindeberg cardigan", (("spage", "2"),)), ("cardigan", (("categoryId", "343837"),))]:
+        try:
+            u, res = tradera(q, "Sold", extra)
             it = res.get("items") or []
-            print(" total", res.get("totalItemCount"), "items", len(it), "keys", list(res)[:20])
-            if it: print(" item", json.dumps(it[0], ensure_ascii=False)[:700])
-        else:
-            print(" snippet", b[:500])
-steg("tradera", tradera)
+            match = sum(1 for x in it if "lindeberg" in x.get("shortDescription", "").lower())
+            print(q, extra, "total", res.get("totalItemCount"), res.get("itemsMatched"), "n", len(it), "lindeberg i titel", match,
+                  "slut", [x.get("endDate", "")[:10] for x in it[:5]], "pag", json.dumps(res.get("pagination"))[:300])
+            print("  titlar", [x.get("shortDescription", "")[:40] for x in it[:8]])
+        except Exception as e:
+            print(q, extra, "FEL", repr(e)[:200])
+        time.sleep(1.2)
+    u, res = tradera("cardigan", "Sold")
+    print("categoryPath", json.dumps(res.get("categoryPath"), ensure_ascii=False)[:500])
+    print("filters", json.dumps(res.get("filters"), ensure_ascii=False)[:3000])
+steg("tradera", trad)
 
 def plick():
-    for u in ["https://plick.se/sok?query=j.lindeberg+cardigan", "https://plick.se/search?query=j.lindeberg+cardigan",
-              "https://plick.se/s/j.lindeberg%20cardigan", "https://api.plick.se/api/v2/search?query=j.lindeberg%20cardigan",
-              "https://plick.se/m%C3%A4rkeskl%C3%A4der"]:
-        try:
-            st, b = get(u)
-            print(u, st, len(b))
-            body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", b, flags=re.S)
-            txt = re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", body)))
-            print(" text", txt[:1200])
-            print(" links", list(dict.fromkeys(re.findall(r'href="(/[^"]+)"', b)))[:60])
-            print(" scripts", re.findall(r'<script[^>]*src="([^"]+)"', b)[:10])
-            for k in ("annonser", "resultat", "price", "pris", "data-", "turbo-frame", "json"):
-                i = b.find(k)
-                if i >= 0: print(" ", k, "=>", b[max(0,i-200):i+300].replace("\n"," "))
-        except Exception as e:
-            print(u, "FEL", repr(e)[:200])
+    for u in ["https://plick.se/produkter?query=j.lindeberg+cardigan", "https://plick.se/kategorier/stickat?query=j.lindeberg"]:
+        st, b = get(u)
+        print(u, st, len(b))
+        body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", b, flags=re.S)
+        txt = re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", body)))
+        i = txt.find("Vad letar du")
+        print(" text", txt[-3000:])
+        for k in ("träffar", "resultat", "annonser", 'href="/produkter/', 'class="listing', "kr<", "data-price", "next", "sida="):
+            i = b.find(k)
+            if i >= 0: print(" ", k, "=>", b[max(0,i-300):i+400].replace("\n"," "))
+        print(" prodlinks", len(re.findall(r'href="/produkter/[^"]+"', b)), re.findall(r'href="(/produkter/[^"?]+)"', b)[:5])
+        time.sleep(1)
 steg("plick", plick)
