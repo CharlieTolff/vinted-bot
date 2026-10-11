@@ -40,58 +40,6 @@
     "aktiv": true
   },
   {
-    "namn": "Toppmärken overshirt",
-    "sokord": [
-      "overshirt",
-      "shirt jacket"
-    ],
-    "maxpris": 300,
-    "min_betyg": 3.5,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Stone Island",
-      "C.P. Company",
-      "Our Legacy",
-      "Norse Projects",
-      "Ralph Lauren",
-      "Polo Ralph Lauren",
-      "Barbour"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Toppmärken fieldjacket",
     "sokord": [
       "field jacket",
