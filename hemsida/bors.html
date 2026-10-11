@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Märkesbörsen · Valto Resell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Samma färger som alarm-sidan */
+:root{
+  color-scheme:light;
+  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
+  --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
+  --plus:#1d7a50;--minus:#b23b27;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
+  --vinted:#1268a8;--tradera:#9a6412;--plick:#b8336a;
+  --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.tal{font-variant-numeric:tabular-nums}
+
+/* Topplist */
+header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--menylinje)}
+.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 24px}
+.marke{display:flex;flex-direction:column;line-height:1.15;text-decoration:none}
+.marke b{font-family:Cinzel,Georgia,serif;font-size:18px;letter-spacing:.08em;color:var(--guldljus)}
+.marke span{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--menysvag);margin-top:3px}
+.flikar{display:flex;gap:4px;margin-left:auto}
+.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px}
+.flikar a:hover{background:var(--menyval)}
+.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
+
+main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
+h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
+.svag{color:var(--svag);font-size:13px}
+.rubrikrad{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px;margin-bottom:16px}
+.rubrikrad .svag{margin-left:auto}
+
+/* Val */
+.kontroller{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:18px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;max-width:100%}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;font:inherit;font-size:13.5px;border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:999px;padding:6px 13px;cursor:pointer;white-space:nowrap}
+.chip:hover{border-color:var(--guld)}
+.chip.vald{background:#141414;color:var(--guldljus);border-color:#141414}
+.segment{display:inline-flex;background:var(--kort2);border:1px solid var(--linje);border-radius:11px;padding:3px;gap:2px}
+.segment button{font:inherit;font-size:13px;border:0;background:none;color:var(--svag);padding:5px 11px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.segment button.vald{background:var(--kort);color:var(--text);font-weight:600;box-shadow:0 1px 2px #0002}
+.prick{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+
+/* Översikt */
+.rutor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.ruta{background:var(--kort);border:1px solid var(--linje);border-radius:14px;padding:14px 16px;box-shadow:var(--skugga);cursor:pointer;min-width:0}
+.ruta:hover{border-color:var(--guld)}
+.ruta .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
+.ruta .namn{font-weight:700;font-size:18px;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ruta .varde{font-size:14px;color:var(--svag)}
+
+/* Kort och tabell */
+.kort{background:var(--kort);border:1px solid var(--linje);border-radius:16px;box-shadow:var(--skugga);margin-bottom:20px;overflow:hidden}
+.korthuvud{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--linje)}
+.korthuvud .svag{flex:1 1 220px}
+.tabellram{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;font-weight:600;color:var(--svag);text-align:right;padding:9px 12px;white-space:nowrap;cursor:pointer;user-select:none;border-bottom:1px solid var(--linje)}
+th:first-child,td:first-child{text-align:left}
+th.sort::after{content:" ▾";color:var(--guldtext)}
+th.sort.upp::after{content:" ▴"}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid color-mix(in srgb,var(--linje) 55%,transparent);white-space:nowrap}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--kort2)}
+tbody tr.vald{background:color-mix(in srgb,var(--guld) 14%,var(--kort))}
+.namncell{display:flex;align-items:center;gap:8px;max-width:240px}
+.namncell span.n{overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.stjarna{color:var(--guldtext);font-size:12px}
+.rank{color:var(--svag);font-size:12px;width:18px;text-align:right;flex:none}
+.andelcell{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.stapel{width:70px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--linje) 60%,transparent);overflow:hidden;flex:none}
+.stapel i{display:block;height:100%;background:var(--guld);border-radius:3px}
+.upp{color:var(--plus);font-weight:600}
+.ned{color:var(--minus);font-weight:600}
+.noll{color:var(--svag)}
+.tomt{padding:36px 16px;text-align:center;color:var(--svag)}
+svg.spark{display:block;margin-left:auto}
+
+/* Detalj */
+#detalj{scroll-margin-top:72px}
+.detaljtopp{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-start;padding:18px 18px 6px}
+.detaljtopp h2{font-size:26px}
+.nyckeltal{display:flex;flex-wrap:wrap;gap:8px 28px}
+.nyckeltal div{display:flex;flex-direction:column}
+.nyckeltal b{font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.nyckeltal small{font-size:13px}
+.taggar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tagg{font-size:12.5px;background:#141414;color:var(--guldljus);border-radius:8px;padding:2px 9px;text-decoration:none}
+.lank{font-size:13px;color:var(--guldtext);font-weight:600;text-decoration:none;border:1px solid color-mix(in srgb,var(--guld) 50%,var(--linje));border-radius:999px;padding:3px 11px;background:color-mix(in srgb,var(--guld) 8%,var(--kort))}
+.diagramval{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 18px 0}
+.diagram{position:relative;padding:6px 10px 4px 0;touch-action:pan-y}
+.diagram svg{display:block;width:100%;user-select:none}
+.diagram text{font:11.5px Inter,system-ui,sans-serif;fill:var(--svag)}
+.tips{position:absolute;pointer-events:none;background:#141414;color:#f2f2ea;border-radius:10px;padding:7px 10px;font-size:12.5px;line-height:1.45;box-shadow:0 4px 14px #0004;white-space:nowrap;z-index:2}
+.tips .rad{display:flex;align-items:center;gap:6px}
+.matt{position:absolute;pointer-events:none;top:8px;left:50%;transform:translateX(-50%);background:#141414;color:#fff;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;white-space:nowrap;z-index:2}
+.forklaring{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 18px 12px;font-size:12.5px;color:var(--svag)}
+.forklaring span{display:inline-flex;align-items:center;gap:6px}
+.dragtips{padding:0 18px 14px;font-size:12.5px;color:var(--svag)}
+.info{padding:12px 16px;font-size:13.5px;color:var(--svag);line-height:1.55}
+.info b{color:var(--text)}
+
+@media (max-width:760px){
+  .headin{padding:10px 16px;gap:10px}
+  .marke span{display:none}
+  .flikar a{padding:6px 9px;font-size:13px}
+  main{padding:16px 16px 48px}
+  h1{font-size:23px}
+  .rutor{grid-template-columns:1fr;gap:10px}
+  .ruta{padding:11px 14px}
+  .ruta .namn{font-size:16px}
+  .dolj-mobil{display:none}
+  td,th{padding:8px 8px}
+  .stapel{width:40px}
+  .namncell{max-width:128px}
+  .rank{display:none}
+  table{font-size:13.5px}
+  .detaljtopp{padding:16px 14px 4px}
+  .diagramval,.forklaring,.dragtips{padding-left:14px;padding-right:14px}
+  .nyckeltal b{font-size:19px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="headin">
+    <a class="marke" href="index.html"><b>Valto Resell</b><span>Märkesbörsen</span></a>
+    <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html" class="vald">Märkesbörsen</a></nav>
+  </div>
+</header>
+<main>
+  <div class="rubrikrad">
+    <div><h1>Märkesbörsen</h1><div class="svag">Hur märkena i dina alarm går på andrahandsmarknaden</div></div>
+    <div class="svag" id="uppdaterad"></div>
+  </div>
+
+  <div class="kontroller">
+    <div class="chips" id="kategorier" role="tablist" aria-label="Kategori"></div>
+  </div>
+  <div class="kontroller">
+    <div class="segment" id="kallor" aria-label="Källa"></div>
+    <div class="segment" id="perioder" aria-label="Period"></div>
+  </div>
+
+  <div class="rutor" id="rutor"></div>
+
+  <section class="kort">
+    <div class="korthuvud">
+      <h2 id="listrubrik">Andel av marknaden</h2>
+      <span class="svag" id="listinfo"></span>
+      <div class="segment" id="urval"><button data-v="mina" class="vald">Mina märken</button><button data-v="alla">Alla märken</button></div>
+    </div>
+    <div class="tabellram"><table id="tabell"></table></div>
+  </section>
+
+  <section class="kort" id="detalj" hidden></section>
+
+  <section class="kort">
+    <div class="info" id="omdata"></div>
+  </section>
+</main>
+
+<script>
+const KALLOR = {
+  vinted: {namn: "Vinted", vad: "utbud", farg: "var(--vinted)", hex: "#1268a8",
+           andel: "Andel av annonserna", pris: "Begärt pris", antal: "Annonser ute nu"},
+  tradera: {namn: "Tradera", vad: "sålda", farg: "var(--tradera)", hex: "#9a6412",
+            andel: "Andel av det som säljs", pris: "Slutpris", antal: "Sålda"},
+  plick: {namn: "Plick", vad: "utbud", farg: "var(--plick)", hex: "#b8336a",
+          andel: "Andel av annonserna", pris: "Begärt pris", antal: "Annonser"},
+};
+const PERIODER = {"1v": ["1 v", 7], "1m": ["1 mån", 30], "3m": ["3 mån", 91], "1a": ["1 år", 365], "max": ["Max", 99999]};
+const $ = id => document.getElementById(id);
+const las = (k, std) => { try { return JSON.parse(localStorage.getItem("bors-" + k)) ?? std } catch { return std } };
+const skriv = (k, v) => { try { localStorage.setItem("bors-" + k, JSON.stringify(v)) } catch {} };
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dag = s => new Date(s + "T12:00:00Z").getTime();
+const DAG = 86400000;
+const kr = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE") + " kr";
+const pct = (v, d = 1) => v == null ? "–" : v.toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d}) + " %";
+const datum = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short"});
+const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short", year: "numeric"});
+
+let B = null;
+let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
+          sort: las("sort", ["andel", -1]), marke: null, matt: las("matt", "andel")};
+
+// ---------- Data ----------
+function alarmMarken(){ return Object.keys(B.alarm || {}) }
+function arAlarm(m){ return !!(B.alarm || {})[m] }
+
+function andelsPunkter(kalla, kat){
+  // Tradera: veckor räknade på sålda annonser (har historik direkt). Annars en punkt per mätdag.
+  if (kalla === "tradera" && B.tradera_veckor && (B.tradera_veckor[kat] || []).length) {
+    const v = B.tradera_veckor[kat].filter(p => p[1] >= 5);
+    // Veckan som pågår är inte klar och hoppas över, utom när den är den enda.
+    return v.length > 1 && dag(v.at(-1)[0]) + 7 * DAG > Date.now() ? v.slice(0, -1) : v;
+  }
+  return (B.andel[kalla] || {})[kat] || [];
+}
+function andelI(p, m){
+  // Andel i procent i en punkt. null = märket fanns inte bland de sparade (för andra än alarm-märken).
+  const v = p[2][m];
+  if (v) return 100 * v[0] / p[1];
+  return arAlarm(m) ? 0 : null;
+}
+function markePunkter(kalla, kat, m){ return (((B.marke[kalla] || {})[kat] || {})[m]) || [] }
+
+function inomPeriod(pts){
+  if (!pts.length) return pts;
+  const slut = dag(pts.at(-1)[0]), dagar = PERIODER[st.period][1];
+  return pts.filter(p => dag(p[0]) >= slut - dagar * DAG);
+}
+function forandring(pts, varde, relativ){
+  // Jämför senaste värdet med värdet i början av perioden.
+  const inom = inomPeriod(pts).filter(p => varde(p) != null);
+  if (inom.length < 2) return null;
+  const a = varde(inom[0]), b = varde(inom.at(-1));
+  if (relativ) return a ? 100 * (b - a) / a : null;
+  return b - a;
+}
+
+function rader(){
+  const kat = st.kat, kalla = st.kalla;
+  const pts = andelsPunkter(kalla, kat);
+  const sista = pts.at(-1);
+  const namn = new Set(st.urval === "mina" ? alarmMarken() : [...Object.keys(sista ? sista[2] : {}), ...alarmMarken()]);
+  return [...namn].map(m => {
+    const mp = markePunkter(kalla, kat, m);
+    const ms = mp.at(-1);
+    const andel = sista ? andelI(sista, m) : null;
+    // Pris: märkets egen sökning om den finns, annars medianen i kategoristickprovet.
+    const pris = ms && ms[2] != null ? ms[2] : (sista && sista[2][m] ? sista[2][m][1] : null);
+    const prisUtv = mp.length > 1 ? forandring(mp, p => p[2], true) : forandring(pts, p => p[2][m] ? p[2][m][1] : null, true);
+    return {
+      m, andel, pris, prisUtv,
+      andelUtv: forandring(pts, p => andelI(p, m), false),
+      antal: ms ? ms[1] : (sista && sista[2][m] ? sista[2][m][0] : null),
+      tak: ms ? ms[4] : 0,
+      p25: ms ? ms[3] : null,
+      spark: inomPeriod(pts).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
+    };
+  });
+}
+
+// ---------- Rita ----------
+function ritaVal(){
+  const kats = B.kategorier || [];
+  if (!kats.some(k => k.id === st.kat)) st.kat = kats[0]?.id;
+  $("kategorier").innerHTML = kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}</button>`).join("");
+  $("kallor").innerHTML = Object.entries(KALLOR).map(([k, v]) => `<button data-k="${k}" class="${k === st.kalla ? "vald" : ""}"><span class="prick" style="background:${v.farg}"></span>${v.namn} <span class="dolj-mobil">· ${v.vad}</span></button>`).join("");
+  $("perioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
+  $("urval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.urval));
+}
+
+function utv(v, enhet, d = 1){
+  if (v == null) return `<span class="noll">–</span>`;
+  const r = Math.abs(v) < 0.05 ? 0 : v;
+  const kl = r > 0 ? "upp" : r < 0 ? "ned" : "noll";
+  const tecken = r > 0 ? "+" : r < 0 ? "−" : "±";
+  return `<span class="${kl}">${tecken}${Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d})}${enhet}</span>`;
+}
+
+function spark(pts){
+  const w = 84, h = 26;
+  if (pts.length < 2) return `<svg class="spark" width="${w}" height="${h}"></svg>`;
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const X = x => 2 + (w - 4) * (x - x0) / ((x1 - x0) || 1), Y = y => h - 3 - (h - 6) * (y - y0) / ((y1 - y0) || 1);
+  const farg = ys.at(-1) > ys[0] ? "var(--plus)" : ys.at(-1) < ys[0] ? "var(--minus)" : "var(--svag)";
+  return `<svg class="spark" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${farg}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ")}"/></svg>`;
+}
+
+function antalText(r){
+  if (r.antal == null) return "–";
+  return r.antal.toLocaleString("sv-SE") + (r.tak ? "+" : "");
+}
+
+function ritaTabell(){
+  const K = KALLOR[st.kalla], kat = (B.kategorier || []).find(k => k.id === st.kat);
+  const pts = andelsPunkter(st.kalla, st.kat);
+  const sista = pts.at(-1);
+  $("listrubrik").textContent = `${K.andel}`;
+  $("listinfo").textContent = sista
+    ? `${kat ? kat.namn : ""} på ${K.namn} · ${st.kalla === "tradera" && B.tradera_veckor?.[st.kat]?.length ? "vecka från " + datum(dag(sista[0])) : "mätt " + datum(dag(sista[0]))} · ${sista[1].toLocaleString("sv-SE")} ${st.kalla === "tradera" ? "sålda" : "annonser"} i stickprovet`
+    : `Ingen mätning av ${kat ? kat.namn.toLowerCase() : "kategorin"} på ${K.namn} än. Den görs inom ett dygn.`;
+  // Alarm-märken som inte har något alls i kategorin visas inte (t.ex. jeansmärken bland dunjackor).
+  const alla = rader();
+  let lista = alla.filter(r => r.andel || r.pris != null || r.antal);
+  const tomma = alla.length - lista.length;
+  const [nyckel, riktning] = st.sort;
+  lista.sort((a, b) => {
+    if (nyckel === "m") return riktning * a.m.localeCompare(b.m, "sv");
+    const x = a[nyckel] ?? -Infinity, y = b[nyckel] ?? -Infinity;
+    return riktning * (x - y) || (b.andel ?? -1) - (a.andel ?? -1);
+  });
+  const maxAndel = Math.max(1, ...lista.map(r => r.andel || 0));
+  const per = PERIODER[st.period][0];
+  const kol = [["m", "Märke"], ["andel", "Andel"], ["andelUtv", `Utv. ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Pris ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"]];
+  const huvud = `<thead><tr>${kol.map(([k, t, kl]) => `<th data-k="${k}" class="${kl || ""} ${k === nyckel ? "sort" + (riktning > 0 ? " upp" : "") : ""}" ${k === "spark" ? 'data-ingen="1"' : ""}>${esc(t)}</th>`).join("")}</tr></thead>`;
+  if (!lista.length) { $("tabell").innerHTML = huvud + `<tbody><tr><td colspan="7" class="tomt">Inga märken att visa än.</td></tr></tbody>`; return; }
+  $("tabell").innerHTML = huvud + "<tbody>" + lista.map((r, i) => `
+    <tr data-m="${esc(r.m)}" class="${r.m === st.marke ? "vald" : ""}">
+      <td><div class="namncell"><span class="rank">${i + 1}</span><span class="n">${esc(r.m)}</span>${arAlarm(r.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}</div></td>
+      <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i style="width:${(100 * (r.andel || 0) / maxAndel).toFixed(1)}%"></i></div>${pct(r.andel)}</div></td>
+      <td class="tal">${utv(r.andelUtv, " pe")}</td>
+      <td class="dolj-mobil">${spark(r.spark)}</td>
+      <td class="tal">${kr(r.pris)}</td>
+      <td class="tal dolj-mobil">${utv(r.prisUtv, " %")}</td>
+      <td class="tal dolj-mobil">${antalText(r)}</td>
+    </tr>`).join("") + (tomma ? `<tr><td colspan="7" class="svag" style="text-align:left;cursor:default">${tomma} av dina märken har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
+}
+
+function ritaRutor(){
+  const lista = rader().filter(r => r.andel != null);
+  const per = PERIODER[st.period][0];
+  const storst = [...lista].sort((a, b) => b.andel - a.andel)[0];
+  const med = lista.filter(r => r.andelUtv != null);
+  const upp = [...med].sort((a, b) => b.andelUtv - a.andelUtv)[0];
+  const ned = [...med].sort((a, b) => a.andelUtv - b.andelUtv)[0];
+  const ruta = (etikett, r, text) => r
+    ? `<div class="ruta" data-m="${esc(r.m)}"><div class="etikett">${etikett}</div><div class="namn">${esc(r.m)}</div><div class="varde">${text}</div></div>`
+    : `<div class="ruta"><div class="etikett">${etikett}</div><div class="namn">–</div><div class="varde">Behöver minst två mätningar</div></div>`;
+  $("rutor").innerHTML =
+    ruta("Störst andel", storst, storst ? `${pct(storst.andel)} av ${st.kalla === "tradera" ? "det sålda" : "annonserna"}` : "") +
+    ruta(`Ökar mest, ${per}`, upp && upp.andelUtv > 0 ? upp : null, upp ? `${utv(upp.andelUtv, " pe")} till ${pct(upp.andel)}` : "") +
+    ruta(`Minskar mest, ${per}`, ned && ned.andelUtv < 0 ? ned : null, ned ? `${utv(ned.andelUtv, " pe")} till ${pct(ned.andel)}` : "");
+}
+
+// ---------- Märkessidan ----------
+function vintedLank(m){
+  const id = (B.vinted_marken || {})[m], kid = (B.vinted_kategorier || {})[st.kat];
+  if (!id) return "";
+  const p = new URLSearchParams([["brand_ids[]", id], ["order", "newest_first"]]);
+  if (kid) p.append("catalog_ids[]", kid);
+  return "https://www.vinted.se/catalog?" + p;
+}
+
+function ritaDetalj(){
+  const m = st.marke, el = $("detalj");
+  if (!m) { el.hidden = true; return; }
+  el.hidden = false;
+  const K = KALLOR[st.kalla], kat = (B.kategorier || []).find(k => k.id === st.kat);
+  const r = rader().find(x => x.m === m) || {};
+  const alarm = (B.alarm || {})[m] || [];
+  const vl = vintedLank(m);
+  const tr = markePunkter("tradera", st.kat, m).at(-1), vi = markePunkter("vinted", st.kat, m).at(-1);
+  const marginal = tr && vi && tr[2] && vi[3] ? tr[2] - vi[3] : null;
+  el.innerHTML = `
+    <div class="detaljtopp">
+      <div style="flex:1 1 260px;min-width:0">
+        <div class="svag">${esc(kat ? kat.namn : "")} · ${K.namn}</div>
+        <h2>${esc(m)}</h2>
+        <div class="taggar">${alarm.map(a => `<a class="tagg" href="index.html#${encodeURIComponent(a)}">★ ${esc(a)}</a>`).join("")}${vl ? `<a class="lank" href="${vl}" target="_blank" rel="noopener">Se på Vinted ↗</a>` : ""}</div>
+      </div>
+      <div class="nyckeltal">
+        <div><span class="svag">${K.andel}</span><b>${pct(r.andel)}</b><small>${utv(r.andelUtv, " pe")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
+        <div><span class="svag">${K.pris}</span><b>${kr(r.pris)}</b><small>${utv(r.prisUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
+        ${marginal != null ? `<div><span class="svag" title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</span><b class="${marginal > 0 ? "upp" : "ned"}">${marginal > 0 ? "+" : "−"}${kr(Math.abs(marginal))}</b><small class="svag">sålt på Tradera mot billiga på Vinted</small></div>` : ""}
+      </div>
+    </div>
+    <div class="diagramval">
+      <div class="segment" id="mattval">
+        <button data-k="andel" class="${st.matt === "andel" ? "vald" : ""}">Andel</button>
+        <button data-k="pris" class="${st.matt === "pris" ? "vald" : ""}">Pris</button>
+        <button data-k="antal" class="${st.matt === "antal" ? "vald" : ""}">Antal</button>
+      </div>
+    </div>
+    <div class="diagram" id="diagram"></div>
+    <div class="forklaring" id="forklaring"></div>
+    <div class="dragtips">Dra över diagrammet för att mäta hur mycket det gått upp eller ner mellan två dagar.</div>
+    <div class="tabellram"><table id="katabell"></table></div>`;
+  ritaDiagram();
+  ritaKategoritabell();
+}
+
+function serier(){
+  const m = st.marke, kat = st.kat;
+  if (st.matt === "andel") {
+    return Object.keys(KALLOR).map(k => ({
+      k, namn: KALLOR[k].namn + (k === "tradera" ? " (sålda)" : ""), farg: KALLOR[k].hex, huvud: k === st.kalla,
+      pts: andelsPunkter(k, kat).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
+    })).filter(s => s.pts.length);
+  }
+  const i = st.matt === "pris" ? 2 : 1;
+  return Object.keys(KALLOR).map(k => {
+    let pts = markePunkter(k, kat, m).map(p => [dag(p[0]), p[i]]).filter(p => p[1] != null);
+    if (!pts.length && k === "tradera") {  // veckorna från sålda annonser
+      pts = andelsPunkter(k, kat).filter(p => p[2][m]).map(p => [dag(p[0]), p[2][m][i === 2 ? 1 : 0]]);
+    }
+    return {k, namn: KALLOR[k].namn + (k === "tradera" ? (i === 2 ? " slutpris" : " sålda") : (i === 2 ? " begärt" : " annonser")),
+            farg: KALLOR[k].hex, huvud: k === st.kalla, pts};
+  }).filter(s => s.pts.length);
+}
+
+function format(v){
+  if (v == null) return "–";
+  if (st.matt === "andel") return pct(v);
+  if (st.matt === "pris") return kr(v);
+  return Math.round(v).toLocaleString("sv-SE");
+}
+
+function ritaDiagram(){
+  const el = $("diagram");
+  const alla = serier();
+  const dagar = PERIODER[st.period][1];
+  const slut = Math.max(0, ...alla.flatMap(s => s.pts.map(p => p[0])));
+  const lista = alla.map(s => ({...s, pts: s.pts.filter(p => p[0] >= slut - dagar * DAG)})).filter(s => s.pts.length);
+  // Huvudserien (vald källa) ritas sist så den ligger överst.
+  lista.sort((a, b) => a.huvud - b.huvud);
+  $("forklaring").innerHTML = lista.map(s => `<span><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}${s.huvud ? "" : ""}</span>`).join("");
+  if (!lista.length) { el.innerHTML = `<div class="tomt">Inga mätningar av ${esc(st.marke)} här än.</div>`; return; }
+  const W = Math.max(300, el.clientWidth - 10), Hh = W < 500 ? 220 : 280;
+  const pad = {l: 58, r: 14, t: 34, b: 28};
+  const xs = lista.flatMap(s => s.pts.map(p => p[0])), ys = lista.flatMap(s => s.pts.map(p => p[1]));
+  let x0 = Math.min(...xs), x1 = Math.max(...xs);
+  if (x1 - x0 < 2 * DAG) { x0 -= 3 * DAG; x1 += 3 * DAG; }
+  let y0 = Math.min(...ys), y1 = Math.max(...ys);
+  const luft = (y1 - y0) * 0.12 || Math.max(1, y1 * 0.1);
+  y0 = Math.max(0, y0 - luft); y1 = y1 + luft;
+  const X = x => pad.l + (W - pad.l - pad.r) * (x - x0) / (x1 - x0);
+  const Y = y => Hh - pad.b - (Hh - pad.t - pad.b) * (y - y0) / ((y1 - y0) || 1);
+  // Rutnät
+  const steg = 4, rutor = [];
+  for (let i = 0; i <= steg; i++) {
+    const v = y0 + (y1 - y0) * i / steg, y = Y(v);
+    rutor.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--linje)" stroke-opacity=".55" ${i ? 'stroke-dasharray="2 4"' : ""}/>
+      <text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${format(v)}</text>`);
+  }
+  const antalX = Math.min(6, Math.max(2, Math.floor((W - pad.l) / 90)));
+  for (let i = 0; i < antalX; i++) {
+    const t = x0 + (x1 - x0) * i / (antalX - 1);
+    rutor.push(`<text x="${X(t)}" y="${Hh - 8}" text-anchor="${i === 0 ? "start" : i === antalX - 1 ? "end" : "middle"}">${datum(t)}</text>`);
+  }
+  const linjer = lista.map(s => {
+    const d = s.pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("");
+    const prickar = s.pts.length < 25 ? s.pts.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.huvud ? 3 : 2.2}" fill="${s.farg}" stroke="var(--kort)" stroke-width="1.5"/>`).join("") : "";
+    const yta = s.huvud && s.pts.length > 1 ? `<path d="${d}L${X(s.pts.at(-1)[0])} ${Hh - pad.b}L${X(s.pts[0][0])} ${Hh - pad.b}Z" fill="${s.farg}" fill-opacity=".08"/>` : "";
+    return `${yta}<path d="${d}" fill="none" stroke="${s.farg}" stroke-width="${s.huvud ? 2.4 : 1.6}" stroke-opacity="${s.huvud ? 1 : .75}" stroke-linejoin="round" stroke-linecap="round"/>${prickar}`;
+  }).join("");
+  const enPunkt = lista.every(s => s.pts.length < 2);
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" height="${Hh}" role="img" aria-label="Diagram över ${esc(st.marke)}">
+      ${rutor.join("")}
+      <rect id="mattyta" x="0" y="${pad.t}" width="0" height="${Hh - pad.t - pad.b}" fill="var(--guld)" fill-opacity=".16" visibility="hidden"/>
+      ${linjer}
+      <line id="sikte" x1="0" x2="0" y1="${pad.t}" y2="${Hh - pad.b}" stroke="var(--text)" stroke-opacity=".35" visibility="hidden"/>
+      <rect id="fanga" x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${Hh}" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    ${enPunkt ? `<div class="matt" style="background:var(--kort2);color:var(--svag);font-weight:500">Första mätningen. Kurvan växer för varje dag.</div>` : ""}
+    <div class="tips" id="tips" hidden></div><div class="matt" id="mattlapp" hidden></div>`;
+
+  // Hovra och dra för att mäta
+  const svg = el.querySelector("svg"), fanga = el.querySelector("#fanga"), sikte = el.querySelector("#sikte"),
+        tips = el.querySelector("#tips"), yta = el.querySelector("#mattyta"), lapp = el.querySelector("#mattlapp");
+  const huvud = lista.find(s => s.huvud) || lista.at(-1);
+  const tider = [...new Set(xs)].sort((a, b) => a - b);
+  const narmast = t => tider.reduce((b, x) => Math.abs(x - t) < Math.abs(b - t) ? x : b, tider[0]);
+  const varde = (s, t) => (s.pts.find(p => p[0] === t) || [])[1];
+  const tillT = e => { const r = svg.getBoundingClientRect(); const x = (e.clientX - r.left) * W / r.width; return {x, t: x0 + (x - pad.l) / (W - pad.l - pad.r) * (x1 - x0)}; };
+  let drag = null;
+  const visaTips = (t, e) => {
+    const r = el.getBoundingClientRect();
+    sikte.setAttribute("x1", X(t)); sikte.setAttribute("x2", X(t)); sikte.setAttribute("visibility", "visible");
+    tips.innerHTML = `<div style="opacity:.75;margin-bottom:2px">${datumLang(t)}</div>` + lista.slice().reverse().map(s => {
+      const v = varde(s, t); return v == null ? "" : `<div class="rad"><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}: <b>${format(v)}</b></div>`;
+    }).join("");
+    tips.hidden = false;
+    const px = X(t) * r.width / W;
+    tips.style.left = Math.min(Math.max(0, px + 12), r.width - tips.offsetWidth - 4) + "px";
+    tips.style.top = "36px";
+  };
+  fanga.addEventListener("pointermove", e => {
+    const {t} = tillT(e); const n = narmast(t);
+    if (drag) {
+      drag.slut = n;
+      const a = Math.min(drag.start, n), b = Math.max(drag.start, n);
+      yta.setAttribute("x", X(a)); yta.setAttribute("width", Math.max(1, X(b) - X(a))); yta.setAttribute("visibility", "visible");
+      const s = huvud;
+      const va = varde(s, a), vb = varde(s, b);
+      if (va != null && vb != null && a !== b) {
+        const diff = st.matt === "andel" ? vb - va : (va ? 100 * (vb - va) / va : null);
+        lapp.innerHTML = `${esc(s.namn)}: ${diff == null ? "–" : (diff > 0 ? "▲ +" : diff < 0 ? "▼ −" : "") + Math.abs(diff).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " procentenheter" : " %")} <span style="opacity:.7;font-weight:500">${datum(a)} → ${datum(b)}</span>`;
+        lapp.style.background = diff > 0 ? "var(--plus)" : diff < 0 ? "var(--minus)" : "#141414";
+        lapp.hidden = false;
+      }
+    }
+    visaTips(n, e);
+  });
+  fanga.addEventListener("pointerdown", e => {
+    const {t} = tillT(e); drag = {start: narmast(t)};
+    fanga.setPointerCapture(e.pointerId); lapp.hidden = true; yta.setAttribute("visibility", "hidden");
+    if (e.pointerType === "touch") el.style.touchAction = "none";
+  });
+  const slapp = () => { if (drag && drag.slut === undefined) yta.setAttribute("visibility", "hidden"); drag = null; el.style.touchAction = ""; };
+  fanga.addEventListener("pointerup", slapp);
+  fanga.addEventListener("pointercancel", slapp);
+  fanga.addEventListener("pointerleave", () => { if (!drag) { tips.hidden = true; sikte.setAttribute("visibility", "hidden"); } });
+}
+
+function ritaKategoritabell(){
+  const m = st.marke;
+  const rad = kat => {
+    const va = andelsPunkter("vinted", kat.id).at(-1), ta = andelsPunkter("tradera", kat.id).at(-1);
+    const vi = markePunkter("vinted", kat.id, m).at(-1), tr = markePunkter("tradera", kat.id, m).at(-1), pl = markePunkter("plick", kat.id, m).at(-1);
+    const marg = tr && vi && tr[2] && vi[3] ? tr[2] - vi[3] : null;
+    return `<tr data-k="${kat.id}" class="${kat.id === st.kat ? "vald" : ""}">
+      <td><b>${esc(kat.namn)}</b></td>
+      <td class="tal">${va ? pct(andelI(va, m)) : "–"}</td>
+      <td class="tal">${vi ? kr(vi[2]) : "–"}</td>
+      <td class="tal dolj-mobil">${vi ? vi[1].toLocaleString("sv-SE") + (vi[4] ? "+" : "") : "–"}</td>
+      <td class="tal">${ta ? pct(andelI(ta, m)) : "–"}</td>
+      <td class="tal">${tr ? kr(tr[2]) : "–"}</td>
+      <td class="tal dolj-mobil">${tr ? tr[1].toLocaleString("sv-SE") + (tr[4] ? "+" : "") : "–"}</td>
+      <td class="tal dolj-mobil">${pl ? kr(pl[2]) : "–"}</td>
+      <td class="tal">${marg == null ? "–" : utv(marg, " kr", 0)}</td>
+    </tr>`;
+  };
+  $("katabell").innerHTML = `<thead><tr><th>Kategori</th><th>Andel Vinted</th><th>Begärt Vinted</th><th class="dolj-mobil">Annonser</th><th>Andel sålda Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Sålda</th><th class="dolj-mobil">Begärt Plick</th><th title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</th></tr></thead>
+    <tbody>${(B.kategorier || []).map(rad).join("")}</tbody>`;
+}
+
+function ritaOm(){
+  const ko = B.ko || 0;
+  $("omdata").innerHTML = `<b>Så räknas det.</b> Varje dygn tas ett stickprov per kategori: de upp till 960 nyaste annonserna på Vinted, de senast sålda på Tradera och de första sidorna på Plick.
+    <b>Andel</b> är hur stor del av stickprovet som är av märket, och <b>pe</b> betyder procentenheter. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
+    <b>Pris</b> är medianpriset när man söker på bara det märket i kategorin (begärt pris på Vinted och Plick, slutpris på Tradera).
+    <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted.
+    Märkena hämtas från dina alarm, så nya alarm-märken kommer med automatiskt.${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
+}
+
+function rita(){
+  ritaVal(); ritaRutor(); ritaTabell(); ritaDetalj(); ritaOm();
+}
+
+// ---------- Händelser ----------
+$("kategorier").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); rita(); });
+$("kallor").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kalla = b.dataset.k; skriv("kalla", st.kalla); rita(); });
+$("perioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
+$("urval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.urval = b.dataset.v; skriv("urval", st.urval); rita(); });
+$("tabell").addEventListener("click", e => {
+  const th = e.target.closest("th");
+  if (th) {
+    if (th.dataset.ingen) return;
+    const k = th.dataset.k;
+    st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "m" ? 1 : -1)]; skriv("sort", st.sort); ritaTabell(); return;
+  }
+  const tr = e.target.closest("tr[data-m]");
+  if (tr) valjMarke(tr.dataset.m);
+});
+$("rutor").addEventListener("click", e => { const r = e.target.closest("[data-m]"); if (r) valjMarke(r.dataset.m); });
+$("detalj").addEventListener("click", e => {
+  const b = e.target.closest("#mattval [data-k]");
+  if (b) { st.matt = b.dataset.k; skriv("matt", st.matt); ritaDetalj(); return; }
+  const tr = e.target.closest("#katabell tr[data-k]");
+  if (tr) { st.kat = tr.dataset.k; skriv("kat", st.kat); rita(); }
+});
+function valjMarke(m){
+  st.marke = m; history.replaceState(null, "", "#" + encodeURIComponent(m));
+  ritaTabell(); ritaDetalj();
+  $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
+}
+let storlek = 0;
+addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => st.marke && ritaDiagram(), 150); });
+
+async function start(){
+  try {
+    B = await fetch("bors.json", {cache: "no-store"}).then(r => { if (!r.ok) throw 0; return r.json() });
+  } catch {
+    B = null;
+  }
+  if (!B || !B.kategorier) {
+    $("rutor").innerHTML = "";
+    $("tabell").innerHTML = `<tbody><tr><td class="tomt">Märkesbörsen har inte gjort sin första mätning än. Den kör med botten, så titta igen om några minuter.</td></tr></tbody>`;
+    return;
+  }
+  for (const k of ["andel", "marke", "alarm"]) B[k] = B[k] || {};
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h) st.marke = h;
+  const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
+  $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+  rita();
+}
+start();
+</script>
+</body>
+</html>

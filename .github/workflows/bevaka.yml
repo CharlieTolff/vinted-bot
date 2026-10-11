@@ -36,6 +36,15 @@ jobs:
           key: minne-${{ github.run_id }}
           restore-keys: minne-
 
+      # bors.json är märkesbörsens historik, tradera_salda.json de sålda Tradera-annonser den sett
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            bors.json
+            tradera_salda.json
+          key: bors-${{ github.run_id }}
+          restore-keys: bors-
+
       - name: Sök på Vinted och skicka kap till Telegram
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
@@ -51,11 +60,26 @@ jobs:
             minne.json
           key: minne-${{ github.run_id }}
 
+      # Märkesbörsen mäter en stund efter varje runda. Krånglar den påverkas inte alarmen.
+      - name: Mät märken till märkesbörsen
+        continue-on-error: true
+        timeout-minutes: 4
+        run: python3 marknad.py
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            bors.json
+            tradera_salda.json
+          key: bors-${{ github.run_id }}
+
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html sokningar.json _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
+          cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
 
       - uses: actions/upload-pages-artifact@v3
         with:

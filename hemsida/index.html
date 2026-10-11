@@ -40,6 +40,7 @@ nav{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
 .menyval.av .namn{color:var(--menysvag)}
 .menyval .antal{font-size:12px;color:var(--menysvag);margin:0;font-variant-numeric:tabular-nums}
 .menyval .ny{background:var(--guld);color:#111;font-weight:700}
+.borslank{text-decoration:none;margin-top:8px;border-top:1px solid var(--menylinje);border-radius:0 0 10px 10px;padding-top:12px}
 .menyfot{border-top:1px solid var(--menylinje);padding:12px 8px 0;display:flex;flex-direction:column;gap:8px}
 .menyfot .svag{color:var(--menysvag)}
 .menyfot input{width:100%;background:var(--menyval);border-color:var(--menylinje);color:var(--menytext)}
@@ -144,6 +145,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
   <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
   <div class="rubrikliten">Mina alarm</div>
   <nav id="alarmlista"></nav>
+  <a class="menyval borslank" href="bors.html"><span class="namn">📈 Märkesbörsen</span></a>
   <div class="menyfot">
     <div id="nyckelruta" hidden>
       <div class="svag" style="margin-bottom:6px">För att spara alarm härifrån behövs en GitHub-nyckel (en gång per dator).</div>
@@ -255,6 +257,9 @@ async function hamta(){
   traffar = t; alarm = s;
   const tider = Object.values(traffar).map(x => x.uppdaterad).filter(Boolean).sort();
   $("uppdaterad").textContent = tider.length ? "Senast sökt " + tid(tider.at(-1)) + " · uppdateras var 5:e minut" : "Inga sökningar har körts än";
+  // Länk från märkesbörsen, t.ex. index.html#Nudie%20Jeans, öppnar det alarmet.
+  const fran = decodeURIComponent(location.hash.slice(1));
+  if (fran && alarmNamn().includes(fran)) { vald = fran; history.replaceState(null, "", location.pathname); }
   if (!vald || !alarmNamn().includes(vald)) vald = alarmNamn()[0] || null;
   rita();
 }
