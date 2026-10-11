@@ -1002,43 +1002,5 @@
       "zippy",
       "pocket organizer"
     ]
-  },
-  {
-    "namn": "Birkenstock Boston",
-    "sokord": "boston",
-    "maxpris": 380,
-    "kappris": 280,
-    "min_betyg": 4,
-    "kon": "",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Birkenstock",
-    "storlekar": [],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn"
-    ],
-    "maste": [
-      "boston"
-    ],
-    "telegram": "kap",
-    "aktiv": true
   }
 ]
