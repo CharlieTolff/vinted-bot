@@ -95,69 +95,6 @@
     "aktiv": true
   },
   {
-    "namn": "Barbour vaxjacka",
-    "sokord": "",
-    "maxpris": 800,
-    "kappris": 500,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Barbour",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "väst",
-      "vest",
-      "gilet",
-      "kamizelka",
-      "storm hood",
-      "liner",
-      "foder",
-      "style",
-      "typ",
-      "liknande"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "vax",
-      "wax",
-      "bedale",
-      "beaufort",
-      "border",
-      "ashby",
-      "transport",
-      "northumbria",
-      "spey"
-    ]
-  },
-  {
     "namn": "Acne Studios herr",
     "sokord": "",
     "maxpris": 180,
