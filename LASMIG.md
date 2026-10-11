@@ -18,6 +18,15 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
   vecka för vecka, så där syns efterfrågan.
 - Kategorierna står överst i `marknad.py` (`KATEGORIER`). Märkena tas från alarmen automatiskt.
 
+## Bokföringen
+- `hemsida/bokforing.html` visar bokföringen från Lager-fliken i arket "Valto Resell": total vinst, utvecklingen över tid,
+  vinst/omsättning per vecka, månad, 3 månader och år, sålda varor, märken, kategorier, plattformar och lagret.
+- Hemsidan är öppen för alla som har länken, så bokföringen är krypterad och låses upp med ett lösenord i webbläsaren.
+- `bokforing.py` hämtar arket och krypterar det vid varje botrunda. Den behöver två GitHub-secrets:
+  `BOKFORING_ARK` (länken till arket, som måste vara delat med "alla som har länken") och `BOKFORING_LOSEN` (lösenordet).
+  Saknas de visas den sparade kopian `hemsida/bokforing.enc`.
+- Typ = Privat räknas inte med. En såld vara räknas till veckan/månaden den såldes, och inköp till när de köptes.
+
 ## Filer
 - `vinted_bot.py` – själva programmet (behöver bara Python 3, inget att installera).
 - `sokningar.json` – dina bevakningar. Ändra här, ändringen gäller från nästa runda.
