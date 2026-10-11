@@ -894,50 +894,5 @@
     ],
     "telegram": "kap",
     "aktiv": true
-  },
-  {
-    "namn": "Loro Piana & Brunello Cucinelli",
-    "sokord": "",
-    "maxpris": 400,
-    "kappris": 250,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Loro Piana",
-      "Brunello Cucinelli"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
   }
 ]
