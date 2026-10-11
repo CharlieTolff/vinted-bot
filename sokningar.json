@@ -707,67 +707,6 @@
     ]
   },
   {
-    "namn": "Carhartt Detroit/Active",
-    "sokord": "",
-    "maxpris": 400,
-    "kappris": 300,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Carhartt",
-      "Carhartt WIP"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "t-shirt",
-      "tee",
-      "keps",
-      "mössa",
-      "hoodie",
-      "sweat",
-      "crewneck",
-      "bluza",
-      "koszulka",
-      "spodnie",
-      "byxor"
-    ],
-    "maste": [
-      "detroit",
-      "active",
-      "michigan"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Acne Studios herr",
     "sokord": "",
     "maxpris": 180,
