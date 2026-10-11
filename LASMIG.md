@@ -8,6 +8,16 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - `traffar.json` skapas automatiskt och är det hemsidan visar. Varje runda kollar boten några av annonserna på hemsidan och tar bort de som är sålda eller borttagna på Vinted.
 - På GitHub körs allt var 5:e minut av `.github/workflows/bevaka.yml`.
 
+## Märkesbörsen
+- `hemsida/bors.html` är märkesbörsen: hur märkena i dina alarm går på Vinted, Tradera och Plick, i Avanza-stil.
+  Du ser varje märkes andel av marknaden i en kategori (t.ex. koftor), hur andelen och priset gått upp eller ner,
+  och kan dra över diagrammet för att mäta förändringen mellan två dagar.
+- `marknad.py` mäter efter varje botrunda en liten stund (högst 50 sekunder och några få frågor till Vinted), så
+  varje märke och kategori mäts ungefär en gång per dygn. Resultatet sparas i `bors.json`.
+- Vinted och Plick visar utbudet (annonser ute nu, begärt pris). Tradera visar det som faktiskt sålts och slutpriset,
+  vecka för vecka, så där syns efterfrågan.
+- Kategorierna står överst i `marknad.py` (`KATEGORIER`). Märkena tas från alarmen automatiskt.
+
 ## Filer
 - `vinted_bot.py` – själva programmet (behöver bara Python 3, inget att installera).
 - `sokningar.json` – dina bevakningar. Ändra här, ändringen gäller från nästa runda.
