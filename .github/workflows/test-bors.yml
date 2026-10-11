@@ -1,0 +1,13 @@
+name: Test börs (tillfällig)
+on:
+  push:
+    branches: [claude/marknadsbors-6hjbsc]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 verktyg/probe.py
