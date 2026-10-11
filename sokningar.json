@@ -653,60 +653,6 @@
     "aktiv": true
   },
   {
-    "namn": "Patagonia fleece",
-    "sokord": "",
-    "maxpris": 250,
-    "kappris": 180,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Patagonia",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "t-shirt",
-      "koszulka",
-      "koszula",
-      "columbia"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "fleece",
-      "retro",
-      "synchilla",
-      "better sweater",
-      "snap",
-      "polar"
-    ]
-  },
-  {
     "namn": "Acne Studios herr",
     "sokord": "",
     "maxpris": 180,
