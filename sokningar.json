@@ -346,5 +346,277 @@
     ],
     "telegram": "kap",
     "aktiv": true
+  },
+  {
+    "namn": "Overshirt skandinaviskt & Arket",
+    "sokord": [
+      "overshirt",
+      "skjortjacka",
+      "shirt jacket",
+      "worker jacket"
+    ],
+    "maxpris": 180,
+    "kappris": 120,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "J.Lindeberg",
+      "Arket",
+      "COS",
+      "Oscar Jacobson",
+      "Morris",
+      "Filippa K",
+      "NN07",
+      "Les Deux",
+      "Samsøe Samsøe",
+      "Sunflower",
+      "A Day's March",
+      "Sandro"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "jacka",
+      "jakke",
+      "jacket",
+      "kurtka",
+      "takki",
+      "overshirt",
+      "skjortjacka",
+      "worker",
+      "giacca"
+    ],
+    "farger": []
+  },
+  {
+    "namn": "Italienska jackor & kavajer",
+    "sokord": [
+      "overshirt",
+      "jacka",
+      "kavaj",
+      "blazer"
+    ],
+    "maxpris": 250,
+    "kappris": 180,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Boglioli",
+      "Lardini",
+      "Circolo 1901",
+      "Massimo Alba",
+      "Eleventy",
+      "Aspesi",
+      "Paul & Shark",
+      "Gran Sasso",
+      "Zanone",
+      "Altea",
+      "Barena"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L",
+      "46",
+      "48",
+      "50"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "maste": [
+      "jacka",
+      "jakke",
+      "jacket",
+      "kurtka",
+      "takki",
+      "overshirt",
+      "skjortjacka",
+      "worker",
+      "giacca",
+      "kavaj",
+      "blazer",
+      "marynarka",
+      "bleiseri"
+    ],
+    "farger": []
+  },
+  {
+    "namn": "Kavaj, cardigan & stickat",
+    "sokord": [
+      "stickad kavaj",
+      "cardigan",
+      "stickad zip",
+      "knitted blazer"
+    ],
+    "maxpris": 200,
+    "kappris": 140,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "J.Lindeberg",
+      "Arket",
+      "Oscar Jacobson",
+      "Morris",
+      "Filippa K",
+      "Gran Sasso",
+      "Zanone",
+      "Circolo 1901",
+      "Paul & Shark",
+      "Colmar",
+      "Peuterey",
+      "Boglioli"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L",
+      "46",
+      "48",
+      "50"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "farger": []
+  },
+  {
+    "namn": "Italienska dunjackor & västar",
+    "sokord": [
+      "dunjacka",
+      "dunväst",
+      "puffer",
+      "väst"
+    ],
+    "maxpris": 400,
+    "kappris": 280,
+    "min_betyg": 4.5,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Colmar",
+      "Peuterey",
+      "Woolrich",
+      "Save the Duck",
+      "Paul & Shark",
+      "Refrigiwear",
+      "Ciesse Piumini",
+      "Duvetica",
+      "Aspesi",
+      "J.Lindeberg"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L",
+      "46",
+      "48",
+      "50"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "farger": []
   }
 ]
