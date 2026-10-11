@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bokföring · Valto Resell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Samma färger som alarm-sidan och märkesbörsen */
+:root{
+  color-scheme:light;
+  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
+  --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
+  --plus:#1d7a50;--minus:#b23b27;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
+  --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.tal{font-variant-numeric:tabular-nums}
+button{font:inherit}
+
+/* Topplist */
+header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--menylinje)}
+.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 24px}
+.marke{display:flex;flex-direction:column;line-height:1.15;text-decoration:none}
+.marke b{font-family:Cinzel,Georgia,serif;font-size:18px;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
+.marke span{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--menysvag);margin-top:3px}
+.flikar{display:flex;gap:4px;margin-left:auto}
+.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px}
+.flikar a:hover{background:var(--menyval)}
+.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
+
+main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
+h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
+.svag{color:var(--svag);font-size:13px}
+.rubrikrad{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 18px;margin-bottom:16px}
+.rubrikrad .hoger{margin-left:auto;display:flex;align-items:center;gap:12px}
+.knapp{border:1px solid var(--linje);background:var(--kort);color:var(--text);border-radius:999px;padding:5px 13px;font-size:13px;cursor:pointer}
+.knapp:hover{border-color:var(--guld)}
+
+/* Låset */
+.las{max-width:400px;margin:9vh auto 0;background:var(--kort);border:1px solid var(--linje);border-radius:18px;box-shadow:var(--skugga);padding:28px 26px;text-align:center}
+.las .hanglas{width:52px;height:52px;border-radius:50%;background:#141414;color:var(--guldljus);display:grid;place-items:center;margin:0 auto 14px;font-size:22px}
+.las h1{font-size:25px;margin-bottom:4px}
+.las form{display:flex;flex-direction:column;gap:10px;margin-top:18px;text-align:left}
+.las input[type=password]{font:inherit;font-size:16px;padding:11px 14px;border:1px solid var(--linje);border-radius:12px;background:#eef1ea;color:var(--text)}
+.las input[type=password]:focus{outline:2px solid var(--guld);outline-offset:1px}
+.las label{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--svag)}
+.las button{border:0;border-radius:12px;padding:11px;background:#141414;color:var(--guldljus);font-weight:600;font-size:15px;cursor:pointer}
+.las button:disabled{opacity:.6;cursor:wait}
+.fel{color:var(--minus);font-size:13.5px;min-height:20px}
+
+/* Val */
+.segment{display:inline-flex;background:var(--kort2);border:1px solid var(--linje);border-radius:11px;padding:3px;gap:2px;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.segment::-webkit-scrollbar{display:none}
+.segment button{border:0;background:none;color:var(--svag);font-size:13px;padding:5px 11px;border-radius:8px;cursor:pointer;white-space:nowrap;flex:none}
+.segment button.vald{background:var(--kort);color:var(--text);font-weight:600;box-shadow:0 1px 2px #0002}
+.prick{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+
+/* Kort */
+.kort{background:var(--kort);border:1px solid var(--linje);border-radius:16px;box-shadow:var(--skugga);margin-bottom:20px;overflow:hidden}
+.korthuvud{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--linje)}
+.korthuvud .svag{flex:1 1 200px}
+.tva{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}
+
+/* Toppen: total utveckling */
+.topp{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:8px 24px;padding:18px 18px 8px}
+.stort .etikett,.nyckel .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
+.stort b{display:block;font-size:40px;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0 2px}
+.stort .under{font-size:14px}
+.nycklar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;margin-top:18px}
+.nyckel b{display:block;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.nyckel small{font-size:12.5px;color:var(--svag)}
+
+/* Diagram */
+.diagram{position:relative;padding:4px 6px 4px 0;touch-action:pan-y;min-width:0}
+.diagram svg{display:block;width:100%;user-select:none}
+.diagram text{font:11.5px Inter,system-ui,sans-serif;fill:var(--svag)}
+.tips{position:absolute;pointer-events:none;background:#141414;color:#f2f2ea;border-radius:10px;padding:7px 10px;font-size:12.5px;line-height:1.45;box-shadow:0 4px 14px #0004;white-space:nowrap;z-index:2}
+.tips .rad{display:flex;align-items:center;gap:6px}
+.stapel-g{cursor:pointer}
+.forklaring{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 18px 12px;font-size:12.5px;color:var(--svag)}
+.forklaring span{display:inline-flex;align-items:center;gap:6px}
+
+/* Perioden */
+.periodrad{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:6px 0 14px}
+.stega{display:inline-flex;align-items:center;gap:6px;margin-left:auto}
+.stega button{width:34px;height:34px;border-radius:50%;border:1px solid var(--linje);background:var(--kort);cursor:pointer;font-size:16px;color:var(--text)}
+.stega button:disabled{opacity:.35;cursor:default}
+.stega .namn{font-weight:700;font-size:16px;min-width:150px;text-align:center}
+.rutor{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.ruta{background:var(--kort);border:1px solid var(--linje);border-radius:14px;padding:14px 16px;box-shadow:var(--skugga);min-width:0}
+.ruta .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
+.ruta b{display:block;font-size:24px;letter-spacing:-.01em;font-variant-numeric:tabular-nums;margin:3px 0 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ruta .varde{font-size:13px;color:var(--svag);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ruta.mork{background:#141414;border-color:#141414;color:#f2f2ea}
+.ruta.mork .etikett,.ruta.mork .varde{color:#b9b9ae}
+.ruta.mork b{color:var(--guldljus)}
+.hojdpunkter{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:20px}
+.hojd{background:var(--kort2);border:1px dashed var(--linje);border-radius:14px;padding:12px 16px;min-width:0}
+.hojd .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
+.hojd .namn{font-weight:700;font-size:16px;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hojd .varde{font-size:13px;color:var(--svag)}
+
+/* Tabeller */
+.tabellram{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;font-weight:600;color:var(--svag);text-align:right;padding:9px 12px;white-space:nowrap;user-select:none;border-bottom:1px solid var(--linje)}
+th[data-k]{cursor:pointer}
+th:first-child,td:first-child{text-align:left}
+th.sort::after{content:" ▾";color:var(--guldtext)}
+th.sort.upp::after{content:" ▴"}
+td{padding:9px 12px;text-align:right;border-bottom:1px solid color-mix(in srgb,var(--linje) 55%,transparent);white-space:nowrap}
+tbody tr:hover{background:var(--kort2)}
+tbody tr:last-child td{border-bottom:0}
+.produkt{display:flex;flex-direction:column;max-width:300px}
+.produkt .n{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.produkt .m{font-size:12.5px;color:var(--svag);overflow:hidden;text-overflow:ellipsis}
+.upp{color:var(--plus);font-weight:600}
+.ned{color:var(--minus);font-weight:600}
+.noll{color:var(--svag)}
+.tomt{padding:30px 16px;text-align:center;color:var(--svag)}
+.andelcell{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.stapel{width:70px;height:6px;border-radius:3px;background:color-mix(in srgb,var(--linje) 60%,transparent);overflow:hidden;flex:none}
+.stapel i{display:block;height:100%;background:var(--guld);border-radius:3px}
+.stapel i.minus{background:var(--minus)}
+.status{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:1px 9px;background:var(--kort2);border:1px solid var(--linje)}
+.status.lager{background:#141414;color:var(--guldljus);border-color:#141414}
+.summa td{font-weight:700;background:var(--kort2)}
+.info{padding:12px 16px;font-size:13.5px;color:var(--svag);line-height:1.55}
+.info b{color:var(--text)}
+
+@media (max-width:900px){
+  .rutor{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tva{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .headin{padding:10px 16px;gap:10px}
+  .marke span{display:none}
+  .flikar a{padding:6px 8px;font-size:13px}
+  main{padding:16px 16px 48px}
+  h1{font-size:23px}
+  .topp{grid-template-columns:1fr;padding:16px 14px 4px}
+  .stort b{font-size:34px}
+  .rutor{gap:10px}
+  .ruta{padding:11px 13px}
+  .ruta b{font-size:20px}
+  .hojdpunkter{grid-template-columns:1fr;gap:10px}
+  .stega{margin-left:0;width:100%;justify-content:space-between}
+  .stega .namn{min-width:0}
+  .dolj-mobil{display:none}
+  td,th{padding:8px 8px}
+  .stapel{width:40px}
+  .produkt{max-width:150px}
+  table{font-size:13.5px}
+  .forklaring{padding-left:14px;padding-right:14px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="headin">
+    <a class="marke" href="index.html"><b>Valto Resell</b><span>Bokföring</span></a>
+    <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html">Märkesbörsen</a><a href="bokforing.html" class="vald">Bokföring</a></nav>
+  </div>
+</header>
+
+<main>
+  <section class="las" id="las">
+    <div class="hanglas" aria-hidden="true">🔒</div>
+    <h1>Bokföringen är låst</h1>
+    <div class="svag">Siffrorna är krypterade, så bara den som har lösenordet kan se dem.</div>
+    <form id="lasform">
+      <input type="password" id="losen" placeholder="Lösenord" autocomplete="current-password" required>
+      <label><input type="checkbox" id="komihag" checked> Kom ihåg på den här enheten</label>
+      <div class="fel" id="fel"></div>
+      <button id="lasknapp">Lås upp</button>
+    </form>
+  </section>
+
+  <div id="sida" hidden>
+    <div class="rubrikrad">
+      <div><h1>Bokföring</h1><div class="svag">Dina resell-affärer, hämtade från arket Valto Resell</div></div>
+      <div class="hoger"><span class="svag" id="uppdaterad"></span><button class="knapp" id="lasigen">Lås</button></div>
+    </div>
+
+    <!-- Hela utvecklingen -->
+    <section class="kort">
+      <div class="topp">
+        <div>
+          <div class="stort">
+            <div class="etikett">Realiserad vinst</div>
+            <b id="totvinst"></b>
+            <div class="under" id="totunder"></div>
+          </div>
+          <div class="nycklar" id="nycklar"></div>
+        </div>
+        <div style="min-width:0">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:4px"><div class="segment" id="utvperiod"></div></div>
+          <div class="diagram" id="utvdiagram"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Perioder -->
+    <div class="periodrad">
+      <h2>Perioder</h2>
+      <div class="segment" id="indelning"></div>
+      <div class="stega" id="stega"><button id="bak" aria-label="Föregående">‹</button><span class="namn" id="periodnamn"></span><button id="fram" aria-label="Nästa">›</button></div>
+    </div>
+
+    <section class="kort" id="stapelkort">
+      <div class="korthuvud"><h2 id="stapelrubrik">Vinst per vecka</h2><span class="svag" id="stapelinfo"></span>
+        <div class="segment" id="stapelmatt"><button data-k="vinst" class="vald">Vinst</button><button data-k="oms">Omsättning</button><button data-k="antal">Sålda</button></div>
+      </div>
+      <div class="diagram" id="staplar"></div>
+      <div class="forklaring">Tryck på en stapel för att se den perioden.</div>
+    </section>
+
+    <div class="rutor" id="rutor"></div>
+    <div class="hojdpunkter" id="hojdpunkter"></div>
+
+    <section class="kort">
+      <div class="korthuvud"><h2>Sålda varor</h2><span class="svag" id="saldinfo"></span></div>
+      <div class="tabellram"><table id="saldtabell"></table></div>
+    </section>
+
+    <div class="tva">
+      <section class="kort">
+        <div class="korthuvud"><h2>Märken</h2><span class="svag" id="markinfo"></span></div>
+        <div class="tabellram"><table id="marktabell"></table></div>
+      </section>
+      <section class="kort">
+        <div class="korthuvud"><h2 id="grupprubrik">Kategorier</h2><span class="svag"></span>
+          <div class="segment" id="gruppval"><button data-k="kategori" class="vald">Kategori</button><button data-k="plattform">Plattform</button><button data-k="kalla">Inköpt på</button></div>
+        </div>
+        <div class="tabellram"><table id="grupptabell"></table></div>
+      </section>
+    </div>
+
+    <section class="kort">
+      <div class="korthuvud"><h2>Lager</h2><span class="svag" id="lagerinfo"></span></div>
+      <div class="tabellram"><table id="lagertabell"></table></div>
+    </section>
+
+    <section class="kort"><div class="info" id="omdata"></div></section>
+  </div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const las = (k, std) => { try { return JSON.parse(localStorage.getItem("bok-" + k)) ?? std } catch { return std } };
+const skriv = (k, v) => { try { v == null ? localStorage.removeItem("bok-" + k) : localStorage.setItem("bok-" + k, JSON.stringify(v)) } catch {} };
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const DAG = 86400000;
+const dag = s => new Date(s + "T12:00:00").getTime();
+const kr = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE") + " kr";
+const krTecken = v => v == null ? "–" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(Math.round(v)).toLocaleString("sv-SE") + " kr";
+const pct = (v, d = 1) => v == null || !isFinite(v) ? "–" : v.toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d}) + " %";
+const klass = v => v > 0 ? "upp" : v < 0 ? "ned" : "noll";
+const datum = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short"});
+const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short", year: "numeric"});
+const MAN = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
+
+let D = null, alla = [], salda = [], lager = [];
+let st = {ind: las("ind", "vecka"), utv: las("utv", "max"), matt: las("matt", "vinst"), grupp: las("grupp", "kategori"),
+          sort: las("sort", ["sald", -1]), vald: null};
+
+// ---------- Låset ----------
+async function dekryptera(losen){
+  const b = new Uint8Array(await fetch("bokforing.enc", {cache: "no-store"}).then(r => { if (!r.ok) throw new Error("saknas"); return r.arrayBuffer() }));
+  if (new TextDecoder().decode(b.slice(0, 8)) !== "Salted__") throw new Error("trasig");
+  const nyckel = await crypto.subtle.importKey("raw", new TextEncoder().encode(losen), "PBKDF2", false, ["deriveBits"]);
+  const bitar = new Uint8Array(await crypto.subtle.deriveBits({name: "PBKDF2", salt: b.slice(8, 16), iterations: 200000, hash: "SHA-256"}, nyckel, 384));
+  const aes = await crypto.subtle.importKey("raw", bitar.slice(0, 32), "AES-CBC", false, ["decrypt"]);
+  let text;
+  try { text = new TextDecoder().decode(await crypto.subtle.decrypt({name: "AES-CBC", iv: bitar.slice(32, 48)}, aes, b.slice(16))) }
+  catch { throw new Error("fel") }
+  try { return JSON.parse(text) } catch { throw new Error("fel") }
+}
+
+async function forsok(losen, spara){
+  $("lasknapp").disabled = true; $("fel").textContent = ""; $("lasknapp").textContent = "Låser upp…";
+  try {
+    D = await dekryptera(losen);
+    if (spara) skriv("losen", losen);
+    $("las").hidden = true; $("sida").hidden = false;
+    forbered(); rita();
+  } catch (e) {
+    skriv("losen", null);
+    $("fel").textContent = e.message === "fel" ? "Fel lösenord." : e.message === "saknas" ? "Bokföringen är inte uppladdad än." : "Kunde inte läsa bokföringen.";
+    $("losen").select();
+  }
+  $("lasknapp").disabled = false; $("lasknapp").textContent = "Lås upp";
+}
+$("lasform").addEventListener("submit", e => { e.preventDefault(); forsok($("losen").value, $("komihag").checked); });
+$("lasigen").addEventListener("click", () => { skriv("losen", null); location.reload(); });
+
+// ---------- Data ----------
+function forbered(){
+  alla = (D.varor || []).filter(v => (v.typ || "").toLowerCase() !== "privat" && (v.status || "").toLowerCase() !== "privat");
+  for (const v of alla) {
+    v.k = v.kostnad ?? ((v.inkop || 0) + (v.zm || 0) + (v.frakt || 0) + (v.tull || 0));
+    v.t_kopt = v.kopt ? dag(v.kopt) : null;
+    v.t_sald = v.sald ? dag(v.sald) : null;
+    v.ar_sald = (v.status || "").toLowerCase() === "såld" && v.salj != null;
+    if (v.ar_sald) v.v = v.vinst ?? (v.salj - v.k - (v.avgift || 0));
+    if (v.ar_sald && v.dagar == null && v.t_kopt && v.t_sald) v.dagar = Math.round((v.t_sald - v.t_kopt) / DAG);
+  }
+  salda = alla.filter(v => v.ar_sald);
+  lager = alla.filter(v => !v.ar_sald && !["returnerad"].includes((v.status || "").toLowerCase()));
+  const t = D.uppdaterad ? new Date(D.uppdaterad) : null;
+  $("uppdaterad").textContent = t ? "Uppdaterad " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+}
+
+// Perioder: vecka (måndag–söndag), månad, 3 mån (kvartal) och år.
+const INDELNING = {vecka: "Vecka", manad: "Månad", kvartal: "3 mån", ar: "År", allt: "Allt"};
+function periodStart(t, ind){
+  const d = new Date(t);
+  if (ind === "vecka") { const v = (d.getDay() + 6) % 7; return new Date(d.getFullYear(), d.getMonth(), d.getDate() - v).getTime(); }
+  if (ind === "manad") return new Date(d.getFullYear(), d.getMonth(), 1).getTime();
+  if (ind === "kvartal") return new Date(d.getFullYear(), d.getMonth() - d.getMonth() % 3, 1).getTime();
+  return new Date(d.getFullYear(), 0, 1).getTime();
+}
+function nastaStart(s, ind){
+  const d = new Date(s);
+  if (ind === "vecka") return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 7).getTime();
+  if (ind === "manad") return new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime();
+  if (ind === "kvartal") return new Date(d.getFullYear(), d.getMonth() + 3, 1).getTime();
+  return new Date(d.getFullYear() + 1, 0, 1).getTime();
+}
+function veckonummer(t){
+  const d = new Date(t); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 3 - (d.getDay() + 6) % 7);
+  const v1 = new Date(d.getFullYear(), 0, 4);
+  return 1 + Math.round(((d - v1) / DAG - 3 + (v1.getDay() + 6) % 7) / 7);
+}
+function periodNamn(s, ind, kort){
+  const d = new Date(s);
+  if (ind === "vecka") return kort ? "v" + veckonummer(s) : `Vecka ${veckonummer(s)} · ${datum(s)}–${datum(nastaStart(s, ind) - DAG)}`;
+  if (ind === "manad") return kort ? MAN[d.getMonth()] : d.toLocaleDateString("sv-SE", {month: "long", year: "numeric"}).replace(/^./, c => c.toUpperCase());
+  if (ind === "kvartal") { const t = `${MAN[d.getMonth()]}–${MAN[d.getMonth() + 2]}`; return kort ? t : `${t[0].toUpperCase() + t.slice(1)} ${d.getFullYear()}`; }
+  return String(d.getFullYear());
+}
+function perioder(ind){
+  const tider = alla.flatMap(v => [v.t_kopt, v.t_sald]).filter(Boolean);
+  const forst = tider.length ? Math.min(...tider) : Date.now();
+  const lista = [];
+  for (let s = periodStart(forst, ind), nu = Date.now(); s <= nu; s = nastaStart(s, ind)) lista.push(s);
+  return lista;
+}
+function summera(fran, till){
+  // fran/till = null betyder hela tiden (då räknas även sålda utan säljdatum).
+  const inom = t => fran == null || (t != null && t >= fran && t < till);
+  const s = salda.filter(v => inom(v.t_sald));
+  const k = alla.filter(v => inom(v.t_kopt));
+  const vinst = s.reduce((a, v) => a + v.v, 0), oms = s.reduce((a, v) => a + v.salj, 0), kost = s.reduce((a, v) => a + v.k, 0);
+  return {salda: s, kopta: k, vinst, oms, kost, antal: s.length, roi: kost ? 100 * vinst / kost : null,
+          inkopt: k.reduce((a, v) => a + v.k, 0), antalKopt: k.length};
+}
+
+// ---------- Toppen ----------
+function ritaTopp(){
+  const t = summera(null);
+  const bundet = lager.reduce((a, v) => a + v.k, 0);
+  const pot = lager.reduce((a, v) => a + (v.potvinst ?? (v.malpris != null ? v.malpris - v.k : 0)), 0);
+  const investerat = alla.reduce((a, v) => a + v.k, 0);
+  $("totvinst").innerHTML = `<span class="${klass(t.vinst)}">${krTecken(t.vinst)}</span>`;
+  $("totunder").innerHTML = `<span class="${klass(t.roi)}">${t.roi == null ? "" : (t.roi > 0 ? "+" : "") + pct(t.roi)}</span> <span class="svag">avkastning på sålda varor · ${t.antal} sålda</span>`;
+  const nyckel = (et, v, under) => `<div class="nyckel"><div class="etikett">${et}</div><b>${v}</b><small>${under}</small></div>`;
+  $("nycklar").innerHTML =
+    nyckel("Omsättning", kr(t.oms), `${t.antal} affärer`) +
+    nyckel("Investerat", kr(investerat), `${alla.length} varor totalt`) +
+    nyckel("Bundet i lager", kr(bundet), `${lager.length} varor`) +
+    nyckel("Möjlig vinst", `<span class="${klass(pot)}">${krTecken(pot)}</span>`, "om lagret säljs till målpris");
+  $("utvperiod").innerHTML = [["1m", "1 mån"], ["3m", "3 mån"], ["1a", "1 år"], ["max", "Max"]]
+    .map(([k, n]) => `<button data-k="${k}" class="${k === st.utv ? "vald" : ""}">${n}</button>`).join("");
+  ritaUtveckling();
+}
+
+function ritaUtveckling(){
+  const el = $("utvdiagram");
+  // Ackumulerad vinst dag för dag. Sålda utan säljdatum räknas från början.
+  const utan = salda.filter(v => !v.t_sald).reduce((a, v) => a + v.v, 0);
+  const tider = alla.flatMap(v => [v.t_kopt, v.t_sald]).filter(Boolean);
+  if (!tider.length) { el.innerHTML = `<div class="tomt">Inga affärer än.</div>`; return; }
+  const forst = Math.min(...tider), nu = dag(new Date().toISOString().slice(0, 10));
+  const perDag = {};
+  for (const v of salda) if (v.t_sald) perDag[v.t_sald] = (perDag[v.t_sald] || 0) + v.v;
+  const pts = []; let sum = utan;
+  for (let t = dag(new Date(forst).toISOString().slice(0, 10)); t <= nu; t += DAG) { sum += perDag[t] || 0; pts.push([t, sum, perDag[t] || 0]); }
+  const dagar = {"1m": 30, "3m": 91, "1a": 365, max: 1e6}[st.utv];
+  const vis = pts.filter(p => p[0] >= nu - dagar * DAG);
+  const W = Math.max(280, el.clientWidth - 6), H = W < 500 ? 190 : 230, pad = {l: 62, r: 10, t: 12, b: 26};
+  const x0 = vis[0][0], x1 = Math.max(vis.at(-1)[0], x0 + DAG);
+  let y0 = Math.min(0, ...vis.map(p => p[1])), y1 = Math.max(0, ...vis.map(p => p[1]));
+  const luft = (y1 - y0) * 0.1 || 100; y1 += luft; if (y0 < 0) y0 -= luft;
+  const X = x => pad.l + (W - pad.l - pad.r) * (x - x0) / (x1 - x0), Y = y => H - pad.b - (H - pad.t - pad.b) * (y - y0) / (y1 - y0);
+  const forandring = vis.at(-1)[1] - (pts.find(p => p[0] === vis[0][0] - DAG)?.[1] ?? (st.utv === "max" ? 0 : vis[0][1] - vis[0][2]));
+  const farg = forandring >= 0 ? "var(--plus)" : "var(--minus)";
+  const grid = [];
+  for (let i = 0; i <= 4; i++) {
+    const v = y0 + (y1 - y0) * i / 4, y = Y(v);
+    grid.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--linje)" stroke-opacity=".55" ${i ? 'stroke-dasharray="2 4"' : ""}/><text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${kr(v)}</text>`);
+  }
+  const nX = Math.min(5, Math.max(2, Math.floor((W - pad.l) / 90)));
+  for (let i = 0; i < nX; i++) { const t = x0 + (x1 - x0) * i / (nX - 1); grid.push(`<text x="${X(t)}" y="${H - 7}" text-anchor="${i === 0 ? "start" : i === nX - 1 ? "end" : "middle"}">${datum(t)}</text>`); }
+  // Trappa: vinsten hoppar den dag något säljs.
+  let d = `M${X(vis[0][0]).toFixed(1)} ${Y(vis[0][1]).toFixed(1)}`;
+  for (let i = 1; i < vis.length; i++) d += `H${X(vis[i][0]).toFixed(1)}V${Y(vis[i][1]).toFixed(1)}`;
+  const forsaljningar = vis.filter(p => p[2]).map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.2" fill="${p[2] >= 0 ? "var(--plus)" : "var(--minus)"}" stroke="var(--kort)" stroke-width="1.5"/>`).join("");
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Ackumulerad vinst">
+    ${grid.join("")}
+    ${y0 < 0 ? `<line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--text)" stroke-opacity=".3"/>` : ""}
+    <path d="${d}V${Y(Math.max(y0, 0))}H${X(vis[0][0])}Z" fill="${farg}" fill-opacity=".1"/>
+    <path d="${d}" fill="none" stroke="${farg}" stroke-width="2.2" stroke-linejoin="round"/>
+    ${forsaljningar}
+    <line id="usikte" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--text)" stroke-opacity=".35" visibility="hidden"/>
+    <rect id="ufanga" x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${H}" fill="transparent"/>
+  </svg><div class="tips" id="utips" hidden></div>`;
+  const svg = el.querySelector("svg"), sikte = el.querySelector("#usikte"), tips = el.querySelector("#utips");
+  el.querySelector("#ufanga").addEventListener("pointermove", e => {
+    const r = svg.getBoundingClientRect(), x = (e.clientX - r.left) * W / r.width;
+    const t = x0 + (x - pad.l) / (W - pad.l - pad.r) * (x1 - x0);
+    const p = vis.reduce((b, q) => Math.abs(q[0] - t) < Math.abs(b[0] - t) ? q : b, vis[0]);
+    sikte.setAttribute("x1", X(p[0])); sikte.setAttribute("x2", X(p[0])); sikte.setAttribute("visibility", "visible");
+    const sald = salda.filter(v => v.t_sald === p[0]);
+    tips.innerHTML = `<div style="opacity:.75">${datumLang(p[0])}</div><div>Total vinst: <b>${krTecken(p[1])}</b></div>` +
+      sald.map(v => `<div class="rad"><span class="prick" style="background:${v.v >= 0 ? "#5fc48f" : "#e07a66"}"></span>${esc(v.produkt)}: ${krTecken(v.v)}</div>`).join("");
+    tips.hidden = false;
+    const px = X(p[0]) * r.width / W;
+    tips.style.left = Math.min(Math.max(0, px + 12), r.width - tips.offsetWidth - 4) + "px"; tips.style.top = "8px";
+  });
+  el.querySelector("#ufanga").addEventListener("pointerleave", () => { tips.hidden = true; sikte.setAttribute("visibility", "hidden"); });
+}
+
+// ---------- Perioder ----------
+function valdPeriod(){
+  if (st.ind === "allt") return {fran: null, till: null};
+  const lista = perioder(st.ind);
+  if (st.vald == null || !lista.includes(st.vald)) st.vald = lista.at(-1);
+  return {fran: st.vald, till: nastaStart(st.vald, st.ind), lista};
+}
+
+function ritaPerioder(){
+  $("indelning").innerHTML = Object.entries(INDELNING).map(([k, n]) => `<button data-k="${k}" class="${k === st.ind ? "vald" : ""}">${n}</button>`).join("");
+  const p = valdPeriod();
+  const allt = st.ind === "allt";
+  $("stega").style.visibility = allt ? "hidden" : "";
+  if (!allt) {
+    const i = p.lista.indexOf(st.vald);
+    $("periodnamn").textContent = periodNamn(st.vald, st.ind) + (i === p.lista.length - 1 ? " (nu)" : "");
+    $("bak").disabled = i <= 0; $("fram").disabled = i >= p.lista.length - 1;
+  }
+  ritaStaplar();
+  const s = summera(p.fran, p.till);
+  // Jämför med perioden innan
+  let fore = null;
+  if (!allt) { const i = p.lista.indexOf(st.vald); if (i > 0) fore = summera(p.lista[i - 1], st.vald); }
+  const jmf = (a, b) => fore == null ? `<span class="svag">${allt ? "hela tiden" : "första perioden"}</span>` : `${krTecken(a - b)} <span class="svag">mot förra</span>`;
+  const enhet = {vecka: "veckan", manad: "månaden", kvartal: "perioden", ar: "året", allt: "totalt"}[st.ind];
+  $("rutor").innerHTML = `
+    <div class="ruta mork"><div class="etikett">Vinst ${enhet}</div><b>${krTecken(s.vinst)}</b><div class="varde">${fore ? jmf(s.vinst, fore.vinst) : jmf()}</div></div>
+    <div class="ruta"><div class="etikett">Omsättning</div><b>${kr(s.oms)}</b><div class="varde">${fore ? jmf(s.oms, fore.oms) : jmf()}</div></div>
+    <div class="ruta"><div class="etikett">Sålda varor</div><b>${s.antal}</b><div class="varde">${s.antal ? `ROI <span class="${klass(s.roi)}">${pct(s.roi)}</span> · marginal ${pct(s.oms ? 100 * s.vinst / s.oms : null)}` : "Inget sålt"}</div></div>
+    <div class="ruta"><div class="etikett">Inköpt</div><b>${kr(s.inkopt)}</b><div class="varde">${s.antalKopt} ${s.antalKopt === 1 ? "vara" : "varor"} köpta</div></div>`;
+  ritaHojdpunkter(s);
+  ritaSalda(s);
+  ritaGrupper(s);
+}
+
+function ritaHojdpunkter(s){
+  const h = [];
+  if (st.ind !== "allt") {
+    const lista = perioder(st.ind).map(f => ({f, ...summera(f, nastaStart(f, st.ind))})).filter(x => x.antal);
+    const bast = lista.sort((a, b) => b.vinst - a.vinst)[0];
+    const ord = {vecka: "veckan", manad: "månaden", kvartal: "perioden", ar: "året"}[st.ind];
+    h.push(bast ? `<div class="hojd" data-f="${bast.f}" style="cursor:pointer"><div class="etikett">Bästa ${ord} hittills</div><div class="namn">${esc(periodNamn(bast.f, st.ind))}</div><div class="varde"><span class="upp">${krTecken(bast.vinst)}</span> på ${bast.antal} sålda</div></div>`
+                : `<div class="hojd"><div class="etikett">Bästa ${ord} hittills</div><div class="namn">–</div><div class="varde">Inget sålt än</div></div>`);
+  } else {
+    const dagar = salda.filter(v => v.dagar != null);
+    const snitt = dagar.length ? dagar.reduce((a, v) => a + v.dagar, 0) / dagar.length : null;
+    h.push(`<div class="hojd"><div class="etikett">Snittid i lager</div><div class="namn">${snitt == null ? "–" : Math.round(snitt) + " dagar"}</div><div class="varde">från köp till såld</div></div>`);
+  }
+  const bastAff = [...s.salda].sort((a, b) => b.v - a.v)[0];
+  h.push(`<div class="hojd"><div class="etikett">Bästa affären</div><div class="namn">${bastAff ? esc(bastAff.produkt) : "–"}</div><div class="varde">${bastAff ? `<span class="${klass(bastAff.v)}">${krTecken(bastAff.v)}</span> · ROI ${pct(bastAff.roi ?? (100 * bastAff.v / bastAff.k))}` : "Inget sålt i perioden"}</div></div>`);
+  const snabb = s.salda.filter(v => v.dagar != null).sort((a, b) => a.dagar - b.dagar)[0];
+  h.push(`<div class="hojd"><div class="etikett">Snabbast såld</div><div class="namn">${snabb ? esc(snabb.produkt) : "–"}</div><div class="varde">${snabb ? `${snabb.dagar} dagar i lager` : "Inget sålt i perioden"}</div></div>`);
+  $("hojdpunkter").innerHTML = h.join("");
+}
+
+function ritaStaplar(){
+  const el = $("staplar");
+  const ind = st.ind === "allt" ? "manad" : st.ind;
+  const namn = {vecka: "vecka", manad: "månad", kvartal: "tremånadersperiod", ar: "år"}[ind];
+  const mattNamn = {vinst: "Vinst", oms: "Omsättning", antal: "Sålda varor"}[st.matt];
+  $("stapelrubrik").textContent = `${mattNamn} per ${namn}`;
+  $("stapelmatt").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.k === st.matt));
+  let lista = perioder(ind).map(f => ({f, ...summera(f, nastaStart(f, ind))}));
+  const W = Math.max(280, el.clientWidth - 6), H = W < 500 ? 200 : 240, pad = {l: 58, r: 12, t: 16, b: 28};
+  const ryms = Math.max(4, Math.floor((W - pad.l - pad.r) / 26));
+  const dolda = Math.max(0, lista.length - ryms);
+  lista = lista.slice(dolda);
+  $("stapelinfo").textContent = dolda ? `Senaste ${lista.length} st` : "";
+  const val = x => st.matt === "vinst" ? x.vinst : st.matt === "oms" ? x.oms : x.antal;
+  const vals = lista.map(val);
+  let y0 = Math.min(0, ...vals), y1 = Math.max(0, ...vals);
+  if (y1 === y0) y1 = st.matt === "antal" ? 1 : 100;
+  const luft = (y1 - y0) * 0.1; y1 += luft; if (y0 < 0) y0 -= luft;
+  const Y = y => H - pad.b - (H - pad.t - pad.b) * (y - y0) / (y1 - y0);
+  const bredd = (W - pad.l - pad.r) / lista.length, sb = Math.min(46, bredd * 0.62);
+  const fmt = v => st.matt === "antal" ? Math.round(v).toLocaleString("sv-SE") : kr(v);
+  const grid = [];
+  for (let i = 0; i <= 4; i++) {
+    const v = y0 + (y1 - y0) * i / 4, y = Y(v);
+    grid.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--linje)" stroke-opacity=".55" ${i ? 'stroke-dasharray="2 4"' : ""}/><text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${fmt(v)}</text>`);
+  }
+  const varannan = bredd < 34 ? 2 : 1;
+  const staplar = lista.map((x, i) => {
+    const v = val(x), cx = pad.l + bredd * (i + .5);
+    const ya = Y(Math.max(v, 0)), yb = Y(Math.min(v, 0));
+    const vald = st.ind !== "allt" && x.f === st.vald;
+    const farg = st.matt === "vinst" ? (v >= 0 ? "var(--plus)" : "var(--minus)") : "var(--guld)";
+    const etikett = (lista.length - 1 - i) % varannan === 0 ? `<text x="${cx}" y="${H - 9}" text-anchor="middle" ${vald ? 'style="fill:var(--text);font-weight:700"' : ""}>${periodNamn(x.f, ind, true)}</text>` : "";
+    return `<g class="stapel-g" data-f="${x.f}" data-i="${i}">
+      <rect x="${cx - bredd / 2}" y="${pad.t}" width="${bredd}" height="${H - pad.t - pad.b}" fill="${vald ? "var(--guld)" : "transparent"}" fill-opacity="${vald ? .13 : 0}"/>
+      <rect x="${cx - sb / 2}" y="${ya}" width="${sb}" height="${Math.max(v ? 2 : 0, yb - ya)}" rx="${Math.min(4, sb / 4)}" fill="${farg}" fill-opacity="${st.ind === "allt" || vald ? 1 : .55}"/>
+      ${etikett}</g>`;
+  }).join("");
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="${mattNamn} per ${namn}">${grid.join("")}
+    <line x1="${pad.l}" x2="${W - pad.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--text)" stroke-opacity=".35"/>${staplar}</svg>
+    <div class="tips" id="stips" hidden></div>`;
+  const svg = el.querySelector("svg"), tips = el.querySelector("#stips");
+  el.querySelectorAll(".stapel-g").forEach(g => {
+    g.addEventListener("pointerenter", () => {
+      const x = lista[+g.dataset.i], r = svg.getBoundingClientRect();
+      tips.innerHTML = `<div style="opacity:.75">${esc(periodNamn(x.f, ind))}</div><div>Vinst: <b>${krTecken(x.vinst)}</b></div><div>Omsättning: <b>${kr(x.oms)}</b></div><div>Sålda: <b>${x.antal}</b> · Inköpt: <b>${kr(x.inkopt)}</b></div>`;
+      tips.hidden = false;
+      const px = (pad.l + bredd * (+g.dataset.i + .5)) * r.width / W;
+      tips.style.left = Math.min(Math.max(0, px + 10), r.width - tips.offsetWidth - 4) + "px"; tips.style.top = "6px";
+    });
+    g.addEventListener("pointerleave", () => { tips.hidden = true; });
+    g.addEventListener("click", () => {
+      if (st.ind === "allt") { st.ind = "manad"; skriv("ind", st.ind); }
+      st.vald = +g.dataset.f; ritaPerioder();
+    });
+  });
+}
+
+function ritaSalda(s){
+  const [k, r] = st.sort;
+  const lista = [...s.salda].sort((a, b) => {
+    if (k === "produkt" || k === "plattform") return r * (a[k] || "").localeCompare(b[k] || "", "sv");
+    const va = k === "sald" ? (a.t_sald ?? 0) : k === "roi" ? (a.roi ?? 100 * a.v / a.k) : a[k] ?? -Infinity;
+    const vb = k === "sald" ? (b.t_sald ?? 0) : k === "roi" ? (b.roi ?? 100 * b.v / b.k) : b[k] ?? -Infinity;
+    return r * (va - vb);
+  });
+  $("saldinfo").textContent = s.salda.length ? `${s.salda.length} st · ${kr(s.oms)} in · ${krTecken(s.vinst)} vinst` : "";
+  const kol = [["produkt", "Vara"], ["sald", "Såld"], ["salj", "Såld för"], ["k", "Kostnad", "dolj-mobil"], ["v", "Vinst"], ["roi", "ROI", "dolj-mobil"], ["dagar", "Dagar", "dolj-mobil"], ["plattform", "Var", "dolj-mobil"]];
+  const huvud = `<thead><tr>${kol.map(([n, t, kl]) => `<th data-k="${n}" class="${kl || ""} ${n === k ? "sort" + (r > 0 ? " upp" : "") : ""}">${t}</th>`).join("")}</tr></thead>`;
+  if (!lista.length) { $("saldtabell").innerHTML = huvud + `<tbody><tr><td colspan="8" class="tomt">Inget sålt ${st.ind === "allt" ? "än" : "under " + periodNamn(st.vald, st.ind).toLowerCase().replace(/\.$/, "")}.</td></tr></tbody>`; return; }
+  $("saldtabell").innerHTML = huvud + "<tbody>" + lista.map(v => `<tr>
+    <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${esc(v.kategori)}</span></div></td>
+    <td class="tal">${v.t_sald ? datum(v.t_sald) : `<span class="svag" title="Säljdatum saknas i arket">–</span>`}</td>
+    <td class="tal">${kr(v.salj)}</td>
+    <td class="tal dolj-mobil">${kr(v.k)}</td>
+    <td class="tal ${klass(v.v)}">${krTecken(v.v)}</td>
+    <td class="tal dolj-mobil ${klass(v.v)}">${pct(v.roi ?? 100 * v.v / v.k)}</td>
+    <td class="tal dolj-mobil">${v.dagar ?? "–"}</td>
+    <td class="dolj-mobil">${esc(v.plattform || "–")}</td></tr>`).join("") + "</tbody>";
+}
+
+function gruppera(s, falt){
+  const g = {};
+  for (const v of s.salda) {
+    const n = v[falt] || "Okänt";
+    g[n] = g[n] || {n, vinst: 0, oms: 0, kost: 0, antal: 0};
+    g[n].vinst += v.v; g[n].oms += v.salj; g[n].kost += v.k; g[n].antal++;
+  }
+  return Object.values(g).sort((a, b) => b.vinst - a.vinst);
+}
+function grupptabell(lista, rubrik){
+  if (!lista.length) return `<tbody><tr><td class="tomt">Inget sålt i perioden.</td></tr></tbody>`;
+  const max = Math.max(1, ...lista.map(x => Math.abs(x.vinst)));
+  return `<thead><tr><th>${rubrik}</th><th>Vinst</th><th>Omsättning</th><th class="dolj-mobil">Sålda</th><th>ROI</th></tr></thead><tbody>` +
+    lista.map(x => `<tr><td><b>${esc(x.n)}</b></td>
+      <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i class="${x.vinst < 0 ? "minus" : ""}" style="width:${(100 * Math.abs(x.vinst) / max).toFixed(1)}%"></i></div><span class="${klass(x.vinst)}">${krTecken(x.vinst)}</span></div></td>
+      <td class="tal">${kr(x.oms)}</td><td class="tal dolj-mobil">${x.antal}</td>
+      <td class="tal ${klass(x.vinst)}">${pct(x.kost ? 100 * x.vinst / x.kost : null)}</td></tr>`).join("") + "</tbody>";
+}
+function ritaGrupper(s){
+  const m = gruppera(s, "marke");
+  $("markinfo").textContent = m.length ? `${m.length} märken` : "";
+  $("marktabell").innerHTML = grupptabell(m, "Märke");
+  const n = {kategori: "Kategori", plattform: "Plattform", kalla: "Inköpt på"}[st.grupp];
+  $("grupprubrik").textContent = {kategori: "Kategorier", plattform: "Plattformar", kalla: "Inköpsställen"}[st.grupp];
+  $("gruppval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.k === st.grupp));
+  $("grupptabell").innerHTML = grupptabell(gruppera(s, st.grupp), n);
+}
+
+// ---------- Lager ----------
+function ritaLager(){
+  const ordning = {"i lager": 0, "upplagd": 1, "på väg": 2, "köpt": 3};
+  const lista = [...lager].sort((a, b) => (ordning[(a.status || "").toLowerCase()] ?? 9) - (ordning[(b.status || "").toLowerCase()] ?? 9) || (b.dagar ?? 0) - (a.dagar ?? 0));
+  const bundet = lista.reduce((a, v) => a + v.k, 0), pot = lista.reduce((a, v) => a + (v.potvinst ?? 0), 0), mal = lista.reduce((a, v) => a + (v.malpris ?? 0), 0);
+  $("lagerinfo").textContent = lista.length ? `${lista.length} varor · ${kr(bundet)} bundet` : "";
+  if (!lista.length) { $("lagertabell").innerHTML = `<tbody><tr><td class="tomt">Lagret är tomt.</td></tr></tbody>`; return; }
+  $("lagertabell").innerHTML = `<thead><tr><th>Vara</th><th>Status</th><th class="dolj-mobil">Kostnad</th><th class="dolj-mobil">Målpris</th><th>Möjlig vinst</th><th class="dolj-mobil">ROI</th><th class="dolj-mobil">Dagar</th></tr></thead><tbody>` +
+    lista.map(v => `<tr>
+      <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · köpt ${v.t_kopt ? datum(v.t_kopt) : "–"}${v.kalla ? " på " + esc(v.kalla) : ""}</span></div></td>
+      <td><span class="status ${(v.status || "").toLowerCase() === "i lager" ? "lager" : ""}">${esc(v.status || "–")}</span></td>
+      <td class="tal dolj-mobil">${kr(v.k)}</td>
+      <td class="tal dolj-mobil">${kr(v.malpris)}</td>
+      <td class="tal ${klass(v.potvinst)}">${krTecken(v.potvinst)}</td>
+      <td class="tal dolj-mobil">${pct(v.potroi)}</td>
+      <td class="tal dolj-mobil">${v.dagar ?? "–"}</td></tr>`).join("") +
+    `<tr class="summa"><td>Totalt</td><td></td><td class="tal dolj-mobil">${kr(bundet)}</td><td class="tal dolj-mobil">${kr(mal)}</td><td class="tal ${klass(pot)}">${krTecken(pot)}</td><td class="tal dolj-mobil">${pct(bundet ? 100 * pot / bundet : null)}</td><td class="dolj-mobil"></td></tr></tbody>`;
+}
+
+function ritaOm(){
+  const utan = salda.filter(v => !v.t_sald);
+  $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket Valto Resell. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
+    <b>ROI</b> är vinsten delat med totalkostnaden, och <b>marginal</b> är vinsten delat med omsättningen. En vara räknas till den period den såldes, och <b>Inköpt</b> till den period den köptes.
+    Varor med Typ = Privat (som brorsans) räknas inte med.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
+}
+
+function rita(){ ritaTopp(); ritaPerioder(); ritaLager(); ritaOm(); }
+
+// ---------- Händelser ----------
+$("utvperiod").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.utv = b.dataset.k; skriv("utv", st.utv); ritaTopp(); });
+$("indelning").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.ind = b.dataset.k; st.vald = null; skriv("ind", st.ind); ritaPerioder(); });
+$("stapelmatt").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.matt = b.dataset.k; skriv("matt", st.matt); ritaStaplar(); });
+$("gruppval").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.grupp = b.dataset.k; skriv("grupp", st.grupp); ritaPerioder(); });
+$("bak").addEventListener("click", () => { const l = perioder(st.ind), i = l.indexOf(st.vald); if (i > 0) { st.vald = l[i - 1]; ritaPerioder(); } });
+$("fram").addEventListener("click", () => { const l = perioder(st.ind), i = l.indexOf(st.vald); if (i < l.length - 1) { st.vald = l[i + 1]; ritaPerioder(); } });
+$("hojdpunkter").addEventListener("click", e => { const h = e.target.closest("[data-f]"); if (h) { st.vald = +h.dataset.f; ritaPerioder(); } });
+$("saldtabell").addEventListener("click", e => {
+  const th = e.target.closest("th[data-k]"); if (!th) return;
+  const k = th.dataset.k;
+  st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "produkt" || k === "plattform" ? 1 : -1)]; skriv("sort", st.sort); ritaPerioder();
+});
+let storlek = 0;
+addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => D && (ritaUtveckling(), ritaStaplar()), 150); });
+
+// Kom ihåg-lösenordet låser upp direkt
+const sparat = las("losen", null);
+if (sparat) { $("losen").value = sparat; forsok(sparat, true); }
+</script>
+</body>
+</html>

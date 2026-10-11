@@ -74,10 +74,19 @@ jobs:
             tradera_salda.json
           key: bors-${{ github.run_id }}
 
+      # Bokföringen krypteras med ditt lösenord, eftersom hemsidan är öppen för alla som har länken
+      - name: Hämta bokföringen
+        continue-on-error: true
+        env:
+          BOKFORING_ARK: ${{ secrets.BOKFORING_ARK }}
+          BOKFORING_LOSEN: ${{ secrets.BOKFORING_LOSEN }}
+        run: python3 bokforing.py
+
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html sokningar.json _site/
+          cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
 
