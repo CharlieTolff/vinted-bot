@@ -528,7 +528,8 @@
       "Paul & Shark",
       "Colmar",
       "Peuterey",
-      "Boglioli"
+      "Boglioli",
+      "Ralph Lauren"
     ],
     "storlekar": [
       "S",
@@ -544,6 +545,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -555,8 +557,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "farger": []
+    "aktiv": true
   },
   {
     "namn": "Italienska dunjackor & västar",
