@@ -242,64 +242,6 @@
     "aktiv": true
   },
   {
-    "namn": "Toppmärken dunjacka",
-    "sokord": [
-      "dunjacka",
-      "down jacket",
-      "puffer"
-    ],
-    "maxpris": 600,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": [
-      "Arc'teryx",
-      "Pyrenex",
-      "Woolrich"
-    ],
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [
-      "Svart",
-      "Grå",
-      "Vit",
-      "Crèmefärgad",
-      "Röd",
-      "Vinröd",
-      "Blå",
-      "Marinblå"
-    ],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Barbour vaxjacka",
     "sokord": "",
     "maxpris": 800,
