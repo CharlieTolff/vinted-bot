@@ -3,3 +3,5 @@ sedda.json
 *.tmp
 __pycache__/
 minne.json
+bors.json
+tradera_salda.json

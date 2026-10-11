@@ -12,6 +12,7 @@ Två sorters mätningar per källa och kategori:
 Allt sparas i bors.json, som hemsidans börssida (hemsida/bors.html) visar.
 """
 import argparse
+import calendar
 import html as H
 import json
 import os
@@ -27,13 +28,16 @@ import vinted_bot as vb
 
 MAPP = os.path.dirname(os.path.abspath(__file__))
 BORS_FIL = os.path.join(MAPP, "bors.json")
+SALDA_FIL = os.path.join(MAPP, "tradera_salda.json")  # sålda Tradera-annonser vi sett (för veckohistorik)
 
 TIDSGRANS_SEK = 50        # så länge mätningarna får hålla på per runda
 MATT_IGEN_TIMMAR = 20     # en mätning görs om när den är så här gammal
 TOM_IGEN_DAGAR = 5        # märken som inte har något i en kategori mäts bara om så här ofta
 SPARA_DAGAR = 400         # så lång historik sparas
-ANDEL_TOPP = 40           # så många märken sparas per stickprov (plus alla alarm-märken)
+DAGLIGT_DAGAR = 60        # så länge sparas en punkt per dag, sedan en per vecka
+ANDEL_TOPP = 30           # så många märken sparas per stickprov (plus alla alarm-märken)
 VINTED_SIDOR = 10         # Vinted visar högst 10 sidor à 96 annonser
+VINTED_PER_RUNDA = 14     # högst så många frågor till Vinted per runda, så att alarmen aldrig blir blockerade
 TRADERA_SIDOR = 5         # 80 sålda annonser per sida
 PLICK_SIDOR = 4           # 24 annonser per sida
 
@@ -188,6 +192,9 @@ class VintedKalla:
 # ---------- Tradera (sålda annonser och slutpriser) ----------
 
 class TraderaKalla:
+    def __init__(self):
+        self.salda = []
+
     def sok(self, q, sida=1):
         par = [("q", q), ("itemStatus", "Sold")]
         if sida > 1:
@@ -213,6 +220,8 @@ class TraderaKalla:
                     sett.add(it.get("itemId"))
                     m = hitta_marke(it.get("shortDescription", ""), mn) or "Övriga"
                     per.setdefault(m, []).append(it.get("price"))
+                    if it.get("endDate") and it.get("price"):
+                        self.salda.append((str(it.get("itemId")), it["endDate"][:10], m, it["price"]))
                 pc = (res.get("pagination") or {}).get("pageCount") or 1
                 time.sleep(random.uniform(1, 2))
                 if s >= pc or not items:
@@ -237,20 +246,20 @@ class TraderaKalla:
 # ---------- Plick ----------
 
 def plick_kort(sida):
-    """Annonserna på en av Plicks söksidor: märke och pris."""
+    """Annonserna på en av Plicks söksidor: märke, pris och länk."""
     ut = []
     for bit in sida.split('class="listing-card-component"')[1:]:
-        bit = bit.split('class="listing-card-component"')[0]
-        text = re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<script.*?</script>", " ", bit, flags=re.S)))).strip()
-        pris = re.search(r"(\d[\d ]*)\s*SEK", text)
+        fot = bit.split("listing-card-component__footer", 1)[-1]
+        rutor = [H.unescape(t).strip() for t in re.findall(r'<(?:span|strong) class="text-truncate">\s*([^<]*?)\s*</(?:span|strong)>', fot)]
+        pris = next((re.match(r"(\d[\d\s]*)\s*SEK", r) for r in rutor if re.match(r"\d[\d\s]*\s*SEK", r)), None)
         if not pris:
             continue
-        marke = ""
-        m = re.search(r'class="[^"]*brand[^"]*"[^>]*>\s*([^<]+?)\s*<', bit)
-        if m:
-            marke = H.unescape(m.group(1)).strip()
-        lank = re.search(r'<a href="(/[^"/]+/[^"]+)"', bit.split("listing-card-component__header", 1)[-1].split("</div>", 1)[-1])
-        ut.append({"marke": marke, "pris": float(pris.group(1).replace(" ", "")), "text": text[:120], "lank": lank.group(1) if lank else ""})
+        # Första raden i foten är märket (kan saknas), sedan storlek och pris.
+        marke = rutor[0] if rutor and not re.match(r"\d[\d\s]*\s*SEK", rutor[0]) else ""
+        lank = next((l for l in re.findall(r'<a href="(/[^"]+)"', bit) if not l.startswith("/profiler/")), "")
+        alt = re.search(r'alt="([^"]*)"[^>]*class="listing-card-component__card-image"|class="listing-card-component__card-image" alt="([^"]*)"', bit)
+        text = re.sub(r"\s+", " ", H.unescape((alt.group(1) or alt.group(2)) if alt else ""))[:200]
+        ut.append({"marke": marke, "pris": float(re.sub(r"\s", "", pris.group(1))), "text": text, "lank": lank})
     return ut
 
 
@@ -270,7 +279,8 @@ class PlickKalla:
                 if nyckel in sett:
                     continue
                 sett.add(nyckel)
-                m = k["marke"] or hitta_marke(k["text"], mn) or "Övriga"
+                # Plick skriver märket på olika sätt (J.LINDEBERG, j.lindeberg), så samma namn som på Vinted om det går.
+                m = hitta_marke(k["marke"], mn) or k["marke"] or hitta_marke(k["text"], mn) or "Övriga"
                 per.setdefault(m, []).append(k["pris"])
             time.sleep(random.uniform(1, 2))
             if not mer or not kort:
@@ -305,6 +315,14 @@ def las_bors():
     return bors
 
 
+def spara_kompakt(fil, data):
+    """Utan mellanslag, så att hemsidan laddar snabbare."""
+    tmp = fil + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+    os.replace(tmp, fil)
+
+
 def alarm_marken(sokningar):
     marken = {}
     for s in sokningar:
@@ -316,14 +334,50 @@ def alarm_marken(sokningar):
 
 
 def satt_punkt(lista_, punkt):
-    """En punkt per dag: dagens mätning ersätter en tidigare från samma dag."""
+    """En punkt per dag: dagens mätning ersätter en tidigare från samma dag.
+    Äldre än DAGLIGT_DAGAR sparas bara en punkt per vecka, så filen inte växer för mycket."""
     if lista_ and lista_[-1][0] == punkt[0]:
         lista_[-1] = punkt
     else:
         lista_.append(punkt)
     grans = time.strftime("%Y-%m-%d", time.gmtime(time.time() - SPARA_DAGAR * 86400))
-    while lista_ and lista_[0][0] < grans:
-        lista_.pop(0)
+    dagligt = time.strftime("%Y-%m-%d", time.gmtime(time.time() - DAGLIGT_DAGAR * 86400))
+    behall, veckor = [], set()
+    for p in lista_:
+        if p[0] < grans:
+            continue
+        if p[0] < dagligt:
+            vecka = time.strftime("%G-%V", time.strptime(p[0], "%Y-%m-%d"))
+            if vecka in veckor:
+                continue
+            veckor.add(vecka)
+        behall.append(p)
+    lista_[:] = behall
+
+
+def spara_salda(bors, kat_id, nya, alarm):
+    """Lägger till sålda Tradera-annonser i en egen fil och räknar andel och pris per vecka (måndag)."""
+    alla = vb.las_json(SALDA_FIL, {})
+    kat = alla.setdefault(kat_id, {})
+    for id_, datum, marke, pris in nya:
+        kat[id_] = [datum, marke, pris]
+    grans = time.strftime("%Y-%m-%d", time.gmtime(time.time() - SPARA_DAGAR * 86400))
+    for id_ in [i for i, v in kat.items() if v[0] < grans]:
+        del kat[id_]
+    spara_kompakt(SALDA_FIL, alla)
+    veckor = {}
+    for datum, marke, pris in kat.values():
+        d = time.strptime(datum, "%Y-%m-%d")
+        mandag = time.strftime("%Y-%m-%d", time.gmtime(calendar.timegm(d) - d.tm_wday * 86400))
+        veckor.setdefault(mandag, {}).setdefault(marke, []).append(pris)
+    ut = []
+    for v in sorted(veckor):
+        per = veckor[v]
+        n = sum(len(p) for p in per.values())
+        topp = [m for m in sorted(per, key=lambda m: -len(per[m])) if m != "Övriga"][:ANDEL_TOPP]
+        marken = {m: [len(per[m]), median(per[m])] for m in dict.fromkeys(topp + [m for m in alarm if m in per])}
+        ut.append([v, n, marken, n - sum(x[0] for x in marken.values())])
+    bors.setdefault("tradera_veckor", {})[kat_id] = ut
 
 
 def uppgifter(bors, marken):
@@ -374,10 +428,13 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
         marken = {m: [len(per[m]), median(per[m])] for m in dict.fromkeys(spara)}
         ovr = n - sum(v[0] for v in marken.values())
         satt_punkt(bors["andel"].setdefault(kalla, {}).setdefault(kat["id"], []), [idag, n, marken, ovr])
+        if kalla == "tradera":
+            spara_salda(bors, kat["id"], kalla_obj.salda, alarm)
+            kalla_obj.salda = []
         return "%d annonser, störst %s" % (n, ", ".join(topp[:3]))
     r = kalla_obj.marke(kat, marke)
     if r is None:
-        raise ValueError("märket finns inte hos källan")
+        return "märket finns inte hos källan"
     punkt = [idag, r["antal"], r["median"], r["p25"], 1 if r.get("tak") else 0]
     if kalla == "vinted":
         punkt.append(r.get("gillas"))
@@ -395,15 +452,19 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
     if bara:
         lista_ = [u for u in lista_ if u[2] == bara]
     idag = time.strftime("%Y-%m-%d", time.gmtime())
-    gjorda, fel = 0, {}
+    gjorda, fel, vinted_fragor = 0, {}, 0
     for senast, nyckel, kalla, kat, marke in lista_:
         if time.time() - start > tidsgrans or (max_antal and gjorda >= max_antal):
             break
         if fel.get(kalla, 0) >= 2:  # källan krånglar just nu, försök igen nästa runda
             continue
+        if kalla == "vinted" and vinted_fragor + (VINTED_SIDOR if marke is None else 1) > VINTED_PER_RUNDA:
+            continue
         if kalla not in kallor:
             kallor[kalla] = {"vinted": lambda: VintedKalla(bors), "tradera": TraderaKalla, "plick": PlickKalla}[kalla]()
         try:
+            if kalla == "vinted":
+                vinted_fragor += VINTED_SIDOR if marke is None else 1
             svar = mat(kallor[kalla], kalla, kat, marke, bors, alarm, idag)
             bors["senast"][nyckel] = time.time()
             gjorda += 1
@@ -426,7 +487,7 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
     bors["uppdaterad"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     kvar = len(lista_) - gjorda
     bors["ko"] = kvar
-    vb.spara_json(BORS_FIL, bors)
+    spara_kompakt(BORS_FIL, bors)
     logg("%d mätningar gjorda, %d väntar på nästa runda." % (gjorda, kvar))
 
 
