@@ -202,8 +202,8 @@
   {
     "namn": "Nudie Jeans",
     "sokord": [],
-    "maxpris": 150,
-    "kappris": 100,
+    "maxpris": 350,
+    "kappris": 250,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -246,7 +246,8 @@
       "average joe",
       "slim jim",
       "bootcut ola",
-      "bigbengt"
+      "bigbengt",
+      "regular ralf"
     ],
     "telegram": "kap",
     "aktiv": true
