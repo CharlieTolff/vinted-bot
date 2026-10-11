@@ -475,69 +475,6 @@
     "aktiv": true
   },
   {
-    "namn": "Arc'teryx jackor",
-    "sokord": "",
-    "maxpris": 450,
-    "kappris": 300,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Arc'teryx",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "liknande",
-      "type",
-      "style",
-      "shibuya"
-    ],
-    "maste": [
-      "jacka",
-      "jacket",
-      "jakke",
-      "kurtka",
-      "takki",
-      "parka",
-      "beta",
-      "atom",
-      "alpha",
-      "gamma",
-      "squamish",
-      "zeta",
-      "shell",
-      "hoody",
-      "hoodie"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Acne Studios herr",
     "sokord": "",
     "maxpris": 180,
