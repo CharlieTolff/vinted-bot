@@ -606,6 +606,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -617,7 +618,6 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "farger": []
+    "aktiv": true
   }
 ]
