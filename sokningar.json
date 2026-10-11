@@ -538,62 +538,6 @@
     "aktiv": true
   },
   {
-    "namn": "Stone Island jackor",
-    "sokord": "",
-    "maxpris": 700,
-    "kappris": 500,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Stone Island",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam",
-      "patch",
-      "badge",
-      "t-shirt",
-      "tee"
-    ],
-    "telegram": "kap",
-    "aktiv": true,
-    "maste": [
-      "jacka",
-      "jacket",
-      "jakke",
-      "kurtka",
-      "takki",
-      "parka",
-      "overshirt",
-      "skjortjacka"
-    ]
-  },
-  {
     "namn": "Acne Studios herr",
     "sokord": "",
     "maxpris": 180,
