@@ -95,48 +95,6 @@
     "aktiv": true
   },
   {
-    "namn": "Acne Studios herr",
-    "sokord": "",
-    "maxpris": 180,
-    "kappris": 120,
-    "min_betyg": 4,
-    "kon": "herr",
-    "kategorier": [
-      "klader"
-    ],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Acne Studios",
-    "storlekar": [
-      "S",
-      "M",
-      "L"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra",
-      "Bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Overshirt skandinaviskt & Arket",
     "sokord": [
       "overshirt",
