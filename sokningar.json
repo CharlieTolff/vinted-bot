@@ -533,31 +533,23 @@
       "flycrew",
       "fly crew"
     ],
-    "marke": [
-      "Valentino",
-      "Valentino Garavani"
-    ],
+    "maxpris": 1400,
+    "kappris": 1000,
+    "utlandskostnad": 600,
+    "min_betyg": 4.5,
     "kon": "herr",
     "kategorier": [
       "skor"
     ],
     "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL",
       "FR",
       "IT",
       "ES",
       "DE"
     ],
-    "maxpris": 1600,
-    "kappris": 1300,
-    "utlandskostnad": 600,
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra"
+    "marke": [
+      "Valentino",
+      "Valentino Garavani"
     ],
     "storlekar": [
       "41",
@@ -565,6 +557,12 @@
       "43",
       "44"
     ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -596,14 +594,13 @@
       "caja vacía",
       "empty box"
     ],
-    "min_betyg": 4.5,
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "open",
       "flycrew",
       "fly crew"
-    ]
+    ],
+    "telegram": "kap",
+    "aktiv": true
   },
   {
     "namn": "Saint Laurent skor",
