@@ -273,49 +273,6 @@
     "aktiv": true
   },
   {
-    "namn": "Jacob Cohen Jeans",
-    "sokord": [
-      "jeans",
-      "Jacob Cohen"
-    ],
-    "min_betyg": 4.5,
-    "kon": "herr",
-    "kategorier": [],
-    "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL"
-    ],
-    "marke": "Jacob Cohen",
-    "storlekar": [
-      "W30",
-      "W31",
-      "W32"
-    ],
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra"
-    ],
-    "farger": [],
-    "uteslut": [
-      "fake",
-      "replica",
-      "inspired",
-      "defekt",
-      "trasig",
-      "fläck",
-      "barn",
-      "dam"
-    ],
-    "maste": [
-      "Jacob Cohen"
-    ],
-    "telegram": "kap",
-    "aktiv": true
-  },
-  {
     "namn": "Jacob Cohën jeans utomlands (Bard/Nick)",
     "sokord": [],
     "marke": [
