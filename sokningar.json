@@ -685,6 +685,7 @@
     "sokord": [],
     "maxpris": 399,
     "kappris": 250,
+    "utlandskostnad": 200,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -734,7 +735,6 @@
       "bigbengt",
       "regular ralf"
     ],
-    "utlandskostnad": 200,
     "telegram": "kap",
     "aktiv": true
   }
