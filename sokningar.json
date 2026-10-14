@@ -450,35 +450,33 @@
       "vernis",
       "patent"
     ],
-    "marke": "Lanvin",
+    "maxpris": 1400,
+    "kappris": 1000,
+    "utlandskostnad": 600,
+    "min_betyg": 4.5,
     "kon": "herr",
     "kategorier": [
       "skor"
     ],
     "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL",
       "FR",
       "IT",
       "ES",
       "DE"
     ],
-    "maxpris": 1600,
-    "kappris": 1300,
-    "utlandskostnad": 600,
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra"
-    ],
+    "marke": "Lanvin",
     "storlekar": [
       "41",
       "42",
       "43",
       "44"
     ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -510,9 +508,6 @@
       "caja vacía",
       "empty box"
     ],
-    "min_betyg": 4.5,
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "cap toe",
       "captoe",
@@ -524,7 +519,9 @@
       "vernice",
       "verniciat",
       "lackleder"
-    ]
+    ],
+    "telegram": "kap",
+    "aktiv": true
   },
   {
     "namn": "Valentino Open & Flycrew",
