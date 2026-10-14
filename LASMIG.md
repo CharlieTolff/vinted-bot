@@ -66,6 +66,12 @@ Allt utom `namn` och `sokord` kan lämnas bort. Tom lista betyder "alla". Enklas
 - `farger`: Vinteds färgfilter, t.ex. `["Svart", "Marinblå"]`. Tomt = alla färger. Färger som finns: Svart, Grå, Vit, Crèmefärgad, Beige, Aprikos, Orange, Korall, Röd, Vinröd, Rosa, Ros, Lila, Syrenlila, Ljusblå, Blå, Marinblå, Turkos, Mint, Grön, Mörkgrön, Khaki, Brun, Senapsgul, Gul, Silver, Guld, Flerfärgad, Genomskinlig.
 - `skick`: används också som Vinted-filter. Skick som finns: Ny med prislapp, Ny utan prislapp, Mycket bra, Bra, Tillfredsställande.
 - `lander`: vilka länder säljaren ska bo i. På svenska Vinted kan du köpa från SE (Sverige), DK (Danmark), FI (Finland) och PL (Polen).
+  Lägg till FR (Frankrike), IT (Italien), ES (Spanien) eller DE (Tyskland) så söker boten även på landets egen Vinted,
+  ett land per runda i tur och ordning. Där köper du via en köptjänst (t.ex. Proxy Orders hos French Forwarders),
+  så att du inte behöver ett eget konto i landet. Priset räknas om från euro till kronor med dagens kurs.
+- `utlandskostnad`: vad köptjänsten och frakten hem kostar per plagg från utlandet (standard 400 kr). Maxpris, kap-pris och
+  vinst räknas för utländska annonser på vad plagget kostar hemma i Sverige, alltså pris + avgift + `utlandskostnad`.
+- `sokord_utland`: sökord att använda utomlands, t.ex. modellnamn eller franska ord. Tomt = samma som `sokord`. Högst 4 används.
 - `min_betyg`: säljare med lägre snittbetyg (stjärnor) hoppas över. Säljare utan omdömen är okej. 0 stänger av.
 - Säljpriset uppskattas automatiskt: botten söker (var 6:e timme) på samma sak utan prisgräns och tar priset där
   40 % av liknande annonser är billigare, justerat för skicket. Vinsten = säljpris − (pris + Vinteds avgift + `frakt`).
