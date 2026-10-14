@@ -275,31 +275,23 @@
   {
     "namn": "Jacob Cohën jeans (Bard/Nick)",
     "sokord": [],
-    "marke": [
-      "Jacob Cohën",
-      "Jacob Cohen"
-    ],
+    "maxpris": 650,
+    "kappris": 500,
+    "utlandskostnad": 400,
+    "min_betyg": 4.5,
     "kon": "herr",
     "kategorier": [
       "klader"
     ],
     "lander": [
-      "SE",
-      "DK",
-      "FI",
-      "PL",
       "FR",
       "IT",
       "ES",
       "DE"
     ],
-    "maxpris": 850,
-    "kappris": 700,
-    "utlandskostnad": 400,
-    "skick": [
-      "Ny med prislapp",
-      "Ny utan prislapp",
-      "Mycket bra"
+    "marke": [
+      "Jacob Cohën",
+      "Jacob Cohen"
     ],
     "storlekar": [
       "W31",
@@ -307,6 +299,12 @@
       "W33",
       "W34"
     ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -350,7 +348,6 @@
       "nick",
       "eduard"
     ],
-    "min_betyg": 4.5,
     "telegram": "kap",
     "aktiv": true
   },
