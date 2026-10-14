@@ -17,11 +17,7 @@
       "SE",
       "DK",
       "FI",
-      "PL",
-      "FR",
-      "IT",
-      "ES",
-      "DE"
+      "PL"
     ],
     "marke": [
       "Barbour",
@@ -56,8 +52,7 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true,
-    "utlandskostnad": 200
+    "aktiv": true
   },
   {
     "namn": "Overshirt skandinaviskt & Arket",
@@ -78,11 +73,7 @@
       "SE",
       "DK",
       "FI",
-      "PL",
-      "FR",
-      "IT",
-      "ES",
-      "DE"
+      "PL"
     ],
     "marke": [
       "J.Lindeberg",
@@ -137,8 +128,7 @@
       "worker",
       "giacca"
     ],
-    "farger": [],
-    "utlandskostnad": 200
+    "farger": []
   },
   {
     "namn": "Italienska dunjackor & västar",
@@ -159,11 +149,7 @@
       "SE",
       "DK",
       "FI",
-      "PL",
-      "FR",
-      "IT",
-      "ES",
-      "DE"
+      "PL"
     ],
     "marke": [
       "Colmar",
@@ -231,15 +217,13 @@
       "pikowana",
       "quilted",
       "toppa"
-    ],
-    "utlandskostnad": 200
+    ]
   },
   {
     "namn": "Nudie Jeans",
     "sokord": [],
     "maxpris": 399,
     "kappris": 250,
-    "utlandskostnad": 200,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -249,11 +233,7 @@
       "SE",
       "DK",
       "FI",
-      "PL",
-      "FR",
-      "IT",
-      "ES",
-      "DE"
+      "PL"
     ],
     "marke": "Nudie Jeans",
     "storlekar": [
@@ -302,10 +282,10 @@
     "kon": "herr",
     "kategorier": [],
     "lander": [
-      "FR",
-      "IT",
-      "ES",
-      "DE"
+      "SE",
+      "DK",
+      "FI",
+      "PL"
     ],
     "marke": "Jacob Cohen",
     "storlekar": [
@@ -332,6 +312,485 @@
     "maste": [
       "Jacob Cohen"
     ],
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Jacob Cohën jeans (Bard/Nick)",
+    "sokord": [],
+    "marke": [
+      "Jacob Cohën",
+      "Jacob Cohen"
+    ],
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 850,
+    "kappris": 700,
+    "utlandskostnad": 400,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "storlekar": [
+      "W31",
+      "W32",
+      "W33",
+      "W34"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "réplica",
+      "inspired",
+      "dupe",
+      "imitation",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "enfant",
+      "bambino",
+      "kinder",
+      "niño",
+      "junior",
+      "fille",
+      "ragazza",
+      "short",
+      "bermuda",
+      "defekt",
+      "trasig",
+      "fläck",
+      "troué",
+      "tache",
+      "macchia",
+      "mancha"
+    ],
+    "maste": [
+      "jean",
+      "denim",
+      "vaquero",
+      "688",
+      "622",
+      "620",
+      "bard",
+      "nick",
+      "eduard"
+    ],
+    "min_betyg": 4.5,
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Gucci Horsebit-loafers",
+    "sokord": [],
+    "marke": "Gucci",
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 2000,
+    "kappris": 1600,
+    "utlandskostnad": 600,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "storlekar": [
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "réplica",
+      "inspired",
+      "dupe",
+      "imitation",
+      "imitazione",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "enfant",
+      "bambino",
+      "kinder",
+      "niño",
+      "slide",
+      "claquette",
+      "ciabatta",
+      "sandal",
+      "mule",
+      "boîte vide",
+      "scatola vuota",
+      "solo scatola",
+      "nur karton",
+      "caja vacía",
+      "empty box"
+    ],
+    "maste": [
+      "horsebit",
+      "mors",
+      "morsetto",
+      "jordaan",
+      "brixton",
+      "1953",
+      "loafer",
+      "mocassin",
+      "mocasin",
+      "mokassin",
+      "slipper"
+    ],
+    "min_betyg": 4.5,
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Saint Laurent, Lanvin & Valentino herrskor",
+    "sokord": [
+      "curb",
+      "rockrunner",
+      "court classic",
+      "wyatt"
+    ],
+    "marke": [
+      "Saint Laurent",
+      "Yves Saint Laurent",
+      "Lanvin",
+      "Valentino",
+      "Valentino Garavani"
+    ],
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 1600,
+    "kappris": 1300,
+    "utlandskostnad": 600,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "storlekar": [
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "réplica",
+      "inspired",
+      "dupe",
+      "imitation",
+      "imitazione",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "enfant",
+      "bambino",
+      "kinder",
+      "niño",
+      "slide",
+      "claquette",
+      "ciabatta",
+      "sandal",
+      "boîte vide",
+      "scatola vuota",
+      "solo scatola",
+      "nur karton",
+      "caja vacía",
+      "empty box"
+    ],
+    "maste": [
+      "curb",
+      "rockrunner",
+      "rock runner",
+      "court classic",
+      "sl/06",
+      "sl06",
+      "wyatt",
+      "valentino open",
+      "one stud"
+    ],
+    "min_betyg": 4.5,
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Paraboot Michael & Chambord",
+    "sokord": [],
+    "marke": "Paraboot",
+    "kon": "herr",
+    "kategorier": [
+      "skor"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 1400,
+    "kappris": 1100,
+    "utlandskostnad": 500,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "storlekar": [
+      "41",
+      "42",
+      "43",
+      "44"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "dupe",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "enfant",
+      "bambino",
+      "kinder",
+      "niño",
+      "defekt",
+      "trasig"
+    ],
+    "maste": [
+      "michael",
+      "chambord",
+      "avignon",
+      "william",
+      "thiers"
+    ],
+    "min_betyg": 4.5,
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Stone Island jackor & overshirts",
+    "sokord": [],
+    "marke": "Stone Island",
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 1200,
+    "kappris": 950,
+    "utlandskostnad": 450,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "storlekar": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "réplica",
+      "inspired",
+      "dupe",
+      "imitation",
+      "imitazione",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "junior",
+      "enfant",
+      "bambino",
+      "ragazzo",
+      "kinder",
+      "junge",
+      "niño",
+      "badge only",
+      "only badge",
+      "solo badge",
+      "nur badge",
+      "defekt",
+      "trasig",
+      "fläck",
+      "tache",
+      "macchia",
+      "mancha"
+    ],
+    "maste": [
+      "jacket",
+      "giubbotto",
+      "giubbino",
+      "giacca",
+      "veste",
+      "blouson",
+      "doudoune",
+      "chaqueta",
+      "cazadora",
+      "jacke",
+      "overshirt",
+      "parka",
+      "piumino",
+      "soft shell",
+      "ghost",
+      "field",
+      "bomber"
+    ],
+    "min_betyg": 4.5,
+    "telegram": "kap",
+    "aktiv": true
+  },
+  {
+    "namn": "Saint Laurent hoodie (bara med verifiering)",
+    "sokord": [],
+    "marke": [
+      "Saint Laurent",
+      "Yves Saint Laurent"
+    ],
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
+    ],
+    "maxpris": 1500,
+    "kappris": 1200,
+    "utlandskostnad": 550,
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "réplica",
+      "inspired",
+      "dupe",
+      "imitation",
+      "imitazione",
+      "1:1",
+      "dam",
+      "femme",
+      "donna",
+      "damen",
+      "mujer",
+      "women",
+      "barn",
+      "kids",
+      "enfant",
+      "bambino",
+      "kinder",
+      "niño",
+      "t-shirt",
+      "defekt",
+      "trasig",
+      "fläck",
+      "tache",
+      "macchia",
+      "mancha"
+    ],
+    "maste": [
+      "hoodie",
+      "sweat",
+      "felpa",
+      "sudadera",
+      "capuche",
+      "kapuze"
+    ],
+    "min_betyg": 4.5,
     "telegram": "kap",
     "aktiv": true
   }
