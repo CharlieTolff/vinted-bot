@@ -191,7 +191,10 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
     <h3 class="bred">Vem och var</h3>
     <div class="bred"><div class="falt">Herr eller dam</div><div class="val" id="konrutor"></div></div>
     <div class="bred"><div class="falt">Kategori <span class="svag">(inget valt = allt)</span></div><div class="val" id="kategorirutor"></div></div>
-    <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div></div>
+    <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div>
+      <div class="hjalp">Frankrike, Italien, Spanien och Tyskland söks på landets egen Vinted (ett land per runda). Där köper du via en köptjänst, och maxpriset räknas på vad plagget kostar hemma med köptjänst och frakt.</div></div>
+    <div class="bred"><div class="falt">Sökord utomlands <span class="svag">(valfritt)</span></div><div class="taggar" id="t-sokord_utland"></div>
+      <div class="hjalp">T.ex. franska eller italienska ord. Tomt = samma sökord som ovan.</div></div>
 
     <h3 class="bred">Storlek, färg och skick</h3>
     <div class="bred" id="storleksgrupper"></div>
@@ -204,6 +207,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
     <label>Minpris (kr)<input name="minpris" type="number" min="0"></label>
     <label>Kap-pris: notis om priset är högst (kr)<input name="kappris" type="number" min="0" placeholder="tomt = halva vanliga priset"></label>
     <label>Frakt när du köper (kr)<input name="frakt" type="number" min="0" placeholder="60"></label>
+    <label>Köptjänst + frakt hem, utlandsköp (kr)<input name="utlandskostnad" type="number" min="0" placeholder="400"></label>
     <label>Hoppa över säljare med betyg under<select name="min_betyg"><option value="4.5">4,5 stjärnor</option><option value="4">4 stjärnor</option><option value="3.5">3,5 stjärnor</option><option value="0">Hoppa inte över någon</option></select></label>
 
     <h3 class="bred">Notiser</h3>
@@ -219,8 +223,8 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 <script>
 const KON = {"": "Alla", herr: "Herr", dam: "Dam"};
 const KATEGORIER = {herr: {klader:"Kläder", skor:"Skor", accessoarer:"Accessoarer"}, dam: {klader:"Kläder", skor:"Skor", vaskor:"Väskor", accessoarer:"Accessoarer"}};
-const LANDER = {SE:"🇸🇪 Sverige", DK:"🇩🇰 Danmark", FI:"🇫🇮 Finland", PL:"🇵🇱 Polen"};
-const FLAGGA = {SE:"🇸🇪", DK:"🇩🇰", FI:"🇫🇮", PL:"🇵🇱"};
+const LANDER = {SE:"🇸🇪 Sverige", DK:"🇩🇰 Danmark", FI:"🇫🇮 Finland", PL:"🇵🇱 Polen", FR:"🇫🇷 Frankrike", IT:"🇮🇹 Italien", ES:"🇪🇸 Spanien", DE:"🇩🇪 Tyskland"};
+const FLAGGA = {SE:"🇸🇪", DK:"🇩🇰", FI:"🇫🇮", PL:"🇵🇱", FR:"🇫🇷", IT:"🇮🇹", ES:"🇪🇸", DE:"🇩🇪", BE:"🇧🇪", NL:"🇳🇱", AT:"🇦🇹", PT:"🇵🇹", LU:"🇱🇺"};
 const STORLEKAR = {
   "Tröjor, skjortor och jackor": ["XXS","XS","S","M","L","XL","XXL","XXXL"],
   "Jeans och byxor": ["W26","W27","W28","W29","W30","W31","W32","W33","W34","W36","W38","W40"],
@@ -233,6 +237,7 @@ const FORSLAG = {
   uteslut: ["fake","replica","inspired","defekt","trasig","fläck","barn","dam"],
   storlek: [],
   maste: [],
+  sokord_utland: ["veste cirée","giacca cerata","veste","giacca","pull","maglione","cardigan","overshirt"],
 };
 const FARGER = {Svart:"#000000","Grå":"#919191",Vit:"#ffffff","Crèmefärgad":"#f8f8e1",Beige:"#f4e0c8",Aprikos:"#ffcc98",Orange:"#ffa500",Korall:"#fe7f5d","Röd":"#cc3300","Vinröd":"#ae2e3d",Rosa:"#ff0080",Ros:"#ffccca",Lila:"#800080",Syrenlila:"#d297d2","Ljusblå":"#89cff0","Blå":"#007bc4","Marinblå":"#35358d",Turkos:"#b7dee8",Mint:"#a2ffbc","Grön":"#369a3d","Mörkgrön":"#356639",Khaki:"#86814a",Brun:"#663300",Senapsgul:"#e5b539",Gul:"#fff200",Silver:"#dddddd",Guld:"#be9927","Flerfärgad":"conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935)",Genomskinlig:"repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/7px 7px"};
 const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
@@ -307,7 +312,7 @@ function rita(){
       ${forra && a.hittad > forra ? `<span class="nymark">Ny</span>` : ""}
       <div class="bildram"><img src="${esc(a.bild)}" alt="" loading="lazy" referrerpolicy="no-referrer"></div>
       <div class="info">
-        <div class="pris">${Math.round(a.pris)} kr</div>
+        <div class="pris">${a.utland ? `${Math.round(a.pris_eur)} € <span class="svag">(ca ${Math.round((a.pris_totalt || a.pris) + a.utlandskostnad)} kr hemma)</span>` : `${Math.round(a.pris)} kr`}</div>
         <div class="titel">${esc(a.titel)}</div>
         ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Sälj för ca ${Math.round(a.saljpris)} kr</div>` : ""}
         <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}</div>
@@ -376,6 +381,7 @@ function ritaTaggar(namn){
 taggfalt("sokord", "t.ex. nudie jeans");
 taggfalt("marke", "t.ex. Ralph Lauren");
 taggfalt("maste", "t.ex. regular alf");
+taggfalt("sokord_utland", "t.ex. veste cirée");
 taggfalt("uteslut", "t.ex. t-shirt");
 taggfalt("storlek", "t.ex. 48 eller W30/L32");
 const somLista = v => Array.isArray(v) ? v : (v ? [v] : []);
@@ -393,12 +399,12 @@ function oppna(i){
   const a = i >= 0 ? alarm[i] : {telegram:"kap"};
   const f = $("formular");
   $("dialogtitel").textContent = i >= 0 ? "Ändra alarm" : "Nytt alarm";
-  for (const k of ["namn","url","maxpris","minpris","kappris","frakt"]) f[k].value = a[k] ?? "";
+  for (const k of ["namn","url","maxpris","minpris","kappris","frakt","utlandskostnad"]) f[k].value = a[k] ?? "";
   const storlekar = a.storlekar || [];
   $("storleksgrupper").querySelectorAll("input").forEach(c => c.checked = storlekar.some(v => v.toLowerCase() === c.value.toLowerCase()));
-  taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice(); taggar.maste = (a.maste || []).slice();
+  taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice(); taggar.maste = (a.maste || []).slice(); taggar.sokord_utland = somLista(a.sokord_utland).slice();
   taggar.storlek = storlekar.filter(v => !ALLA_STORLEKAR.some(x => x.toLowerCase() === v.toLowerCase()));
-  ["sokord","marke","uteslut","storlek","maste"].forEach(ritaTaggar);
+  ["sokord","marke","uteslut","storlek","maste","sokord_utland"].forEach(ritaTaggar);
   f.min_betyg.value = String(a.min_betyg ?? 4.5);
   $("konrutor").querySelectorAll("input").forEach(c => c.checked = c.value === (a.kon || ""));
   ritaKategorier(a.kategorier || []);
@@ -418,7 +424,7 @@ $("formular").onsubmit = async e => {
   if (!taggar.sokord.length && !taggar.marke.length && !f.url.value.trim()) { alert("Lägg till ett sökord eller märke, eller klistra in en Vinted-länk."); return; }
   const a = { namn: f.namn.value.trim() };
   if (f.url.value.trim()) a.url = f.url.value.trim(); else a.sokord = enEllerLista(taggar.sokord);
-  for (const k of ["maxpris","minpris","kappris","frakt"]) if (f[k].value) a[k] = Number(f[k].value);
+  for (const k of ["maxpris","minpris","kappris","frakt","utlandskostnad"]) if (f[k].value) a[k] = Number(f[k].value);
   a.min_betyg = Number(f.min_betyg.value);
   if (valdKon()) { a.kon = valdKon(); a.kategorier = [...$("kategorirutor").querySelectorAll("input:checked")].map(c => c.value); }
   a.lander = [...$("landrutor").querySelectorAll("input:checked")].map(c => c.value);
@@ -428,6 +434,7 @@ $("formular").onsubmit = async e => {
   a.farger = [...$("fargrutor").querySelectorAll("input:checked")].map(c => c.value);
   a.uteslut = taggar.uteslut.slice();
   if (taggar.maste.length) a.maste = taggar.maste.slice();
+  if (taggar.sokord_utland.length) a.sokord_utland = taggar.sokord_utland.slice();
   a.telegram = f.telegram.value;
   a.aktiv = f.aktiv.checked;
   const ny = alarm.slice();
