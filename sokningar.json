@@ -13,7 +13,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": "Ralph Lauren",
     "storlekar": [
@@ -37,7 +41,8 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "utlandskostnad": 200
   },
   {
     "namn": "Toppmärken fieldjacket",
@@ -96,7 +101,8 @@
       "dam"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "utlandskostnad": 200
   },
   {
     "namn": "Overshirt skandinaviskt & Arket",
@@ -117,7 +123,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "J.Lindeberg",
@@ -172,7 +182,8 @@
       "worker",
       "giacca"
     ],
-    "farger": []
+    "farger": [],
+    "utlandskostnad": 200
   },
   {
     "namn": "Italienska jackor & overshirts",
@@ -193,7 +204,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "Boglioli",
@@ -262,7 +277,8 @@
       "ostrukturerad"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "utlandskostnad": 200
   },
   {
     "namn": "Stickad kavaj, cardigan & overshirt",
@@ -285,7 +301,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "J.Lindeberg",
@@ -354,7 +374,8 @@
       "shirt jacket",
       "unstructured",
       "ostrukturerad"
-    ]
+    ],
+    "utlandskostnad": 200
   },
   {
     "namn": "Italienska dunjackor & västar",
@@ -375,7 +396,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "Colmar",
@@ -443,7 +468,8 @@
       "pikowana",
       "quilted",
       "toppa"
-    ]
+    ],
+    "utlandskostnad": 200
   },
   {
     "namn": "Toppmärken från börsen: stickad kavaj & cardigan",
@@ -466,7 +492,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "GANT",
@@ -532,7 +562,8 @@
       "rozpinany"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "utlandskostnad": 200
   },
   {
     "namn": "Fieldjacket i Bailey-stil (J.Lindeberg, Boss m.fl.)",
@@ -558,7 +589,11 @@
       "SE",
       "DK",
       "FI",
-      "PL"
+      "PL",
+      "FR",
+      "IT",
+      "ES",
+      "DE"
     ],
     "marke": [
       "J.Lindeberg",
@@ -625,7 +660,8 @@
       "tröja"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "utlandskostnad": 200
   },
   {
     "namn": "Barbour vaxjacka (även Frankrike, Italien, Spanien, Tyskland)",
