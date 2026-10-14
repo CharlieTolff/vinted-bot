@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Bokföring · Valto Resell</title>
+<title>Bokföring</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
@@ -166,7 +166,7 @@ tbody tr:last-child td{border-bottom:0}
 <body>
 <header>
   <div class="headin">
-    <a class="marke" href="index.html"><b>Valto Resell</b><span>Bokföring</span></a>
+    <a class="marke" href="index.html"><b>Bokföring</b></a>
     <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html">Märkesbörsen</a><a href="bokforing.html" class="vald">Bokföring</a></nav>
   </div>
 </header>
@@ -186,7 +186,7 @@ tbody tr:last-child td{border-bottom:0}
 
   <div id="sida" hidden>
     <div class="rubrikrad">
-      <div><h1>Bokföring</h1><div class="svag">Dina resell-affärer, hämtade från arket Valto Resell</div></div>
+      <div><h1>Bokföring</h1><div class="svag">Dina affärer, hämtade från arket</div></div>
       <div class="hoger"><span class="svag" id="uppdaterad"></span><button class="knapp" id="lasigen">Lås</button></div>
     </div>
 
@@ -624,7 +624,7 @@ function ritaLager(){
 
 function ritaOm(){
   const utan = salda.filter(v => !v.t_sald);
-  $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket Valto Resell. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
+  $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
     <b>ROI</b> är vinsten delat med totalkostnaden, och <b>marginal</b> är vinsten delat med omsättningen. En vara räknas till den period den såldes, och <b>Inköpt</b> till den period den köptes.
     Varor med Typ = Privat (som brorsans) räknas inte med.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
 }

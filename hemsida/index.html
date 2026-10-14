@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Valto Resell · Vinted-alarm</title>
+<title>Vinted-alarm</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <style>
-/* Valto Resell: svart och guld */
+/* Svart och guld */
 :root{
   color-scheme:light;
   --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
@@ -141,7 +141,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 <body>
 <div class="layout">
 <aside id="meny">
-  <div class="menytopp"><div class="marke"><b>Valto Resell</b><span>Vinted-alarm</span></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
+  <div class="menytopp"><div class="marke"><b>Vinted-alarm</b></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
   <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
   <div class="rubrikliten">Mina alarm</div>
   <nav id="alarmlista"></nav>
@@ -287,7 +287,7 @@ function rita(){
   const i = valtAlarmIndex();
   $("andra").hidden = $("tabort").hidden = i < 0;
   $("rubrik").textContent = vald || "Vinted-alarm";
-  document.title = vald ? vald + " · Valto Resell" : "Valto Resell · Vinted-alarm";
+  document.title = vald ? vald : "Vinted-alarm";
   if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").innerHTML = ""; return; }
   const data = traffar[vald];
   if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").innerHTML = ""; return; }
