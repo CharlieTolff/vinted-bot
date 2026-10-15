@@ -303,8 +303,19 @@ $("lasform").addEventListener("submit", e => { e.preventDefault(); forsok($("los
 $("lasigen").addEventListener("click", () => { skriv("losen", null); location.reload(); });
 
 // ---------- Data ----------
+// Hemsidan visar bara kläderna du köper via botten och säljer nu, inte de gamla
+// Japan-köpen (golf, LV-plånböcker m.m.). Arket har kvar allt.
+const GAMLA_KALLOR = ["mercari", "zenmarket", "amazon", "rakuten", "yahoo"];
+const GAMLA_KATEGORIER = ["golf", "småläder", "klocka", "väskor"];
+function visas(v){
+  const typ = (v.typ || "").toLowerCase(), status = (v.status || "").toLowerCase();
+  if (typ === "privat" || status === "privat") return false;
+  if (GAMLA_KATEGORIER.includes((v.kategori || "").toLowerCase())) return false;
+  return !GAMLA_KALLOR.includes((v.kalla || "").toLowerCase());
+}
+
 function forbered(){
-  alla = (D.varor || []).filter(v => (v.typ || "").toLowerCase() !== "privat" && (v.status || "").toLowerCase() !== "privat");
+  alla = (D.varor || []).filter(visas);
   for (const v of alla) {
     v.k = v.kostnad ?? ((v.inkop || 0) + (v.zm || 0) + (v.frakt || 0) + (v.tull || 0));
     v.t_kopt = v.kopt ? dag(v.kopt) : null;
@@ -360,7 +371,9 @@ function summera(fran, till){
   const s = salda.filter(v => inom(v.t_sald));
   const k = alla.filter(v => inom(v.t_kopt));
   const vinst = s.reduce((a, v) => a + v.v, 0), oms = s.reduce((a, v) => a + v.salj, 0), kost = s.reduce((a, v) => a + v.k, 0);
-  return {salda: s, kopta: k, vinst, oms, kost, antal: s.length, roi: kost ? 100 * vinst / kost : null,
+  // ROI räknas bara på varor med inköpspris (tidigare lager har inget).
+  const medKost = s.filter(v => v.k > 0), roiVinst = medKost.reduce((a, v) => a + v.v, 0);
+  return {salda: s, kopta: k, vinst, oms, kost, antal: s.length, roi: kost ? 100 * roiVinst / kost : null,
           inkopt: k.reduce((a, v) => a + v.k, 0), antalKopt: k.length};
 }
 
@@ -568,7 +581,7 @@ function ritaSalda(s){
     <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${esc(v.kategori)}</span></div></td>
     <td class="tal">${v.t_sald ? datum(v.t_sald) : `<span class="svag" title="Säljdatum saknas i arket">–</span>`}</td>
     <td class="tal">${kr(v.salj)}</td>
-    <td class="tal dolj-mobil">${kr(v.k)}</td>
+    <td class="tal dolj-mobil">${v.k ? kr(v.k) : "–"}</td>
     <td class="tal ${klass(v.v)}">${krTecken(v.v)}</td>
     <td class="tal dolj-mobil ${klass(v.v)}">${pct(v.roi ?? 100 * v.v / v.k)}</td>
     <td class="tal dolj-mobil">${v.dagar ?? "–"}</td>
@@ -579,8 +592,8 @@ function gruppera(s, falt){
   const g = {};
   for (const v of s.salda) {
     const n = v[falt] || "Okänt";
-    g[n] = g[n] || {n, vinst: 0, oms: 0, kost: 0, antal: 0};
-    g[n].vinst += v.v; g[n].oms += v.salj; g[n].kost += v.k; g[n].antal++;
+    g[n] = g[n] || {n, vinst: 0, oms: 0, kost: 0, antal: 0, roiVinst: 0};
+    g[n].vinst += v.v; g[n].oms += v.salj; g[n].kost += v.k; g[n].antal++; if (v.k > 0) g[n].roiVinst += v.v;
   }
   return Object.values(g).sort((a, b) => b.vinst - a.vinst);
 }
@@ -591,7 +604,7 @@ function grupptabell(lista, rubrik){
     lista.map(x => `<tr><td><b>${esc(x.n)}</b></td>
       <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i class="${x.vinst < 0 ? "minus" : ""}" style="width:${(100 * Math.abs(x.vinst) / max).toFixed(1)}%"></i></div><span class="${klass(x.vinst)}">${krTecken(x.vinst)}</span></div></td>
       <td class="tal">${kr(x.oms)}</td><td class="tal dolj-mobil">${x.antal}</td>
-      <td class="tal ${klass(x.vinst)}">${pct(x.kost ? 100 * x.vinst / x.kost : null)}</td></tr>`).join("") + "</tbody>";
+      <td class="tal ${klass(x.vinst)}">${pct(x.kost ? 100 * x.roiVinst / x.kost : null)}</td></tr>`).join("") + "</tbody>";
 }
 function ritaGrupper(s){
   const m = gruppera(s, "marke");
@@ -612,9 +625,9 @@ function ritaLager(){
   if (!lista.length) { $("lagertabell").innerHTML = `<tbody><tr><td class="tomt">Lagret är tomt.</td></tr></tbody>`; return; }
   $("lagertabell").innerHTML = `<thead><tr><th>Vara</th><th>Status</th><th class="dolj-mobil">Kostnad</th><th class="dolj-mobil">Målpris</th><th>Möjlig vinst</th><th class="dolj-mobil">ROI</th><th class="dolj-mobil">Dagar</th></tr></thead><tbody>` +
     lista.map(v => `<tr>
-      <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · köpt ${v.t_kopt ? datum(v.t_kopt) : "–"}${v.kalla ? " på " + esc(v.kalla) : ""}</span></div></td>
+      <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${v.t_kopt ? "köpt " + datum(v.t_kopt) + (v.kalla ? " på " + esc(v.kalla) : "") : esc((v.kalla || "").toLowerCase() || "inköp saknas")}</span></div></td>
       <td><span class="status ${(v.status || "").toLowerCase() === "i lager" ? "lager" : ""}">${esc(v.status || "–")}</span></td>
-      <td class="tal dolj-mobil">${kr(v.k)}</td>
+      <td class="tal dolj-mobil">${v.k ? kr(v.k) : "–"}</td>
       <td class="tal dolj-mobil">${kr(v.malpris)}</td>
       <td class="tal ${klass(v.potvinst)}">${krTecken(v.potvinst)}</td>
       <td class="tal dolj-mobil">${pct(v.potroi)}</td>
@@ -626,7 +639,7 @@ function ritaOm(){
   const utan = salda.filter(v => !v.t_sald);
   $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
     <b>ROI</b> är vinsten delat med totalkostnaden, och <b>marginal</b> är vinsten delat med omsättningen. En vara räknas till den period den såldes, och <b>Inköpt</b> till den period den köptes.
-    Varor med Typ = Privat (som brorsans) räknas inte med.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
+    Här visas bara kläderna från botten och det du säljer nu. De gamla Japan-köpen (golf, LV-plånböcker m.m.) och privata saker finns kvar i arket men räknas inte här. Varor från tidigare lager har inget inköpspris, så hela säljpriset räknas som vinst.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
 }
 
 function rita(){ ritaTopp(); ritaPerioder(); ritaLager(); ritaOm(); }
