@@ -25,7 +25,9 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - `bokforing.py` hämtar arket och krypterar det vid varje botrunda. Den behöver två GitHub-secrets:
   `BOKFORING_ARK` (länken till arket, som måste vara delat med "alla som har länken") och `BOKFORING_LOSEN` (lösenordet).
   Saknas de visas den sparade kopian `hemsida/bokforing.enc`.
-- Typ = Privat räknas inte med. En såld vara räknas till veckan/månaden den såldes, och inköp till när de köptes.
+- Hemsidan visar bara kläderna från botten och det du säljer nu. Gamla Japan-köp (Mercari, ZenMarket, Amazon) och
+  golf, småläder och klockor räknas inte där, men finns kvar i arket. Det styrs av `GAMLA_KALLOR` och `GAMLA_KATEGORIER`
+  i `hemsida/bokforing.html`. Typ = Privat räknas inte med. En såld vara räknas till veckan/månaden den såldes, och inköp till när de köptes.
 
 ## Filer
 - `vinted_bot.py` – själva programmet (behöver bara Python 3, inget att installera).
