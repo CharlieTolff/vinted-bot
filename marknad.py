@@ -442,6 +442,18 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
     return "%s st, median %s kr" % (r["antal"], r["median"])
 
 
+def sammanfatta(bors):
+    """Skriver de största märkena per kategori i loggen (antal och medianpris), så börsen går att läsa utan hemsidan."""
+    for kat in KATEGORIER:
+        for kalla in ("tradera", "vinted"):
+            pts = bors["andel"].get(kalla, {}).get(kat["id"]) or []
+            if not pts:
+                continue
+            _, n, marken, _ = pts[-1]
+            topp = sorted(marken.items(), key=lambda x: -x[1][0])[:15]
+            logg("topp %s %s (%d st): %s" % (kalla, kat["id"], n, ", ".join("%s %d/%s" % (m, v[0], v[1]) for m, v in topp)))
+
+
 def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
     start = time.time()
     sokningar = vb.las_json(vb.SOKNINGAR_FIL, [])
@@ -475,6 +487,7 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
             if isinstance(e, urllib.error.HTTPError) and e.code in (401, 403, 429) and kalla == "vinted":
                 fel[kalla] = 99
         time.sleep(random.uniform(0.5, 1.5))
+    sammanfatta(bors)
     # Släng mätningar av märken som inte längre finns i något alarm.
     for kalla in bors["marke"].values():
         for kat in kalla.values():
