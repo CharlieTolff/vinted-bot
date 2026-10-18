@@ -23,19 +23,6 @@
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 .layout{display:flex;min-height:100vh}
 
-/* Topplist, samma på alla tre sidorna */
-header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:15;border-bottom:1px solid var(--menylinje);height:58px}
-.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 24px;height:100%}
-.logga{text-decoration:none;font-family:Cinzel,Georgia,serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
-.flikar{display:flex;flex-direction:row;flex:none;overflow:visible;gap:4px;margin-left:auto}
-.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
-.flikar a:hover{background:var(--menyval)}
-.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
-@media (max-width:760px){
-  .headin{padding:0 12px;gap:8px}
-  .logga{font-size:15px}
-  .flikar a{padding:6px 8px;font-size:13px}
-}
 
 /* Meny */
 aside{width:232px;flex:none;background:var(--meny);border-right:1px solid var(--linje);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:var(--huvud);height:calc(100vh - var(--huvud));padding:18px 12px}
@@ -60,6 +47,7 @@ aside .ikon{color:var(--menytext)}
 .menyfot input{width:100%;background:var(--menyval);border-color:var(--menylinje);color:var(--menytext)}
 .ikon{border:0;background:none;font-size:20px;padding:2px 8px;line-height:1;box-shadow:none}
 .baramobil{display:none}
+.baramobil-flex{display:none}
 #skugga{display:none}
 
 /* Huvuddel */
@@ -78,6 +66,7 @@ h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;font-weight:700;m
   body.menyoppen aside{transform:none;box-shadow:0 0 40px #0008}
   body.menyoppen #skugga{display:block;position:fixed;inset:0;background:#0006;z-index:10}
   .baramobil{display:inline-block}
+  .baramobil-flex{display:flex}
   main{padding:0 16px 40px}
   .topp{padding-top:16px}
   h1{font-size:23px}
@@ -160,17 +149,18 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
   .pris{font-size:17px}
 }
 </style>
+<link rel="stylesheet" href="stil.css">
 </head>
 <body>
 <header>
   <div class="headin">
-    <a class="logga" href="index.html">Valto Resell</a>
-    <nav class="flikar"><a href="index.html" class="vald">🔔 Alarm</a><a href="bors.html">📈 Börsen</a><a href="bokforing.html">📒 Bokföring</a></nav>
+    <a class="logga" href="index.html">Vinted-alarm</a>
+    <nav class="flikar"><a href="index.html" class="vald">Alarm</a><a href="bors.html">Märkesbörsen</a><a href="bokforing.html">Bokföring</a></nav>
   </div>
 </header>
 <div class="layout">
 <aside id="meny">
-  <div class="menytopp"><div class="marke"><b>Vinted-alarm</b></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
+  <div class="menytopp baramobil-flex"><div></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
   <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
   <button class="menyval basta" data-n="__basta"><span class="namn">⭐ Bästa kapen just nu</span><span class="antal" id="bastaAntal"></span></button>
   <div class="rubrikliten">Mina alarm</div>
@@ -189,7 +179,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 <main>
   <div class="topp">
     <button id="oppnaMeny" class="baramobil ikon" aria-label="Visa alarmen">☰</button>
-    <div style="min-width:0"><h1 id="rubrik">Vinted-alarm</h1><div class="statistik" id="vanligt"></div></div>
+    <div style="min-width:0"><h1 id="rubrik">Vinted-alarm</h1><p class="forklara" id="sidtext" style="margin:0 0 10px"></p><div class="statistik" id="vanligt"></div></div>
     <div class="rad" style="margin:0 0 0 auto">
       <label class="vaxla"><input type="checkbox" id="baraKap"> Bara kap</label>
       <button id="andra" hidden>Ändra</button>
@@ -353,9 +343,8 @@ function kortet(a, forra){
         ${a.alarm ? `<div class="alarmnamn">${esc(a.alarm)}</div>` : ""}
         <div class="pris">${a.utland ? `${Math.round(a.pris_eur)} € <span class="svag">(ca ${Math.round((a.pris_totalt || a.pris) + a.utlandskostnad)} kr hemma)</span>` : `${Math.round(a.pris)} kr`}</div>
         <div class="titel">${esc(a.titel)}</div>
-        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Sälj för ca ${Math.round(a.saljpris)} kr</div>` : ""}
-        <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}</div>
-        ${a.saljare ? `<div class="svag">${FLAGGA[a.saljare.land] || ""} ${a.saljare.omdomen ? "⭐ " + a.saljare.betyg.toFixed(1) + " (" + a.saljare.omdomen + ")" : "Inga omdömen än"}${a.gillas ? " · ♥ " + a.gillas : ""}</div>` : ""}
+        ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}">${a.vinst >= 0 ? "+" : "−"}${Math.abs(Math.round(a.vinst))} kr ${a.vinst >= 0 ? "vinst" : "förlust"}</div><div class="svag">om du säljer för ca ${Math.round(a.saljpris)} kr</div>` : ""}
+        <div class="svag">${esc([a.storlek, a.skick].filter(Boolean).join(" · "))}${a.saljare ? ` · ${FLAGGA[a.saljare.land] || ""} ${a.saljare.omdomen ? "⭐ " + a.saljare.betyg.toFixed(1) : "ny säljare"}` : ""}</div>
         <div class="svag">${tid(a.hittad)}</div>
       </div>
     </a>`;
@@ -369,6 +358,8 @@ function rita(){
   $("andra").hidden = $("tabort").hidden = i < 0;
   $("rubrik").textContent = basta ? "Bästa kapen just nu" : (vald || "Vinted-alarm");
   document.title = basta ? "Bästa kapen" : (vald || "Vinted-alarm");
+  $("sidtext").textContent = basta ? "De bästa fynden från alla dina alarm. Vinsten är vad du kan tjäna om du säljer vidare på Vinted."
+    : vald ? "Nya annonser som passar alarmet. KAP betyder att priset är så lågt att du kan tjäna pengar på det." : "";
   if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").innerHTML = ""; $("doldainfo").textContent = ""; return; }
   const data = basta ? {annonser: bastaKapen()} : traffar[vald];
   if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").innerHTML = ""; $("doldainfo").textContent = ""; return; }
@@ -377,7 +368,7 @@ function rita(){
     const kap = allaAnnonser.filter(a => a.kap).length, vinst = allaAnnonser.reduce((s, a) => s + Math.max(0, a.vinst || 0), 0);
     $("vanligt").innerHTML = [
       `<span class="chip guld"><b>${kap}</b> kap</span>`,
-      `<span class="chip"><b>${allaAnnonser.length}</b> träffar med vinst från alla alarm</span>`,
+      `<span class="chip"><b>${allaAnnonser.length}</b> fynd med vinst</span>`,
       vinst ? `<span class="chip">Möjlig vinst ca <b>${(Math.round(vinst / 10) * 10).toLocaleString("sv-SE")} kr</b></span>` : "",
     ].join("");
   } else {
