@@ -286,7 +286,7 @@
       "half zip"
     ],
     "maxpris": 150,
-    "kappris": 100,
+    "kappris": 60,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -299,12 +299,9 @@
       "PL"
     ],
     "marke": [
-      "GANT",
       "Polo Ralph Lauren",
       "Ralph Lauren",
-      "Lacoste",
-      "Morris",
-      "Lyle & Scott"
+      "Morris"
     ],
     "storlekar": [
       "S",
