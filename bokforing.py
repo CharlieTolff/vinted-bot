@@ -40,6 +40,7 @@ KOLUMNER = {
     "Målpris": "malpris", "Säljpris": "salj", "Säljavgifter": "avgift", "Plattform": "plattform",
     "Säljdatum": "sald", "Vinst": "vinst", "ROI": "roi", "Potentiell vinst": "potvinst",
     "Pot. ROI": "potroi", "Dagar i lager": "dagar", "Anteckning": "anteckning",
+    "Alarm": "alarm",
 }
 TAL = {"inkop", "zm", "frakt", "tull", "kostnad", "malpris", "salj", "avgift", "vinst", "roi", "potvinst", "potroi", "dagar"}
 
