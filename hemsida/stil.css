@@ -36,3 +36,51 @@ td{border-bottom-color:color-mix(in srgb,var(--linje) 35%,transparent)}
 /* En kort förklaring under rubriker, så att det är lätt att förstå vad man ser */
 .forklara{font-size:13.5px;color:var(--svag);line-height:1.5;margin:4px 0 0;max-width:72ch}
 .korthuvud .forklara{flex:1 1 100%;margin:0}
+
+/* "Poppa": allt glider upp och studsar in lite när sidan visas, och lyfter när du håller musen över det */
+body{background:radial-gradient(1100px 520px at 0% -8%,color-mix(in srgb,var(--guldljus) 22%,transparent),transparent 70%),
+  radial-gradient(900px 480px at 100% 0%,color-mix(in srgb,var(--plus) 12%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+header{background:color-mix(in srgb,var(--meny) 88%,transparent);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px)}
+@keyframes poppa{from{opacity:0;transform:translateY(16px) scale(.96)}60%{opacity:1}to{opacity:1;transform:none}}
+@keyframes tona{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes glans{0%,100%{box-shadow:0 2px 8px #0003,0 0 0 0 color-mix(in srgb,var(--guldljus) 70%,transparent)}50%{box-shadow:0 2px 8px #0003,0 0 0 6px transparent}}
+body:not(.tyst) :is(.annons,.kort,.rutor .ruta,.hojd,.las){animation:poppa .55s cubic-bezier(.2,.9,.25,1.25) backwards}
+body:not(.tyst) :is(h1,.forklara,.statistik .chip,.nyckel,.stort,.verktyg){animation:tona .45s ease-out backwards}
+body:not(.tyst) tbody tr{animation:tona .35s ease-out backwards}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(2){animation-delay:.04s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(3){animation-delay:.08s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(4){animation-delay:.12s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(5){animation-delay:.16s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(6){animation-delay:.2s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(7){animation-delay:.24s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(8){animation-delay:.28s}
+:is(.galler,.rutor,.hojdpunkter) > :nth-child(n+9){animation-delay:.32s}
+tbody tr:nth-child(2){animation-delay:.03s} tbody tr:nth-child(3){animation-delay:.06s} tbody tr:nth-child(4){animation-delay:.09s}
+tbody tr:nth-child(5){animation-delay:.12s} tbody tr:nth-child(n+6){animation-delay:.15s}
+.statistik .chip:nth-child(2){animation-delay:.05s} .statistik .chip:nth-child(3){animation-delay:.1s} .statistik .chip:nth-child(4){animation-delay:.15s}
+
+/* Annonserna */
+.annons{transition:transform .25s cubic-bezier(.2,.9,.25,1.3),box-shadow .25s,border-color .25s}
+.annons:hover{transform:translateY(-7px) scale(1.025);border-color:color-mix(in srgb,var(--guld) 60%,transparent);
+  box-shadow:0 2px 4px rgba(25,35,20,.08),0 22px 44px -16px rgba(25,35,20,.38),0 0 0 3px color-mix(in srgb,var(--guldljus) 28%,transparent)}
+.annons:hover img{transform:scale(1.07)}
+.annons .pris{font-size:22px;font-weight:800;letter-spacing:-.03em}
+.annons .vinst{font-size:13px;font-weight:700;padding:3px 10px;background:linear-gradient(135deg,color-mix(in srgb,var(--plus) 22%,transparent),color-mix(in srgb,var(--plus) 10%,transparent));
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--plus) 30%,transparent)}
+.annons .vinst.minus{background:color-mix(in srgb,var(--minus) 13%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--minus) 28%,transparent)}
+.kapmark{animation:glans 2.4s ease-in-out infinite}
+
+/* Små rutor, knappar och flikar studsar lite */
+.rutor .ruta,.hojd{transition:transform .2s cubic-bezier(.2,.9,.25,1.3),box-shadow .2s,border-color .2s}
+.rutor .ruta:hover,.hojd:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(25,35,20,.06),0 16px 34px -14px rgba(25,35,20,.3)}
+.ruta b,.stort b,.nyckel b,.mal b{letter-spacing:-.035em}
+button,.knapp,.skapa,.chip,.flikar a,.menyval{transition:transform .15s cubic-bezier(.2,.9,.25,1.4),background .15s,border-color .15s,box-shadow .15s}
+button:hover,.skapa:hover,.chip:hover{transform:translateY(-1px)}
+button:active,.skapa:active,.chip:active,.flikar a:active{transform:scale(.96)}
+.menyval:hover{transform:translateX(3px)}
+button.primar,.skapa{box-shadow:0 4px 14px -4px color-mix(in srgb,var(--guld) 70%,transparent)}
+tbody tr{transition:background .15s}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
