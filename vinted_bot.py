@@ -373,6 +373,14 @@ def storlek_delar(text):
     return delar | {o for d in delar for o in d.split()}
 
 
+def passar_fortfarande(annons, s):
+    """För annonser som redan ligger på hemsidan. Saknas något fält får annonsen ligga kvar."""
+    try:
+        return matchar(annons, s)
+    except (KeyError, TypeError, ValueError):
+        return True
+
+
 def matchar(annons, s):
     """Filtren som Vinted-sökningen själv inte klarar av."""
     # Från utlandet räknas maxpriset på vad plagget kostar hemma i Sverige.
@@ -762,7 +770,8 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
                 logg("Kunde inte skicka notis: %s" % e)
         logg("'%s': %d nya träffar, %d skickade till Telegram." % (namn, len(nya), len(skicka)))
 
-        gamla = traffar_lista.get(namn, {}).get("annonser", [])
+        # Annonser som inte längre passar alarmet (t.ex. efter att filtren ändrats) tas bort från hemsidan.
+        gamla = [a for a in traffar_lista.get(namn, {}).get("annonser", []) if passar_fortfarande(a, s)]
         kanda = {str(a["id"]) for a in nya_pa_sidan}
         # Räkna om säljpris och vinst även för annonser som redan ligger på hemsidan.
         for a in gamla:

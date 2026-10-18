@@ -560,7 +560,9 @@ async function spara(ny){
 }
 
 hamta();
-setInterval(hamta, 120000);
+// Uppdateringen i bakgrunden ritar om tyst, så att annonserna inte poppar in igen varannan minut.
+setInterval(() => { document.body.classList.add("tyst"); hamta(); }, 120000);
+addEventListener("click", () => document.body.classList.remove("tyst"), true);
 </script>
 </body>
 </html>
