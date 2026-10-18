@@ -16,14 +16,29 @@
   --plus:#1d7a50;--minus:#b23b27;--kap:#b23b27;
   --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
   --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
+  --huvud:58px;
   --skugga2:0 2px 4px rgba(25,35,20,.10),0 12px 28px rgba(25,35,20,.16);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 .layout{display:flex;min-height:100vh}
 
+/* Topplist, samma på alla tre sidorna */
+header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:15;border-bottom:1px solid var(--menylinje);height:58px}
+.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 24px;height:100%}
+.logga{text-decoration:none;font-family:Cinzel,Georgia,serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
+.flikar{display:flex;flex-direction:row;flex:none;overflow:visible;gap:4px;margin-left:auto}
+.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
+.flikar a:hover{background:var(--menyval)}
+.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
+@media (max-width:760px){
+  .headin{padding:0 12px;gap:8px}
+  .logga{font-size:15px}
+  .flikar a{padding:6px 8px;font-size:13px}
+}
+
 /* Meny */
-aside{width:232px;flex:none;background:var(--meny);border-right:1px solid var(--linje);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;padding:18px 12px}
+aside{width:232px;flex:none;background:var(--meny);border-right:1px solid var(--linje);color:var(--menytext);display:flex;flex-direction:column;position:sticky;top:var(--huvud);height:calc(100vh - var(--huvud));padding:18px 12px}
 .menytopp{display:flex;justify-content:space-between;align-items:flex-start;padding:2px 8px 18px}
 .marke{display:flex;flex-direction:column;line-height:1.15}
 .marke b{font-family:Cinzel,"Trajan Pro",Georgia,serif;font-size:19px;font-weight:700;letter-spacing:.08em;color:var(--guldljus)}
@@ -31,7 +46,7 @@ aside{width:232px;flex:none;background:var(--meny);border-right:1px solid var(--
 aside .ikon{color:var(--menytext)}
 .nytt{width:100%;margin-bottom:14px}
 .rubrikliten{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--menysvag);padding:0 10px 6px}
-nav{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+#alarmlista{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
 .menyval{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:0;background:none;color:var(--menytext);border-radius:10px;padding:9px 10px;font-size:14px;position:relative}
 .menyval:hover{background:var(--menyval)}
 .menyval.vald{background:var(--menyval);font-weight:600}
@@ -40,7 +55,6 @@ nav{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
 .menyval.av .namn{color:var(--menysvag)}
 .menyval .antal{font-size:12px;color:var(--menysvag);margin:0;font-variant-numeric:tabular-nums}
 .menyval .ny{background:var(--guld);color:#111;font-weight:700}
-.borslank{text-decoration:none;margin-top:8px;border-top:1px solid var(--menylinje);border-radius:0 0 10px 10px;padding-top:12px}
 .menyfot{border-top:1px solid var(--menylinje);padding:12px 8px 0;display:flex;flex-direction:column;gap:8px}
 .menyfot .svag{color:var(--menysvag)}
 .menyfot input{width:100%;background:var(--menyval);border-color:var(--menylinje);color:var(--menytext)}
@@ -60,7 +74,7 @@ h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;font-weight:700;m
 .prick{width:8px;height:8px;border-radius:50%;display:inline-block}
 .svag{color:var(--svag);font-size:13px}
 @media (max-width:760px){
-  aside{position:fixed;left:0;top:0;z-index:20;transform:translateX(-100%);transition:transform .22s ease}
+  aside{position:fixed;left:0;top:0;height:100vh;z-index:20;transform:translateX(-100%);transition:transform .22s ease}
   body.menyoppen aside{transform:none;box-shadow:0 0 40px #0008}
   body.menyoppen #skugga{display:block;position:fixed;inset:0;background:#0006;z-index:10}
   .baramobil{display:inline-block}
@@ -101,6 +115,15 @@ button.fara:hover{border-color:var(--minus)}
 .vinst{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;font-weight:600;font-size:12.5px;border-radius:999px;padding:2px 9px;margin:3px 0 2px;color:var(--plus);background:color-mix(in srgb,var(--plus) 12%,transparent)}
 .vinst.minus{color:var(--minus);background:color-mix(in srgb,var(--minus) 12%,transparent)}
 .tom{grid-column:1/-1;padding:60px 0;text-align:center;color:var(--svag)}
+.dolj{position:absolute;right:8px;bottom:8px;width:28px;height:28px;padding:0;border-radius:50%;font-size:15px;line-height:1;background:color-mix(in srgb,var(--kort) 85%,transparent);color:var(--svag);z-index:1;opacity:0;transition:opacity .15s}
+.annons:hover .dolj,.annons:focus-within .dolj{opacity:1}
+@media (hover:none){.dolj{opacity:1}}
+.annons.dold{opacity:.45}
+.alarmnamn{font-size:12px;font-weight:600;color:var(--guldtext);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.verktyg{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:-6px 0 16px}
+.verktyg select{padding:6px 10px;font-size:13.5px}
+.lankknapp{border:0;background:none;padding:0;color:var(--guldtext);text-decoration:underline;font-size:13px;cursor:pointer;box-shadow:none}
+.basta{margin-bottom:10px}
 
 /* Formulär */
 dialog{border:1px solid var(--linje);border-radius:18px;background:var(--kort);color:var(--text);max-width:760px;width:calc(100% - 24px);padding:26px 26px 22px;box-shadow:var(--skugga2)}
@@ -139,14 +162,19 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 </style>
 </head>
 <body>
+<header>
+  <div class="headin">
+    <a class="logga" href="index.html">Valto Resell</a>
+    <nav class="flikar"><a href="index.html" class="vald">🔔 Alarm</a><a href="bors.html">📈 Börsen</a><a href="bokforing.html">📒 Bokföring</a></nav>
+  </div>
+</header>
 <div class="layout">
 <aside id="meny">
   <div class="menytopp"><div class="marke"><b>Vinted-alarm</b></div><button id="stangMeny" class="baramobil ikon" aria-label="Stäng menyn">×</button></div>
   <button class="primar nytt" id="nyttAlarm">+ Nytt alarm</button>
+  <button class="menyval basta" data-n="__basta"><span class="namn">⭐ Bästa kapen just nu</span><span class="antal" id="bastaAntal"></span></button>
   <div class="rubrikliten">Mina alarm</div>
   <nav id="alarmlista"></nav>
-  <a class="menyval borslank" href="bors.html"><span class="namn">📈 Märkesbörsen</span></a>
-  <a class="menyval" href="bokforing.html" style="text-decoration:none"><span class="namn">📒 Bokföring</span></a>
   <div class="menyfot">
     <div id="nyckelruta" hidden>
       <div class="svag" style="margin-bottom:6px">För att spara alarm härifrån behövs en GitHub-nyckel (en gång per dator).</div>
@@ -167,6 +195,10 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
       <button id="andra" hidden>Ändra</button>
       <button class="fara" id="tabort" hidden>Ta bort</button>
     </div>
+  </div>
+  <div class="verktyg">
+    <label class="vaxla" style="gap:6px">Sortera <select id="sortering"><option value="nyast">Nyast först</option><option value="vinst">Mest vinst</option><option value="pris">Lägst pris</option></select></label>
+    <span class="svag" id="doldainfo"></span>
   </div>
   <div class="galler" id="galler"></div>
 </main>
@@ -191,9 +223,8 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
     <h3 class="bred">Vem och var</h3>
     <div class="bred"><div class="falt">Herr eller dam</div><div class="val" id="konrutor"></div></div>
     <div class="bred"><div class="falt">Kategori <span class="svag">(inget valt = allt)</span></div><div class="val" id="kategorirutor"></div></div>
-    <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div>
-      <div class="hjalp">Frankrike, Italien, Spanien och Tyskland söks på landets egen Vinted (ett land per runda). Där köper du via en köptjänst, och maxpriset räknas på vad plagget kostar hemma med köptjänst och frakt.</div></div>
-    <div class="bred"><div class="falt">Sökord utomlands <span class="svag">(valfritt)</span></div><div class="taggar" id="t-sokord_utland"></div>
+    <div class="bred"><div class="falt">Säljaren ska bo i <span class="svag">(inget valt = alla länder du kan köpa från)</span></div><div class="val" id="landrutor"></div></div>
+    <div class="bred" hidden><div class="falt">Sökord utomlands <span class="svag">(valfritt)</span></div><div class="taggar" id="t-sokord_utland"></div>
       <div class="hjalp">T.ex. franska eller italienska ord. Tomt = samma sökord som ovan.</div></div>
 
     <h3 class="bred">Storlek, färg och skick</h3>
@@ -207,7 +238,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
     <label>Minpris (kr)<input name="minpris" type="number" min="0"></label>
     <label>Kap-pris: notis om priset är högst (kr)<input name="kappris" type="number" min="0" placeholder="tomt = halva vanliga priset"></label>
     <label>Frakt när du köper (kr)<input name="frakt" type="number" min="0" placeholder="60"></label>
-    <label>Köptjänst + frakt hem, utlandsköp (kr)<input name="utlandskostnad" type="number" min="0" placeholder="400"></label>
+    <label hidden>Köptjänst + frakt hem, utlandsköp (kr)<input name="utlandskostnad" type="number" min="0" placeholder="400"></label>
     <label>Hoppa över säljare med betyg under<select name="min_betyg"><option value="4.5">4,5 stjärnor</option><option value="4">4 stjärnor</option><option value="3.5">3,5 stjärnor</option><option value="0">Hoppa inte över någon</option></select></label>
 
     <h3 class="bred">Notiser</h3>
@@ -223,7 +254,8 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 <script>
 const KON = {"": "Alla", herr: "Herr", dam: "Dam"};
 const KATEGORIER = {herr: {klader:"Kläder", skor:"Skor", accessoarer:"Accessoarer"}, dam: {klader:"Kläder", skor:"Skor", vaskor:"Väskor", accessoarer:"Accessoarer"}};
-const LANDER = {SE:"🇸🇪 Sverige", DK:"🇩🇰 Danmark", FI:"🇫🇮 Finland", PL:"🇵🇱 Polen", FR:"🇫🇷 Frankrike", IT:"🇮🇹 Italien", ES:"🇪🇸 Spanien", DE:"🇩🇪 Tyskland"};
+// Bara länderna du kan köpa från med ett svenskt Vinted-konto. Boten kan även söka i FR, IT, ES och DE (se LASMIG.md).
+const LANDER = {SE:"🇸🇪 Sverige", DK:"🇩🇰 Danmark", FI:"🇫🇮 Finland", PL:"🇵🇱 Polen"};
 const FLAGGA = {SE:"🇸🇪", DK:"🇩🇰", FI:"🇫🇮", PL:"🇵🇱", FR:"🇫🇷", IT:"🇮🇹", ES:"🇪🇸", DE:"🇩🇪", BE:"🇧🇪", NL:"🇳🇱", AT:"🇦🇹", PT:"🇵🇹", LU:"🇱🇺"};
 const STORLEKAR = {
   "Tröjor, skjortor och jackor": ["XXS","XS","S","M","L","XL","XXL","XXXL"],
@@ -248,7 +280,9 @@ const $ = id => document.getElementById(id);
 const las = (k, std) => { try { return JSON.parse(localStorage.getItem(k)) ?? std } catch { return std } };
 const skriv = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} };
 
+const BASTA = "__basta";  // vyn med de bästa kapen från alla alarm
 let traffar = {}, alarm = [], vald = las("vald", null), sett = las("sett", {});
+let dolda = new Set(las("dolda", [])), visaDolda = false;
 let redigerar = -1;
 
 function esc(t){ return String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])) }
@@ -265,9 +299,13 @@ async function hamta(){
   $("uppdaterad").textContent = tider.length ? "Senast sökt " + tid(tider.at(-1)) + " · uppdateras var 5:e minut" : "Inga sökningar har körts än";
   // Länk från märkesbörsen, t.ex. index.html#Nudie%20Jeans, öppnar det alarmet.
   const fran = decodeURIComponent(location.hash.slice(1));
-  if (fran && alarmNamn().includes(fran)) { vald = fran; history.replaceState(null, "", location.pathname); }
-  if (!vald || !alarmNamn().includes(vald)) vald = alarmNamn()[0] || null;
+  let mall = null;
+  if (fran.startsWith("nytt=")) { try { mall = JSON.parse(fran.slice(5)); } catch (e) {} history.replaceState(null, "", location.pathname); }
+  else if (fran && alarmNamn().includes(fran)) { vald = fran; history.replaceState(null, "", location.pathname); }
+  if (vald !== BASTA && (!vald || !alarmNamn().includes(vald))) vald = alarmNamn()[0] || null;
   rita();
+  // Länk från märkesbörsen med ett förifyllt alarm, t.ex. index.html#nytt={"marke":"GANT",...}
+  if (mall && !$("dialog").open) oppna(-1, mall);
 }
 
 async function hamtaAlarm(){
@@ -287,31 +325,32 @@ function alarmNamn(){
 }
 const valtAlarmIndex = () => alarm.findIndex(a => namnPa(a) === vald);
 
-function rita(){
-  ritaAlarm();
-  const i = valtAlarmIndex();
-  $("andra").hidden = $("tabort").hidden = i < 0;
-  $("rubrik").textContent = vald || "Vinted-alarm";
-  document.title = vald ? vald : "Vinted-alarm";
-  if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").innerHTML = ""; return; }
-  const data = traffar[vald];
-  if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").innerHTML = ""; return; }
-  const PRICK = {"hög": "var(--plus)", "medel": "var(--guld)", "låg": "var(--svag)"};
-  $("vanligt").innerHTML = [
-    data.saljpris ? `<span class="chip guld">Sälj för ca <b>${Math.round(data.saljpris / 10) * 10} kr</b></span>` : "",
-    data.vanligt_pris ? `<span class="chip">Brukar kosta ca <b>${Math.round(data.vanligt_pris)} kr</b></span>` : "",
-    data.efterfragan ? `<span class="chip"><span class="prick" style="background:${PRICK[data.efterfragan] || "var(--svag)"}"></span>Efterfrågan <b>${esc(data.efterfragan)}</b></span>` : "",
-    `<span class="chip"><b>${(data.annonser || []).length}</b> träffar</span>`,
-  ].join("");
-  let lista = data.annonser || [];
-  if ($("baraKap").checked) lista = lista.filter(a => a.kap);
-  const forra = sett[vald] || "";
-  $("galler").innerHTML = lista.length ? lista.map(a => `
-    <a class="annons" href="${esc(a.lank)}" target="_blank" rel="noopener">
+const PRICK = {"hög": "var(--plus)", "medel": "var(--guld)", "låg": "var(--svag)"};
+
+// Alla kap och träffar med vinst från alla alarm, för vyn "Bästa kapen".
+function bastaKapen(){
+  return alarmNamn().filter(n => { const a = alarm.find(x => namnPa(x) === n); return !a || a.aktiv !== false; })
+    .flatMap(n => ((traffar[n] || {}).annonser || []).map(a => ({...a, alarm: n})))
+    .filter(a => a.kap || (a.vinst != null && a.vinst > 0));
+}
+
+function sortera(lista){
+  const s = $("sortering").value;
+  if (s === "vinst") return [...lista].sort((a, b) => (b.vinst ?? -Infinity) - (a.vinst ?? -Infinity));
+  if (s === "pris") return [...lista].sort((a, b) => ((a.pris_totalt || a.pris) + (a.utlandskostnad || 0)) - ((b.pris_totalt || b.pris) + (b.utlandskostnad || 0)));
+  return [...lista].sort((a, b) => (b.hittad || "").localeCompare(a.hittad || ""));
+}
+
+function kortet(a, forra){
+  const id = String(a.id), dold = dolda.has(id);
+  return `
+    <a class="annons ${dold ? "dold" : ""}" href="${esc(a.lank)}" target="_blank" rel="noopener">
       ${a.kap ? `<span class="kapmark">KAP</span>` : ""}
       ${forra && a.hittad > forra ? `<span class="nymark">Ny</span>` : ""}
       <div class="bildram"><img src="${esc(a.bild)}" alt="" loading="lazy" referrerpolicy="no-referrer"></div>
+      <button class="dolj" data-id="${esc(id)}" title="${dold ? "Visa igen" : "Dölj annonsen"}" aria-label="${dold ? "Visa igen" : "Dölj annonsen"}">${dold ? "↺" : "×"}</button>
       <div class="info">
+        ${a.alarm ? `<div class="alarmnamn">${esc(a.alarm)}</div>` : ""}
         <div class="pris">${a.utland ? `${Math.round(a.pris_eur)} € <span class="svag">(ca ${Math.round((a.pris_totalt || a.pris) + a.utlandskostnad)} kr hemma)</span>` : `${Math.round(a.pris)} kr`}</div>
         <div class="titel">${esc(a.titel)}</div>
         ${a.vinst != null ? `<div class="vinst ${a.vinst < 0 ? "minus" : ""}" title="Uppskattat säljpris ca ${Math.round(a.saljpris)} kr">Vinst ca ${a.vinst >= 0 ? "+" : ""}${Math.round(a.vinst)} kr</div><div class="svag">Sälj för ca ${Math.round(a.saljpris)} kr</div>` : ""}
@@ -319,10 +358,59 @@ function rita(){
         ${a.saljare ? `<div class="svag">${FLAGGA[a.saljare.land] || ""} ${a.saljare.omdomen ? "⭐ " + a.saljare.betyg.toFixed(1) + " (" + a.saljare.omdomen + ")" : "Inga omdömen än"}${a.gillas ? " · ♥ " + a.gillas : ""}</div>` : ""}
         <div class="svag">${tid(a.hittad)}</div>
       </div>
-    </a>`).join("") : `<div class="tom">Inga träffar här än.</div>`;
+    </a>`;
 }
 
-function markeraSett(){ if (vald && traffar[vald]) { sett[vald] = traffar[vald].uppdaterad; skriv("sett", sett); } }
+function rita(){
+  ritaAlarm();
+  const i = valtAlarmIndex(), basta = vald === BASTA;
+  // "Bästa kapen" har en egen sortering, med mest vinst först från början.
+  $("sortering").value = basta ? las("sortering-basta", "vinst") : las("sortering", "nyast");
+  $("andra").hidden = $("tabort").hidden = i < 0;
+  $("rubrik").textContent = basta ? "Bästa kapen just nu" : (vald || "Vinted-alarm");
+  document.title = basta ? "Bästa kapen" : (vald || "Vinted-alarm");
+  if (!vald) { $("galler").innerHTML = `<div class="tom">Inga alarm än. Tryck på "+ Nytt alarm" för att börja.</div>`; $("vanligt").innerHTML = ""; $("doldainfo").textContent = ""; return; }
+  const data = basta ? {annonser: bastaKapen()} : traffar[vald];
+  if (!data) { $("galler").innerHTML = `<div class="tom">Här dyker träffarna upp efter nästa sökning (inom några minuter).</div>`; $("vanligt").innerHTML = ""; $("doldainfo").textContent = ""; return; }
+  const allaAnnonser = data.annonser || [];
+  if (basta) {
+    const kap = allaAnnonser.filter(a => a.kap).length, vinst = allaAnnonser.reduce((s, a) => s + Math.max(0, a.vinst || 0), 0);
+    $("vanligt").innerHTML = [
+      `<span class="chip guld"><b>${kap}</b> kap</span>`,
+      `<span class="chip"><b>${allaAnnonser.length}</b> träffar med vinst från alla alarm</span>`,
+      vinst ? `<span class="chip">Möjlig vinst ca <b>${(Math.round(vinst / 10) * 10).toLocaleString("sv-SE")} kr</b></span>` : "",
+    ].join("");
+  } else {
+    $("vanligt").innerHTML = [
+      data.saljpris ? `<span class="chip guld">Sälj för ca <b>${Math.round(data.saljpris / 10) * 10} kr</b></span>` : "",
+      data.vanligt_pris ? `<span class="chip">Brukar kosta ca <b>${Math.round(data.vanligt_pris)} kr</b></span>` : "",
+      data.efterfragan ? `<span class="chip"><span class="prick" style="background:${PRICK[data.efterfragan] || "var(--svag)"}"></span>Efterfrågan <b>${esc(data.efterfragan)}</b></span>` : "",
+      `<span class="chip"><b>${allaAnnonser.length}</b> träffar</span>`,
+    ].join("");
+  }
+  let lista = allaAnnonser;
+  if ($("baraKap").checked) lista = lista.filter(a => a.kap);
+  const antalDolda = lista.filter(a => dolda.has(String(a.id))).length;
+  if (!visaDolda) lista = lista.filter(a => !dolda.has(String(a.id)));
+  lista = sortera(lista);
+  $("doldainfo").innerHTML = antalDolda ? `${antalDolda} dolda · <button class="lankknapp" id="visaDolda">${visaDolda ? "göm dem" : "visa dem"}</button>` : "";
+  if ($("visaDolda")) $("visaDolda").onclick = () => { visaDolda = !visaDolda; rita(); };
+  const forra = basta ? "" : (sett[vald] || "");
+  $("galler").innerHTML = lista.length ? lista.map(a => kortet(a, forra)).join("")
+    : `<div class="tom">${basta ? "Inga kap med vinst just nu. De dyker upp här så fort något alarm hittar ett." : "Inga träffar här än."}</div>`;
+}
+
+$("galler").onclick = e => {
+  const b = e.target.closest(".dolj"); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const id = b.dataset.id;
+  if (dolda.has(id)) dolda.delete(id); else dolda.add(id);
+  skriv("dolda", [...dolda].slice(-3000));
+  rita();
+};
+$("sortering").onchange = () => { skriv(vald === BASTA ? "sortering-basta" : "sortering", $("sortering").value); rita(); };
+
+function markeraSett(){ if (vald && vald !== BASTA && traffar[vald]) { sett[vald] = traffar[vald].uppdaterad; skriv("sett", sett); } }
 addEventListener("beforeunload", markeraSett);
 $("baraKap").onchange = rita;
 
@@ -333,6 +421,8 @@ function ritaAlarm(){
     return `<button class="menyval ${n === vald ? "vald" : ""} ${a && a.aktiv === false ? "av" : ""}" data-n="${esc(n)}" title="${esc(n)}">
       <span class="namn">${esc(n)}</span>${nya ? `<span class="ny">${nya}</span>` : `<span class="antal">${a && a.aktiv === false ? "av" : lista.length}</span>`}</button>`;
   }).join("");
+  $("bastaAntal").textContent = bastaKapen().length || "";
+  document.querySelector(".basta").classList.toggle("vald", vald === BASTA);
   document.querySelectorAll(".menyval").forEach(b => b.onclick = () => { markeraSett(); vald = b.dataset.n; skriv("vald", vald); document.body.classList.remove("menyoppen"); rita(); scrollTo(0, 0); });
   $("nyckelruta").hidden = !!las("nyckel", "");
 }
@@ -394,9 +484,9 @@ function ritaKategorier(valda){
 }
 $("konrutor").onchange = () => ritaKategorier([...$("kategorirutor").querySelectorAll("input:checked")].map(c => c.value));
 
-function oppna(i){
+function oppna(i, mall){
   redigerar = i;
-  const a = i >= 0 ? alarm[i] : {telegram:"kap"};
+  const a = i >= 0 ? alarm[i] : {telegram: "kap", lander: Object.keys(LANDER), ...(mall || {})};
   const f = $("formular");
   $("dialogtitel").textContent = i >= 0 ? "Ändra alarm" : "Nytt alarm";
   for (const k of ["namn","url","maxpris","minpris","kappris","frakt","utlandskostnad"]) f[k].value = a[k] ?? "";

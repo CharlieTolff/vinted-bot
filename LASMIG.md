@@ -4,6 +4,10 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 
 ## Hemsidan och Telegram
 - `hemsida/index.html` är din alarm-sida. Där lägger du till alarm och ser alla träffar.
+- Alla tre sidorna har samma meny högst upp: Alarm, Börsen och Bokföring.
+- "⭐ Bästa kapen just nu" på alarm-sidan samlar kapen och träffarna med vinst från alla alarm. Träffarna kan sorteras
+  (nyast, mest vinst, lägst pris) och döljas med ×, och de dolda kommer ihåg i webbläsaren.
+- Alarm-sidan visar bara Sverige, Danmark, Finland och Polen, alltså länderna du kan köpa från med ett svenskt Vinted-konto.
 - Telegram skickar bara **kap**: priset är högst ditt kap-pris, eller (utan kap-pris) högst hälften av vanliga priset för sökningen. Per alarm kan du välja "Bara kap", "Alla nya träffar" eller "Inga".
 - `traffar.json` skapas automatiskt och är det hemsidan visar. Varje runda kollar boten några av annonserna på hemsidan och tar bort de som är sålda eller borttagna på Vinted.
 - På GitHub körs allt var 5:e minut av `.github/workflows/bevaka.yml`.
@@ -17,6 +21,10 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - Vinted och Plick visar utbudet (annonser ute nu, begärt pris). Tradera visar det som faktiskt sålts och slutpriset,
   vecka för vecka, så där syns efterfrågan.
 - Kategorierna står överst i `marknad.py` (`KATEGORIER`). Märkena tas från alarmen automatiskt.
+- "Bästa köplägena" visar dina märken där Tradera-slutpriset ligger mest över de billiga Vinted-annonserna, och
+  "Nya märken att bevaka" märken som säljer mycket på Tradera men saknas i dina alarm. "+ Alarm" öppnar ett förifyllt alarm.
+- "Sålda/v" är hur många av märket som sålts per vecka på Tradera (snitt av fyra veckor).
+- Efter varje mätning skriver `marknad.py` de största märkena per kategori i Actions-loggen.
 
 ## Bokföringen
 - `hemsida/bokforing.html` visar bokföringen från Lager-fliken i arket "Valto Resell": total vinst, utvecklingen över tid,
@@ -28,6 +36,9 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - Hemsidan visar bara kläderna från botten och det du säljer nu. Gamla Japan-köp (Mercari, ZenMarket, Amazon) och
   golf, småläder och klockor räknas inte där, men finns kvar i arket. Det styrs av `GAMLA_KALLOR` och `GAMLA_KATEGORIER`
   i `hemsida/bokforing.html`. Typ = Privat räknas inte med. En såld vara räknas till veckan/månaden den såldes, och inköp till när de köptes.
+- Månadsmålet sätts på sidan och sparas i webbläsaren. "Varor som fastnat" är varor som legat minst 21 dagar
+  (`FAST_DAGAR`), med ett prisförslag från börsen. "Vinst per alarm" använder kolumnen `Alarm` i arket om den finns,
+  annars det alarm som bevakar varans märke.
 
 ## Filer
 - `vinted_bot.py` – själva programmet (behöver bara Python 3, inget att installera).

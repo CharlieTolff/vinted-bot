@@ -24,16 +24,19 @@ a{color:inherit}
 .tal{font-variant-numeric:tabular-nums}
 button{font:inherit}
 
-/* Topplist */
-header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--menylinje)}
-.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:12px 24px}
-.marke{display:flex;flex-direction:column;line-height:1.15;text-decoration:none}
-.marke b{font-family:Cinzel,Georgia,serif;font-size:18px;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
-.marke span{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--menysvag);margin-top:3px}
+/* Topplist, samma på alla tre sidorna */
+header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:15;border-bottom:1px solid var(--menylinje);height:58px}
+.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 24px;height:100%}
+.logga{text-decoration:none;font-family:Cinzel,Georgia,serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
 .flikar{display:flex;gap:4px;margin-left:auto}
-.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px}
+.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
 .flikar a:hover{background:var(--menyval)}
 .flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
+@media (max-width:760px){
+  .headin{padding:0 12px;gap:8px}
+  .logga{font-size:15px}
+  .flikar a{padding:6px 8px;font-size:13px}
+}
 
 main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
@@ -134,6 +137,16 @@ tbody tr:last-child td{border-bottom:0}
 .status.lager{background:#141414;color:var(--guldljus);border-color:#141414}
 .summa td{font-weight:700;background:var(--kort2)}
 .info{padding:12px 16px;font-size:13.5px;color:var(--svag);line-height:1.55}
+/* Månadsmål */
+.mal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 18px;align-items:center;padding:16px 18px}
+.mal .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
+.mal b{font-size:22px;font-variant-numeric:tabular-nums}
+.matare{grid-column:1/-1;height:12px;border-radius:6px;background:color-mix(in srgb,var(--linje) 60%,transparent);overflow:hidden}
+.matare i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--guld),var(--guldljus));transition:width .4s ease}
+.matare i.klar{background:var(--plus)}
+.mal input{font:inherit;font-size:14px;width:110px;padding:6px 9px;border-radius:9px;border:1px solid var(--linje);background:#eef1ea;color:var(--text);text-align:right}
+.mal label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--svag)}
+.fastnat{display:inline-block;font-size:11.5px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px;background:color-mix(in srgb,var(--minus) 14%,transparent);color:var(--minus)}
 .info b{color:var(--text)}
 
 @media (max-width:900px){
@@ -141,9 +154,6 @@ tbody tr:last-child td{border-bottom:0}
   .tva{grid-template-columns:1fr}
 }
 @media (max-width:760px){
-  .headin{padding:10px 16px;gap:10px}
-  .marke span{display:none}
-  .flikar a{padding:6px 8px;font-size:13px}
   main{padding:16px 16px 48px}
   h1{font-size:23px}
   .topp{grid-template-columns:1fr;padding:16px 14px 4px}
@@ -166,8 +176,8 @@ tbody tr:last-child td{border-bottom:0}
 <body>
 <header>
   <div class="headin">
-    <a class="marke" href="index.html"><b>Bokföring</b></a>
-    <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html">Märkesbörsen</a><a href="bokforing.html" class="vald">Bokföring</a></nav>
+    <a class="logga" href="index.html">Valto Resell</a>
+    <nav class="flikar"><a href="index.html">🔔 Alarm</a><a href="bors.html">📈 Börsen</a><a href="bokforing.html" class="vald">📒 Bokföring</a></nav>
   </div>
 </header>
 
@@ -208,6 +218,9 @@ tbody tr:last-child td{border-bottom:0}
       </div>
     </section>
 
+    <!-- Månadsmål -->
+    <section class="kort" id="malkort"></section>
+
     <!-- Perioder -->
     <div class="periodrad">
       <h2>Perioder</h2>
@@ -238,11 +251,16 @@ tbody tr:last-child td{border-bottom:0}
       </section>
       <section class="kort">
         <div class="korthuvud"><h2 id="grupprubrik">Kategorier</h2><span class="svag"></span>
-          <div class="segment" id="gruppval"><button data-k="kategori" class="vald">Kategori</button><button data-k="plattform">Plattform</button><button data-k="kalla">Inköpt på</button></div>
+          <div class="segment" id="gruppval"><button data-k="kategori" class="vald">Kategori</button><button data-k="plattform">Plattform</button><button data-k="kalla">Inköpt på</button><button data-k="alarm">Alarm</button></div>
         </div>
         <div class="tabellram"><table id="grupptabell"></table></div>
       </section>
     </div>
+
+    <section class="kort" id="fastkort">
+      <div class="korthuvud"><h2>Varor som fastnat</h2><span class="svag" id="fastinfo"></span></div>
+      <div class="tabellram"><table id="fasttabell"></table></div>
+    </section>
 
     <section class="kort">
       <div class="korthuvud"><h2>Lager</h2><span class="svag" id="lagerinfo"></span></div>
@@ -268,7 +286,8 @@ const datum = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", mont
 const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short", year: "numeric"});
 const MAN = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
 
-let D = null, alla = [], salda = [], lager = [];
+let D = null, alla = [], salda = [], lager = [], ALARM = [], B = null;
+const FAST_DAGAR = 21;  // så länge en vara får ligga i lagret innan den räknas som fastnad
 let st = {ind: las("ind", "vecka"), utv: las("utv", "max"), matt: las("matt", "vinst"), grupp: las("grupp", "kategori"),
           sort: las("sort", ["sald", -1]), vald: null};
 
@@ -291,6 +310,11 @@ async function forsok(losen, spara){
     D = await dekryptera(losen);
     if (spara) skriv("losen", losen);
     $("las").hidden = true; $("sida").hidden = false;
+    // Alarmen (för vinst per alarm) och börsen (för prisförslag). Saknas de visas resten ändå.
+    [ALARM, B] = await Promise.all([
+      fetch("sokningar.json", {cache: "no-store"}).then(r => r.ok ? r.json() : []).catch(() => []),
+      fetch("bors.json", {cache: "no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
+    ]);
     forbered(); rita();
   } catch (e) {
     skriv("losen", null);
@@ -323,11 +347,41 @@ function forbered(){
     v.ar_sald = (v.status || "").toLowerCase() === "såld" && v.salj != null;
     if (v.ar_sald) v.v = v.vinst ?? (v.salj - v.k - (v.avgift || 0));
     if (v.ar_sald && v.dagar == null && v.t_kopt && v.t_sald) v.dagar = Math.round((v.t_sald - v.t_kopt) / DAG);
+    if (!v.ar_sald && v.dagar == null && v.t_kopt) v.dagar = Math.round((Date.now() - v.t_kopt) / DAG);
+    v.alarm = v.alarm || vilketAlarm(v);
   }
   salda = alla.filter(v => v.ar_sald);
   lager = alla.filter(v => !v.ar_sald && !["returnerad"].includes((v.status || "").toLowerCase()));
   const t = D.uppdaterad ? new Date(D.uppdaterad) : null;
   $("uppdaterad").textContent = t ? "Uppdaterad " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+}
+
+// Vilket alarm en vara troligen kom från: kolumnen Alarm i arket om den finns, annars det alarm
+// som bevakar märket (och helst har ett sökord som står i produktnamnet).
+const lista = v => Array.isArray(v) ? v : (v ? [v] : []);
+function vilketAlarm(v){
+  const m = (v.marke || "").toLowerCase().trim(), p = (v.produkt || "").toLowerCase();
+  if (!m) return "Inget alarm";
+  const traff = ALARM.filter(a => lista(a.marke).some(x => x.toLowerCase() === m));
+  const bast = traff.find(a => [...lista(a.sokord), ...lista(a.maste)].some(o => o && p.includes(o.toLowerCase()))) || traff[0];
+  return bast ? (bast.namn || lista(bast.sokord).join(", ")) : "Inget alarm";
+}
+
+// Börsens kategori utifrån produktnamnet, för att hitta vad märket brukar kosta på Vinted.
+const BORS_KAT = [[/dun|puffer|down/, "dun"], [/overshirt|skjortjacka|shirt jacket/, "overshirts"], [/cardigan|kofta/, "koftor"],
+  [/kavaj|blazer/, "kavajer"], [/jeans|denim/, "jeans"], [/skjorta|shirt/, "skjortor"], [/stick|tröja|sweater|pullover|knit/, "stickat"],
+  [/jacka|jacket|parka|rock/, "jackor"]];
+function borsPris(v){
+  if (!B) return null;
+  const p = (v.produkt || "").toLowerCase(), kat = (BORS_KAT.find(([re]) => re.test(p)) || [])[1];
+  const m = (v.marke || "").toLowerCase();
+  if (!kat || !m) return null;
+  const hitta = o => Object.keys(o || {}).find(k => k.toLowerCase() === m);
+  const egna = ((B.marke || {}).vinted || {})[kat], mk = hitta(egna);
+  const mp = mk ? egna[mk].at(-1) : null;
+  if (mp && mp[2]) return {pris: mp[2], kat};
+  const a = (((B.andel || {}).vinted || {})[kat] || []).at(-1), ak = a ? hitta(a[2]) : null;
+  return ak && a[2][ak][1] ? {pris: a[2][ak][1], kat} : null;
 }
 
 // Perioder: vecka (måndag–söndag), månad, 3 mån (kvartal) och år.
@@ -610,8 +664,8 @@ function ritaGrupper(s){
   const m = gruppera(s, "marke");
   $("markinfo").textContent = m.length ? `${m.length} märken` : "";
   $("marktabell").innerHTML = grupptabell(m, "Märke");
-  const n = {kategori: "Kategori", plattform: "Plattform", kalla: "Inköpt på"}[st.grupp];
-  $("grupprubrik").textContent = {kategori: "Kategorier", plattform: "Plattformar", kalla: "Inköpsställen"}[st.grupp];
+  const n = {kategori: "Kategori", plattform: "Plattform", kalla: "Inköpt på", alarm: "Alarm"}[st.grupp];
+  $("grupprubrik").textContent = {kategori: "Kategorier", plattform: "Plattformar", kalla: "Inköpsställen", alarm: "Vinst per alarm"}[st.grupp];
   $("gruppval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.k === st.grupp));
   $("grupptabell").innerHTML = grupptabell(gruppera(s, st.grupp), n);
 }
@@ -626,7 +680,7 @@ function ritaLager(){
   $("lagertabell").innerHTML = `<thead><tr><th>Vara</th><th>Status</th><th class="dolj-mobil">Kostnad</th><th class="dolj-mobil">Målpris</th><th>Möjlig vinst</th><th class="dolj-mobil">ROI</th><th class="dolj-mobil">Dagar</th></tr></thead><tbody>` +
     lista.map(v => `<tr>
       <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${v.t_kopt ? "köpt " + datum(v.t_kopt) + (v.kalla ? " på " + esc(v.kalla) : "") : esc((v.kalla || "").toLowerCase() || "inköp saknas")}</span></div></td>
-      <td><span class="status ${(v.status || "").toLowerCase() === "i lager" ? "lager" : ""}">${esc(v.status || "–")}</span></td>
+      <td><span class="status ${(v.status || "").toLowerCase() === "i lager" ? "lager" : ""}">${esc(v.status || "–")}</span>${arFast(v) ? `<span class="fastnat">fastnat</span>` : ""}</td>
       <td class="tal dolj-mobil">${v.k ? kr(v.k) : "–"}</td>
       <td class="tal dolj-mobil">${kr(v.malpris)}</td>
       <td class="tal ${klass(v.potvinst)}">${krTecken(v.potvinst)}</td>
@@ -635,14 +689,59 @@ function ritaLager(){
     `<tr class="summa"><td>Totalt</td><td></td><td class="tal dolj-mobil">${kr(bundet)}</td><td class="tal dolj-mobil">${kr(mal)}</td><td class="tal ${klass(pot)}">${krTecken(pot)}</td><td class="tal dolj-mobil">${pct(bundet ? 100 * pot / bundet : null)}</td><td class="dolj-mobil"></td></tr></tbody>`;
 }
 
+// ---------- Varor som fastnat ----------
+function arFast(v){ return ["i lager", "upplagd"].includes((v.status || "").toLowerCase()) && (v.dagar ?? 0) >= FAST_DAGAR }
+function ritaFast(){
+  const lista = lager.filter(arFast).sort((a, b) => b.dagar - a.dagar);
+  $("fastkort").hidden = !lista.length;
+  if (!lista.length) return;
+  $("fastinfo").textContent = `${lista.length} ${lista.length === 1 ? "vara" : "varor"} har legat minst ${FAST_DAGAR} dagar · ${kr(lista.reduce((a, v) => a + v.k, 0))} bundet`;
+  $("fasttabell").innerHTML = `<thead><tr><th>Vara</th><th>Dagar</th><th class="dolj-mobil">Kostnad</th><th class="dolj-mobil">Målpris</th><th class="dolj-mobil">Börsen</th><th>Sänk till</th></tr></thead><tbody>` +
+    lista.map(v => {
+      const b = borsPris(v);
+      // Förslaget: börsens vanliga Vinted-pris om det är lägre än målpriset, annars 10 % under målpriset.
+      const mal = v.malpris ?? v.salj ?? null;
+      let forslag = mal == null ? (b ? b.pris : null) : (b && b.pris < mal ? b.pris : mal * 0.9);
+      if (forslag != null) forslag = Math.max(10, Math.round(forslag / 10) * 10);
+      const under = forslag != null && v.k && forslag < v.k;
+      return `<tr>
+        <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${esc(v.status || "")}</span></div></td>
+        <td class="tal ned">${v.dagar}</td>
+        <td class="tal dolj-mobil">${v.k ? kr(v.k) : "–"}</td>
+        <td class="tal dolj-mobil">${kr(mal)}</td>
+        <td class="tal dolj-mobil" title="${b ? "Vanligt pris på Vinted för märket, mätt av börsen" : "Börsen har inget pris för märket"}">${b ? kr(b.pris) : "–"}</td>
+        <td class="tal"><b>${kr(forslag)}</b>${under ? `<div class="m ned" style="font-size:12px">under kostnad</div>` : ""}</td></tr>`;
+    }).join("") + "</tbody>";
+}
+
+// ---------- Månadsmål ----------
+function ritaMal(){
+  const mal = las("mal", null);
+  const nu = new Date(), fran = new Date(nu.getFullYear(), nu.getMonth(), 1).getTime(), till = new Date(nu.getFullYear(), nu.getMonth() + 1, 1).getTime();
+  const s = summera(fran, till), kvarDagar = Math.max(1, Math.ceil((till - Date.now()) / DAG));
+  const andel = mal ? Math.max(0, Math.min(100, 100 * s.vinst / mal)) : 0;
+  const manad = nu.toLocaleDateString("sv-SE", {month: "long"});
+  const text = !mal ? `<span class="svag">Sätt ett mål för vad du vill tjäna i ${manad}.</span>`
+    : s.vinst >= mal ? `<span class="upp">Målet är nått! ${krTecken(s.vinst - mal)} över.</span>`
+    : `<span class="svag">${kr(mal - s.vinst)} kvar på ${kvarDagar} dagar, ca ${kr((mal - s.vinst) / kvarDagar)} om dagen.</span>`;
+  $("malkort").innerHTML = `<div class="mal">
+    <div><div class="etikett">Månadsmål ${manad}</div><b class="${klass(s.vinst)}">${krTecken(s.vinst)}</b>${mal ? ` <span class="svag">av ${kr(mal)} (${pct(100 * s.vinst / mal, 0)})</span>` : ""}<div>${text}</div></div>
+    <label>Mål <input type="number" id="malvarde" min="0" step="100" inputmode="numeric" value="${mal ?? ""}" placeholder="t.ex. 2000"> kr</label>
+    <div class="matare"><i class="${mal && s.vinst >= mal ? "klar" : ""}" style="width:${andel.toFixed(1)}%"></i></div></div>`;
+  // Ritas om efter händelsen, så att rutan inte tas bort mitt i att den tappar fokus.
+  $("malvarde").onchange = e => { const v = Number(e.target.value); skriv("mal", v > 0 ? v : null); setTimeout(ritaMal); };
+}
+
 function ritaOm(){
   const utan = salda.filter(v => !v.t_sald);
   $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
     <b>ROI</b> är vinsten delat med totalkostnaden, och <b>marginal</b> är vinsten delat med omsättningen. En vara räknas till den period den såldes, och <b>Inköpt</b> till den period den köptes.
+    En vara har <b>fastnat</b> när den legat i lagret eller varit upplagd i minst ${FAST_DAGAR} dagar. Prisförslaget är märkets vanliga pris på Vinted enligt börsen om det är lägre än målpriset, annars 10 % under målpriset.
+    <b>Alarm</b> är alarmet varan troligen kom från: kolumnen Alarm i arket om du fyllt i den, annars det alarm som bevakar märket.
     Här visas bara kläderna från botten och det du säljer nu. De gamla Japan-köpen (golf, LV-plånböcker m.m.) och privata saker finns kvar i arket men räknas inte här. Varor från tidigare lager har inget inköpspris, så hela säljpriset räknas som vinst.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
 }
 
-function rita(){ ritaTopp(); ritaPerioder(); ritaLager(); ritaOm(); }
+function rita(){ ritaTopp(); ritaMal(); ritaPerioder(); ritaFast(); ritaLager(); ritaOm(); }
 
 // ---------- Händelser ----------
 $("utvperiod").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.utv = b.dataset.k; skriv("utv", st.utv); ritaTopp(); });
