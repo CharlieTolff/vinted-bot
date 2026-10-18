@@ -85,7 +85,7 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css sokningar.json _site/
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json

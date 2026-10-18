@@ -23,19 +23,6 @@ body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-
 a{color:inherit}
 .tal{font-variant-numeric:tabular-nums}
 
-/* Topplist, samma på alla tre sidorna */
-header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:15;border-bottom:1px solid var(--menylinje);height:58px}
-.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 24px;height:100%}
-.logga{text-decoration:none;font-family:Cinzel,Georgia,serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
-.flikar{display:flex;gap:4px;margin-left:auto}
-.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
-.flikar a:hover{background:var(--menyval)}
-.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
-@media (max-width:760px){
-  .headin{padding:0 12px;gap:8px}
-  .logga{font-size:15px}
-  .flikar a{padding:6px 8px;font-size:13px}
-}
 
 main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
@@ -135,20 +122,32 @@ svg.spark{display:block;margin-left:auto}
   .nyckeltal b{font-size:19px}
 }
 </style>
+<link rel="stylesheet" href="stil.css">
 </head>
 <body>
 <header>
   <div class="headin">
-    <a class="logga" href="index.html">Valto Resell</a>
-    <nav class="flikar"><a href="index.html">🔔 Alarm</a><a href="bors.html" class="vald">📈 Börsen</a><a href="bokforing.html">📒 Bokföring</a></nav>
+    <a class="logga" href="index.html">Märkesbörsen</a>
+    <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html" class="vald">Märkesbörsen</a><a href="bokforing.html">Bokföring</a></nav>
   </div>
 </header>
 <main>
   <div class="rubrikrad">
-    <div><h1>Märkesbörsen</h1><div class="svag">Hur märkena i dina alarm går på andrahandsmarknaden</div></div>
+    <div><h1>Märkesbörsen</h1><p class="forklara">Se vilka märken som säljer och var det finns pengar att tjäna.</p></div>
     <div class="svag" id="uppdaterad"></div>
   </div>
 
+  <section class="kort">
+    <div class="korthuvud">
+      <h2 id="lagerubrik">Bästa köplägena</h2>
+      <div class="segment" id="lageval"><button data-v="kop" class="vald">I dina märken</button><button data-v="nya">Nya märken att bevaka</button></div>
+      <p class="forklara" id="lageinfo"></p>
+    </div>
+    <div class="tabellram"><table id="lagetabell"></table></div>
+  </section>
+
+  <div class="rubrikrad" style="margin-top:28px;margin-bottom:12px"><div><h2>Märken per kategori</h2>
+    <p class="forklara"><b>Andel</b> är hur stor del av annonserna som är av märket (på Tradera: av det som sålts). Stiger andelen på Tradera säljer märket bättre. Ändringen visas i procentenheter (pe). Tryck på ett märke för att se mer.</p></div></div>
   <div class="kontroller">
     <div class="chips" id="kategorier" role="tablist" aria-label="Kategori"></div>
   </div>
@@ -159,14 +158,6 @@ svg.spark{display:block;margin-left:auto}
 
   <div class="rutor" id="rutor"></div>
 
-  <section class="kort">
-    <div class="korthuvud">
-      <h2 id="lagerubrik">Bästa köplägena</h2>
-      <span class="svag" id="lageinfo"></span>
-      <div class="segment" id="lageval"><button data-v="kop" class="vald">I dina märken</button><button data-v="nya">Nya märken att bevaka</button></div>
-    </div>
-    <div class="tabellram"><table id="lagetabell"></table></div>
-  </section>
 
   <section class="kort">
     <div class="korthuvud">
@@ -344,7 +335,7 @@ function ritaTabell(){
   });
   const maxAndel = Math.max(1, ...lista.map(r => r.andel || 0));
   const per = PERIODER[st.period][0];
-  const kol = [["m", "Märke"], ["andel", "Andel"], ["andelUtv", `Utv. ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Pris ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"], ["fart", "Sålda/v", "dolj-mobil"]];
+  const kol = [["m", "Märke"], ["andel", "Andel"], ["andelUtv", `Ändring ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Prisändring ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"], ["fart", "Sålda/v", "dolj-mobil"]];
   const huvud = `<thead><tr>${kol.map(([k, t, kl]) => `<th data-k="${k}" class="${kl || ""} ${k === nyckel ? "sort" + (riktning > 0 ? " upp" : "") : ""}" ${k === "spark" ? 'data-ingen="1"' : ""}>${esc(t)}</th>`).join("")}</tr></thead>`;
   if (!lista.length) { $("tabell").innerHTML = huvud + `<tbody><tr><td colspan="8" class="tomt">Inga märken att visa än.</td></tr></tbody>`; return; }
   $("tabell").innerHTML = huvud + "<tbody>" + lista.map((r, i) => `
@@ -407,7 +398,7 @@ function ritaLagen(){
   if (st.lage === "kop") {
     const l = koplagen();
     $("lagerubrik").textContent = "Bästa köplägena";
-    $("lageinfo").textContent = "Dina märken där Tradera-slutpriset ligger mest över de billiga annonserna på Vinted";
+    $("lageinfo").textContent = "Köp billigt på Vinted och sälj på Tradera. Köpläget är ungefär vad du tjänar per plagg, före frakt och avgifter.";
     $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Köp under</th><th>Säljs för</th><th>Köpläge</th><th class="dolj-mobil">Sålda/v</th><th></th></tr></thead><tbody>` +
       l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
         <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
@@ -420,7 +411,7 @@ function ritaLagen(){
   } else {
     const l = nyaMarken();
     $("lagerubrik").textContent = "Nya märken att bevaka";
-    $("lageinfo").textContent = "Säljer mycket på Tradera, för minst 200 kr, men finns inte i dina alarm";
+    $("lageinfo").textContent = "Märken som säljer ofta på Tradera för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
     $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Sålda</th><th>Andel</th><th>Slutpris</th><th class="dolj-mobil">Sålda/v</th><th></th></tr></thead><tbody>` +
       l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
         <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>

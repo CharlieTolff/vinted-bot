@@ -24,19 +24,6 @@ a{color:inherit}
 .tal{font-variant-numeric:tabular-nums}
 button{font:inherit}
 
-/* Topplist, samma på alla tre sidorna */
-header{background:var(--meny);color:var(--menytext);position:sticky;top:0;z-index:15;border-bottom:1px solid var(--menylinje);height:58px}
-.headin{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:0 24px;height:100%}
-.logga{text-decoration:none;font-family:Cinzel,Georgia,serif;font-size:18px;font-weight:700;letter-spacing:.08em;color:var(--guldljus);white-space:nowrap}
-.flikar{display:flex;gap:4px;margin-left:auto}
-.flikar a{text-decoration:none;color:var(--menytext);padding:7px 12px;border-radius:10px;font-size:14px;white-space:nowrap}
-.flikar a:hover{background:var(--menyval)}
-.flikar a.vald{background:var(--menyval);font-weight:600;box-shadow:inset 0 -2px 0 var(--guld)}
-@media (max-width:760px){
-  .headin{padding:0 12px;gap:8px}
-  .logga{font-size:15px}
-  .flikar a{padding:6px 8px;font-size:13px}
-}
 
 main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
@@ -172,12 +159,13 @@ tbody tr:last-child td{border-bottom:0}
   .forklaring{padding-left:14px;padding-right:14px}
 }
 </style>
+<link rel="stylesheet" href="stil.css">
 </head>
 <body>
 <header>
   <div class="headin">
-    <a class="logga" href="index.html">Valto Resell</a>
-    <nav class="flikar"><a href="index.html">🔔 Alarm</a><a href="bors.html">📈 Börsen</a><a href="bokforing.html" class="vald">📒 Bokföring</a></nav>
+    <a class="logga" href="index.html">Bokföring</a>
+    <nav class="flikar"><a href="index.html">Alarm</a><a href="bors.html">Märkesbörsen</a><a href="bokforing.html" class="vald">Bokföring</a></nav>
   </div>
 </header>
 
@@ -196,7 +184,7 @@ tbody tr:last-child td{border-bottom:0}
 
   <div id="sida" hidden>
     <div class="rubrikrad">
-      <div><h1>Bokföring</h1><div class="svag">Dina affärer, hämtade från arket</div></div>
+      <div><h1>Bokföring</h1><p class="forklara">Allt du köpt och sålt, hämtat från ditt ark. Vinst är vad du fått in minus allt du betalat.</p></div>
       <div class="hoger"><span class="svag" id="uppdaterad"></span><button class="knapp" id="lasigen">Lås</button></div>
     </div>
 
@@ -224,6 +212,7 @@ tbody tr:last-child td{border-bottom:0}
     <!-- Perioder -->
     <div class="periodrad">
       <h2>Perioder</h2>
+      <span class="forklara" style="margin:0">Välj vecka, månad eller år och bläddra bakåt med pilarna.</span>
       <div class="segment" id="indelning"></div>
       <div class="stega" id="stega"><button id="bak" aria-label="Föregående">‹</button><span class="namn" id="periodnamn"></span><button id="fram" aria-label="Nästa">›</button></div>
     </div>
@@ -258,7 +247,8 @@ tbody tr:last-child td{border-bottom:0}
     </div>
 
     <section class="kort" id="fastkort">
-      <div class="korthuvud"><h2>Varor som fastnat</h2><span class="svag" id="fastinfo"></span></div>
+      <div class="korthuvud"><h2>Varor som fastnat</h2><span class="svag" id="fastinfo"></span>
+        <p class="forklara">Plagg som legat länge utan att säljas. Sänk priset till förslaget så säljs de oftast snabbare.</p></div>
       <div class="tabellram"><table id="fasttabell"></table></div>
     </section>
 
