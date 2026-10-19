@@ -28,14 +28,14 @@ MODELLER = {
 CACHE = os.environ.get("VIT_BAKGRUND_MODELLER", os.path.expanduser("~/.cache/vit_bakgrund"))
 
 # Utseende
-VIT_MITT = 226.0      # ljusaste punkten på bakgrunden (0-255)
-VIT_KANT = 205.0      # mörkaste hörnet, ger "studioljus"-känslan
+VIT_MITT = 250.0      # ljusaste punkten på bakgrunden (0-255)
+VIT_KANT = 224.0      # mörkaste hörnet, ger "studioljus"-känslan
 SIDLJUS = 0.04        # ljuset faller in lite från vänster (0 = jämnt)
-BG_TON = (1.0, 0.975, 0.94)  # svagt varm off-white, som en riktig vägg/papprulle
+BG_TON = (1.0, 0.96, 0.91)  # svagt varm off-white, som en riktig vägg/papprulle
 SKUGGSTYRKA = 0.85    # hur mycket av väggens skugga som följer med (0-1)
 VITBALANS = 0.6      # hur mycket rummets färgstick tas bort från motivet (0-1)
 SKUGGLYFT = 0.85      # <1 lyfter mörka partier i motivet (1 = av)
-KONTRAST = 0.15       # svag S-kurva på motivet (0 = av)
+KONTRAST = 0.05       # svag S-kurva på motivet (0 = av)
 KASTSKUGGA = 0.07     # styrka på den mjuka skuggan bakom motivet (0-1)
 
 
@@ -87,14 +87,23 @@ def mask_for(bild):
     grov = gauss((human > 0.5).astype(np.float32), 6) > 0.2
     alfa = np.where(grov, isnet, 0.0)
     alfa = np.clip((alfa - 0.1) / 0.8, 0, 1)
+    # isnet tappar ibland hud (t.ex. nacken på bilder bakifrån); där
+    # människomodellen är säker får den bestämma.
+    alfa = np.maximum(alfa, np.clip((human - 0.6) / 0.3, 0, 1))
     return alfa
 
 
-def gor_vit(bild):
+def gor_vit(bild, behall=()):
     bild = ImageOps.exif_transpose(bild).convert("RGB")
     I = np.asarray(bild, np.float32)
     h, w = I.shape[:2]
     alfa = mask_for(bild)
+    # Rektanglar (x0, y0, x1, y1) som alltid hör till motivet, för det
+    # modellerna missar, t.ex. en nacke som syns precis i bildkanten.
+    for x0, y0, x1, y1 in behall:
+        ruta = np.zeros_like(alfa)
+        ruta[y0:y1, x0:x1] = 1
+        alfa = np.maximum(alfa, gauss(ruta, 2))
     lum = I @ np.array([0.299, 0.587, 0.114], np.float32)
 
     # Väggpixlar som säkert är vägg (inte motiv, inte saker som element/lister).
@@ -145,7 +154,9 @@ def gor_vit(bild):
         forstarkning = (vagg_medel.mean() / vagg_medel) ** styrka
         forstarkning /= forstarkning @ np.array([0.299, 0.587, 0.114], np.float32)
         r, _, b = motiv_medel * forstarkning
-        if b <= r:
+        # Motivet får samma lätt varma ton som bakgrunden, som om de
+        # belysts av samma ljus.
+        if b <= r * BG_TON[2]:
             break
     forgrund = np.clip(forgrund * forstarkning, 0, 255)
 
@@ -188,13 +199,16 @@ def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("bilder", nargs="+")
     p.add_argument("--ut", default=None, help="mapp att spara i (standard: bredvid originalet)")
+    p.add_argument("--behall", action="append", default=[], metavar="X0,Y0,X1,Y1",
+                   help="rektangel som alltid ska räknas som motiv (kan anges flera gånger)")
     p.add_argument("--format", default=None, help="beskär till bildformat, t.ex. 3:4 (standard: behåll)")
     args = p.parse_args()
     for sokvag in args.bilder:
         ut_mapp = args.ut or os.path.dirname(os.path.abspath(sokvag))
         os.makedirs(ut_mapp, exist_ok=True)
         namn = os.path.splitext(os.path.basename(sokvag))[0] + "-vit.jpg"
-        ut, alfa = gor_vit(Image.open(sokvag))
+        behall = [tuple(int(v) for v in r.split(",")) for r in args.behall]
+        ut, alfa = gor_vit(Image.open(sokvag), behall)
         if args.format:
             ut = beskar(ut, alfa, args.format)
         ut.save(os.path.join(ut_mapp, namn), quality=95, subsampling=0)
