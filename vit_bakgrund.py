@@ -19,7 +19,7 @@ import urllib.request
 
 import numpy as np
 import onnxruntime as ort
-from PIL import Image, ImageOps
+from PIL import Image, ImageFilter, ImageOps
 
 MODELLER = {
     "isnet": "https://github.com/danielgatis/rembg/releases/download/v0.0.0/isnet-general-use.onnx",
@@ -32,6 +32,8 @@ VIT_MITT = 250.0      # ljusaste punkten på bakgrunden (0-255)
 VIT_KANT = 228.0      # mörkaste hörnet, ger "studioljus"-känslan
 SKUGGSTYRKA = 0.85    # hur mycket av väggens skugga som följer med (0-1)
 VITBALANS = 0.6      # hur mycket rummets färgstick tas bort från motivet (0-1)
+SKUGGLYFT = 0.85      # <1 lyfter mörka partier i motivet (1 = av)
+KONTRAST = 0.15       # svag S-kurva på motivet (0 = av)
 KASTSKUGGA = 0.07     # styrka på den mjuka skuggan bakom motivet (0-1)
 
 
@@ -137,23 +139,55 @@ def gor_vit(bild):
     forstarkning /= forstarkning @ np.array([0.299, 0.587, 0.114], np.float32)
     forgrund = np.clip(forgrund * forstarkning, 0, 255)
 
+    # Lyft skuggorna lite så att tygstrukturen syns även i mörka plagg,
+    # och ge en svag kontrastkurva i mellantonerna.
+    flum = np.maximum(forgrund @ np.array([0.299, 0.587, 0.114], np.float32), 0.5) / 255.0
+    ny_lum = flum ** SKUGGLYFT
+    ny_lum = ny_lum + KONTRAST * ny_lum * (1 - ny_lum) * (ny_lum - 0.5) * 4
+    forgrund = np.clip(forgrund * (ny_lum / flum)[..., None], 0, 255)
+
     ut = forgrund * a + ny_bg * (1 - a)
     # Lite filmkorn på bakgrunden så den inte ser datorgenererad ut.
     korn = np.random.default_rng(0).normal(0, 1.2, (h, w, 1)).astype(np.float32)
     ut = ut + korn * (1 - a)
-    return Image.fromarray(np.clip(ut + 0.5, 0, 255).astype(np.uint8))
+    ut = Image.fromarray(np.clip(ut + 0.5, 0, 255).astype(np.uint8))
+    # Skärpning bara på motivet, bakgrunden ska förbli mjuk.
+    skarp = ut.filter(ImageFilter.UnsharpMask(radius=2, percent=70, threshold=2))
+    ut = Image.composite(skarp, ut, Image.fromarray((alfa * 255).astype(np.uint8)))
+    return ut, alfa
+
+
+def beskar(bild, alfa, format_):
+    """Beskär till t.ex. 3:4 stående, centrerat på motivet."""
+    bw, bh = (float(x) for x in format_.split(":"))
+    w, h = bild.size
+    if w / h > bw / bh:
+        ny_w, ny_h = int(round(h * bw / bh)), h
+    else:
+        ny_w, ny_h = w, int(round(w * bh / bw))
+    kol = alfa.sum(0)
+    rad = alfa.sum(1)
+    cx = (kol * np.arange(w)).sum() / max(kol.sum(), 1)
+    cy = (rad * np.arange(h)).sum() / max(rad.sum(), 1)
+    x0 = int(np.clip(cx - ny_w / 2, 0, w - ny_w))
+    y0 = int(np.clip(cy - ny_h / 2, 0, h - ny_h))
+    return bild.crop((x0, y0, x0 + ny_w, y0 + ny_h))
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("bilder", nargs="+")
     p.add_argument("--ut", default=None, help="mapp att spara i (standard: bredvid originalet)")
+    p.add_argument("--format", default=None, help="beskär till bildformat, t.ex. 3:4 (standard: behåll)")
     args = p.parse_args()
     for sokvag in args.bilder:
         ut_mapp = args.ut or os.path.dirname(os.path.abspath(sokvag))
         os.makedirs(ut_mapp, exist_ok=True)
         namn = os.path.splitext(os.path.basename(sokvag))[0] + "-vit.jpg"
-        gor_vit(Image.open(sokvag)).save(os.path.join(ut_mapp, namn), quality=92)
+        ut, alfa = gor_vit(Image.open(sokvag))
+        if args.format:
+            ut = beskar(ut, alfa, args.format)
+        ut.save(os.path.join(ut_mapp, namn), quality=95, subsampling=0)
         print(os.path.join(ut_mapp, namn))
 
 
