@@ -203,19 +203,12 @@
     ],
     "marke": [
       "Colmar",
-      "Peuterey",
       "Woolrich",
-      "Save the Duck",
-      "Paul & Shark",
-      "Refrigiwear",
-      "Ciesse Piumini",
-      "Duvetica",
-      "Aspesi",
       "J.Lindeberg",
       "Hugo Boss",
       "BOSS",
       "Polo Ralph Lauren",
-      "These Glory Days"
+      "Ralph Lauren"
     ],
     "storlekar": [
       "S",
@@ -249,8 +242,6 @@
       "spodnie",
       "jeans"
     ],
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "dun",
       "puffer",
@@ -267,7 +258,9 @@
       "pikowana",
       "quilted",
       "toppa"
-    ]
+    ],
+    "telegram": "kap",
+    "aktiv": true
   },
   {
     "namn": "Nudie Jeans från börsen",
@@ -326,7 +319,7 @@
     "aktiv": true
   },
   {
-    "namn": "Stickat GANT & Ralph Lauren",
+    "namn": "Stickat Ralph Lauren & Morris",
     "sokord": [
       "stickad tröja",
       "kabelstickad",
@@ -403,10 +396,8 @@
       "PL"
     ],
     "marke": [
-      "Peak Performance",
-      "The North Face",
-      "Sail Racing",
-      "Napapijri"
+      "Ralph Lauren",
+      "j lindeberg"
     ],
     "storlekar": [
       "S",
