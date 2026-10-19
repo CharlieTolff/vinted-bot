@@ -30,14 +30,15 @@ MAPP = os.path.dirname(os.path.abspath(__file__))
 BORS_FIL = os.path.join(MAPP, "bors.json")
 SALDA_FIL = os.path.join(MAPP, "tradera_salda.json")  # sålda Tradera-annonser vi sett (för veckohistorik)
 
-TIDSGRANS_SEK = 50        # så länge mätningarna får hålla på per runda
+TIDSGRANS_SEK = 240       # så länge mätningarna får hålla på per runda (GitHub kör bara ungefär var halvtimme)
 MATT_IGEN_TIMMAR = 20     # en mätning görs om när den är så här gammal
+FORSTA_SALDA_TIMMAR = 3   # ett Vinted-märke som bara mätts en gång mäts om så här snart, så att sålda 24 h syns direkt
 TOM_IGEN_DAGAR = 5        # märken som inte har något i en kategori mäts bara om så här ofta
 SPARA_DAGAR = 400         # så lång historik sparas
 DAGLIGT_DAGAR = 60        # så länge sparas en punkt per dag, sedan en per vecka
 ANDEL_TOPP = 30           # så många märken sparas per stickprov (plus alla alarm-märken)
 VINTED_SIDOR = 10         # Vinted visar högst 10 sidor à 96 annonser
-VINTED_PER_RUNDA = 14     # högst så många frågor till Vinted per runda, så att alarmen aldrig blir blockerade
+VINTED_PER_RUNDA = 40     # högst så många frågor till Vinted per runda, så att alarmen aldrig blir blockerade
 TRADERA_SIDOR = 5         # 80 sålda annonser per sida
 PLICK_SIDOR = 4           # 24 annonser per sida
 
@@ -211,7 +212,7 @@ class VintedKalla:
             return None
         t, gamla = forra
         dagar = (nu - t) / 86400
-        if dagar < 0.5:  # för tätt: behåll förra mätningen som jämförelse
+        if dagar < FORSTA_SALDA_TIMMAR / 24 * 0.8:  # för tätt: behåll förra mätningen som jämförelse
             sett[namn] = forra
             return None
         grans = 0 if (totalt or 0) <= len(ids) else ids[0]
@@ -435,6 +436,9 @@ def uppgifter(bors, marken):
                 pts = bors["marke"].get(kalla, {}).get(kat["id"], {}).get(m) or []
                 tom = len(pts) >= 2 and not pts[-1][1] and not pts[-2][1]
                 vanta = TOM_IGEN_DAGAR * 86400 if tom else MATT_IGEN_TIMMAR * 3600
+                if kalla == "vinted" and not tom and pts and (len(pts[-1]) < 7 or pts[-1][6] is None) \
+                        and m in bors.get("vinted_sett", {}).get(kat["id"], {}):
+                    vanta = FORSTA_SALDA_TIMMAR * 3600
                 if nu - senast >= vanta:
                     per_kalla[kalla].append((senast, nyckel, kalla, kat, m))
     for k in per_kalla:
