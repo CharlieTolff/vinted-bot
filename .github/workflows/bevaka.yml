@@ -46,10 +46,16 @@ jobs:
           restore-keys: bors-
 
       # Bildkollen (en AI som tittar på annonsbilderna) används bara om nyckeln ANTHROPIC_API_KEY finns.
+      # Bildkollen: den gratis bildmodellen (CLIP) sparas mellan körningarna så den bara laddas ner en gång.
+      - uses: actions/cache@v4
+        with:
+          path: .bildmodell
+          key: bildmodell-clip-vit-b-32
+
       - name: Installera bildkollen
         continue-on-error: true
-        timeout-minutes: 2
-        run: python3 -m pip install --quiet anthropic
+        timeout-minutes: 3
+        run: python3 -m pip install --quiet fastembed anthropic
 
       - name: Sök på Vinted och skicka kap till Telegram
         env:

@@ -110,4 +110,4 @@ Vill du ha andra filter från Vinted (färg osv.)? Gör sökningen på vinted.se
 
 ## Bildkollen
 
-En AI tittar på bilden i varje ny träff och sorterar bort fel plagg (till exempel en sweatshirt i alarmet för stickade hoodies), så att vinsten räknas på rätt saker. Den granskar också annonserna som säljpriset räknas på. Den är bara igång när GitHub-hemligheten `ANTHROPIC_API_KEY` finns. Högst 15 bilder granskas per runda (`BILD_PER_RUNDA`), och varje annons granskas bara en gång. Modellen kan bytas med `BILD_MODELL`.
+En bildmodell tittar på bilden i varje ny träff och sorterar bort fel plagg (till exempel en sweatshirt i alarmet för stickade hoodies), så att vinsten räknas på rätt saker. Den granskar också annonserna som säljpriset räknas på. Gratis: CLIP körs direkt på GitHub och jämför bilden med alarmets `bild_ja` och `bild_nej` i sokningar.json (alarm utan dem granskas inte). Finns hemligheten `ANTHROPIC_API_KEY` används Claude i stället. Högst 40 bilder per runda med CLIP (15 med Claude, `BILD_PER_RUNDA`), och varje annons granskas bara en gång.
