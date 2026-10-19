@@ -520,6 +520,8 @@ $("formular").onsubmit = async e => {
   if (taggar.sokord_utland.length) a.sokord_utland = taggar.sokord_utland.slice();
   a.telegram = f.telegram.value;
   a.aktiv = f.aktiv.checked;
+  // Bildkollens beskrivningar finns inte i formuläret, så de behålls som de var.
+  if (redigerar >= 0) for (const k of ["bild_ja", "bild_nej"]) if (alarm[redigerar][k]) a[k] = alarm[redigerar][k];
   const ny = alarm.slice();
   if (redigerar >= 0) ny[redigerar] = a; else ny.push(a);
   if (await spara(ny)) $("dialog").close();

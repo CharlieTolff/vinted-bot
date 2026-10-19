@@ -102,6 +102,31 @@
       "jakke",
       "takki",
       "kurtka"
+    ],
+    "bild_ja": [
+      "a waxed field jacket",
+      "a quilted jacket",
+      "a field jacket with pockets",
+      "a waxed cotton jacket"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a knitted sweater",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
     ]
   },
   {
@@ -178,7 +203,31 @@
       "worker",
       "giacca"
     ],
-    "farger": []
+    "farger": [],
+    "bild_ja": [
+      "an overshirt",
+      "a shirt jacket",
+      "a heavy flannel overshirt",
+      "a worker jacket"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a polo shirt",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a knitted sweater",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
   },
   {
     "namn": "Italienska dunjackor & västar",
@@ -260,7 +309,31 @@
       "toppa"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "bild_ja": [
+      "a down jacket",
+      "a puffer jacket",
+      "a down vest",
+      "a puffer vest",
+      "a quilted vest"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a knitted sweater",
+      "a cardigan",
+      "a women's dress"
+    ]
   },
   {
     "namn": "Nudie Jeans från börsen",
@@ -316,7 +389,28 @@
       "gritty jackson"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "bild_ja": [
+      "a pair of jeans"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a knitted sweater",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
   },
   {
     "namn": "Stickat Ralph Lauren & Morris",
@@ -372,7 +466,31 @@
       "jacka"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "bild_ja": [
+      "a knitted sweater",
+      "a cable knit sweater",
+      "a half zip knitted sweater",
+      "a knitted cardigan"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a vest",
+      "a women's dress"
+    ]
   },
   {
     "namn": "Stickade hoodies",
@@ -449,6 +567,31 @@
       "huppari"
     ],
     "telegram": "kap",
-    "aktiv": true
+    "aktiv": true,
+    "bild_ja": [
+      "a knitted hoodie",
+      "a cable knit hooded sweater",
+      "a knitted zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a cotton sweatshirt",
+      "a cotton hoodie sweatshirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a knitted sweater",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
   }
 ]
