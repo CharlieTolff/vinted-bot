@@ -800,7 +800,7 @@
       "abercrombie huvtröja"
     ],
     "maxpris": 200,
-    "kappris": 120,
+    "kappris": 80,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -812,6 +812,7 @@
       "FI",
       "PL"
     ],
+    "marke": "Abercrombie & Fitch",
     "storlekar": [
       "S",
       "M",
@@ -824,11 +825,6 @@
       "Bra"
     ],
     "farger": [],
-    "telegram": "kap",
-    "aktiv": true,
-    "marke": [
-      "Abercrombie & Fitch"
-    ],
     "uteslut": [
       "fake",
       "replica",
@@ -860,6 +856,8 @@
       "huppari",
       "bluza z kapturem"
     ],
+    "telegram": "kap",
+    "aktiv": true,
     "bild_ja": [
       "a cotton hoodie sweatshirt",
       "a hoodie with a logo print",
