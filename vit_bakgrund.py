@@ -31,6 +31,7 @@ CACHE = os.environ.get("VIT_BAKGRUND_MODELLER", os.path.expanduser("~/.cache/vit
 VIT_MITT = 250.0      # ljusaste punkten på bakgrunden (0-255)
 VIT_KANT = 228.0      # mörkaste hörnet, ger "studioljus"-känslan
 SKUGGSTYRKA = 0.85    # hur mycket av väggens skugga som följer med (0-1)
+VITBALANS = 0.6      # hur mycket rummets färgstick tas bort från motivet (0-1)
 KASTSKUGGA = 0.07     # styrka på den mjuka skuggan bakom motivet (0-1)
 
 
@@ -129,7 +130,12 @@ def gor_vit(bild):
     vagg_farg = np.stack([normaliserad_blur(I[..., c], vikt + 1e-3, sm / 60) for c in range(3)], -1)
     a = alfa[..., None]
     forgrund = np.where(a > 0.05, (I - (1 - a) * vagg_farg) / np.maximum(a, 0.05), I)
-    forgrund = np.clip(forgrund, 0, 255)
+    # Vitbalans: rummets ljus (t.ex. gul taklampa) syns på väggen. Motivet
+    # neutraliseras mot den färgen så att det matchar den vita bakgrunden.
+    vagg_medel = I[vikt > 0].mean(0)
+    forstarkning = (vagg_medel.mean() / vagg_medel) ** VITBALANS
+    forstarkning /= forstarkning @ np.array([0.299, 0.587, 0.114], np.float32)
+    forgrund = np.clip(forgrund * forstarkning, 0, 255)
 
     ut = forgrund * a + ny_bg * (1 - a)
     # Lite filmkorn på bakgrunden så den inte ser datorgenererad ut.
