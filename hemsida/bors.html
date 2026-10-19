@@ -761,6 +761,14 @@ const ANALYS_FIL = "spaningar.json";
 let analyser = [], analysData = {}, valdAnalys = las("analys", null), analysRedigerar = -1, analysBilder = [];
 const bildSrc = {};
 const nyckel = () => { try { return JSON.parse(localStorage.getItem("nyckel")) || "" } catch { return "" } };
+// Nyckeln sparas per webbläsare. Saknas den (t.ex. när sidan öppnas inuti en app) kan den klistras in direkt här.
+function fragaNyckel(){
+  if (nyckel()) return true;
+  const n = (prompt("Klistra in din GitHub-nyckel (samma som på alarm-sidan, börjar med github_pat_). Den sparas bara i den här webbläsaren.") || "").trim();
+  if (!n) return false;
+  try { localStorage.setItem("nyckel", JSON.stringify(n)); } catch {}
+  return true;
+}
 const kommaLista = v => v.split(",").map(x => x.trim()).filter(Boolean);
 const medianAv = l => { const s = l.filter(x => x != null).sort((a, b) => a - b); return s.length ? s[Math.floor((s.length - 1) / 2)] : null; };
 const krt = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE") + " kr";
@@ -916,10 +924,10 @@ $("analysform").onsubmit = async e => {
   if (kommaLista(f.uteslut.value).length) a.uteslut = kommaLista(f.uteslut.value);
   if (f.maxpris.value) a.maxpris = Number(f.maxpris.value);
   a.bilder = analysBilder.map(b => b.vag);
-  if (!nyckel()) { alert("Lägg först in din GitHub-nyckel i menyn på alarm-sidan."); return; }
+  if (!fragaNyckel()) return;
   for (const b of analysBilder.filter(b => b.data)) {
     try { await gh("PUT", `/repos/${REPO}/contents/${b.vag}`, { message: "Bild till analys från hemsidan", content: b.data }); }
-    catch (fel) { alert("Kunde inte ladda upp bilden (" + fel.message + ")."); return; }
+    catch (fel) { if (fel.message === "401") localStorage.removeItem("nyckel"); alert("Kunde inte ladda upp bilden (" + fel.message + "). " + (fel.message === "401" ? "Nyckeln stämmer inte, försök igen." : "")); return; }
     bildSrc[b.vag] = b.src; delete b.data;
   }
   const ny = analyser.slice();
@@ -928,7 +936,7 @@ $("analysform").onsubmit = async e => {
 };
 
 async function sparaAnalyser(ny){
-  if (!nyckel()) { alert("Lägg först in din GitHub-nyckel i menyn på alarm-sidan."); return false; }
+  if (!fragaNyckel()) return false;
   try {
     let sha;
     try { sha = (await gh("GET", `/repos/${REPO}/contents/${ANALYS_FIL}`)).sha; } catch (e) { if (e.message !== "404") throw e; }
@@ -938,6 +946,7 @@ async function sparaAnalyser(ny){
     try { await gh("POST", `/repos/${REPO}/actions/workflows/bevaka.yml/dispatches`, { ref: "main" }); } catch {}
     return true;
   } catch (e) {
+    if (e.message === "401") localStorage.removeItem("nyckel");
     alert("Kunde inte spara (" + e.message + "). Kolla att GitHub-nyckeln stämmer.");
     return false;
   }
