@@ -28,8 +28,8 @@ MODELLER = {
 CACHE = os.environ.get("VIT_BAKGRUND_MODELLER", os.path.expanduser("~/.cache/vit_bakgrund"))
 
 # Utseende
-VIT_MITT = 238.0      # ljusaste punkten på bakgrunden (0-255)
-VIT_KANT = 218.0      # mörkaste hörnet, ger "studioljus"-känslan
+VIT_MITT = 226.0      # ljusaste punkten på bakgrunden (0-255)
+VIT_KANT = 205.0      # mörkaste hörnet, ger "studioljus"-känslan
 SIDLJUS = 0.04        # ljuset faller in lite från vänster (0 = jämnt)
 BG_TON = (1.0, 0.975, 0.94)  # svagt varm off-white, som en riktig vägg/papprulle
 SKUGGSTYRKA = 0.85    # hur mycket av väggens skugga som följer med (0-1)
