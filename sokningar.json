@@ -617,7 +617,7 @@
       "superdry vintage logo"
     ],
     "maxpris": 250,
-    "kappris": 150,
+    "kappris": 80,
     "min_betyg": 4,
     "kon": "herr",
     "kategorier": [
@@ -629,6 +629,7 @@
       "FI",
       "PL"
     ],
+    "marke": "Superdry",
     "storlekar": [
       "S",
       "M",
@@ -641,9 +642,6 @@
       "Bra"
     ],
     "farger": [],
-    "telegram": "kap",
-    "aktiv": true,
-    "marke": "Superdry",
     "uteslut": [
       "fake",
       "replica",
@@ -675,6 +673,8 @@
       "huppari",
       "bluza z kapturem"
     ],
+    "telegram": "kap",
+    "aktiv": true,
     "bild_ja": [
       "a hoodie with a large vintage script logo",
       "a cotton hoodie sweatshirt",
