@@ -182,17 +182,26 @@ class VintedKalla:
         mid = self.marke_id(namn)
         if not mid:
             return None
+        # Alla sidor med märket i kategorin (högst 10 à 96), så att sålda räknas över hela Vinted och inte bara de nyaste.
         annonser, totalt = self.sida(self.url(kat, mid))
-        priser = [a["pris"] for a in annonser]
-        gillas = [a["gillas"] for a in annonser]
+        for s in range(2, min(VINTED_SIDOR, -(-(totalt or 0) // 96)) + 1):
+            time.sleep(random.uniform(1.2, 2.2))
+            nya, _ = self.sida(self.url(kat, mid, sida=s))
+            if not nya:
+                break
+            annonser += nya
+        forsta = annonser[:96]
+        priser = [a["pris"] for a in forsta]
+        gillas = [a["gillas"] for a in forsta]
         return {"antal": totalt or 0, "tak": (totalt or 0) >= 960, "median": median(priser), "p25": kvantil(priser, 0.25),
                 "gillas": round(sum(gillas) / len(gillas), 1) if gillas else None,
-                "fart": self.forsvunna(kat["id"], namn, annonser, totalt)}
+                "dygn": self.forsvunna(kat["id"], namn, annonser, totalt)}
 
     def forsvunna(self, kat_id, namn, annonser, totalt):
-        """Sålda per vecka på Vinted, uppskattat på hela märket i kategorin: Vinted visar inte sålda, men sidan är
-        sorterad nyast först, så en annons från förra mätningen som är nyare än den äldsta på sidan nu och ändå
-        saknas har sålts (eller tagits bort). Antalet delas med tiden mellan mätningarna."""
+        """Sålda senaste dygnet på hela Vinted: Vinted visar inte sålda, så alla märkets annonser i kategorin sparas,
+        och de som fanns vid förra mätningen (ungefär ett dygn sedan) men saknas nu har sålts (eller tagits bort).
+        Antalet räknas om till ett dygn. Har märket fler än 960 annonser syns bara de nyaste, och då räknas bara
+        de som är nyare än den äldsta som syns nu."""
         ids = sorted({int(a["id"]) for a in annonser if str(a.get("id", "")).isdigit()})
         sett = self.bors.setdefault("vinted_sett", {}).setdefault(kat_id, {})
         forra = sett.get(namn)
@@ -202,13 +211,13 @@ class VintedKalla:
             return None
         t, gamla = forra
         dagar = (nu - t) / 86400
-        if dagar < 0.5:  # samma dag igen: behåll förra mätningen som jämförelse
+        if dagar < 0.5:  # för tätt: behåll förra mätningen som jämförelse
             sett[namn] = forra
             return None
-        # Får alla annonser plats på sidan räknas alla som saknas, annars bara de som borde ha synts.
         grans = 0 if (totalt or 0) <= len(ids) else ids[0]
-        borta = sum(1 for i in gamla if i >= grans and i not in set(ids))
-        return round(borta / dagar * 7, 1)
+        finns = set(ids)
+        borta = sum(1 for i in gamla if i >= grans and i not in finns)
+        return round(borta / dagar, 1)
 
 
 # ---------- Tradera (sålda annonser och slutpriser) ----------
@@ -467,7 +476,7 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
         return "märket finns inte hos källan"
     punkt = [idag, r["antal"], r["median"], r["p25"], 1 if r.get("tak") else 0]
     if kalla == "vinted":
-        punkt += [r.get("gillas"), r.get("fart")]  # gillas i snitt, sålda per vecka
+        punkt += [r.get("gillas"), r.get("dygn")]  # gillas i snitt, sålda senaste dygnet
     elif kalla == "tradera":
         punkt.append(r.get("fart"))  # sålda per vecka
     satt_punkt(bors["marke"].setdefault(kalla, {}).setdefault(kat["id"], {}).setdefault(marke, []), punkt)
@@ -486,6 +495,16 @@ def sammanfatta(bors):
             logg("topp %s %s (%d st): %s" % (kalla, kat["id"], n, ", ".join("%s %d/%s" % (m, v[0], v[1]) for m, v in topp)))
 
 
+def vinted_sidor(bors, kat, marke):
+    """Hur många sidor en Vinted-mätning hämtar: tio för ett kategoristickprov, för ett märke så många som behövs
+    för alla dess annonser enligt förra mätningen."""
+    if marke is None:
+        return VINTED_SIDOR
+    pts = bors["marke"].get("vinted", {}).get(kat["id"], {}).get(marke) or []
+    antal = pts[-1][1] if pts else 96
+    return max(1, min(VINTED_SIDOR, -(-(antal or 0) // 96)))
+
+
 def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
     start = time.time()
     sokningar = vb.las_json(vb.SOKNINGAR_FIL, [])
@@ -502,13 +521,14 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
             break
         if fel.get(kalla, 0) >= 2:  # källan krånglar just nu, försök igen nästa runda
             continue
-        if kalla == "vinted" and vinted_fragor + (VINTED_SIDOR if marke is None else 1) > VINTED_PER_RUNDA:
+        kostar = vinted_sidor(bors, kat, marke) if kalla == "vinted" else 0
+        if kalla == "vinted" and vinted_fragor + kostar > VINTED_PER_RUNDA:
             continue
         if kalla not in kallor:
             kallor[kalla] = {"vinted": lambda: VintedKalla(bors), "tradera": TraderaKalla, "plick": PlickKalla}[kalla]()
         try:
             if kalla == "vinted":
-                vinted_fragor += VINTED_SIDOR if marke is None else 1
+                vinted_fragor += kostar
             svar = mat(kallor[kalla], kalla, kat, marke, bors, alarm, idag)
             bors["senast"][nyckel] = time.time()
             gjorda += 1
