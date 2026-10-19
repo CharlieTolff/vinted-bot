@@ -724,6 +724,7 @@
       "FI",
       "PL"
     ],
+    "marke": "Hollister",
     "storlekar": [
       "S",
       "M",
@@ -736,9 +737,6 @@
       "Bra"
     ],
     "farger": [],
-    "telegram": "kap",
-    "aktiv": true,
-    "marke": "Hollister",
     "uteslut": [
       "fake",
       "replica",
@@ -770,6 +768,8 @@
       "huppari",
       "bluza z kapturem"
     ],
+    "telegram": "kap",
+    "aktiv": true,
     "bild_ja": [
       "a cotton hoodie sweatshirt",
       "a hoodie with a logo print",
