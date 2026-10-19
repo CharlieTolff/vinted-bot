@@ -1,0 +1,29 @@
+{
+ "tom_ruta": "s1/0242.png",
+ "intro": {
+  "sek": 3.0,
+  "rad1": "Höstens blazers",
+  "rad2": "Två stickade, inne nu"
+ },
+ "sekvenser": [
+  {
+   "mapp": "s1",
+   "produkt": "olymp",
+   "start": 17,
+   "slut": 216,
+   "frys": 65
+  },
+  {
+   "mapp": "s2",
+   "produkt": "keylargo",
+   "start": 14,
+   "slut": 214,
+   "frys": 95
+  }
+ ],
+ "outro": {
+  "sek": 3.2,
+  "rad1": "Finns på Vinted & Plick",
+  "rad2": "Länk i bio"
+ }
+}
