@@ -1,8 +1,19 @@
 [
   {
     "namn": "Stickade hoodies",
-    "sokord": ["stickad hoodie", "knitted hoodie"],
-    "uteslut": ["sweatshirt", "fleece", "dam"],
-    "bilder": []
+    "sokord": [
+      "stickad hoodie",
+      "knitted hoodie"
+    ],
+    "uteslut": [
+      "sweatshirt",
+      "fleece",
+      "dam"
+    ],
+    "bilder": [
+      "exempelbilder/hoodie-polo-ralph-lauren-marin.jpg",
+      "exempelbilder/hoodie-morris-marin.jpg",
+      "exempelbilder/hoodie-morris-beige.jpg"
+    ]
   }
 ]

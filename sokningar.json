@@ -592,6 +592,11 @@
       "a cardigan",
       "a vest",
       "a women's dress"
+    ],
+    "bild_exempel": [
+      "exempelbilder/hoodie-polo-ralph-lauren-marin.jpg",
+      "exempelbilder/hoodie-morris-marin.jpg",
+      "exempelbilder/hoodie-morris-beige.jpg"
     ]
   }
 ]
