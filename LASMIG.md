@@ -107,3 +107,7 @@ Vill du ha andra filter från Vinted (färg osv.)? Gör sökningen på vinted.se
 - `python3 vinted_bot.py --test` skickar de 3 senaste träffarna, så du ser att notiserna funkar.
 - `python3 vinted_bot.py` bevakar tills du stänger av den.
 - Första gången sparas alla nuvarande annonser som "sedda", så du bara får helt nya.
+
+## Bildkollen
+
+En AI tittar på bilden i varje ny träff och sorterar bort fel plagg (till exempel en sweatshirt i alarmet för stickade hoodies), så att vinsten räknas på rätt saker. Den granskar också annonserna som säljpriset räknas på. Den är bara igång när GitHub-hemligheten `ANTHROPIC_API_KEY` finns. Högst 15 bilder granskas per runda (`BILD_PER_RUNDA`), och varje annons granskas bara en gång. Modellen kan bytas med `BILD_MODELL`.

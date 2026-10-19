@@ -27,6 +27,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+from bildkoll import Bildkoll
+
 MAPP = os.path.dirname(os.path.abspath(__file__))
 SOKNINGAR_FIL = os.path.join(MAPP, "sokningar.json")
 INSTALLNINGAR_FIL = os.path.join(MAPP, "installningar.json")
@@ -90,6 +92,7 @@ STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
 STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
 MARKNAD_TIMMAR = 6        # så ofta vi kollar om vad liknande saker säljs för
 MARKNAD_MIN = 8           # så många liknande annonser behövs för att uppskatta ett säljpris
+BILD_RESERV = 6           # bildkollen sparar så många granskningar per runda till nya träffar
 MARKNAD_MIN_MARKE = 5     # så många av samma märke behövs för ett eget säljpris för märket
 MARKNAD_ANDEL = 0.4       # säljpris = 40 % av liknande annonser är billigare (dyra annonser blir ofta inte sålda)
 # Skicket påverkar vad du kan sälja för, jämfört med en vanlig "Mycket bra"-annons.
@@ -508,7 +511,7 @@ def marknad_urls(s, marke_ids):
     return urls
 
 
-def kolla_marknad(vinted, s, marke_ids, minne, namn):
+def kolla_marknad(vinted, s, marke_ids, minne, namn, bk=None):
     """Vad liknande saker brukar säljas för och hur eftertraktade de är (sparas några timmar)."""
     urls = marknad_urls(s, marke_ids)
     gammal = minne["marknad"].get(namn)
@@ -526,6 +529,8 @@ def kolla_marknad(vinted, s, marke_ids, minne, namn):
             return gammal
         time.sleep(random.uniform(1, 3))
     annonser = list(hittade.values())
+    if bk:  # fel plagg enligt bildkollen ska inte påverka säljpriset
+        annonser = [a for a in annonser if bk.passar(a, s, reserv=BILD_RESERV) is not False]
     # Räkna om till "Mycket bra"-skick så att olika skick blir jämförbara.
     priser = [a["pris"] / SKICK_FAKTOR.get(a["skick"], 1.0) for a in annonser]
     gillas = sorted(a["gillas"] for a in annonser)
@@ -695,6 +700,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
     nu_sek = time.time()
     aktiva = set()  # annonser som syns i sökningarna just nu, alltså inte sålda
     runda = minne["runda"] = minne.get("runda", 0) + 1
+    bk = Bildkoll(minne)  # AI:n som tittar på bilderna (gör inget utan nyckel)
     kurs = euro_kurs(inst, minne) if any(utlands_lander(s) for s in sokningar if s.get("aktiv") is not False) else EURO_KURS
     for s in sokningar:
         if s.get("aktiv") is False:
@@ -754,6 +760,16 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
         okanda = [a for a in traffar if forsta or str(a["id"]) not in tidigare]
         # Kolla säljarnas land och omdömen. De vi inte hann kolla försöker vi med nästa runda.
         godkanda, ej_kollade = kolla_saljare(vinted, okanda, s, minne["saljare"])
+        # Bildkollen: fel plagg (enligt bilden) sorteras bort. Hann den inte titta väntar annonsen till nästa runda.
+        if bk.pa and not forsta:
+            granskade = []
+            for a in godkanda:
+                svar = bk.passar(a, s)
+                if svar is None and bk.kvar <= 0 and a.get("bild"):
+                    ej_kollade.append(a)
+                elif svar is not False:
+                    granskade.append(a)
+            godkanda = granskade
         # Första gången i ett nytt land: visa träffarna därifrån på hemsidan, men ingen notis.
         nytt_land = land and land not in minne["utland"].setdefault(namn, [])
         if nytt_land:
@@ -766,7 +782,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
             nya = [a for a in godkanda if not (nytt_land and a.get("utland") == land)]
             if nytt_land:
                 ej_kollade = [a for a in ej_kollade if a.get("utland") != land]
-        marknad = kolla_marknad(vinted, s, marke_ids, minne, namn)
+        marknad = kolla_marknad(vinted, s, marke_ids, minne, namn, bk)
         for a in traffar:
             a["kap"] = ar_kap(a, s, vanligt)
             a["saljpris"] = uppskattat_saljpris(a, marknad)
@@ -787,6 +803,10 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
 
         # Annonser som inte längre passar alarmet (t.ex. efter att filtren ändrats) tas bort från hemsidan.
         gamla = [a for a in traffar_lista.get(namn, {}).get("annonser", []) if passar_fortfarande(a, s)]
+        # Det som redan ligger på hemsidan granskas också när det finns plats kvar i rundan.
+        gamla = [a for a in gamla if bk.passar(a, s, reserv=BILD_RESERV) is not False]
+        if forsta and bk.pa:
+            nya_pa_sidan = [a for a in nya_pa_sidan if bk.passar(a, s) is not False]
         kanda = {str(a["id"]) for a in nya_pa_sidan}
         # Räkna om säljpris och vinst även för annonser som redan ligger på hemsidan.
         for a in gamla:
@@ -815,6 +835,7 @@ def en_runda(vinted, inst, sokningar, sedda, traffar_lista, minne, test=False):
         for namn in list(minne[falt]):
             if namn not in aktuella:
                 del minne[falt][namn]
+    bk.stada()
     grans = nu_sek - SALJARE_DAGAR * 86400
     minne["saljare"] = {k: v for k, v in minne["saljare"].items() if v["kollad"] >= grans}
     spara_json(SEDDA_FIL, sedda)
