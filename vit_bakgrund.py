@@ -137,9 +137,16 @@ def gor_vit(bild):
     forgrund = np.where(a > 0.05, (I - (1 - a) * vagg_farg) / np.maximum(a, 0.05), I)
     # Vitbalans: rummets ljus (t.ex. gul taklampa) syns på väggen. Motivet
     # neutraliseras mot den färgen så att det matchar den vita bakgrunden.
+    # En färgad vägg (t.ex. beige) skulle ge för stor korrigering, så styrkan
+    # sänks tills motivet inte blir kallare (blåare) än neutralt.
     vagg_medel = I[vikt > 0].mean(0)
-    forstarkning = (vagg_medel.mean() / vagg_medel) ** VITBALANS
-    forstarkning /= forstarkning @ np.array([0.299, 0.587, 0.114], np.float32)
+    motiv_medel = forgrund[alfa > 0.9].mean(0)
+    for styrka in np.arange(VITBALANS, -0.001, -0.05):
+        forstarkning = (vagg_medel.mean() / vagg_medel) ** styrka
+        forstarkning /= forstarkning @ np.array([0.299, 0.587, 0.114], np.float32)
+        r, _, b = motiv_medel * forstarkning
+        if b <= r:
+            break
     forgrund = np.clip(forgrund * forstarkning, 0, 255)
 
     # Lyft skuggorna lite så att tygstrukturen syns även i mörka plagg,
