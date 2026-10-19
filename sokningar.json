@@ -608,5 +608,550 @@
       "exempelbilder/hoodie-morris-marin.jpg",
       "exempelbilder/hoodie-morris-beige.jpg"
     ]
+  },
+  {
+    "namn": "Superdry hoodies",
+    "sokord": [
+      "superdry hoodie",
+      "superdry huvtröja",
+      "superdry vintage logo"
+    ],
+    "maxpris": 250,
+    "kappris": 150,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": "Superdry",
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a hoodie with a large vintage script logo",
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ],
+    "bild_exempel": [
+      "exempelbilder/hoodie-superdry-marin.jpg",
+      "exempelbilder/hoodie-superdry-bla.jpg",
+      "exempelbilder/hoodie-superdry-morkmarin.jpg",
+      "exempelbilder/hoodie-superdry-gra.jpg"
+    ]
+  },
+  {
+    "namn": "Hollister hoodies",
+    "sokord": [
+      "hollister hoodie",
+      "hollister huvtröja"
+    ],
+    "maxpris": 150,
+    "kappris": 90,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": "Hollister",
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
+  },
+  {
+    "namn": "Abercrombie hoodies",
+    "sokord": [
+      "abercrombie hoodie",
+      "abercrombie huvtröja"
+    ],
+    "maxpris": 200,
+    "kappris": 120,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Abercrombie & Fitch"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
+  },
+  {
+    "namn": "Carhartt WIP hoodies",
+    "sokord": [
+      "carhartt hoodie",
+      "carhartt huvtröja"
+    ],
+    "maxpris": 250,
+    "kappris": 150,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Carhartt WIP",
+      "Carhartt"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
+  },
+  {
+    "namn": "Ralph Lauren hoodies",
+    "sokord": [
+      "ralph lauren hoodie",
+      "polo hoodie",
+      "ralph lauren huvtröja"
+    ],
+    "maxpris": 250,
+    "kappris": 150,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": [
+      "Polo Ralph Lauren",
+      "Ralph Lauren"
+    ],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
+  },
+  {
+    "namn": "Champion hoodies",
+    "sokord": [
+      "champion hoodie",
+      "champion reverse weave"
+    ],
+    "maxpris": 180,
+    "kappris": 100,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
+    "marke": "Champion",
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "dam",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "jacka",
+      "byxor",
+      "jeans",
+      "shorts",
+      "mössa",
+      "keps"
+    ],
+    "maste": [
+      "hoodie",
+      "huvtröja",
+      "huvtrøje",
+      "huva",
+      "kaptur",
+      "hooded",
+      "hood",
+      "hættetrøje",
+      "huppari",
+      "bluza z kapturem"
+    ],
+    "bild_ja": [
+      "a cotton hoodie sweatshirt",
+      "a hoodie with a logo print",
+      "a zip hoodie"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a jacket",
+      "a puffer jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a cardigan",
+      "a vest",
+      "a women's dress"
+    ]
   }
 ]
