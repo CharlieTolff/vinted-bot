@@ -3,11 +3,13 @@
 Två sätt, det första som finns används:
 - Claude (bäst, kostar per bild): när hemligheten ANTHROPIC_API_KEY finns.
 - CLIP (gratis): en öppen bildmodell som körs direkt på GitHub. Den jämför bilden med alarmets
-  "bild_ja" (t.ex. "a knitted hoodie") och "bild_nej" (t.ex. "a cotton sweatshirt") i sokningar.json.
+  "bild_ja" (t.ex. "a knitted hoodie") och "bild_nej" (t.ex. "a cotton sweatshirt") i sokningar.json,
+  och med alarmets inspirationsbilder ("bild_exempel", bilder i mappen exempelbilder som du lägger in på hemsidan).
 Finns inget av dem gör den ingenting, och boten fungerar som förut.
 Svaren sparas per annons, så samma bild granskas bara en gång.
 """
 import base64
+import hashlib
 import json
 import os
 import tempfile
@@ -21,7 +23,11 @@ CLIP_BILD = "Qdrant/clip-ViT-B-32-vision"
 CLIP_TEXT = "Qdrant/clip-ViT-B-32-text"
 CLIP_MAPP = os.path.join(MAPP, ".bildmodell")
 CLIP_ANDEL = 0.5  # så stor del av sannolikheten måste ligga på bild_ja för att plagget ska passa
-VERSION = {"claude": "claude-1", "clip": "clip-1"}  # nytt nummer = gamla svar granskas om
+VERSION = {"claude": "claude-1", "clip": "clip-2"}  # nytt nummer = gamla svar granskas om
+# Likhet med närmaste inspirationsbild (1 = samma bild). Två bilder av samma sorts plagg hamnar oftast runt 0,8-0,9.
+EXEMPEL_SAKERT = 0.85  # så lik: passar, vad orden än säger
+EXEMPEL_ALDRIG = 0.62  # så olik: passar inte, vad orden än säger
+EXEMPEL_ENSAM = 0.78   # alarm med bara bilder och inga ord: så lik måste den vara
 
 SCHEMA = {
     "type": "object",
@@ -45,6 +51,7 @@ class Bildkoll:
         self.satt = None
         self.klient = self.clip = None
         self.texter = {}
+        self.exempel = {}  # inspirationsbild -> dess bildvektor
         if os.environ.get("ANTHROPIC_API_KEY"):
             try:
                 import anthropic
@@ -66,21 +73,28 @@ class Bildkoll:
     def pa(self):
         return self.satt is not None
 
-    def svar(self, annons):
+    def version(self, s):
+        """Byts inspirationsbilderna ut granskas alarmets annonser om."""
+        v = VERSION[self.satt]
+        if self.satt == "clip" and exempel(s):
+            v += ":" + hashlib.sha1("\n".join(exempel(s)).encode()).hexdigest()[:8]
+        return v
+
+    def svar(self, annons, s):
         """True/False om annonsen redan är granskad med det här sättet, annars None."""
         v = self.minne.get(str(annons["id"]))
-        if not v or (self.satt and (len(v) < 4 or v[3] != VERSION[self.satt])):
+        if not v or (self.satt and (len(v) < 4 or v[3] != self.version(s))):
             return None
         return v[0]
 
     def passar(self, annons, s, reserv=0):
         """True = passar, False = fel plagg, None = inte granskad (avstängd, slut på rundans kvot eller fel).
         reserv = så många granskningar som ska sparas till nya träffar i rundans övriga alarm."""
-        tidigare = self.svar(annons)
+        tidigare = self.svar(annons, s)
         if tidigare is not None or not self.pa or not annons.get("bild") or self.kvar <= reserv:
             return tidigare
-        if self.satt == "clip" and not s.get("bild_ja"):
-            return None  # alarmet har inga bildbeskrivningar
+        if self.satt == "clip" and not s.get("bild_ja") and not exempel(s):
+            return None  # alarmet har varken bildbeskrivningar eller inspirationsbilder
         self.kvar -= 1
         try:
             req = urllib.request.Request(annons["bild"], headers={"User-Agent": "Mozilla/5.0"})
@@ -92,7 +106,7 @@ class Bildkoll:
             return None
         if ok is None:
             return None
-        self.minne[str(annons["id"])] = [ok, plagg[:80], round(time.time()), VERSION[self.satt]]
+        self.minne[str(annons["id"])] = [ok, plagg[:80], round(time.time()), self.version(s)]
         if not ok:
             logg("'%s' passar inte '%s' (%s%s)" % (annons["titel"][:60], s.get("namn", ""), plagg[:40], varfor))
         return ok
@@ -119,28 +133,68 @@ class Bildkoll:
         return bool(data["passar"]), data["plagg"], ": " + data["varfor"][:80]
 
     def fraga_clip(self, bild, typ, annons, s):
-        ja, nej = list(s["bild_ja"]), list(s.get("bild_nej") or [])
-        etiketter = ja + nej
-        nyckel = "\n".join(etiketter)
-        if nyckel not in self.texter:
-            self.texter[nyckel] = [normera(v) for v in self.clip[1].embed(["a photo of " + t for t in etiketter])]
+        bv = self.bildvektor(bild)
+        delar, ok_ord, plagg = [], None, ""
+        ja, nej = list(s.get("bild_ja") or []), list(s.get("bild_nej") or [])
+        if ja:
+            etiketter = ja + nej
+            nyckel = "\n".join(etiketter)
+            if nyckel not in self.texter:
+                self.texter[nyckel] = [normera(v) for v in self.clip[1].embed(["a photo of " + t for t in etiketter])]
+            # Samma räkning som CLIP själv: likhet gånger 100, sedan softmax.
+            likhet = [100 * skal(bv, t) for t in self.texter[nyckel]]
+            topp = max(likhet)
+            vikt = [pow(2.718281828, x - topp) for x in likhet]
+            andel_ja = sum(vikt[:len(ja)]) / sum(vikt)
+            ok_ord, plagg = andel_ja >= CLIP_ANDEL, etiketter[max(range(len(etiketter)), key=lambda i: likhet[i])]
+            delar.append("%d %% rätt sorts plagg" % round(100 * andel_ja))
+        lik = None
+        for vag in exempel(s):
+            ev = self.exempelvektor(vag)
+            if ev is not None:
+                lik = max(lik or 0.0, skal(bv, ev))
+        if lik is None:
+            ok = ok_ord
+        else:
+            delar.append("%d %% lik inspirationsbilden" % round(100 * lik))
+            if ok_ord is None:
+                ok = lik >= EXEMPEL_ENSAM
+            else:
+                ok = lik >= EXEMPEL_SAKERT or (ok_ord and lik >= EXEMPEL_ALDRIG)
+            if ok:  # de som inte passar skrivs ut ändå, så här syns det hur lika de som passar är
+                logg("'%s' passar '%s' (%s)" % (annons["titel"][:60], s.get("namn", ""), ", ".join(delar)))
+        return ok, plagg, (", " if plagg else "") + ", ".join(delar)
+
+    def bildvektor(self, bild):
         with tempfile.NamedTemporaryFile(suffix=".jpg") as f:
             f.write(bild)
             f.flush()
-            bv = normera(next(iter(self.clip[0].embed([f.name]))))
-        # Samma räkning som CLIP själv: likhet gånger 100, sedan softmax.
-        likhet = [100 * sum(a * b for a, b in zip(bv, t)) for t in self.texter[nyckel]]
-        topp = max(likhet)
-        vikt = [pow(2.718281828, x - topp) for x in likhet]
-        summa = sum(vikt)
-        andel_ja = sum(vikt[:len(ja)]) / summa
-        basta = max(range(len(etiketter)), key=lambda i: likhet[i])
-        return andel_ja >= CLIP_ANDEL, etiketter[basta], ", %d %% rätt sorts plagg" % round(100 * andel_ja)
+            return normera(next(iter(self.clip[0].embed([f.name]))))
+
+    def exempelvektor(self, vag):
+        if vag not in self.exempel:
+            fil = os.path.join(MAPP, vag)
+            try:
+                with open(fil, "rb") as f:
+                    self.exempel[vag] = self.bildvektor(f.read())
+            except Exception as e:
+                logg("kunde inte läsa inspirationsbilden %s: %s" % (vag, e))
+                self.exempel[vag] = None
+        return self.exempel[vag]
 
     def stada(self):
         grans = time.time() - SPARA_DAGAR * 86400
         for k in [k for k, v in self.minne.items() if v[2] < grans]:
             del self.minne[k]
+
+
+def exempel(s):
+    """Alarmets inspirationsbilder (sökvägar i repot)."""
+    return [v for v in (s.get("bild_exempel") or []) if isinstance(v, str) and v]
+
+
+def skal(a, b):
+    return sum(x * y for x, y in zip(a, b))
 
 
 def normera(v):

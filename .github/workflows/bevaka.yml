@@ -45,7 +45,6 @@ jobs:
           key: bors-${{ github.run_id }}
           restore-keys: bors-
 
-      # Bildkollen (en AI som tittar på annonsbilderna) används bara om nyckeln ANTHROPIC_API_KEY finns.
       # Bildkollen: den gratis bildmodellen (CLIP) sparas mellan körningarna så den bara laddas ner en gång.
       - uses: actions/cache@v4
         with:
@@ -99,6 +98,7 @@ jobs:
         run: |
           mkdir -p _site
           cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css sokningar.json _site/
+          cp -r exempelbilder _site/ 2>/dev/null || true
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
