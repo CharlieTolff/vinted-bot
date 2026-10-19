@@ -90,6 +90,7 @@ STANDARD_BETYG = 4.5      # säljare med lägre snittbetyg hoppas över (0 = av)
 STANDARD_FRAKT = 60       # vad frakten brukar kosta när du köper (kr)
 MARKNAD_TIMMAR = 6        # så ofta vi kollar om vad liknande saker säljs för
 MARKNAD_MIN = 8           # så många liknande annonser behövs för att uppskatta ett säljpris
+MARKNAD_MIN_MARKE = 5     # så många av samma märke behövs för ett eget säljpris för märket
 MARKNAD_ANDEL = 0.4       # säljpris = 40 % av liknande annonser är billigare (dyra annonser blir ofta inte sålda)
 # Skicket påverkar vad du kan sälja för, jämfört med en vanlig "Mycket bra"-annons.
 SKICK_FAKTOR = {"Ny med prislapp": 1.2, "Ny utan prislapp": 1.1, "Mycket bra": 1.0, "Bra": 0.85, "Tillfredsställande": 0.65}
@@ -534,6 +535,9 @@ def kolla_marknad(vinted, s, marke_ids, minne, namn):
         "antal": len(annonser),
         "pris": round(percentil(priser, MARKNAD_ANDEL)) if len(priser) >= MARKNAD_MIN else None,
         "gillas": median(gillas) if gillas else 0,
+        # Ett eget säljpris per märke när det finns nog många, så att t.ex. en Belstaff-piké inte får samma
+        # pris som en Barbour-jacka bara för att de ligger i samma alarm.
+        "per_marke": per_marke_pris(annonser),
     }
     minne["marknad"][namn] = marknad
     return marknad
@@ -548,10 +552,21 @@ def efterfragan(gillas):
     return "låg"
 
 
+def per_marke_pris(annonser):
+    per = {}
+    for a in annonser:
+        if a.get("marke"):
+            per.setdefault(a["marke"], []).append(a["pris"] / SKICK_FAKTOR.get(a["skick"], 1.0))
+    return {m: round(percentil(p, MARKNAD_ANDEL)) for m, p in per.items() if len(p) >= MARKNAD_MIN_MARKE}
+
+
 def uppskattat_saljpris(annons, marknad):
-    if not marknad or not marknad.get("pris"):
+    if not marknad:
         return None
-    pris = marknad["pris"] * SKICK_FAKTOR.get(annons["skick"], 1.0)
+    bas = (marknad.get("per_marke") or {}).get(annons.get("marke")) or marknad.get("pris")
+    if not bas:
+        return None
+    pris = bas * SKICK_FAKTOR.get(annons["skick"], 1.0)
     return round(pris / 10) * 10
 
 

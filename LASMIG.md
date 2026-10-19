@@ -23,7 +23,9 @@ Söker på Vinted var tredje minut med dina sparade sökningar och skickar nya a
 - Kategorierna står överst i `marknad.py` (`KATEGORIER`). Märkena tas från alarmen automatiskt.
 - "Bästa köplägena" visar dina märken där Tradera-slutpriset ligger mest över de billiga Vinted-annonserna, och
   "Nya märken att bevaka" märken som säljer mycket på Tradera men saknas i dina alarm. "+ Alarm" öppnar ett förifyllt alarm.
-- "Sålda/v" är hur många av märket som sålts per vecka på Tradera (snitt av fyra veckor).
+- "Sålda/v" är hur många av märket som sålts per vecka på hela Vinted och Tradera ihop (inte bara stickprovet). Tradera visar sålda direkt; på Vinted räknas annonser som försvunnit mellan två mätningar (sålda eller borttagna). Plick visar inte sålda och räknas inte.
+- Säljpriset på alarmen räknas per märke när det finns minst 5 annonser av märket, så olika märken i samma alarm får olika pris.
+- "Bästa kapen" visar bara kap och träffar med minst 100 kr vinst (högst 60).
 - Efter varje mätning skriver `marknad.py` de största märkena per kategori i Actions-loggen.
 
 ## Bokföringen
