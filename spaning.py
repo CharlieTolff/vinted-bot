@@ -28,7 +28,7 @@ MINNE_FIL = os.path.join(MAPP, "spaning_minne.json")
 TIDSGRANS_SEK = 150
 VINTED_SIDOR = 3          # högst så många sidor (96 annonser) per sökord och runda
 VINTED_PER_RUNDA = 15     # högst så många frågor till Vinted per runda, så att alarmen aldrig blir blockerade
-BILDER_PER_RUNDA = 150
+BILDER_PER_RUNDA = {"vinted": 110, "tradera": 50}  # så att Tradera också hinns med
 LIKHET = 0.80             # så lik en inspirationsbild måste annonsen vara för att räknas
 SPARA_DAGAR = 60          # träffar sparas så här länge
 TRADERA_STORLEK = "medium-fit"  # storleken som fylls i Traderas bildlänkar
@@ -96,7 +96,7 @@ class Analys:
         self.clip = None
         self.clip_fel = False
         self.vinted_fragor = 0
-        self.bilder_kvar = BILDER_PER_RUNDA
+        self.bilder_kvar = dict(BILDER_PER_RUNDA)
         self.start = time.time()
 
     def tid_kvar(self):
@@ -112,7 +112,7 @@ class Analys:
                 self.clip_fel = True
         return self.clip
 
-    def likhet(self, sp, mm, id_, bild_url):
+    def likhet(self, sp, mm, id_, bild_url, kalla):
         """Hur lik annonsen är inspirationsbilderna: 1.0 om analysen inte har bilder, None om den inte hunnit granskas."""
         bilder = sp.get("bilder") or []
         if not bilder:
@@ -120,9 +120,9 @@ class Analys:
         k = mm["kollade"].get(id_)
         if k:
             return k[0]
-        if not bild_url or self.bilder_kvar <= 0 or not self.tid_kvar() or not self.bildmodell():
+        if not bild_url or self.bilder_kvar[kalla] <= 0 or not self.tid_kvar() or not self.bildmodell():
             return None
-        self.bilder_kvar -= 1
+        self.bilder_kvar[kalla] -= 1
         try:
             from bildkoll import hamta_bild
             lik = self.clip.likhet(self.clip.bildvektor(hamta_bild(bild_url)[0]), bilder)
@@ -172,7 +172,7 @@ class Analys:
                 if utesluten(a.get("titel", ""), sp):
                     continue
                 id_ = str(a["id"])
-                lik = self.likhet(sp, mm, id_, a.get("bild"))
+                lik = self.likhet(sp, mm, id_, a.get("bild"), "vinted")
                 if lik is None or lik < LIKHET:
                     continue
                 t = mm["traffar"].get(id_)
@@ -213,7 +213,7 @@ class Analys:
                     if not bild and sp.get("bilder"):
                         utan_bild += 1
                         continue
-                    lik = self.likhet(sp, mm, id_, bild)
+                    lik = self.likhet(sp, mm, id_, bild, "tradera")
                     if lik is None or lik < LIKHET:
                         continue
                     try:
@@ -277,7 +277,7 @@ def kor():
     minne["_marken"] = bors.get("vinted_marken", {})  # Vinteds nummer för märkena
     mk.spara_kompakt(MINNE_FIL, minne)
     mk.spara_kompakt(VISNING_FIL, visning)
-    logg("%d analyser, %d bilder granskade." % (len(visning["analyser"]), BILDER_PER_RUNDA - an.bilder_kvar))
+    logg("%d analyser, %d bilder granskade." % (len(visning["analyser"]), sum(BILDER_PER_RUNDA.values()) - sum(an.bilder_kvar.values())))
 
 
 if __name__ == "__main__":
