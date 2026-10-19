@@ -184,6 +184,7 @@
       "Mycket bra",
       "Bra"
     ],
+    "farger": [],
     "uteslut": [
       "fake",
       "replica",
@@ -194,8 +195,6 @@
       "barn",
       "dam"
     ],
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "jacka",
       "jakke",
@@ -207,7 +206,8 @@
       "worker",
       "giacca"
     ],
-    "farger": [],
+    "telegram": "kap",
+    "aktiv": true,
     "bild_ja": [
       "an overshirt",
       "a shirt jacket",
@@ -231,6 +231,9 @@
       "a cardigan",
       "a vest",
       "a women's dress"
+    ],
+    "bild_exempel": [
+      "exempelbilder/mvfowxj42tfg.jpg"
     ]
   },
   {
