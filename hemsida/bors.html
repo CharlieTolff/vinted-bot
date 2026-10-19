@@ -122,6 +122,41 @@ svg.spark{display:block;margin-left:auto}
   .nyckeltal b{font-size:19px}
 }
 </style>
+<style>
+/* Egna analyser */
+.knapp{font:inherit;font-size:13.5px;border:1px solid var(--linje);background:var(--kort2);color:var(--text);border-radius:10px;padding:7px 13px;cursor:pointer}
+.knapp.primar{background:linear-gradient(180deg,var(--guldljus),var(--guld));color:#111;border-color:transparent;font-weight:600}
+.knapp.fara{color:var(--minus)}
+.analysval{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:12px 16px 0}
+.analysval .chips{flex:1 1 auto}
+.analysknappar{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto;align-items:center}
+.analysknappar .skapa{font-size:13.5px;padding:8px 14px}
+.analysbody{padding:14px 16px 4px}
+.analysbody .nyckeltal{margin-bottom:12px}
+.inspo{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.inspo img{width:54px;height:54px;object-fit:cover;border-radius:8px;border:1px solid var(--linje)}
+.galleri{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;padding:0 16px 16px}
+.galleri a{display:block;text-decoration:none;background:var(--kort2);border:1px solid var(--linje);border-radius:12px;overflow:hidden}
+.galleri a:hover{border-color:var(--guld)}
+.galleri img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:var(--linje)}
+.galleri div{padding:6px 8px;font-size:12px;line-height:1.35}
+.galleri b{font-size:13px}
+.galleri .svag{font-size:11.5px;display:block}
+.underrubrik{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--guldtext);padding:14px 16px 8px;font-weight:600}
+dialog{border:1px solid var(--linje);border-radius:18px;background:var(--kort);color:var(--text);max-width:640px;width:calc(100% - 24px);padding:24px 24px 20px;box-shadow:var(--skugga)}
+dialog::backdrop{background:#000a;backdrop-filter:blur(3px)}
+dialog form{display:grid;gap:14px}
+dialog label{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--svag)}
+dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;border:1px solid var(--linje);background:var(--kort2);color:var(--text)}
+.hjalp{font-size:12px;color:var(--svag)}
+.falt{font-size:13.5px;color:var(--text);font-weight:600;margin-bottom:7px}
+.exempel{display:flex;flex-wrap:wrap;gap:8px}
+.exempel figure{position:relative;margin:0;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--linje);background:var(--kort2)}
+.exempel img{width:100%;height:100%;object-fit:cover;display:block}
+.exempel figure button{position:absolute;top:3px;right:3px;border:0;border-radius:50%;width:22px;height:22px;padding:0;background:#000b;color:#fff;font-size:14px;line-height:1;cursor:pointer}
+.exempel .ny{width:84px;height:84px;border:1px dashed var(--linje);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--svag);cursor:pointer}
+.exempel .ny input{display:none}
+</style>
 <link rel="stylesheet" href="stil.css">
 </head>
 <body>
@@ -137,6 +172,14 @@ svg.spark{display:block;margin-left:auto}
     <div class="svag" id="uppdaterad"></div>
   </div>
 
+  <section class="kort" id="analyser">
+    <div class="korthuvud">
+      <h2>Egna analyser</h2>
+      <span class="svag">Gör ett filter som ett alarm, gärna med bilder på plagget, så visar börsen vilka märken och plagg inom det som säljer bäst.</span>
+      <button class="knapp primar" id="nyAnalys">+ Ny analys</button>
+    </div>
+    <div id="analysinnehall"></div>
+  </section>
 
   <div class="rubrikrad" style="margin-top:8px;margin-bottom:12px"><div><h2>Märken per kategori</h2>
     <p class="forklara"><b>Andel nya</b> är hur stor del av de senast upplagda annonserna (ungefär 900 per kategori) som är av märket, alltså hur mycket som läggs ut just nu. <b>Annonser totalt</b> är alla märkets annonser i kategorin, även gamla som inte sålts. Många totalt men låg andel nya betyder att annonserna blir liggande. På Tradera räknas andelen på det som sålts, så där betyder stigande andel att märket säljer bättre. Ändringen visas i procentenheter (pe). Tryck på ett märke för att se mer.</p></div></div>
@@ -175,6 +218,23 @@ svg.spark{display:block;margin-left:auto}
     <div class="info" id="omdata"></div>
   </section>
 </main>
+
+<dialog id="analysdialog">
+  <h2 id="analystitel" style="margin-top:0">Ny analys</h2>
+  <form id="analysform" method="dialog">
+    <label>Namn<input name="namn" required placeholder="Stickade hoodies"></label>
+    <label>Sökord <span class="hjalp">(flera med komma, t.ex. stickad hoodie, knitted hoodie)</span><input name="sokord" placeholder="stickad hoodie"></label>
+    <label>Märken <span class="hjalp">(valfritt, flera med komma. Tomt = alla märken)</span><input name="marke" placeholder="Ralph Lauren, GANT"></label>
+    <label>Ta bort annonser med de här orden <span class="hjalp">(valfritt, med komma)</span><input name="uteslut" placeholder="sweatshirt, fleece"></label>
+    <label>Maxpris (kr) <span class="hjalp">(valfritt)</span><input name="maxpris" type="number" min="0"></label>
+    <div><div class="falt">Bilder på plagget <span class="hjalp">(valfritt men bäst)</span></div><div class="exempel" id="analysbilder"></div>
+      <div class="hjalp" style="margin-top:6px">Bara annonser vars bild liknar någon av dina räknas, så att t.ex. en sweatshirt inte blandas ihop med en stickad hoodie.</div></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="knapp" id="analysavbryt">Avbryt</button>
+      <button type="submit" class="knapp primar">Spara</button>
+    </div>
+  </form>
+</dialog>
 
 <script>
 const KALLOR = {
@@ -694,6 +754,196 @@ async function start(){
   $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
 }
+// ---------- Egna analyser ----------
+const AGO = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
+const REPO = AGO + "/" + (location.pathname.split("/")[1] || "vinted-bot");
+const ANALYS_FIL = "spaningar.json";
+let analyser = [], analysData = {}, valdAnalys = las("analys", null), analysRedigerar = -1, analysBilder = [];
+const bildSrc = {};
+const nyckel = () => { try { return JSON.parse(localStorage.getItem("nyckel")) || "" } catch { return "" } };
+const kommaLista = v => v.split(",").map(x => x.trim()).filter(Boolean);
+const medianAv = l => { const s = l.filter(x => x != null).sort((a, b) => a - b); return s.length ? s[Math.floor((s.length - 1) / 2)] : null; };
+const krt = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE") + " kr";
+function koda(text){ return btoa(String.fromCharCode(...new TextEncoder().encode(text))); }
+async function gh(metod, vag, kropp){
+  const r = await fetch("https://api.github.com" + vag, {
+    method: metod, cache: "no-store",
+    headers: { Authorization: "Bearer " + nyckel(), Accept: "application/vnd.github+json" },
+    body: kropp ? JSON.stringify(kropp) : undefined
+  });
+  if (!r.ok) throw new Error(r.status);
+  return r.status === 204 ? null : r.json();
+}
+
+async function startAnalyser(){
+  try { analyser = await fetch(ANALYS_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { analyser = []; }
+  try { const d = await fetch("spaning.json", {cache: "no-store"}).then(r => r.ok ? r.json() : {}); for (const a of d.analyser || []) analysData[a.namn] = a; } catch {}
+  ritaAnalyser();
+}
+
+function analysStat(traffar){
+  const salda = traffar.filter(t => t.s), ute = traffar.filter(t => !t.s);
+  const per = {};
+  for (const t of traffar) (per[t.m || "Okänt märke"] ||= []).push(t);
+  const marken = Object.entries(per).map(([m, l]) => {
+    const s = l.filter(t => t.s), u = l.filter(t => !t.s);
+    return { m, salda: s.length, ute: u.length, andel: s.length / l.length, pris: medianAv(s.map(t => t.p)), utepris: medianAv(u.map(t => t.p)),
+      gillas: u.length ? u.reduce((x, t) => x + (t.g || 0), 0) / u.length : null,
+      dagar: medianAv(s.filter(t => t.k === "vinted").map(t => (t.s - t.f) / 86400)) };
+  }).sort((a, b) => b.salda - a.salda || b.andel - a.andel || b.ute - a.ute);
+  return { salda, ute, marken, pris: medianAv(salda.map(t => t.p)), dagar: medianAv(salda.filter(t => t.k === "vinted").map(t => (t.s - t.f) / 86400)) };
+}
+
+function kortet(t, text){
+  return `<a href="${esc(t.l)}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(t.b)}" alt="" onerror="this.style.visibility='hidden'">
+    <div><b>${krt(t.p)}</b> · ${esc(t.m || "Okänt märke")}<span class="svag">${esc(text)}</span></div></a>`;
+}
+
+function ritaAnalyser(){
+  const ruta = $("analysinnehall");
+  if (!analyser.length) { ruta.innerHTML = `<div class="tomt">Du har inga egna analyser än. Tryck på + Ny analys.</div>`; return; }
+  const namnen = analyser.map(a => a.namn);
+  if (!namnen.includes(valdAnalys)) valdAnalys = namnen[0];
+  const i = namnen.indexOf(valdAnalys), a = analyser[i], d = analysData[a.namn];
+  let html = `<div class="analysval"><div class="chips">${namnen.map(n => `<button class="chip ${n === valdAnalys ? "vald" : ""}" data-analys="${esc(n)}">${esc(n)}</button>`).join("")}</div>
+    <div class="analysknappar"><a class="skapa" id="analysAlarm" href="#">+ Alarm av analysen</a><button class="knapp" id="analysAndra">Ändra</button><button class="knapp fara" id="analysBort">Ta bort</button></div></div><div class="analysbody">`;
+  if ((a.bilder || []).length) html += `<div class="inspo">${a.bilder.map(b => `<img src="${esc(bildSrc[b] || b)}" alt="Inspirationsbild">`).join("")}</div>`;
+  if (!d || !d.senast) { ruta.innerHTML = html + `<div class="tomt">Analysen har inte mätts än. Den körs med botten, så titta igen om en stund.</div></div>`; kopplaAnalys(a); return; }
+  const st = analysStat(d.traffar || []);
+  const sedan = new Date(d.start * 1000).toLocaleDateString("sv-SE", {day: "numeric", month: "short"});
+  html += `<div class="nyckeltal">
+      <div><small class="svag">Sålda sedan ${sedan}</small><b class="tal">${st.salda.length}</b></div>
+      <div><small class="svag">Ute nu på Vinted</small><b class="tal">${st.ute.length}</b></div>
+      <div><small class="svag">Medianpris sålda</small><b class="tal">${krt(st.pris)}</b></div>
+      <div><small class="svag">Säljs efter (median)</small><b class="tal">${st.dagar == null ? "–" : st.dagar < 1 ? "under 1 dag" : Math.round(st.dagar) + " dagar"}</b></div>
+    </div><p class="hjalp">Sålda är sålda på Tradera och annonser som försvunnit från Vinted (de flesta är sålda, några borttagna). ${(a.bilder || []).length ? "Bara annonser vars bild liknar dina bilder räknas." : "Lägg till bilder under Ändra så räknas bara rätt sorts plagg."} Mätt senast ${new Date(d.senast * 1000).toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}.</p></div>`;
+  html += `<div class="tabellram"><table><thead><tr><th>Märke</th><th>Sålda</th><th>Ute nu</th><th>Andel sålda</th><th>Medianpris sålda</th><th>Medianpris ute</th><th>Gillas i snitt</th><th>Säljs efter</th></tr></thead><tbody>` +
+    (st.marken.length ? st.marken.slice(0, 25).map(x => `<tr><td><div class="namncell"><span class="n">${esc(x.m)}</span></div></td><td class="tal">${x.salda}</td><td class="tal">${x.ute}</td>
+      <td><div class="andelcell"><span class="tal">${Math.round(100 * x.andel)} %</span><span class="stapel"><i style="width:${Math.round(100 * x.andel)}%"></i></span></div></td>
+      <td class="tal">${krt(x.pris)}</td><td class="tal">${krt(x.utepris)}</td><td class="tal">${x.gillas == null ? "–" : x.gillas.toFixed(1)}</td>
+      <td class="tal">${x.dagar == null ? "–" : x.dagar < 1 ? "< 1 d" : Math.round(x.dagar) + " d"}</td></tr>`).join("")
+      : `<tr><td colspan="8" class="tomt">Inga liknande annonser hittade än.</td></tr>`) + `</tbody></table></div>`;
+  const salda = st.salda.slice().sort((x, y) => y.s - x.s).slice(0, 18);
+  if (salda.length) html += `<div class="underrubrik">Sålt nyligen</div><div class="galleri">${salda.map(t => kortet(t, (t.k === "tradera" ? "Tradera" : "Vinted") + (t.k === "vinted" ? ", såld efter " + Math.max(0, Math.round((t.s - t.f) / 86400)) + " d" : ""))).join("")}</div>`;
+  const gillade = st.ute.slice().sort((x, y) => (y.g || 0) - (x.g || 0)).slice(0, 12);
+  if (gillade.length) html += `<div class="underrubrik">Mest gillade ute nu</div><div class="galleri">${gillade.map(t => kortet(t, (t.g || 0) + " gillar")).join("")}</div>`;
+  ruta.innerHTML = html;
+  kopplaAnalys(a);
+}
+
+function kopplaAnalys(a){
+  const i = analyser.indexOf(a);
+  $("analysAndra").onclick = () => oppnaAnalys(i);
+  $("analysBort").onclick = async () => {
+    if (!confirm(`Ta bort analysen "${a.namn}"?`)) return;
+    const ny = analyser.slice(); ny.splice(i, 1);
+    await sparaAnalyser(ny);
+  };
+  const st = analysData[a.namn] ? analysStat(analysData[a.namn].traffar || []) : null;
+  const topp = st ? st.marken.filter(x => x.salda && x.m !== "Okänt märke").slice(0, 5).map(x => x.m) : [];
+  const mall = { namn: a.namn, sokord: a.sokord || [], marke: (a.marke || []).length ? a.marke : topp, uteslut: a.uteslut || [], bild_exempel: a.bilder || [] };
+  if (st && st.pris) mall.maxpris = Math.round(st.pris * 0.5 / 10) * 10;
+  $("analysAlarm").href = "index.html#nytt=" + encodeURIComponent(JSON.stringify(mall));
+}
+
+$("analysinnehall").addEventListener("click", e => {
+  const c = e.target.closest("[data-analys]");
+  if (c) { valdAnalys = c.dataset.analys; skriv("analys", valdAnalys); ritaAnalyser(); }
+});
+$("nyAnalys").onclick = () => oppnaAnalys(-1);
+$("analysavbryt").onclick = () => $("analysdialog").close();
+
+function oppnaAnalys(i){
+  analysRedigerar = i;
+  const a = i >= 0 ? analyser[i] : {};
+  const f = $("analysform");
+  $("analystitel").textContent = i >= 0 ? "Ändra analys" : "Ny analys";
+  f.namn.value = a.namn || "";
+  for (const k of ["sokord", "marke", "uteslut"]) f[k].value = (a[k] || []).join(", ");
+  f.maxpris.value = a.maxpris ?? "";
+  analysBilder = (a.bilder || []).map(vag => ({ vag }));
+  ritaAnalysBilder();
+  $("analysdialog").showModal();
+}
+
+function ritaAnalysBilder(){
+  const ruta = $("analysbilder");
+  ruta.innerHTML = "";
+  analysBilder.forEach((b, i) => {
+    const fig = document.createElement("figure");
+    const img = document.createElement("img");
+    img.src = b.src || bildSrc[b.vag] || b.vag; img.alt = "Bild på plagget";
+    const x = document.createElement("button");
+    x.type = "button"; x.textContent = "×"; x.title = "Ta bort bilden";
+    x.onclick = () => { analysBilder.splice(i, 1); ritaAnalysBilder(); };
+    fig.append(img, x); ruta.append(fig);
+  });
+  const ny = document.createElement("label");
+  ny.className = "ny";
+  ny.innerHTML = '+ Lägg till bild<input type="file" accept="image/*" multiple>';
+  ny.querySelector("input").onchange = async ev => {
+    for (const fil of ev.target.files) { try { analysBilder.push(await laddaBild(fil)); } catch { alert("Kunde inte läsa bilden."); } }
+    ritaAnalysBilder();
+  };
+  ruta.append(ny);
+}
+
+// Bilden görs mindre (högst 512 px) innan den sparas, det räcker för bildjämförelsen.
+function laddaBild(fil){
+  return new Promise((klar, fel) => {
+    const img = new Image();
+    img.onload = () => {
+      const skala = Math.min(1, 512 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * skala); c.height = Math.round(img.height * skala);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      const src = c.toDataURL("image/jpeg", 0.88);
+      URL.revokeObjectURL(img.src);
+      klar({ vag: `exempelbilder/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}.jpg`, data: src.split(",")[1], src });
+    };
+    img.onerror = fel;
+    img.src = URL.createObjectURL(fil);
+  });
+}
+
+$("analysform").onsubmit = async e => {
+  e.preventDefault();
+  const f = e.target;
+  const a = { namn: f.namn.value.trim(), sokord: kommaLista(f.sokord.value) };
+  if (!a.sokord.length && !kommaLista(f.marke.value).length) { alert("Skriv ett sökord eller ett märke."); return; }
+  if (analyser.some((x, i) => x.namn === a.namn && i !== analysRedigerar)) { alert("Det finns redan en analys med det namnet."); return; }
+  if (kommaLista(f.marke.value).length) a.marke = kommaLista(f.marke.value);
+  if (kommaLista(f.uteslut.value).length) a.uteslut = kommaLista(f.uteslut.value);
+  if (f.maxpris.value) a.maxpris = Number(f.maxpris.value);
+  a.bilder = analysBilder.map(b => b.vag);
+  if (!nyckel()) { alert("Lägg först in din GitHub-nyckel i menyn på alarm-sidan."); return; }
+  for (const b of analysBilder.filter(b => b.data)) {
+    try { await gh("PUT", `/repos/${REPO}/contents/${b.vag}`, { message: "Bild till analys från hemsidan", content: b.data }); }
+    catch (fel) { alert("Kunde inte ladda upp bilden (" + fel.message + ")."); return; }
+    bildSrc[b.vag] = b.src; delete b.data;
+  }
+  const ny = analyser.slice();
+  if (analysRedigerar >= 0) ny[analysRedigerar] = a; else ny.push(a);
+  if (await sparaAnalyser(ny)) { valdAnalys = a.namn; skriv("analys", valdAnalys); $("analysdialog").close(); ritaAnalyser(); }
+};
+
+async function sparaAnalyser(ny){
+  if (!nyckel()) { alert("Lägg först in din GitHub-nyckel i menyn på alarm-sidan."); return false; }
+  try {
+    let sha;
+    try { sha = (await gh("GET", `/repos/${REPO}/contents/${ANALYS_FIL}`)).sha; } catch (e) { if (e.message !== "404") throw e; }
+    await gh("PUT", `/repos/${REPO}/contents/${ANALYS_FIL}`, { message: "Ändra analys från hemsidan", content: koda(JSON.stringify(ny, null, 2) + "\n"), ...(sha ? { sha } : {}) });
+    analyser = ny;
+    ritaAnalyser();
+    try { await gh("POST", `/repos/${REPO}/actions/workflows/bevaka.yml/dispatches`, { ref: "main" }); } catch {}
+    return true;
+  } catch (e) {
+    alert("Kunde inte spara (" + e.message + "). Kolla att GitHub-nyckeln stämmer.");
+    return false;
+  }
+}
+startAnalyser();
+
 start();
 </script>
 </body>

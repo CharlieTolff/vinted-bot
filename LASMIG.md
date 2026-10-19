@@ -108,6 +108,10 @@ Vill du ha andra filter från Vinted (färg osv.)? Gör sökningen på vinted.se
 - `python3 vinted_bot.py` bevakar tills du stänger av den.
 - Första gången sparas alla nuvarande annonser som "sedda", så du bara får helt nya.
 
+## Egna börsanalyser
+
+Överst på börssidan kan du göra egna analyser, som ett filter: namn, sökord, märken (valfritt), ord att ta bort, maxpris och gärna bilder på plagget. Varje runda söker `spaning.py` på Vinted (allt ute nu) och Tradera (sålda), och har analysen bilder räknas bara annonser vars bild liknar dem (CLIP, samma gratis bildmodell som bildkollen). Annonser som försvinner från Vinted räknas som sålda. Sidan visar per märke hur många som sålts, hur många som ligger ute, medianpris och hur snabbt de säljs, och bilder på det som sålts. Filtren sparas i `spaningar.json` och bilderna i `exempelbilder`. Knappen "+ Alarm av analysen" gör ett alarm med de märken som säljer bäst och samma bilder.
+
 ## Bildkollen
 
 En bildmodell tittar på bilden i varje ny träff och sorterar bort fel plagg (till exempel en sweatshirt i alarmet för stickade hoodies), så att vinsten räknas på rätt saker. Den granskar också annonserna som säljpriset räknas på. Gratis: CLIP körs direkt på GitHub och jämför bilden med alarmets `bild_ja` och `bild_nej` i sokningar.json (alarm utan dem granskas inte). Du kan också lägga in inspirationsbilder när du skapar eller ändrar ett alarm på hemsidan. De sparas i mappen `exempelbilder` och varje annonsbild jämförs med dem: väldigt lik passar alltid, väldigt olik passar aldrig, och däremellan avgör orden. Ett alarm med bara bilder kräver att annonsen är ganska lik någon av dem. Finns hemligheten `ANTHROPIC_API_KEY` används Claude i stället. Högst 40 bilder per runda med CLIP (15 med Claude, `BILD_PER_RUNDA`), och varje annons granskas bara en gång.
