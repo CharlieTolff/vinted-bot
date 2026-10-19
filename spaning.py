@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import random
+import re
 import time
 import urllib.parse
 
@@ -30,6 +31,7 @@ VINTED_PER_RUNDA = 15     # högst så många frågor till Vinted per runda, så
 BILDER_PER_RUNDA = 150
 LIKHET = 0.80             # så lik en inspirationsbild måste annonsen vara för att räknas
 SPARA_DAGAR = 60          # träffar sparas så här länge
+TRADERA_STORLEK = "medium-fit"  # storleken som fylls i Traderas bildlänkar
 KOLLADE_DAGAR = 14        # granskade bilder minns så här länge
 
 
@@ -51,6 +53,13 @@ def utesluten(titel, sp):
 
 def tradera_bild(it):
     """Första bildlänken i en Tradera-annons (fältens namn varierar)."""
+    mall = it.get("imageUrlTemplate")
+    if isinstance(mall, str) and mall:
+        if not tradera_bild.loggad:
+            tradera_bild.loggad = True
+            logg("Traderas bildlänkar ser ut så här: %s" % mall)
+        url = re.sub(r"\{[^}]*\}", TRADERA_STORLEK, mall)
+        return ("https:" + url) if url.startswith("//") else url
     for k in ("imageUrl", "mainImageUrl", "thumbnailUrl", "imageLink", "image"):
         v = it.get(k)
         if isinstance(v, str) and v.startswith("http"):
@@ -68,6 +77,9 @@ def tradera_bild(it):
                     if isinstance(u, str) and u.startswith("http"):
                         return u
     return ""
+
+
+tradera_bild.loggad = False
 
 
 def tradera_lank(it):
