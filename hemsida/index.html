@@ -138,6 +138,12 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
 .taggar .ruta:focus-within{border-color:var(--guld)}
 .taggar .ruta input{border:0;background:transparent;flex:1;min-width:120px;padding:4px}
 .taggar .ruta input:focus{outline:none}
+.exempel{display:flex;flex-wrap:wrap;gap:8px}
+.exempel figure{position:relative;margin:0;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--linje);background:var(--kort2)}
+.exempel img{width:100%;height:100%;object-fit:cover;display:block}
+.exempel figure button{position:absolute;top:3px;right:3px;border:0;border-radius:50%;width:22px;height:22px;padding:0;background:#000b;color:#fff;font-size:14px;line-height:1}
+.exempel .ny{width:84px;height:84px;border:1px dashed var(--linje);border-radius:10px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12px;color:var(--svag);cursor:pointer}
+.exempel .ny input{display:none}
 .tagg{display:inline-flex;align-items:center;gap:4px;background:#141414;color:var(--guldljus);border-radius:8px;padding:3px 4px 3px 10px;font-size:13.5px}
 .tagg button{border:0;background:none;padding:0 5px;color:inherit;opacity:.7;font-size:15px;line-height:1}
 .forslag{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
@@ -208,6 +214,8 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
       <div class="hjalp">Lägg till flera för att bevaka dem samtidigt. Tomt = alla märken.</div></div>
     <div class="bred"><div class="falt">Ta bort annonser med de här orden</div><div class="taggar" id="t-uteslut"></div>
       <div class="hjalp">Finns ordet i titeln sorteras annonsen bort.</div></div>
+    <div class="bred"><div class="falt">Inspirationsbilder <span class="svag">(valfritt)</span></div><div class="exempel" id="exempelbilder"></div>
+      <div class="hjalp">Lägg in bilder på precis den sortens plagg du letar efter. Bildkollen jämför varje annons med dem och sorterar bort det som inte liknar.</div></div>
     <label class="bred">…eller klistra in en sök-länk från Vinted (valfritt)<input name="url" placeholder="https://www.vinted.se/catalog?..."></label>
 
     <h3 class="bred">Vem och var</h3>
@@ -437,6 +445,51 @@ $("storleksgrupper").innerHTML = Object.entries(STORLEKAR).map(([rubrik, lista])
 
 // Taggfält: skriv och tryck Enter (eller komma), ta bort med ×, klicka på + för förslag.
 const taggar = {};
+// Inspirationsbilder: {vag} för sparade, {vag, data, src} för nya som laddas upp när alarmet sparas.
+let exempel = [];
+const exempelSrc = {};
+function ritaExempel(){
+  const ruta = $("exempelbilder");
+  ruta.innerHTML = "";
+  exempel.forEach((e, i) => {
+    const fig = document.createElement("figure");
+    const img = document.createElement("img");
+    img.src = e.src || exempelSrc[e.vag] || e.vag;
+    img.alt = "Inspirationsbild";
+    const x = document.createElement("button");
+    x.type = "button"; x.textContent = "×"; x.title = "Ta bort bilden";
+    x.onclick = () => { exempel.splice(i, 1); ritaExempel(); };
+    fig.append(img, x);
+    ruta.append(fig);
+  });
+  const ny = document.createElement("label");
+  ny.className = "ny";
+  ny.innerHTML = '+ Lägg till bild<input type="file" accept="image/*" multiple>';
+  ny.querySelector("input").onchange = async ev => {
+    for (const fil of ev.target.files) {
+      try { exempel.push(await laddaExempel(fil)); } catch (e) { alert("Kunde inte läsa bilden."); }
+    }
+    ritaExempel();
+  };
+  ruta.append(ny);
+}
+// Bilden görs mindre (högst 512 px) innan den sparas, det räcker för bildkollen.
+function laddaExempel(fil){
+  return new Promise((klar, fel) => {
+    const img = new Image();
+    img.onload = () => {
+      const skala = Math.min(1, 512 / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * skala); c.height = Math.round(img.height * skala);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      const src = c.toDataURL("image/jpeg", 0.88);
+      URL.revokeObjectURL(img.src);
+      klar({ vag: `exempelbilder/${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}.jpg`, data: src.split(",")[1], src });
+    };
+    img.onerror = fel;
+    img.src = URL.createObjectURL(fil);
+  });
+}
 function taggfalt(namn, platshallare){
   const ruta = $("t-" + namn);
   ruta.innerHTML = `<div class="ruta"><input placeholder="${platshallare}"></div><div class="forslag"></div>`;
@@ -488,6 +541,8 @@ function oppna(i, mall){
   taggar.sokord = somLista(a.sokord).slice(); taggar.marke = somLista(a.marke).slice(); taggar.uteslut = (a.uteslut || []).slice(); taggar.maste = (a.maste || []).slice(); taggar.sokord_utland = somLista(a.sokord_utland).slice();
   taggar.storlek = storlekar.filter(v => !ALLA_STORLEKAR.some(x => x.toLowerCase() === v.toLowerCase()));
   ["sokord","marke","uteslut","storlek","maste","sokord_utland"].forEach(ritaTaggar);
+  exempel = (a.bild_exempel || []).map(vag => ({ vag }));
+  ritaExempel();
   f.min_betyg.value = String(a.min_betyg ?? 4.5);
   $("konrutor").querySelectorAll("input").forEach(c => c.checked = c.value === (a.kon || ""));
   ritaKategorier(a.kategorier || []);
@@ -522,6 +577,14 @@ $("formular").onsubmit = async e => {
   a.aktiv = f.aktiv.checked;
   // Bildkollens beskrivningar finns inte i formuläret, så de behålls som de var.
   if (redigerar >= 0) for (const k of ["bild_ja", "bild_nej"]) if (alarm[redigerar][k]) a[k] = alarm[redigerar][k];
+  if (exempel.length) a.bild_exempel = exempel.map(b => b.vag);
+  // Nya inspirationsbilder laddas upp till repot innan alarmet sparas.
+  if (las("nyckel", "")) for (const b of exempel.filter(b => b.data)) {
+    status("Laddar upp bild…");
+    try { await gh("PUT", `/repos/${REPO}/contents/${b.vag}`, { message: "Inspirationsbild från hemsidan", content: b.data }); }
+    catch (fel) { status("Kunde inte ladda upp bilden (" + fel.message + ")."); return; }
+    exempelSrc[b.vag] = b.src; delete b.data;
+  }
   const ny = alarm.slice();
   if (redigerar >= 0) ny[redigerar] = a; else ny.push(a);
   if (await spara(ny)) $("dialog").close();
