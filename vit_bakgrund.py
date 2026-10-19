@@ -28,8 +28,10 @@ MODELLER = {
 CACHE = os.environ.get("VIT_BAKGRUND_MODELLER", os.path.expanduser("~/.cache/vit_bakgrund"))
 
 # Utseende
-VIT_MITT = 250.0      # ljusaste punkten på bakgrunden (0-255)
-VIT_KANT = 228.0      # mörkaste hörnet, ger "studioljus"-känslan
+VIT_MITT = 238.0      # ljusaste punkten på bakgrunden (0-255)
+VIT_KANT = 218.0      # mörkaste hörnet, ger "studioljus"-känslan
+SIDLJUS = 0.04        # ljuset faller in lite från vänster (0 = jämnt)
+BG_TON = (1.0, 0.975, 0.94)  # svagt varm off-white, som en riktig vägg/papprulle
 SKUGGSTYRKA = 0.85    # hur mycket av väggens skugga som följer med (0-1)
 VITBALANS = 0.6      # hur mycket rummets färgstick tas bort från motivet (0-1)
 SKUGGLYFT = 0.85      # <1 lyfter mörka partier i motivet (1 = av)
@@ -126,7 +128,8 @@ def gor_vit(bild):
     yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
     r = np.sqrt(((xx - w / 2) / (w * 0.75)) ** 2 + ((yy - h * 0.42) / (h * 0.85)) ** 2)
     studio = VIT_MITT - (VIT_MITT - VIT_KANT) * np.clip(r, 0, 1) ** 1.6
-    ny_bg = (studio * skugga)[..., None] * np.array([1.0, 0.997, 0.99], np.float32)
+    studio = studio * (1 + SIDLJUS / 2 - SIDLJUS * xx / w)
+    ny_bg = (studio * skugga)[..., None] * np.array(BG_TON, np.float32)
 
     # Rensa bort väggfärg i kanterna på motivet innan det läggs på den vita bakgrunden.
     vagg_farg = np.stack([normaliserad_blur(I[..., c], vikt + 1e-3, sm / 60) for c in range(3)], -1)
