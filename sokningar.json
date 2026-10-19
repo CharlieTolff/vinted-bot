@@ -972,5 +972,117 @@
       "a vest",
       "a women's dress"
     ]
+  },
+  {
+    "namn": "Patagonia fleece jackor & västar",
+    "sokord": [
+      "patagonia fleece",
+      "patagonia retro pile",
+      "patagonia better sweater",
+      "patagonia fleeceväst",
+      "patagonia vest"
+    ],
+    "maxpris": 500,
+    "kappris": 350,
+    "min_betyg": 4,
+    "kon": "herr",
+    "kategorier": [
+      "klader"
+    ],
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": "Patagonia",
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [
+      "Ny med prislapp",
+      "Ny utan prislapp",
+      "Mycket bra",
+      "Bra"
+    ],
+    "farger": [],
+    "uteslut": [
+      "fake",
+      "replica",
+      "inspired",
+      "defekt",
+      "trasig",
+      "fläck",
+      "barn",
+      "kids",
+      "t-shirt",
+      "tshirt",
+      "skjorta",
+      "byxor",
+      "shorts",
+      "mössa",
+      "keps",
+      "hoodie",
+      "dunjacka",
+      "down",
+      "nano puff",
+      "torrentshell",
+      "regnjacka"
+    ],
+    "maste": [
+      "fleece",
+      "pile",
+      "better sweater",
+      "retro",
+      "synchilla",
+      "snap-t",
+      "väst",
+      "vest",
+      "vesta",
+      "liivi",
+      "fleecejacka",
+      "fleeceväst",
+      "polar"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "bild_ja": [
+      "a fleece jacket",
+      "a sherpa pile fleece jacket",
+      "a fleece vest",
+      "a sherpa fleece vest",
+      "a knitted fleece sweater jacket"
+    ],
+    "bild_nej": [
+      "a t-shirt",
+      "a dress shirt",
+      "a polo shirt",
+      "a cotton hoodie sweatshirt",
+      "a puffer jacket",
+      "a rain jacket",
+      "a blazer",
+      "a pair of pants",
+      "a pair of jeans",
+      "a pair of shorts",
+      "shoes",
+      "a bag",
+      "a cap or beanie",
+      "a women's dress"
+    ],
+    "bild_exempel": [
+      "exempelbilder/fleece-patagonia-jacka-1.jpg",
+      "exempelbilder/fleece-patagonia-jacka-2.jpg",
+      "exempelbilder/fleece-patagonia-jacka-3.jpg",
+      "exempelbilder/fleece-patagonia-jacka-4.jpg",
+      "exempelbilder/fleece-patagonia-jacka-5.jpg",
+      "exempelbilder/fleece-patagonia-jacka-6.jpg",
+      "exempelbilder/fleece-patagonia-vast-1.jpg",
+      "exempelbilder/fleece-patagonia-vast-2.jpg",
+      "exempelbilder/fleece-patagonia-vast-3.jpg",
+      "exempelbilder/fleece-patagonia-vast-4.jpg",
+      "exempelbilder/fleece-patagonia-vast-5.jpg"
+    ]
   }
 ]
