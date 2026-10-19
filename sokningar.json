@@ -74,8 +74,6 @@
       "väska",
       "skor"
     ],
-    "telegram": "kap",
-    "aktiv": true,
     "maste": [
       "field jacket",
       "fieldjacket",
@@ -103,6 +101,8 @@
       "takki",
       "kurtka"
     ],
+    "telegram": "kap",
+    "aktiv": true,
     "bild_ja": [
       "a waxed field jacket",
       "a quilted jacket",
@@ -127,6 +127,10 @@
       "a cardigan",
       "a vest",
       "a women's dress"
+    ],
+    "bild_exempel": [
+      "exempelbilder/mvform9gy44q.jpg",
+      "exempelbilder/mvfou0lc5b48.jpg"
     ]
   },
   {
