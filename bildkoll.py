@@ -51,7 +51,6 @@ class Bildkoll:
         self.satt = None
         self.klient = self.clip = None
         self.texter = {}
-        self.exempel = {}  # inspirationsbild -> dess bildvektor
         if os.environ.get("ANTHROPIC_API_KEY"):
             try:
                 import anthropic
@@ -61,9 +60,7 @@ class Bildkoll:
                 logg("paketet anthropic saknas.")
         if not self.satt and os.environ.get("BILDKOLL", "clip") == "clip":
             try:
-                from fastembed import ImageEmbedding, TextEmbedding
-                self.clip = (ImageEmbedding(model_name=CLIP_BILD, cache_dir=CLIP_MAPP),
-                             TextEmbedding(model_name=CLIP_TEXT, cache_dir=CLIP_MAPP))
+                self.clip = Clip(text=True)
                 self.satt = "clip"
             except Exception as e:  # paketet saknas eller modellen gick inte att hämta
                 logg("CLIP gick inte att starta (%s), hoppar över bilderna." % e)
@@ -97,9 +94,7 @@ class Bildkoll:
             return None  # alarmet har varken bildbeskrivningar eller inspirationsbilder
         self.kvar -= 1
         try:
-            req = urllib.request.Request(annons["bild"], headers={"User-Agent": "Mozilla/5.0"})
-            with urllib.request.urlopen(req, timeout=20) as r:
-                bild, typ = r.read(), (r.headers.get_content_type() or "image/jpeg")
+            bild, typ = hamta_bild(annons["bild"])
             ok, plagg, varfor = (self.fraga_claude if self.satt == "claude" else self.fraga_clip)(bild, typ, annons, s)
         except Exception as e:  # nätet, tjänsten eller bilden krånglar: låt annonsen vara som förut och försök igen nästa runda
             logg("kunde inte granska annons %s: %s" % (annons["id"], e))
@@ -133,14 +128,14 @@ class Bildkoll:
         return bool(data["passar"]), data["plagg"], ": " + data["varfor"][:80]
 
     def fraga_clip(self, bild, typ, annons, s):
-        bv = self.bildvektor(bild)
+        bv = self.clip.bildvektor(bild)
         delar, ok_ord, plagg = [], None, ""
         ja, nej = list(s.get("bild_ja") or []), list(s.get("bild_nej") or [])
         if ja:
             etiketter = ja + nej
             nyckel = "\n".join(etiketter)
             if nyckel not in self.texter:
-                self.texter[nyckel] = [normera(v) for v in self.clip[1].embed(["a photo of " + t for t in etiketter])]
+                self.texter[nyckel] = self.clip.textvektorer(["a photo of " + t for t in etiketter])
             # Samma räkning som CLIP själv: likhet gånger 100, sedan softmax.
             likhet = [100 * skal(bv, t) for t in self.texter[nyckel]]
             topp = max(likhet)
@@ -148,11 +143,7 @@ class Bildkoll:
             andel_ja = sum(vikt[:len(ja)]) / sum(vikt)
             ok_ord, plagg = andel_ja >= CLIP_ANDEL, etiketter[max(range(len(etiketter)), key=lambda i: likhet[i])]
             delar.append("%d %% rätt sorts plagg" % round(100 * andel_ja))
-        lik = None
-        for vag in exempel(s):
-            ev = self.exempelvektor(vag)
-            if ev is not None:
-                lik = max(lik or 0.0, skal(bv, ev))
+        lik = self.clip.likhet(bv, exempel(s))
         if lik is None:
             ok = ok_ord
         else:
@@ -165,27 +156,53 @@ class Bildkoll:
                 logg("'%s' passar '%s' (%s)" % (annons["titel"][:60], s.get("namn", ""), ", ".join(delar)))
         return ok, plagg, (", " if plagg else "") + ", ".join(delar)
 
+    def stada(self):
+        grans = time.time() - SPARA_DAGAR * 86400
+        for k in [k for k, v in self.minne.items() if v[2] < grans]:
+            del self.minne[k]
+
+
+class Clip:
+    """Den gratis bildmodellen. Används av bildkollen och av börsens bildspaning."""
+    def __init__(self, text=False):
+        from fastembed import ImageEmbedding, TextEmbedding
+        self.bild = ImageEmbedding(model_name=CLIP_BILD, cache_dir=CLIP_MAPP)
+        self.text = TextEmbedding(model_name=CLIP_TEXT, cache_dir=CLIP_MAPP) if text else None
+        self.exempel = {}  # inspirationsbild -> dess bildvektor
+
+    def textvektorer(self, texter):
+        return [normera(v) for v in self.text.embed(texter)]
+
     def bildvektor(self, bild):
         with tempfile.NamedTemporaryFile(suffix=".jpg") as f:
             f.write(bild)
             f.flush()
-            return normera(next(iter(self.clip[0].embed([f.name]))))
+            return normera(next(iter(self.bild.embed([f.name]))))
 
     def exempelvektor(self, vag):
         if vag not in self.exempel:
-            fil = os.path.join(MAPP, vag)
             try:
-                with open(fil, "rb") as f:
+                with open(os.path.join(MAPP, vag), "rb") as f:
                     self.exempel[vag] = self.bildvektor(f.read())
             except Exception as e:
                 logg("kunde inte läsa inspirationsbilden %s: %s" % (vag, e))
                 self.exempel[vag] = None
         return self.exempel[vag]
 
-    def stada(self):
-        grans = time.time() - SPARA_DAGAR * 86400
-        for k in [k for k, v in self.minne.items() if v[2] < grans]:
-            del self.minne[k]
+    def likhet(self, bv, vagar):
+        """Likheten med den mest lika av inspirationsbilderna, None om ingen gick att läsa."""
+        lik = None
+        for vag in vagar:
+            ev = self.exempelvektor(vag)
+            if ev is not None:
+                lik = max(lik or 0.0, skal(bv, ev))
+        return lik
+
+
+def hamta_bild(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        return r.read(), (r.headers.get_content_type() or "image/jpeg")
 
 
 def exempel(s):

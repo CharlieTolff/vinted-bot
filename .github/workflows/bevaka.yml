@@ -42,6 +42,8 @@ jobs:
           path: |
             bors.json
             tradera_salda.json
+            spaning.json
+            spaning_minne.json
           key: bors-${{ github.run_id }}
           restore-keys: bors-
 
@@ -78,12 +80,20 @@ jobs:
         timeout-minutes: 7   # börsen mäter i 4 minuter, plus marginal för sista mätningen
         run: python3 marknad.py
 
+      # Dina egna börsanalyser (filtren på börssidan), med bildjämförelse om de har bilder
+      - name: Egna börsanalyser
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 spaning.py
+
       - uses: actions/cache/save@v4
         if: always()
         with:
           path: |
             bors.json
             tradera_salda.json
+            spaning.json
+            spaning_minne.json
           key: bors-${{ github.run_id }}
 
       # Bokföringen krypteras med ditt lösenord, eftersom hemsidan är öppen för alla som har länken
@@ -102,6 +112,8 @@ jobs:
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
+          cp spaning.json _site/ 2>/dev/null || echo "{}" > _site/spaning.json
+          cp spaningar.json _site/
 
       - uses: actions/upload-pages-artifact@v3
         with:
