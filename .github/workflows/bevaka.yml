@@ -63,7 +63,7 @@ jobs:
       # Märkesbörsen mäter en stund efter varje runda. Krånglar den påverkas inte alarmen.
       - name: Mät märken till märkesbörsen
         continue-on-error: true
-        timeout-minutes: 4
+        timeout-minutes: 7   # börsen mäter i 4 minuter, plus marginal för sista mätningen
         run: python3 marknad.py
 
       - uses: actions/cache/save@v4
