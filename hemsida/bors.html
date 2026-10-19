@@ -226,13 +226,27 @@ function andelI(p, m){
 }
 function markePunkter(kalla, kat, m){ return (((B.marke[kalla] || {})[kat] || {})[m]) || [] }
 
+function fartDel(kalla, kat, m, i){
+  // Sålda per vecka på hela plattformen, snitt av de tre senaste mätningarna av märket. null = inte mätt än.
+  const v = markePunkter(kalla, kat, m).map(p => p[i]).filter(x => x != null).slice(-3);
+  return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+}
+function fartDelar(kat, m){ return {tradera: fartDel("tradera", kat, m, 5), vinted: fartDel("vinted", kat, m, 6)} }
 function fart(kat, m){
-  // Hur många av märket som sålts per vecka på Tradera, snitt av de senaste fyra hela veckorna.
+  // Sålda per vecka på Tradera och Vinted ihop, räknat på hela märket i kategorin (inte stickprovet).
+  const d = fartDelar(kat, m);
+  if (d.tradera != null || d.vinted != null) return (d.tradera || 0) + (d.vinted || 0);
+  // Märken utan egen mätning: Tradera-veckorna i kategoristickprovet, snitt av fyra hela veckor.
   const v = (B.tradera_veckor || {})[kat] ? andelsPunkter("tradera", kat).slice(-4) : [];
   if (!v.length) return null;
   const n = v.map(p => (p[2][m] || [0])[0]);
-  if (!arAlarm(m) && !n.some(Boolean)) return null;
+  if (!n.some(Boolean)) return null;
   return n.reduce((a, b) => a + b, 0) / v.length;
+}
+function fartText(kat, m){
+  const d = fartDelar(kat, m), t = x => x == null ? "inte mätt än" : x.toLocaleString("sv-SE", {maximumFractionDigits: 1});
+  return d.tradera == null && d.vinted == null ? "Sålda per vecka i Tradera-stickprovet (märket mäts inte för sig)"
+    : `Sålda per vecka på hela plattformarna: Vinted ${t(d.vinted)}, Tradera ${t(d.tradera)}`;
 }
 function avrunda(v){ return Math.max(10, Math.floor(v / 10) * 10) }
 function alarmLank(m, katId, maxpris){
@@ -348,7 +362,7 @@ function ritaTabell(){
       <td class="tal">${kr(r.pris)}</td>
       <td class="tal dolj-mobil">${utv(r.prisUtv, " %")}</td>
       <td class="tal dolj-mobil">${antalText(r)}</td>
-      <td class="tal dolj-mobil" title="Sålda per vecka på Tradera, snitt av fyra veckor">${r.fart == null ? "–" : r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
+      <td class="tal dolj-mobil" title="${esc(fartText(st.kat, r.m))}">${r.fart == null ? "–" : r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
     </tr>`).join("") + (tomma ? `<tr><td colspan="8" class="svag" style="text-align:left;cursor:default">${tomma} av dina märken har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
 }
 
@@ -374,7 +388,7 @@ function koplagen(){
   const ut = [];
   for (const kat of B.kategorier || []) for (const m of alarmMarken()) {
     const tr = markePunkter("tradera", kat.id, m).at(-1), vi = markePunkter("vinted", kat.id, m).at(-1);
-    if (!tr || !vi || !tr[2] || !vi[3] || tr[1] < 3) continue;
+    if (!tr || !vi || !tr[2] || !vi[3] || tr[1] < 5) continue;
     ut.push({m, kat, salj: tr[2], kop: vi[3], marg: tr[2] - vi[3], salda: tr[1], fart: fart(kat.id, m)});
   }
   return ut.sort((a, b) => b.marg - a.marg).slice(0, 10);
@@ -452,7 +466,7 @@ function ritaDetalj(){
       <div class="nyckeltal">
         <div><span class="svag">${K.andel}</span><b>${pct(r.andel)}</b><small>${utv(r.andelUtv, " pe")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
         <div><span class="svag">${K.pris}</span><b>${kr(r.pris)}</b><small>${utv(r.prisUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
-        ${r.fart != null ? `<div><span class="svag">Säljfart</span><b>${r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}/v</b><small class="svag">sålda per vecka på Tradera</small></div>` : ""}
+        ${r.fart != null ? `<div><span class="svag">Säljfart</span><b>${r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}/v</b><small class="svag">${esc(fartText(st.kat, m).replace(/^Sålda per vecka /, ""))}</small></div>` : ""}
         ${marginal != null ? `<div><span class="svag" title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</span><b class="${marginal > 0 ? "upp" : "ned"}">${marginal > 0 ? "+" : "−"}${kr(Math.abs(marginal))}</b><small class="svag">sålt på Tradera mot billiga på Vinted</small></div>` : ""}
       </div>
     </div>
@@ -621,7 +635,7 @@ function ritaOm(){
   $("omdata").innerHTML = `<b>Så räknas det.</b> Varje dygn tas ett stickprov per kategori: de upp till 960 nyaste annonserna på Vinted, de senast sålda på Tradera och de första sidorna på Plick.
     <b>Andel</b> är hur stor del av stickprovet som är av märket, och <b>pe</b> betyder procentenheter. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
     <b>Pris</b> är medianpriset när man söker på bara det märket i kategorin (begärt pris på Vinted och Plick, slutpris på Tradera).
-    <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda/v</b> är hur många som sålts per vecka på Tradera, snitt av de fyra senaste hela veckorna.
+    <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda/v</b> är hur många av märket som sålts per vecka på hela Vinted och Tradera ihop, inte bara i stickprovet. Tradera visar sålda annonser direkt. Vinted visar inte sålda, så där räknas annonserna som försvunnit mellan två mätningar (sålda eller borttagna). Plick visar inte sålda alls och räknas inte. Märken som inte är med i något alarm mäts inte för sig, där visas sålda per vecka i Tradera-stickprovet.
     <b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
     Märkena hämtas från dina alarm, så nya alarm-märken kommer med automatiskt.${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
 }

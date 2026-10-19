@@ -321,7 +321,9 @@ const PRICK = {"hög": "var(--plus)", "medel": "var(--guld)", "låg": "var(--sva
 function bastaKapen(){
   return alarmNamn().filter(n => { const a = alarm.find(x => namnPa(x) === n); return !a || a.aktiv !== false; })
     .flatMap(n => ((traffar[n] || {}).annonser || []).map(a => ({...a, alarm: n})))
-    .filter(a => a.kap || (a.vinst != null && a.vinst > 0));
+    // Bara riktiga kap: under vanligt pris, eller minst 100 kr i vinst. De 60 bästa räcker.
+    .filter(a => a.kap || (a.vinst != null && a.vinst >= 100))
+    .sort((a, b) => (b.vinst ?? 0) - (a.vinst ?? 0)).slice(0, 60);
 }
 
 function sortera(lista){

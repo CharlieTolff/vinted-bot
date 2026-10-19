@@ -186,7 +186,29 @@ class VintedKalla:
         priser = [a["pris"] for a in annonser]
         gillas = [a["gillas"] for a in annonser]
         return {"antal": totalt or 0, "tak": (totalt or 0) >= 960, "median": median(priser), "p25": kvantil(priser, 0.25),
-                "gillas": round(sum(gillas) / len(gillas), 1) if gillas else None}
+                "gillas": round(sum(gillas) / len(gillas), 1) if gillas else None,
+                "fart": self.forsvunna(kat["id"], namn, annonser, totalt)}
+
+    def forsvunna(self, kat_id, namn, annonser, totalt):
+        """Sålda per vecka på Vinted, uppskattat på hela märket i kategorin: Vinted visar inte sålda, men sidan är
+        sorterad nyast först, så en annons från förra mätningen som är nyare än den äldsta på sidan nu och ändå
+        saknas har sålts (eller tagits bort). Antalet delas med tiden mellan mätningarna."""
+        ids = sorted({int(a["id"]) for a in annonser if str(a.get("id", "")).isdigit()})
+        sett = self.bors.setdefault("vinted_sett", {}).setdefault(kat_id, {})
+        forra = sett.get(namn)
+        nu = time.time()
+        sett[namn] = [round(nu), ids]
+        if not forra or not ids:
+            return None
+        t, gamla = forra
+        dagar = (nu - t) / 86400
+        if dagar < 0.5:  # samma dag igen: behåll förra mätningen som jämförelse
+            sett[namn] = forra
+            return None
+        # Får alla annonser plats på sidan räknas alla som saknas, annars bara de som borde ha synts.
+        grans = 0 if (totalt or 0) <= len(ids) else ids[0]
+        borta = sum(1 for i in gamla if i >= grans and i not in set(ids))
+        return round(borta / dagar * 7, 1)
 
 
 # ---------- Tradera (sålda annonser och slutpriser) ----------
@@ -229,8 +251,9 @@ class TraderaKalla:
         return len(sett), per
 
     def marke(self, kat, namn):
-        antal, priser, tak = 0, [], False
+        antal, priser, tak, fart = 0, [], False, 0.0
         nn = normalisera(namn)
+        idag = time.time()
         for q in kat["tradera"]:
             res = self.sok('"%s" %s' % (namn, q))
             n = res.get("totalItemCount") or 0
@@ -238,9 +261,16 @@ class TraderaKalla:
             if "AboveCap" in str(info.get("translationKey", "")):
                 tak = True
             antal += n
-            priser += [it.get("price") for it in res.get("items") or [] if nn in normalisera(it.get("shortDescription", ""))]
+            items = res.get("items") or []
+            priser += [it.get("price") for it in items if nn in normalisera(it.get("shortDescription", ""))]
+            # Sålda per vecka: Tradera visar bara det som sålts den senaste tiden, så antalet delas med hur
+            # långt bak det äldsta slutdatumet i svaret ligger (minst en vecka, så att få affärer inte blåses upp).
+            datum = [calendar.timegm(time.strptime(it["endDate"][:10], "%Y-%m-%d")) for it in items if it.get("endDate")]
+            if n and datum:
+                dagar = max(7.0, (idag - min(datum)) / 86400 + 1)
+                fart += n / dagar * 7
             time.sleep(random.uniform(1, 2))
-        return {"antal": antal, "tak": tak, "median": median(priser), "p25": kvantil(priser, 0.25)}
+        return {"antal": antal, "tak": tak, "median": median(priser), "p25": kvantil(priser, 0.25), "fart": round(fart, 1)}
 
 
 # ---------- Plick ----------
@@ -437,7 +467,9 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
         return "märket finns inte hos källan"
     punkt = [idag, r["antal"], r["median"], r["p25"], 1 if r.get("tak") else 0]
     if kalla == "vinted":
-        punkt.append(r.get("gillas"))
+        punkt += [r.get("gillas"), r.get("fart")]  # gillas i snitt, sålda per vecka
+    elif kalla == "tradera":
+        punkt.append(r.get("fart"))  # sålda per vecka
     satt_punkt(bors["marke"].setdefault(kalla, {}).setdefault(kat["id"], {}).setdefault(marke, []), punkt)
     return "%s st, median %s kr" % (r["antal"], r["median"])
 
@@ -494,6 +526,10 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
             for m in list(kat):
                 if m not in alarm:
                     del kat[m]
+    for kat in bors.get("vinted_sett", {}).values():
+        for m in list(kat):
+            if m not in alarm:
+                del kat[m]
     bors["senast"] = {k: v for k, v in bors["senast"].items() if not k.startswith("marke|") or k.split("|", 3)[3] in alarm}
     bors["kategorier"] = [{"id": k["id"], "namn": k["namn"]} for k in KATEGORIER]
     bors["alarm"] = alarm
