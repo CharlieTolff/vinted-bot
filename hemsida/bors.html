@@ -41,7 +41,7 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .sidopanel button.vald{background:#141414;color:var(--guldljus)}
 .sidopanel button.vald small{color:var(--menysvag)}
 .vy[hidden]{display:none}
-.chip.nykat{border-style:dashed;color:var(--guldtext);background:transparent}
+.chip.nykat{border-style:dashed;color:var(--guldtext);background:transparent;font-size:18px;font-weight:700;line-height:1;min-width:42px}
 .egnakat{display:grid;gap:6px}
 .egnakat div{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--kort2);border-radius:10px;padding:8px 12px;font-size:14px}
 .egnakat button{border:0;background:none;color:var(--minus);font:inherit;font-size:13px;cursor:pointer}
@@ -329,9 +329,9 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
 </main>
 
 <dialog id="katdialog">
-  <h2 style="margin-top:0">Ny kategori</h2>
+  <h2 style="margin-top:0">Nytt filter</h2>
   <form id="katform" method="dialog">
-    <p class="hjalp" style="margin:0">Börsen börjar mäta kategorin på Vinted, Tradera och Plick vid nästa körning, och historiken byggs upp från och med i dag.</p>
+    <p class="hjalp" style="margin:0">Börsen börjar mäta det du skriver in på Vinted, Tradera och Plick vid nästa körning, och historiken byggs upp från och med i dag.</p>
     <label>Namn<input name="namn" required placeholder="Skor"></label>
     <label>Sökord <span class="hjalp">(valfritt, för Tradera och Plick. Skriv gärna herr, t.ex. herrskor. Tomt = namnet)</span><input name="ord" placeholder="herrskor"></label>
     <label>Kategori på Vinted <span class="hjalp">(valfritt, som den heter under Herr på Vinted. Tomt = namnet)</span><input name="vinted" placeholder="Skor"></label>
@@ -396,7 +396,7 @@ let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("per
           vy: las("vy", "andel"), trend: las("trend", "upp"), utekalla: las("utekalla", "vinted"), uteValda: null};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
-             jackor: ["jacka"], dun: ["dunjacka", "dunväst"], kavajer: ["kavaj"], jeans: []};
+             dun: ["dunjacka", "dunväst"], jeans: []};
 const LANDER = ["SE", "DK", "FI", "PL"];
 
 // ---------- Data ----------
@@ -540,9 +540,10 @@ function rader(){
 
 // ---------- Rita ----------
 function katChips(kats){
-  // Kategorierna som knappar, plus en knapp för att lägga till en egen (inte på den publika börsen).
+  // Kategorierna som knappar, och längst till höger ett plus för att lägga till en egen.
+  // På den publika börsen syns plusset bara i en webbläsare där GitHub-nyckeln finns, alltså för ägaren.
   return kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}${k.vantar ? ` <span class="liten">· mäts snart</span>` : ""}</button>`).join("") +
-    (PUBLIK ? "" : `<button class="chip nykat" data-ny="1" title="Lägg till en egen kategori, t.ex. skor">+ Ny kategori</button>`);
+    (PUBLIK && !nyckel() ? "" : `<button class="chip nykat" data-ny="1" title="Lägg till ett eget filter" aria-label="Lägg till ett eget filter">+</button>`);
 }
 function ritaVal(){
   const kats = B.kategorier || [];
@@ -1122,8 +1123,8 @@ async function start(){
     return;
   }
   for (const k of ["andel", "marke", "alarm"]) B[k] = B[k] || {};
-  if (!PUBLIK) {
-    try { egnaKat = await fetch(EGNA_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { egnaKat = []; }
+  if (!PUBLIK || nyckel()) {
+    try { egnaKat = await fetch((PUBLIK ? "../" : "") + EGNA_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { egnaKat = []; }
     lagTillVantande();
   }
   const h = decodeURIComponent(location.hash.slice(1));
@@ -1142,7 +1143,7 @@ function lagTillVantande(){
   egnaKat.forEach((k, i) => { if (!finns.has(k.namn.toLowerCase())) B.kategorier.push({id: "vantar-" + i, namn: k.namn, vantar: true}); });
 }
 function ritaEgnaKat(){
-  $("egnakatlista").innerHTML = egnaKat.length ? `<div class="falt">Dina kategorier</div><div class="egnakat">${egnaKat.map((k, i) =>
+  $("egnakatlista").innerHTML = egnaKat.length ? `<div class="falt">Dina filter</div><div class="egnakat">${egnaKat.map((k, i) =>
     `<div><span>${esc(k.namn)}${k.ord && k.ord !== k.namn.toLowerCase() ? ` <span class="liten">(${esc(k.ord)})</span>` : ""}</span><button type="button" data-bort="${i}">Ta bort</button></div>`).join("")}</div>` : "";
 }
 function oppnaKatdialog(){
