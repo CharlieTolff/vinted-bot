@@ -49,7 +49,8 @@ h1,h2,h3{margin:0;letter-spacing:-.03em}
 .hjalte h1 em{font-style:normal;color:var(--guldtext)}
 .hjalte p{font-size:19px;color:var(--svag);margin:0 0 30px;max-width:34em}
 .cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px}
-.cta small{color:var(--svag);font-size:14px}
+.cta small,.ctapris{color:var(--svag);font-size:14px}
+.ctapris{display:block;margin-top:10px}
 .fortroende{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:28px;font-size:14px;color:var(--svag)}
 .fortroende b{color:var(--text)}
 .puls{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gron);margin-right:7px;box-shadow:0 0 0 0 #1d7a5066;animation:puls 2s infinite}
@@ -100,6 +101,21 @@ section{padding:84px 0}
 .vinst p{color:var(--svag);font-size:15px;margin:8px 0 0}
 
 /* Tre löften */
+/* Vinstkalkylen */
+.kalkyl{max-width:920px;margin:0 auto;background:var(--kort);border:1px solid var(--linje);border-radius:24px;padding:26px;box-shadow:0 1px 2px rgba(25,35,20,.05),0 10px 30px rgba(25,35,20,.07)}
+.kalkyl .falt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.kalkyl label{display:grid;gap:6px;font-size:13.5px;font-weight:600;color:var(--svag)}
+.kalkyl select,.kalkyl input{font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--linje);border-radius:12px;padding:11px 12px;width:100%;min-width:0}
+.kalkyl input:focus,.kalkyl select:focus{outline:2px solid var(--guld);outline-offset:1px}
+.svar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}
+.svar div{border-radius:18px;padding:18px;background:var(--yta);text-align:center}
+.svar span{display:block;font-size:13.5px;color:var(--svag);font-weight:500}
+.svar b{display:block;font-size:30px;font-weight:800;letter-spacing:-.03em;margin:4px 0 2px}
+.svar small{color:var(--svag);font-size:13px}
+.svar .resultat{background:var(--meny);color:var(--menytext)}
+.svar .resultat span,.svar .resultat small{color:var(--menysvag)}
+.svar .resultat b.plus{color:#7fd6a4}.svar .resultat b.minus{color:#f0a493}
+.kalkyl .not{font-size:13px;color:var(--svag);margin:14px 0 0;text-align:center}
 .loften{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .lofte{border:1px solid var(--linje);border-radius:22px;padding:26px;background:var(--kort)}
 /* Förtroende */
@@ -156,7 +172,7 @@ details p{margin:10px 0 0;color:var(--svag)}
 footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 
 @media (max-width:920px){
-  .hjalte .inre,.tva,.metod,.oppet{grid-template-columns:minmax(0,1fr)}
+  .hjalte .inre,.tva,.metod,.oppet,.kalkyl .falt,.svar{grid-template-columns:minmax(0,1fr)}
   .loften{grid-template-columns:minmax(0,1fr)}
   .hjalte h1{font-size:44px}
 }
@@ -186,7 +202,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 <div class="meny">
   <div class="inre">
     <a class="logga" href="index.html"><i><b style="height:6px"></b><b style="height:11px"></b><b style="height:15px"></b></i>Märkesbörsen</a>
-    <nav><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="app.html">Öppna börsen</a></nav>
+    <nav><a href="#kalkyl">Räkna vinst</a><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="app.html">Öppna börsen</a></nav>
     <a class="knapp liten" href="#pris">Kom igång</a>
   </div>
 </div>
@@ -194,12 +210,13 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 <div class="hjalte">
   <div class="inre">
     <div>
-      <h1>Köp det som säljer. <em>Sälj det med vinst.</em></h1>
-      <p>Märkesbörsen följer varje dag <span id="antaltext">tusentals</span> annonser på Vinted och Tradera. Du ser direkt vilka märken folk köper, vad de faktiskt betalar och var marginalen finns.</p>
+      <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
+      <p>Det svåraste med att sälja vidare är att veta vad saker faktiskt går för. Märkesbörsen följer varje dag <span id="antaltext">tusentals</span> annonser på Vinted och Tradera, så att du ser slutpriset, räknar ut vinsten och vet vilka märken som är populära just nu.</p>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
-        <small id="ctapris">99 kr i månaden · ingen bindningstid</small>
+        <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
       </div>
+      <small class="ctapris" id="ctapris">99 kr i månaden · ingen bindningstid</small>
       <div class="lofteslista"><span>Riktiga siffror från riktiga annonser</span><span>Ingen bindningstid</span><span>Oberoende tjänst</span></div>
       <div class="fortroende" id="fortroende"><span><span class="puls"></span>Mäts flera gånger om dagen</span></div>
     </div>
@@ -213,33 +230,39 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 
 <div class="band" id="band" hidden><div class="spar" id="spar"></div></div>
 
-<section id="historia">
+<section id="kalkyl">
   <div class="inre">
     <div class="rubrik mitt">
-      <div class="over">Samma plagg, olika pris</div>
-      <h2>Plagget är detsamma. Marknaden bestämmer priset.</h2>
-      <p>Samma märke kostar en sak hos den som vill bli av med det och något helt annat hos den som letar efter det. Börsen visar dig skillnaden.</p>
+      <div class="over">Vinstkalkylen</div>
+      <h2>Vad kan du tjäna på det du hittat?</h2>
+      <p>Välj märke och skriv vad du betalar. Börsen visar vad märket faktiskt säljs för och vad du får över.</p>
     </div>
-    <div class="jamfor" id="jamfor">
-      <div class="pris"><div class="var">Billigast på Vinted</div><div class="belopp tal" id="kopbelopp">–</div><div class="vad" id="kopvad">&nbsp;</div></div>
-      <div class="pil">→</div>
-      <div class="pris salj"><div class="var">Säljs för på Tradera</div><div class="belopp tal" id="saljbelopp">–</div><div class="vad" id="saljvad">&nbsp;</div></div>
+    <div class="kalkyl">
+      <div class="falt">
+        <label>Kategori<select id="kkat"></select></label>
+        <label>Märke<select id="kmarke"></select></label>
+        <label>Ditt inköpspris (kr)<input id="kpris" type="number" inputmode="numeric" min="0" step="10" placeholder="150"></label>
+      </div>
+      <div class="svar">
+        <div><span>Säljs normalt för</span><b class="tal" id="ksalj">–</b><small id="ksaljinfo">&nbsp;</small></div>
+        <div><span>Säljs ofta från</span><b class="tal" id="klag">–</b><small>billigaste fjärdedelen av de sålda</small></div>
+        <div class="resultat"><span>Din vinst per plagg</span><b class="tal" id="kvinst">–</b><small id="kvinstinfo">före frakt och avgifter</small></div>
+      </div>
+      <p class="not" id="knot">Laddar marknaden…</p>
     </div>
-    <div class="vinst" id="vinst"></div>
-    <div class="kalla" id="exempelkalla"></div>
   </div>
 </section>
 
 <section style="padding-top:0">
   <div class="inre">
     <div class="rubrik">
-      <div class="over">Det här får du</div>
-      <h2>Sluta gissa. Börja tjäna.</h2>
+      <div class="over">Så använder du börsen</div>
+      <h2>Från fynd till vinst i tre steg</h2>
     </div>
     <div class="loften">
-      <div class="lofte"><div class="nr">1</div><h3>Vet vad du ska köpa</h3><p>Se vilka märken som tar marknadsandelar och säljer snabbast, kategori för kategori. Du köper det som går åt, inte det som blir liggande.</p></div>
-      <div class="lofte"><div class="nr">2</div><h3>Vet vad du ska betala</h3><p>Se vad märket faktiskt säljs för, inte bara vad folk begär. Då vet du direkt om ett fynd är ett fynd.</p></div>
-      <div class="lofte"><div class="nr">3</div><h3>Vet när du ska sälja</h3><p>Följ trenderna över tid och sälj medan märket är på väg upp, innan alla andra lägger ut samma sak.</p></div>
+      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som faktiskt sålts, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
+      <div class="lofte"><div class="nr">2</div><h3>Räkna ut vinsten</h3><p>Skriv in vad du betalar och se direkt vad du får över. Du vet om fyndet är värt det innan du köper.</p></div>
+      <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som tar marknadsandelar och ökar just nu, kategori för kategori.</p></div>
     </div>
   </div>
 </section>
@@ -297,7 +320,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
       <div class="bild">M</div>
       <div>
         <h3>Vem står bakom?</h3>
-        <p id="omtext">Märkesbörsen är byggd av en som själv köper och säljer märkeskläder på Vinted och Tradera, och ville veta vad som faktiskt säljer i stället för att gissa.</p>
+        <p id="omtext">Märkesbörsen är byggd av en reseller som själv köper och säljer märkeskläder på Vinted och Tradera. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.</p>
         <p id="kontakt" hidden></p>
       </div>
     </div>
@@ -308,15 +331,15 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
   <div class="inre">
     <div class="rubrik mitt">
       <div class="over">Ett pris, allt ingår</div>
-      <h2>Ett bättre köp i månaden betalar för sig</h2>
+      <h2>Ett bra köp i månaden betalar för sig</h2>
     </div>
     <div class="priskort">
       <div class="etikettpris" id="lansering" hidden>Gratis under lanseringen</div>
       <div class="belopp"><span id="prisbelopp">99 kr</span><small> / månad</small></div>
       <ul>
-        <li>Alla märken och kategorier, även egna som skor</li>
-        <li>Vinnare, förlorare och köplägen varje dag</li>
-        <li>Slutpriser från Tradera och utbud från Vinted</li>
+        <li>Vad varje märke säljs för, och vinsten på ditt inköp</li>
+        <li>Marknadsandelar och trender i varje kategori</li>
+        <li>Vinnare, förlorare och bästa köplägen varje dag</li>
         <li>Diagram och historik för varje märke</li>
       </ul>
       <a class="knapp" id="prenumerera" href="app.html">Kom igång</a>
@@ -330,6 +353,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="rubrik mitt"><h2>Vanliga frågor</h2></div>
     <div class="fragor">
       <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna som ligger ute på Vinted, Tradera och Plick. Varje dag räknas de nyaste annonserna och de senast sålda i varje kategori, och varje märke räknas dessutom för sig. På Tradera används det som faktiskt sålts och slutpriset.</p></details>
+      <details><summary>Hur räknas vinsten?</summary><p>Vinsten är medianpriset för märket bland det som faktiskt sålts på Tradera, minus vad du betalar. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
       <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som stickat, skjortor, dunjackor, jeans och skor.</p></details>
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
       <details><summary>Är börsen kopplad till Vinted eller Tradera?</summary><p>Nej. Märkesbörsen är en oberoende tjänst och har inget samarbete med Vinted, Tradera eller Plick. Vi läser bara det som syns i deras öppna annonser.</p></details>
@@ -341,8 +365,8 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 
 <section class="slut">
   <div class="inre">
-    <h2>Nästa fynd ligger redan ute</h2>
-    <p>Frågan är bara om du ser det före någon annan.</p>
+    <h2>Vet vinsten innan du köper</h2>
+    <p>Nästa fynd ligger redan ute. Frågan är bara om du ser det före någon annan.</p>
     <a class="knapp" href="#pris">Kom igång</a>
   </div>
 </section>
@@ -372,7 +396,7 @@ $("prisbelopp").textContent = PRIS;
 $("ctapris").textContent = BETALLANK ? `${PRIS} i månaden · ingen bindningstid` : `Gratis under lanseringen · sedan ${PRIS} i månaden`;
 if (BETALLANK) $("prenumerera").href = BETALLANK;
 else { $("lansering").hidden = false; $("prisinfo").textContent = "Gratis att prova medan börsen är ny, sedan " + PRIS + " i månaden. Ingen bindningstid."; $("prenumerera").textContent = "Prova gratis"; }
-if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder på Vinted och Tradera och ville veta vad som faktiskt säljer i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
+if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder på Vinted och Tradera. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
 if (KONTAKT) { $("kontakt").hidden = false; $("kontakt").innerHTML = `Frågor? Skriv till <a href="mailto:${esc(KONTAKT)}">${esc(KONTAKT)}</a>.`; }
 
 function spark(pts, upp){
@@ -474,25 +498,50 @@ async function start(){
     `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark"></span><span class="v tal">${x.n} st</span><span class="f tal upp">${x.median ? kr(x.median) : pct(x.andel)}</span></div>`).join("") ||
     `<div class="rad"><span class="n">Inga sålda mätta än.</span></div>`;
 
-  // Samma plagg, olika pris: största skillnaden mellan billigt på Vinted och slutpris på Tradera
-  // Ett trovärdigt exempel: bland köplägen som är minst 100 kr, det märke som sålts flest gånger
-  // (inte den mest extrema skillnaden, som oftast beror på några få annonser).
-  let bast = null;
+  // Vinstkalkylen: märken med sålda på Tradera, med ett verkligt köpläge ifyllt från början.
   const mv = (B.marke || {}).vinted || {}, mt = (B.marke || {}).tradera || {};
+  const urval = {};
+  let bast = null;
   for (const k of kats) for (const m of Object.keys(mt[k.id] || {})) {
     const tr = (mt[k.id][m] || []).at(-1), vi = ((mv[k.id] || {})[m] || []).at(-1);
-    if (!tr || !vi || !tr[2] || !vi[3] || tr[1] < 10 || vi[1] < 10) continue;
-    const marg = tr[2] - vi[3];
-    if (marg >= 100 && marg < tr[2] && (!bast || tr[1] > bast.salda)) bast = {m, k, kop: vi[3], salj: tr[2], marg, salda: tr[1], dag: tr[0]};
+    if (!tr || !tr[2] || tr[1] < 5 || INTE.includes(m.toLowerCase())) continue;
+    (urval[k.id] = urval[k.id] || []).push({m, tr, vi});
+    // Det märke som sålts flest gånger, bland dem där billiga Vinted-annonser ger minst 100 kr
+    if (vi && vi[3] && vi[1] >= 10 && tr[1] >= 10 && tr[2] - vi[3] >= 100 && (!bast || tr[1] > bast.tr[1])) bast = {k: k.id, m, tr, vi};
   }
-  if (bast) {
-    $("kopbelopp").textContent = kr(bast.kop); $("kopvad").textContent = `${bast.m}, ${bast.k.namn.toLowerCase()}`;
-    $("saljbelopp").textContent = kr(bast.salj); $("saljvad").textContent = `${bast.m}, ${bast.k.namn.toLowerCase()}`;
-    $("vinst").innerHTML = `Skillnad: <b class="tal">+${kr(bast.marg)}</b> per plagg<p>Billigaste fjärdedelen på Vinted mot medianpriset för ${bast.salda} sålda på Tradera. Före frakt och avgifter, och skick och storlek varierar.</p>`;
-    $("exempelkalla").textContent = `Verkligt exempel ur börsen, mätt ${new Date(dag(bast.dag)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}.`;
-  } else {
-    $("jamfor").hidden = true;
-  }
+  const katMed = kats.filter(k => urval[k.id]);
+  if (!katMed.length) { $("knot").textContent = "Vinstkalkylen fylls i när börsen har mätt slutpriser för några märken."; return; }
+  for (const l of Object.values(urval)) l.sort((a, b) => a.m.localeCompare(b.m, "sv"));
+  const kSel = $("kkat"), mSel = $("kmarke"), pIn = $("kpris");
+  kSel.innerHTML = katMed.map(k => `<option value="${k.id}">${esc(k.namn)}</option>`).join("");
+  const fyllMarken = valt => {
+    mSel.innerHTML = urval[kSel.value].map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
+  };
+  const raknaut = () => {
+    const x = urval[kSel.value].find(x => x.m === mSel.value);
+    if (!x) return;
+    const [d, n, median, p25] = x.tr, pris = parseFloat(pIn.value);
+    $("ksalj").textContent = kr(median);
+    $("ksaljinfo").textContent = `medianpris för ${n} sålda på Tradera`;
+    $("klag").textContent = p25 ? kr(p25) : "–";
+    const v = $("kvinst");
+    if (isNaN(pris)) { v.textContent = "–"; v.className = "tal"; $("kvinstinfo").textContent = "skriv in ditt inköpspris"; }
+    else {
+      const vinst = median - pris;
+      v.textContent = (vinst > 0 ? "+" : vinst < 0 ? "−" : "") + kr(Math.abs(vinst));
+      v.className = "tal " + (vinst > 0 ? "plus" : vinst < 0 ? "minus" : "");
+      const lag = p25 ? p25 - pris : null;
+      $("kvinstinfo").textContent = (lag == null ? "" : lag > 0 ? `+${kr(lag)} även i underkant, ` : lag < 0 && vinst > 0 ? `${kr(-lag)} back om det säljs i underkant, ` : "") + "före frakt och avgifter";
+    }
+    const begart = x.vi && x.vi[2] ? ` På Vinted begärs ${x.m} normalt ${kr(x.vi[2])}.` : "";
+    $("knot").textContent = `Riktiga slutpriser ur börsen, mätta ${new Date(dag(d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}.${begart} Skick och storlek påverkar priset.`;
+  };
+  kSel.onchange = () => { fyllMarken(); raknaut(); };
+  mSel.onchange = raknaut;
+  pIn.oninput = raknaut;
+  if (bast) { kSel.value = bast.k; fyllMarken(bast.m); pIn.value = Math.round(bast.vi[3] / 10) * 10; }
+  else fyllMarken();
+  raknaut();
 }
 start();
 </script>
