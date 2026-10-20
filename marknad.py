@@ -50,9 +50,7 @@ BAS_KATEGORIER = [
     {"id": "stickat", "namn": "Stickade tröjor", "vinted": ["Stickade tröjor", "Tröjor med rund hals"], "ord": "stickad tröja", "tradera": ["stickad tröja"]},
     {"id": "skjortor", "namn": "Skjortor", "vinted": ["Skjortor"], "ord": "skjorta", "tradera": ["skjorta"]},
     {"id": "overshirts", "namn": "Overshirts", "vinted": [], "ord": "overshirt", "tradera": ["overshirt", "skjortjacka"]},
-    {"id": "jackor", "namn": "Jackor", "vinted": ["Jackor"], "ord": "jacka", "tradera": ["jacka"]},
     {"id": "dun", "namn": "Dunjackor & västar", "vinted": ["Dunjackor"], "ord": "dunjacka", "tradera": ["dunjacka", "dunväst"]},
-    {"id": "kavajer", "namn": "Kavajer", "vinted": ["Kavajer"], "ord": "kavaj", "tradera": ["kavaj"]},
     {"id": "jeans", "namn": "Jeans", "vinted": ["Jeans"], "ord": "jeans", "tradera": ["jeans"]},
 ]
 KATEGORIER = list(BAS_KATEGORIER)  # plus de egna, när börsen körs
