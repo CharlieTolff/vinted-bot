@@ -62,8 +62,9 @@ h1,h2,h3{margin:0;letter-spacing:-.03em}
 .lista h3{font-size:17px}
 .lista .huvud span{font-size:13px;color:var(--svag)}
 .rad{display:grid;grid-template-columns:minmax(0,1fr) 80px 70px 82px;gap:12px;align-items:center;padding:11px 20px;border-top:1px solid var(--linje);font-size:15px}
+.rad.tre{grid-template-columns:minmax(0,1fr) 80px 82px}
 .rad .n{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rad .n small{display:block;font-weight:400;font-size:12.5px;color:var(--svag)}
+.rad .n small{display:block;font-weight:400;font-size:12.5px;color:var(--svag);white-space:normal}
 .rad .v{text-align:right}
 .rad .f{justify-self:end;font-weight:600;font-size:14px;padding:4px 9px;border-radius:8px;min-width:72px;text-align:center}
 .rad .f.upp{background:var(--gronljus)}.rad .f.ned{background:var(--rodljus)}
@@ -190,6 +191,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
   .rubrik h2{font-size:29px}
   .rad{grid-template-columns:minmax(0,1fr) 64px 78px;padding:10px 16px}
   .rad .spark{display:none}
+  .rad.tre{grid-template-columns:minmax(0,1fr) 82px}
   .lista .huvud,.lista .fot{padding-inline:16px}
   .jamfor{grid-template-columns:minmax(0,1fr);gap:12px}
   .pil{transform:rotate(90deg);justify-self:center}
@@ -213,7 +215,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
   <div class="inre">
     <div>
       <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
-      <p>Det svåraste med att sälja vidare är att veta vad saker faktiskt går för. Märkesbörsen följer varje dag <span id="antaltext">tusentals</span> annonser på Vinted och Tradera, så att du ser slutpriset, räknar ut vinsten och vet vilka märken som är populära just nu.</p>
+      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märken säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
         <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
@@ -223,7 +225,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
       <div class="fortroende" id="fortroende"><span><span class="puls"></span>Mäts flera gånger om dagen</span></div>
     </div>
     <div class="lista" id="hjaltelista">
-      <div class="huvud"><h3>Vinnare just nu</h3><span id="hjalteperiod">Andel av marknaden, senaste månaden</span></div>
+      <div class="huvud"><h3>Ökar mest just nu</h3><span id="hjalteperiod">Senaste månaden</span></div>
       <div id="vinnare"><div class="rad"><span class="n">Laddar marknaden…</span></div></div>
       <div class="fot"><span id="hjaltefot">Uppdateras löpande</span><a class="lank" href="app.html">Se alla märken →</a></div>
     </div>
@@ -237,13 +239,13 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="rubrik mitt">
       <div class="over">Vinstkalkylen</div>
       <h2>Vad kan du tjäna på det du hittat?</h2>
-      <p>Oavsett om du köper från en leverantör, på loppis eller i en annons: skriv in vad du betalar, så visar börsen vad märket faktiskt säljs för och vad du får över.</p>
+      <p>Du köper ett plagg, börsen visar vad det brukar säljas för, och du ser direkt vad du tjänar. Så här kan det se ut:</p>
     </div>
     <div class="kalkyl">
       <div class="exempelrubrik" id="kexempel">Exempel</div>
       <div class="svar">
         <div><span>Inköpspris från leverantör</span><b class="tal" id="kpris">199 kr</b><small>per plagg</small></div>
-        <div><span>Säljs normalt för</span><b class="tal" id="ksalj">–</b><small id="ksaljinfo">&nbsp;</small></div>
+        <div><span>Säljs ofta för</span><b class="tal" id="ksalj">–</b><small id="ksaljinfo">&nbsp;</small></div>
         <div class="resultat"><span>Din vinst per plagg</span><b class="tal plus" id="kvinst">–</b><small id="kvinstinfo">före frakt och avgifter</small></div>
       </div>
       <p class="not" id="knot">Laddar marknaden…</p>
@@ -261,7 +263,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="loften">
       <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som faktiskt sålts, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
       <div class="lofte"><div class="nr">2</div><h3>Räkna ut vinsten</h3><p>Skriv in vad du betalar och se direkt vad du får över. Du vet om fyndet är värt det innan du köper.</p></div>
-      <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som tar marknadsandelar och ökar just nu, kategori för kategori.</p></div>
+      <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som blir populärare just nu.</p></div>
     </div>
   </div>
 </section>
@@ -275,11 +277,11 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     </div>
     <div class="tva">
       <div class="lista">
-        <div class="huvud"><h3>Mest sålda</h3><span id="saldainfo">Tradera, senaste veckan</span></div>
+        <div class="huvud"><h3>Mest sålda</h3><span id="saldainfo">Antal sålda och vanligt pris, senaste veckan</span></div>
         <div id="salda"></div>
       </div>
       <div class="lista">
-        <div class="huvud"><h3>Tappar mest</h3><span>Andel av marknaden, senaste månaden</span></div>
+        <div class="huvud"><h3>Minskar mest</h3><span>Senaste månaden</span></div>
         <div id="forlorare"></div>
       </div>
     </div>
@@ -301,12 +303,12 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="metod">
       <div><h3>Så räknas det</h3><ul>
         <li>Varje kategori mäts ungefär en gång per dygn, med de nyaste annonserna på Vinted och de senast sålda på Tradera.</li>
-        <li>Varje märke räknas dessutom för sig, med antal annonser och medianpris.</li>
+        <li>Varje märke räknas dessutom för sig, med antal annonser och vanligt pris.</li>
         <li>Slutpriserna kommer från Tradera, där det syns vad saker faktiskt sålts för.</li>
       </ul></div>
       <div><h3>Det här kan vi inte se</h3><ul>
         <li>Vinted visar inte vad som sålts. En annons som försvinner räknas som såld, men en del är bara borttagna.</li>
-        <li>Vinted räknar bara upp till 960 annonser per sökning, så hur stora kategorierna är uppskattas (≈).</li>
+        <li>Vinted räknar bara upp till 960 annonser per sökning, så hur stora kategorierna är uppskattas.</li>
         <li>Skick och storlek varierar, så alla köp blir inte lika bra som snittet. Siffrorna är vägledning, inte en garanti.</li>
       </ul></div>
     </div>
@@ -337,8 +339,8 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
       <div class="belopp"><span id="prisbelopp">99 kr</span><small> / månad</small></div>
       <ul>
         <li>Vad varje märke säljs för, och vinsten på ditt inköp</li>
-        <li>Marknadsandelar och trender i varje kategori</li>
-        <li>Vinnare, förlorare och bästa köplägen varje dag</li>
+        <li>Vilka märken som blir populärare och vilka som minskar</li>
+        <li>De bästa köpen just nu, uppdaterat varje dag</li>
         <li>Diagram och historik för varje märke</li>
       </ul>
       <a class="knapp" id="prenumerera" href="app.html">Kom igång</a>
@@ -352,7 +354,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="rubrik mitt"><h2>Vanliga frågor</h2></div>
     <div class="fragor">
       <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna som ligger ute på Vinted, Tradera och Plick. Varje dag räknas de nyaste annonserna och de senast sålda i varje kategori, och varje märke räknas dessutom för sig. På Tradera används det som faktiskt sålts och slutpriset.</p></details>
-      <details><summary>Hur räknas vinsten?</summary><p>Vinsten är medianpriset för märket bland det som faktiskt sålts på Tradera, minus vad du betalar. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
+      <details><summary>Hur räknas vinsten?</summary><p>Vinsten är vad märket brukar säljas för på Tradera, minus vad du betalar. "Brukar säljas för" är mittenpriset bland de plagg som sålts, så att några få dyra eller billiga inte drar iväg siffran. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
       <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som stickat, skjortor, dunjackor, jeans och skor.</p></details>
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
       <details><summary>Är börsen kopplad till Vinted eller Tradera?</summary><p>Nej. Märkesbörsen är en oberoende tjänst och har inget samarbete med Vinted, Tradera eller Plick. Vi läser bara det som syns i deras öppna annonser.</p></details>
@@ -386,7 +388,7 @@ const KONTAKT = "";
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const pct = (v, d = 1) => v.toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d}) + " %";
-const pe = v => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " pe";
+const pe = v => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " %";
 const kr = v => Math.round(v).toLocaleString("sv-SE") + " kr";
 const dag = s => new Date(s + "T12:00:00Z").getTime();
 const INTE = ["övriga", "vintage", "okänt", "no brand", "handgjord", "diverse"];
@@ -407,7 +409,7 @@ function spark(pts, upp){
 }
 function rad(x){
   const upp = x.d >= 0;
-  return `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark">${spark(x.serie, upp)}</span><span class="v tal">${pct(x.nu)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
+  return `<div class="rad tre"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${pct(x.nu)} av annonserna</small></span><span class="spark">${spark(x.serie, upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
 }
 
 function andelsPunkter(B, kalla, kat){
@@ -458,8 +460,8 @@ async function start(){
     Object.keys(p[2]).forEach(m => marken.add(m));
   }
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
-  $("fortroende").innerHTML = (t ? `<span><span class="puls"></span>Senast mätt <b>${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</b></span>` : "") +
-    `<span><b>${annonser.toLocaleString("sv-SE")}</b> annonser i senaste mätningen</span><span><b>${marken.size.toLocaleString("sv-SE")}</b> märken</span><span><b>${kats.length}</b> kategorier</span>`;
+  $("fortroende").innerHTML = (t ? `<span><span class="puls"></span>Uppdaterad <b>${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</b></span>` : "") +
+    `<span><b>${annonser.toLocaleString("sv-SE")}</b> annonser</span><span><b>${marken.size.toLocaleString("sv-SE")}</b> märken</span>`;
   $("antaltext").textContent = annonser > 1000 ? annonser.toLocaleString("sv-SE") : "tusentals";
   $("statannonser").textContent = annonser.toLocaleString("sv-SE");
   $("statmarken").textContent = marken.size.toLocaleString("sv-SE");
@@ -509,9 +511,9 @@ async function start(){
   const vinst = ex.median - INKOP, plagg = ex.k.id === "stickat" ? "stickad tröja" : ex.k.namn.toLowerCase();
   $("kexempel").innerHTML = `Exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>`;
   $("ksalj").textContent = kr(ex.median);
-  $("ksaljinfo").textContent = `medianpris för ${ex.n} sålda på Tradera`;
+  $("ksaljinfo").textContent = `vanligt pris för ${ex.n} sålda på Tradera`;
   $("kvinst").textContent = "+" + kr(vinst);
-  $("kvinstinfo").textContent = `${pct(100 * vinst / ex.median, 0)} marginal, före frakt och avgifter`;
+  $("kvinstinfo").textContent = "före frakt och avgifter";
   $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
 }
 start();
