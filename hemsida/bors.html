@@ -35,6 +35,10 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .sidopanel button.vald{background:#141414;color:var(--guldljus)}
 .sidopanel button.vald small{color:var(--menysvag)}
 .vy[hidden]{display:none}
+.chip.nykat{border-style:dashed;color:var(--guldtext);background:transparent}
+.egnakat{display:grid;gap:6px}
+.egnakat div{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--kort2);border-radius:10px;padding:8px 12px;font-size:14px}
+.egnakat button{border:0;background:none;color:var(--minus);font:inherit;font-size:13px;cursor:pointer}
 .publik [data-vy="analyser"],.publik a.skapa[href*="nytt="]{display:none!important}
 .utestaplar{padding:12px 16px 14px;display:grid;gap:7px}
 .utestaplar .rad{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;border-radius:8px;padding:2px 4px}
@@ -318,6 +322,21 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </div>
 </main>
 
+<dialog id="katdialog">
+  <h2 style="margin-top:0">Ny kategori</h2>
+  <form id="katform" method="dialog">
+    <p class="hjalp" style="margin:0">Börsen börjar mäta kategorin på Vinted, Tradera och Plick vid nästa körning, och historiken byggs upp från och med i dag.</p>
+    <label>Namn<input name="namn" required placeholder="Skor"></label>
+    <label>Sökord <span class="hjalp">(valfritt, för Tradera och Plick. Skriv gärna herr, t.ex. herrskor. Tomt = namnet)</span><input name="ord" placeholder="herrskor"></label>
+    <label>Kategori på Vinted <span class="hjalp">(valfritt, som den heter under Herr på Vinted. Tomt = namnet)</span><input name="vinted" placeholder="Skor"></label>
+    <div id="egnakatlista"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="knapp" id="katavbryt">Avbryt</button>
+      <button type="submit" class="knapp primar">Lägg till</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="analysdialog">
   <h2 id="analystitel" style="margin-top:0">Ny analys</h2>
   <form id="analysform" method="dialog">
@@ -468,7 +487,7 @@ function avrunda(v){ return Math.max(10, Math.floor(v / 10) * 10) }
 function alarmLank(m, katId, maxpris){
   // Öppnar alarm-sidan med ett nytt alarm förifyllt med märket, kategorin och ett maxpris.
   const kat = (B.kategorier || []).find(k => k.id === katId);
-  const mall = {namn: `${m} ${kat ? kat.namn.toLowerCase() : ""}`.trim(), sokord: ORD[katId] || [], marke: m, kon: "herr", kategorier: ["klader"],
+  const mall = {namn: `${m} ${kat ? kat.namn.toLowerCase() : ""}`.trim(), sokord: ORD[katId] || (kat && kat.ord ? [kat.ord] : []), marke: m, kon: "herr", kategorier: kat && kat.egen ? [] : ["klader"],
                 lander: LANDER, skick: ["Ny med prislapp", "Ny utan prislapp", "Mycket bra", "Bra"],
                 uteslut: ["fake", "replica", "inspired", "defekt", "trasig", "fläck", "barn", "dam"], min_betyg: 4};
   if (maxpris) { mall.maxpris = avrunda(maxpris); mall.kappris = avrunda(maxpris * 0.75); }
@@ -514,10 +533,15 @@ function rader(){
 }
 
 // ---------- Rita ----------
+function katChips(kats){
+  // Kategorierna som knappar, plus en knapp för att lägga till en egen (inte på den publika börsen).
+  return kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}${k.vantar ? ` <span class="liten">· mäts snart</span>` : ""}</button>`).join("") +
+    (PUBLIK ? "" : `<button class="chip nykat" data-ny="1" title="Lägg till en egen kategori, t.ex. skor">+ Ny kategori</button>`);
+}
 function ritaVal(){
   const kats = B.kategorier || [];
   if (!kats.some(k => k.id === st.kat)) st.kat = kats[0]?.id;
-  $("kategorier").innerHTML = kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}</button>`).join("");
+  $("kategorier").innerHTML = katChips(kats);
   $("kallor").innerHTML = Object.entries(KALLOR).map(([k, v]) => `<button data-k="${k}" class="${k === st.kalla ? "vald" : ""}"><span class="prick" style="background:${v.farg}"></span>${v.namn} <span class="dolj-mobil">· ${v.vad}</span></button>`).join("");
   $("perioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
   $("urval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.urval));
@@ -738,7 +762,7 @@ function uteSerie(m){
 }
 function ritaUte(){
   const kats = B.kategorier || [];
-  $("utekategorier").innerHTML = kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}</button>`).join("");
+  $("utekategorier").innerHTML = katChips(kats);
   $("utekallor").innerHTML = ["vinted", "tradera"].map(k => `<button data-k="${k}" class="${k === st.utekalla ? "vald" : ""}"><span class="prick" style="background:${KALLOR[k].farg}"></span>${KALLOR[k].namn}${k === "vinted" ? " ≈" : ""}</button>`).join("");
   $("uteperioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
   const kat = kats.find(k => k.id === st.kat), c = kategoriUte(st.utekalla, st.kat), lista = uteRader();
@@ -1033,7 +1057,7 @@ function rita(){
 }
 
 // ---------- Händelser ----------
-$("kategorier").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); rita(); });
+$("kategorier").addEventListener("click", e => { if (e.target.closest("[data-ny]")) return oppnaKatdialog(); const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); rita(); });
 $("kallor").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kalla = b.dataset.k; skriv("kalla", st.kalla); rita(); });
 $("perioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
 $("urval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.urval = b.dataset.v; skriv("urval", st.urval); rita(); });
@@ -1053,7 +1077,7 @@ for (const id of ["lagetabell", "trendtabell", "farttabell"]) $(id).addEventList
   const tr = e.target.closest("tr[data-m]"); if (!tr) return;
   oppnaMarke(tr.dataset.m, tr.dataset.k, tr.dataset.kalla);
 });
-$("utekategorier").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); st.uteValda = null; rita(); });
+$("utekategorier").addEventListener("click", e => { if (e.target.closest("[data-ny]")) return oppnaKatdialog(); const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); st.uteValda = null; rita(); });
 $("utekallor").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.utekalla = b.dataset.k; skriv("utekalla", st.utekalla); st.uteValda = null; ritaUte(); });
 $("uteperioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
 $("utestaplar").addEventListener("click", e => { const r = e.target.closest(".rad[data-m]"); if (r) valjUteMarke(r.dataset.m); });
@@ -1092,12 +1116,72 @@ async function start(){
     return;
   }
   for (const k of ["andel", "marke", "alarm"]) B[k] = B[k] || {};
+  if (!PUBLIK) {
+    try { egnaKat = await fetch(EGNA_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { egnaKat = []; }
+    lagTillVantande();
+  }
   const h = decodeURIComponent(location.hash.slice(1));
   if (h) { st.marke = h; st.vy = "andel"; }
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
   $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
 }
+// ---------- Egna kategorier ----------
+const EGNA_FIL = "borskategorier.json";
+let egnaKat = [];
+function lagTillVantande(){
+  // Kategorier som lagts till men inte mätts än visas direkt, med "mäts snart".
+  B.kategorier = (B.kategorier || []).filter(k => !k.vantar);
+  const finns = new Set(B.kategorier.map(k => k.namn.toLowerCase()));
+  egnaKat.forEach((k, i) => { if (!finns.has(k.namn.toLowerCase())) B.kategorier.push({id: "vantar-" + i, namn: k.namn, vantar: true}); });
+}
+function ritaEgnaKat(){
+  $("egnakatlista").innerHTML = egnaKat.length ? `<div class="falt">Dina kategorier</div><div class="egnakat">${egnaKat.map((k, i) =>
+    `<div><span>${esc(k.namn)}${k.ord && k.ord !== k.namn.toLowerCase() ? ` <span class="liten">(${esc(k.ord)})</span>` : ""}</span><button type="button" data-bort="${i}">Ta bort</button></div>`).join("")}</div>` : "";
+}
+function oppnaKatdialog(){
+  $("katform").reset(); ritaEgnaKat(); $("katdialog").showModal();
+}
+$("katavbryt").onclick = () => $("katdialog").close();
+$("egnakatlista").addEventListener("click", async e => {
+  const b = e.target.closest("[data-bort]"); if (!b) return;
+  const k = egnaKat[+b.dataset.bort];
+  if (!confirm(`Sluta mäta ${k.namn}? Det som redan mätts finns kvar i historiken.`)) return;
+  if (await sparaEgnaKat(egnaKat.filter((_, i) => i !== +b.dataset.bort))) ritaEgnaKat();
+});
+$("katform").addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = new FormData(e.target), namn = f.get("namn").trim();
+  if (!namn) return;
+  if ([...(B.kategorier || []), ...egnaKat].some(k => k.namn.toLowerCase() === namn.toLowerCase())) { alert(`${namn} finns redan.`); return; }
+  const ny = {namn, skapad: new Date().toISOString().slice(0, 10)};
+  const ord = f.get("ord").trim(), vin = f.get("vinted").trim();
+  if (ord) { ny.ord = ord; ny.tradera = [ord]; }
+  if (vin) ny.vinted = [vin];
+  if (await sparaEgnaKat([...egnaKat, ny])) {
+    $("katdialog").close();
+    st.kat = B.kategorier.find(k => k.namn === namn)?.id || st.kat; skriv("kat", st.kat);
+    rita();
+  }
+});
+async function sparaEgnaKat(ny){
+  if (!fragaNyckel()) return false;
+  try {
+    let sha;
+    try { sha = (await gh("GET", `/repos/${REPO}/contents/${EGNA_FIL}`)).sha; } catch (e) { if (e.message !== "404") throw e; }
+    await gh("PUT", `/repos/${REPO}/contents/${EGNA_FIL}`, { message: "Ändra börsens kategorier från hemsidan", content: koda(JSON.stringify(ny, null, 2) + "\n"), ...(sha ? { sha } : {}) });
+    egnaKat = ny;
+    lagTillVantande();
+    rita();
+    try { await gh("POST", `/repos/${REPO}/actions/workflows/bevaka.yml/dispatches`, { ref: "main" }); } catch {}
+    return true;
+  } catch (e) {
+    if (e.message === "401") localStorage.removeItem("nyckel");
+    alert("Kunde inte spara (" + e.message + "). Kolla att GitHub-nyckeln stämmer.");
+    return false;
+  }
+}
+
 // ---------- Egna analyser ----------
 const AGO = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
 const REPO = AGO + "/" + (location.pathname.split("/")[1] || "vinted-bot");

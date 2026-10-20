@@ -29,6 +29,7 @@ import vinted_bot as vb
 MAPP = os.path.dirname(os.path.abspath(__file__))
 BORS_FIL = os.path.join(MAPP, "bors.json")
 SALDA_FIL = os.path.join(MAPP, "tradera_salda.json")  # sålda Tradera-annonser vi sett (för veckohistorik)
+EGNA_FIL = os.path.join(MAPP, "borskategorier.json")  # kategorier som lagts till från hemsidan
 
 TIDSGRANS_SEK = 240       # så länge mätningarna får hålla på per runda (GitHub kör bara ungefär var halvtimme)
 MATT_IGEN_TIMMAR = 20     # en mätning görs om när den är så här gammal
@@ -44,7 +45,7 @@ PLICK_SIDOR = 4           # 24 annonser per sida
 
 # Kategorierna som mäts. vinted = Vinteds kategorinamn under Herr > Kläder (slås upp automatiskt),
 # annars söks det på ordet. tradera/plick = sökord.
-KATEGORIER = [
+BAS_KATEGORIER = [
     {"id": "koftor", "namn": "Koftor & cardigans", "vinted": ["Koftor", "Cardigans"], "ord": "cardigan", "tradera": ["cardigan", "kofta"]},
     {"id": "stickat", "namn": "Stickade tröjor", "vinted": ["Stickade tröjor", "Tröjor med rund hals"], "ord": "stickad tröja", "tradera": ["stickad tröja"]},
     {"id": "skjortor", "namn": "Skjortor", "vinted": ["Skjortor"], "ord": "skjorta", "tradera": ["skjorta"]},
@@ -54,7 +55,26 @@ KATEGORIER = [
     {"id": "kavajer", "namn": "Kavajer", "vinted": ["Kavajer"], "ord": "kavaj", "tradera": ["kavaj"]},
     {"id": "jeans", "namn": "Jeans", "vinted": ["Jeans"], "ord": "jeans", "tradera": ["jeans"]},
 ]
+KATEGORIER = list(BAS_KATEGORIER)  # plus de egna, när börsen körs
 KALLOR = ["vinted", "tradera", "plick"]
+VINTED_HERR = 5  # Herr på Vinted (kläder, skor, accessoarer)
+
+
+def egna_kategorier():
+    """Kategorier som lagts till från börsen. Bara namnet behövs: Vinted-kategorin letas upp på namnet
+    under Herr, och sökordet blir namnet om inget annat anges. De mäts från och med att de läggs till."""
+    ut, sett = [], {k["id"] for k in BAS_KATEGORIER}
+    for k in vb.las_json(EGNA_FIL, []):
+        namn = (k.get("namn") or "").strip()
+        kid = re.sub(r"[^a-z0-9]+", "-", normalisera(k.get("id") or namn)).strip("-")
+        if not namn or not kid or kid in sett:
+            continue
+        sett.add(kid)
+        ord_ = (k.get("ord") or namn).strip().lower()
+        ut.append({"id": kid, "namn": namn, "egen": True, "ord": ord_,
+                   "vinted": vb.lista(k.get("vinted")) or [namn],
+                   "tradera": vb.lista(k.get("tradera")) or [ord_]})
+    return ut
 
 
 def logg(text):
@@ -107,7 +127,7 @@ class VintedKalla:
         self.katalog = None
 
     def katalog_id(self, kat):
-        """Vinteds kategorinummer under Herr > Kläder, hittat på namnet."""
+        """Vinteds kategorinummer under Herr, hittat på namnet (Herr > Kläder först, sedan resten av Herr)."""
         if not kat["vinted"]:
             return None
         sparade = self.bors.setdefault("vinted_kategorier", {})
@@ -117,16 +137,18 @@ class VintedKalla:
             text = vb.sidans_data(self.v.hamta(vb.VINTED + "/catalog?catalog_ids[]=2050"))
             i = text.find('"catalogTree":')
             trad, _ = json.JSONDecoder().raw_decode(text, i + len('"catalogTree":'))
-            herr = []
+            klader, herr = [], []
 
-            def ga(noder, inne):
+            def ga(noder, inne, kl):
                 for n in noder:
-                    inne2 = inne or n.get("id") == 2050
-                    if inne2:
+                    inne2, kl2 = inne or n.get("id") == VINTED_HERR, kl or n.get("id") == 2050
+                    if kl2:
+                        klader.append(n)
+                    elif inne2:
                         herr.append(n)
-                    ga(n.get("catalogs") or [], inne2)
-            ga(trad, False)
-            self.katalog = herr
+                    ga(n.get("catalogs") or [], inne2, kl2)
+            ga(trad, False, False)
+            self.katalog = klader + herr
         for namn in kat["vinted"]:
             for n in self.katalog:
                 if n.get("title", "").lower() == namn.lower():
@@ -142,7 +164,7 @@ class VintedKalla:
         if kid:
             par.append(("catalog_ids[]", kid))
         else:
-            par += [("search_text", kat["ord"]), ("catalog_ids[]", 2050)]
+            par += [("search_text", kat["ord"]), ("catalog_ids[]", VINTED_HERR if kat.get("egen") else 2050)]
         if marke_id:
             par.append(("brand_ids[]", marke_id))
         if sida > 1:
@@ -533,7 +555,9 @@ def vinted_sidor(bors, kat, marke):
 
 
 def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
+    global KATEGORIER
     start = time.time()
+    KATEGORIER = BAS_KATEGORIER + egna_kategorier()
     sokningar = vb.las_json(vb.SOKNINGAR_FIL, [])
     alarm = alarm_marken(sokningar)
     bors = las_bors()
@@ -578,7 +602,7 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
             if m not in alarm:
                 del kat[m]
     bors["senast"] = {k: v for k, v in bors["senast"].items() if not k.startswith("marke|") or k.split("|", 3)[3] in alarm}
-    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"]} for k in KATEGORIER]
+    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"], **({"egen": True, "ord": k["ord"]} if k.get("egen") else {})} for k in KATEGORIER]
     bors["alarm"] = alarm
     bors["uppdaterad"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     kvar = len(lista_) - gjorda
