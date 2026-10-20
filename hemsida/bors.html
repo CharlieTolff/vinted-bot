@@ -182,7 +182,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
 
   <div class="rubrikrad" style="margin-top:8px;margin-bottom:12px"><div><h2>Märken per kategori</h2>
-    <p class="forklara"><b>Andel nya</b> är hur stor del av de senast upplagda annonserna (ungefär 900 per kategori) som är av märket, alltså hur mycket som läggs ut just nu. <b>Annonser totalt</b> är alla märkets annonser i kategorin, även gamla som inte sålts. Många totalt men låg andel nya betyder att annonserna blir liggande. På Tradera räknas andelen på det som sålts, så där betyder stigande andel att märket säljer bättre. Ändringen visas i procentenheter (pe). Tryck på ett märke för att se mer.</p></div></div>
+    <p class="forklara"><b>Andel nya</b> är hur stor del av de senast upplagda annonserna (ungefär 900 per kategori) som är av märket, alltså hur mycket som läggs ut just nu. <b>Annonser totalt</b> är alla märkets annonser i kategorin, även gamla som inte sålts. <b>Andel av allt ute</b> är hur stor del av alla annonser som ligger ute i kategorin just nu som är av märket, och listan rankas efter den. På Tradera är den exakt, på Vinted en uppskattning (≈) eftersom Vinted slutar räkna vid 960. Många totalt men låg andel nya betyder att annonserna blir liggande. På Tradera räknas andelen på det som sålts, så där betyder stigande andel att märket säljer bättre. Ändringen visas i procentenheter (pe). Tryck på ett märke för att se mer.</p></div></div>
   <div class="kontroller">
     <div class="chips" id="kategorier" role="tablist" aria-label="Kategori"></div>
   </div>
@@ -259,7 +259,7 @@ const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", 
 
 let B = null;
 let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
-          sort: las("sort", ["andel", -1]), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop")};
+          sort: las("sort2", ["ute", -1]), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop")};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
              jackor: ["jacka"], dun: ["dunjacka", "dunväst"], kavajer: ["kavaj"], jeans: []};
@@ -285,6 +285,34 @@ function andelI(p, m){
   return arAlarm(m) ? 0 : null;
 }
 function markePunkter(kalla, kat, m){ return (((B.marke[kalla] || {})[kat] || {})[m]) || [] }
+
+function kategoriUte(kalla, kat){
+  // Alla annonser som ligger ute i kategorin just nu. Tradera räknar dem exakt. Vinted slutar räkna vid 960,
+  // så där uppskattas det: ett märke med N annonser som är andelen a av de nya annonserna ger ungefär N / a
+  // annonser i hela kategorin, och medianen över märkena (under 960 och minst 3 i stickprovet) används.
+  if (kalla === "tradera") { const u = (B.tradera_ute || {})[kat]; return u && u[1] ? {n: u[1], tak: !!u[2], ungefar: false} : null; }
+  if (kalla !== "vinted") return null;
+  const sista = andelsPunkter("vinted", kat).at(-1);
+  if (!sista) return null;
+  const est = [];
+  for (const [m, v] of Object.entries(sista[2])) {
+    const ms = markePunkter("vinted", kat, m).at(-1);
+    if (v[0] >= 3 && ms && ms[1] && !ms[4]) est.push(ms[1] / (v[0] / sista[1]));
+  }
+  if (est.length < 3) return null;
+  est.sort((a, b) => a - b);
+  return {n: est[Math.floor(est.length / 2)], tak: false, ungefar: true};
+}
+function uteAndel(kalla, kat, m, sista){
+  // Märkets andel av allt som ligger ute i kategorin, i procent.
+  const c = kategoriUte(kalla, kat);
+  if (!c) return null;
+  const ms = markePunkter(kalla, kat, m).at(-1);
+  if (kalla === "tradera") return ms && ms[6] != null ? Math.min(100, 100 * ms[6] / c.n) : null;
+  // Vinted: märken med fler än 960 annonser går inte att räkna, där används andelen av de nya som uppskattning.
+  if (ms && ms[1] && !ms[4]) return Math.min(100, 100 * ms[1] / c.n);
+  return sista ? andelI(sista, m) : null;
+}
 
 function fartDelar(kat, m){
   // Sålda senaste dygnet. Vinted: annonser av märket som försvunnit sedan förra mätningen, räknat om till ett dygn.
@@ -339,7 +367,7 @@ function rader(){
     const pris = ms && ms[2] != null ? ms[2] : (sista && sista[2][m] ? sista[2][m][1] : null);
     const prisUtv = mp.length > 1 ? forandring(mp, p => p[2], true) : forandring(pts, p => p[2][m] ? p[2][m][1] : null, true);
     return {
-      m, andel, pris, prisUtv,
+      m, andel, pris, prisUtv, ute: uteAndel(kalla, kat, m, sista),
       andelUtv: forandring(pts, p => andelI(p, m), false),
       antal: ms ? ms[1] : (sista && sista[2][m] ? sista[2][m][0] : null),
       tak: ms ? ms[4] : 0,
@@ -391,6 +419,9 @@ function ritaTabell(){
   $("listinfo").textContent = sista
     ? `${kat ? kat.namn : ""} på ${K.namn} · ${st.kalla === "tradera" && B.tradera_veckor?.[st.kat]?.length ? "vecka från " + datum(dag(sista[0])) : "mätt " + datum(dag(sista[0]))} · ${sista[1].toLocaleString("sv-SE")} ${st.kalla === "tradera" ? "sålda" : "annonser"} i stickprovet`
     : `Ingen mätning av ${kat ? kat.namn.toLowerCase() : "kategorin"} på ${K.namn} än. Den görs inom ett dygn.`;
+  const ute = kategoriUte(st.kalla, st.kat);
+  if (ute) $("listinfo").textContent += ` · ${ute.ungefar ? "ungefär " : ""}${(ute.ungefar ? Math.round(ute.n / 100) * 100 : ute.n).toLocaleString("sv-SE")}${ute.tak ? "+" : ""} annonser ute i kategorin`;
+  const visaUte = st.kalla !== "plick", uteRubrik = st.kalla === "vinted" ? "Andel av allt ute ≈" : "Andel av allt ute";
   // Alarm-märken som inte har något alls i kategorin visas inte (t.ex. jeansmärken bland dunjackor).
   const alla = rader();
   let lista = alla.filter(r => r.andel || r.pris != null || r.antal);
@@ -403,12 +434,13 @@ function ritaTabell(){
   });
   const maxAndel = Math.max(1, ...lista.map(r => r.andel || 0));
   const per = PERIODER[st.period][0];
-  const kol = [["m", "Märke"], ["andel", K.kort], ["andelUtv", `Ändring ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Prisändring ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"], ["fart", "Sålda 24 h", "dolj-mobil"]];
+  const kol = [["m", "Märke"], ...(visaUte ? [["ute", uteRubrik]] : []), ["andel", K.kort], ["andelUtv", `Ändring ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Prisändring ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"], ["fart", "Sålda 24 h", "dolj-mobil"]];
   const huvud = `<thead><tr>${kol.map(([k, t, kl]) => `<th data-k="${k}" class="${kl || ""} ${k === nyckel ? "sort" + (riktning > 0 ? " upp" : "") : ""}" ${k === "spark" ? 'data-ingen="1"' : ""}>${esc(t)}</th>`).join("")}</tr></thead>`;
-  if (!lista.length) { $("tabell").innerHTML = huvud + `<tbody><tr><td colspan="8" class="tomt">Inga märken att visa än.</td></tr></tbody>`; return; }
+  if (!lista.length) { $("tabell").innerHTML = huvud + `<tbody><tr><td colspan="${kol.length}" class="tomt">Inga märken att visa än.</td></tr></tbody>`; return; }
   $("tabell").innerHTML = huvud + "<tbody>" + lista.map((r, i) => `
     <tr data-m="${esc(r.m)}" class="${r.m === st.marke ? "vald" : ""}">
       <td><div class="namncell"><span class="rank">${i + 1}</span><span class="n">${esc(r.m)}</span>${arAlarm(r.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}</div></td>
+      ${visaUte ? `<td class="tal" title="${esc(uteTitel(r))}">${pct(r.ute)}</td>` : ""}
       <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i style="width:${(100 * (r.andel || 0) / maxAndel).toFixed(1)}%"></i></div>${pct(r.andel)}</div></td>
       <td class="tal">${utv(r.andelUtv, " pe")}</td>
       <td class="dolj-mobil">${spark(r.spark)}</td>
@@ -416,7 +448,13 @@ function ritaTabell(){
       <td class="tal dolj-mobil">${utv(r.prisUtv, " %")}</td>
       <td class="tal dolj-mobil">${antalText(r)}</td>
       <td class="tal dolj-mobil" title="${esc(fartText(st.kat, r.m))}">${r.fart == null ? "–" : r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
-    </tr>`).join("") + (tomma ? `<tr><td colspan="8" class="svag" style="text-align:left;cursor:default">${tomma} av dina märken har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
+    </tr>`).join("") + (tomma ? `<tr><td colspan="${kol.length}" class="svag" style="text-align:left;cursor:default">${tomma} av dina märken har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
+}
+
+function uteTitel(r){
+  if (r.ute == null) return "Mäts snart";
+  if (st.kalla === "tradera") return "Märkets aktiva annonser delat med alla aktiva i kategorin på Tradera";
+  return r.tak ? "Över 960 annonser, så andelen av de nya används som uppskattning" : "Märkets annonser delat med ungefär hur många som ligger ute i kategorin";
 }
 
 function ritaRutor(){
@@ -686,7 +724,7 @@ function ritaKategoritabell(){
 function ritaOm(){
   const ko = B.ko || 0;
   $("omdata").innerHTML = `<b>Så räknas det.</b> Varje dygn tas ett stickprov per kategori: de upp till 960 nyaste annonserna på Vinted, de senast sålda på Tradera och de första sidorna på Plick.
-    <b>Andel nya</b> är hur stor del av stickprovet (de senast upplagda annonserna) som är av märket, medan <b>Annonser totalt</b> räknar alla märkets annonser i kategorin, och <b>pe</b> betyder procentenheter. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
+    <b>Andel nya</b> är hur stor del av stickprovet (de senast upplagda annonserna) som är av märket, medan <b>Annonser totalt</b> räknar alla märkets annonser i kategorin. <b>Andel av allt ute</b> är märkets annonser delat med alla annonser som ligger ute i kategorin: på Tradera räknas båda exakt, på Vinted uppskattas kategorins storlek från märken under 960 annonser (deras antal delat med deras andel av de nya), och märken med över 960 får andelen av de nya. <b>pe</b> betyder procentenheter. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
     <b>Pris</b> är medianpriset när man söker på bara det märket i kategorin (begärt pris på Vinted och Plick, slutpris på Tradera).
     <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda 24 h</b> är hur många av märket som sålts senaste dygnet i kategorin. På Vinted gås alla märkets annonser igenom (upp till 960) ungefär en gång per dygn, och de som fanns förra gången men är borta nu räknas som sålda (några kan vara borttagna). Tradera visar sålda direkt, där räknas snittet per dygn senaste veckan. Plick visar inte sålda och räknas inte. "–" betyder att märket inte hunnit mätas två gånger än.
     <b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
@@ -707,7 +745,7 @@ $("tabell").addEventListener("click", e => {
   if (th) {
     if (th.dataset.ingen) return;
     const k = th.dataset.k;
-    st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "m" ? 1 : -1)]; skriv("sort", st.sort); ritaTabell(); return;
+    st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "m" ? 1 : -1)]; skriv("sort2", st.sort); ritaTabell(); return;
   }
   const tr = e.target.closest("tr[data-m]");
   if (tr) valjMarke(tr.dataset.m);
