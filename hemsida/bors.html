@@ -40,6 +40,13 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .sidopanel button:hover{background:var(--kort2)}
 .sidopanel button.vald{background:#141414;color:var(--guldljus)}
 .sidopanel button.vald small{color:var(--menysvag)}
+.sidopanel .grupp{font-weight:700;font-size:15px;position:relative;padding-right:28px}
+.sidopanel .grupp::after{content:"›";position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--svag);transition:transform .15s}
+.sidopanel .grupp[aria-expanded="true"]::after{transform:translateY(-50%) rotate(90deg)}
+.sidopanel .grupp.aktiv{background:var(--kort2)}
+.sidopanel .undermeny{display:flex;flex-direction:column;gap:2px;margin:0 0 6px 10px;padding-left:8px;border-left:2px solid var(--linje)}
+.sidopanel .undermeny[hidden]{display:none}
+.sidopanel .undermeny button{font-size:13.5px;padding:7px 10px}
 .vy[hidden]{display:none}
 .chip.nykat{border-style:dashed;color:var(--guldtext);background:transparent;font-size:18px;font-weight:700;line-height:1;min-width:42px}
 .egnakat{display:grid;gap:6px}
@@ -162,6 +169,12 @@ svg.spark{display:block;margin-left:auto}
   .sidopanel::-webkit-scrollbar{display:none}
   .sidopanel .rubrik,.sidopanel button small{display:none}
   .sidopanel button{flex:none;white-space:nowrap;padding:7px 12px}
+  .sidopanel{flex-wrap:wrap;overflow:visible}
+  .sidopanel .grupp{flex:1 1 0;text-align:center;align-items:center}
+  .sidopanel .undermeny{order:1;flex:0 0 100%;flex-direction:row;overflow-x:auto;scrollbar-width:none;margin:2px 0 0;padding:4px 0 0;border-left:0;border-top:1px solid var(--linje)}
+  .sidopanel .undermeny::-webkit-scrollbar{display:none}
+  .sidopanel .grupp::after{display:none}
+  .sidopanel .grupp{padding-right:12px}
 }
 @media (max-width:760px){
   main{padding:16px 16px 48px}
@@ -233,13 +246,19 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <div class="layout">
   <nav class="sidopanel" id="vyer" aria-label="Välj vy">
     <div class="rubrik">Visa</div>
-    <button data-vy="vinst">Räkna din vinst<small>Inköpspris, säljpris och marginal</small></button>
-    <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
-    <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
-    <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
-    <button data-vy="lagen">Bästa köplägen<small>Köp på Vinted, sälj på Tradera</small></button>
-    <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
-    <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
+    <button class="grupp" data-grupp="marknad" aria-expanded="false">Marknaden<small>Vad ska jag köpa in?</small></button>
+    <div class="undermeny" data-grupp="marknad">
+      <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
+      <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
+      <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
+      <button data-vy="lagen">Bästa köplägen<small>Köp på Vinted, sälj på Tradera</small></button>
+      <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
+      <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
+    </div>
+    <button class="grupp" data-grupp="vinst" aria-expanded="false">Räkna din vinst<small>Vad kan jag tjäna på det?</small></button>
+    <div class="undermeny" data-grupp="vinst">
+      <button data-vy="vinst">Vinstkalkyl<small>Inköpspris, säljpris och marginal</small></button>
+    </div>
   </nav>
   <div>
   <div class="vy" data-vy="analyser">
@@ -952,12 +971,20 @@ $("vkat").addEventListener("change", () => { $("vmarke").value = ""; ritaVinst()
 $("vmarke").addEventListener("change", raknaVinst);
 for (const id of ["vpris", "vkost", "vantal"]) $(id).addEventListener("input", raknaVinst);
 
+// Vänsterpanelen: två grupper, och den grupp man är i (eller öppnat) fälls ut med sina vyer.
+let oppenGrupp = "";  // ihopfällt från början: bara de två grupperna syns
+const gruppFor = vy => document.querySelector(`#vyer .undermeny [data-vy="${vy}"]`)?.closest(".undermeny").dataset.grupp;
 function ritaVy(){
-  $("vyer").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
+  const aktiv = gruppFor(st.vy), oppen = oppenGrupp ?? aktiv;
+  $("vyer").querySelectorAll("[data-vy]").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
+  $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
+  $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
 }
 function visaVy(vy){
-  st.vy = vy; skriv("vy", vy); ritaVy();
+  st.vy = vy; skriv("vy", vy); oppenGrupp = null;
+  const g = gruppFor(vy); if (g) skriv("vy-" + g, vy);
+  ritaVy();
   if (B && B.kategorier) rita();
 }
 function oppnaMarke(m, kat, kalla){
@@ -1207,7 +1234,19 @@ $("utetabell").addEventListener("click", e => {
   if (mer) { e.preventDefault(); oppnaMarke(mer.dataset.mer, st.kat, st.utekalla); return; }
   const tr = e.target.closest("tr[data-m]"); if (tr) valjUteMarke(tr.dataset.m);
 });
-$("vyer").addEventListener("click", e => { const b = e.target.closest("[data-vy]"); if (b) visaVy(b.dataset.vy); });
+$("vyer").addEventListener("click", e => {
+  const g = e.target.closest(".grupp");
+  if (g) {
+    const grupp = g.dataset.grupp, oppen = oppenGrupp ?? gruppFor(st.vy);
+    if (oppen === grupp) { oppenGrupp = ""; ritaVy(); return; }  // tryck igen för att fälla ihop
+    oppenGrupp = null;
+    // Byt till gruppens senast använda vy, eller den första
+    if (gruppFor(st.vy) !== grupp) visaVy(las("vy-" + grupp, g.nextElementSibling.querySelector("[data-vy]:not([hidden])").dataset.vy));
+    else ritaVy();
+    return;
+  }
+  const b = e.target.closest("[data-vy]"); if (b) visaVy(b.dataset.vy);
+});
 $("trendperioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
 $("trendriktning").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.trend = b.dataset.v; skriv("trend", st.trend); ritaTrender(); });
 $("rutor").addEventListener("click", e => { const r = e.target.closest("[data-m]"); if (r) valjMarke(r.dataset.m); });
