@@ -1084,5 +1084,46 @@
       "exempelbilder/fleece-patagonia-vast-4.jpg",
       "exempelbilder/fleece-patagonia-vast-5.jpg"
     ]
+  },
+  {
+    "namn": "Stickade hoodies",
+    "sokord": [
+      "stickad hoodie",
+      "knitted hoodie"
+    ],
+    "maxpris": 150,
+    "min_betyg": 4,
+    "lander": [
+      "SE",
+      "DK",
+      "FI",
+      "PL"
+    ],
+    "marke": [
+      "Polo Ralph Lauren",
+      "morris",
+      "oscar jacobsson",
+      "Acne Studios",
+      "Levi's"
+    ],
+    "storlekar": [
+      "S",
+      "M",
+      "L"
+    ],
+    "skick": [],
+    "farger": [],
+    "uteslut": [
+      "sweatshirt",
+      "fleece",
+      "dam"
+    ],
+    "telegram": "kap",
+    "aktiv": true,
+    "bild_exempel": [
+      "exempelbilder/hoodie-polo-ralph-lauren-marin.jpg",
+      "exempelbilder/hoodie-morris-marin.jpg",
+      "exempelbilder/hoodie-morris-beige.jpg"
+    ]
   }
 ]
