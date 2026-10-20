@@ -489,7 +489,12 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
         satt_punkt(bors["andel"].setdefault(kalla, {}).setdefault(kat["id"], []), [idag, n, marken, ovr])
         if kalla == "tradera":
             n_ute, tak_ute = kalla_obj.ute_kat
-            bors.setdefault("tradera_ute", {})[kat["id"]] = [idag, n_ute, 1 if tak_ute else 0]  # alla aktiva i kategorin
+            # Alla aktiva i kategorin, en punkt per dag (äldre filer har bara en punkt).
+            ute = bors.setdefault("tradera_ute", {}).get(kat["id"]) or []
+            if ute and isinstance(ute[0], str):
+                ute = [ute]
+            satt_punkt(ute, [idag, n_ute, 1 if tak_ute else 0])
+            bors["tradera_ute"][kat["id"]] = ute
             spara_salda(bors, kat["id"], kalla_obj.salda, alarm)
             kalla_obj.salda = []
         return "%d annonser, störst %s" % (n, ", ".join(topp[:3]))
