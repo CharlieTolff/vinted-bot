@@ -47,7 +47,7 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .egnakat button{border:0;background:none;color:var(--minus);font:inherit;font-size:13px;cursor:pointer}
 .publik [data-vy="analyser"],.publik a.skapa[href*="nytt="]{display:none!important}
 .utestaplar{padding:12px 16px 14px;display:grid;gap:7px}
-.utestaplar .rad{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;border-radius:8px;padding:2px 4px}
+.utestaplar .rad{display:grid;grid-template-columns:150px minmax(0,1fr) 64px 72px;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;border-radius:8px;padding:2px 4px}
 .utestaplar .rad:hover{background:var(--kort2)}
 .utestaplar .rad.ovr{cursor:default;color:var(--svag)}
 .utestaplar .rad.ovr:hover{background:none}
@@ -56,8 +56,10 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .utestaplar .stang i{display:block;height:100%;border-radius:4px;background:var(--guld)}
 .utestaplar .rad.vald .namn{font-weight:700}
 .utestaplar .tal{text-align:right}
+.segment button.tunn{opacity:.5}
+.periodnot{font-size:12.5px;color:var(--svag);align-self:center;max-width:420px}
 .utetom{padding:18px 16px;color:var(--svag);font-size:14px}
-@media (max-width:760px){ .utestaplar .rad{grid-template-columns:96px minmax(0,1fr) 54px;gap:8px;font-size:12.5px} }
+@media (max-width:760px){ .utestaplar .rad{grid-template-columns:84px minmax(0,1fr) 48px 58px;gap:6px;font-size:12.5px} }
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
 h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .svag{color:var(--svag);font-size:13px}
@@ -243,6 +245,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <div class="kontroller">
     <div class="segment" id="kallor" aria-label="Källa"></div>
     <div class="segment" id="perioder" aria-label="Period"></div>
+    <span class="periodnot" id="periodernot"></span>
   </div>
 
   <div class="rutor" id="rutor"></div>
@@ -278,6 +281,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <div class="kontroller">
     <div class="segment" id="utekallor" aria-label="Källa"></div>
     <div class="segment" id="uteperioder" aria-label="Period"></div>
+    <span class="periodnot" id="uteperiodernot"></span>
   </div>
   <section class="kort">
     <div class="korthuvud">
@@ -500,6 +504,17 @@ function alarmLank(m, katId, maxpris){
   return "index.html#nytt=" + encodeURIComponent(JSON.stringify(mall));
 }
 
+function periodKnappar(id, tider){
+  // Periodknapparna. Perioder som är längre än historiken visas svagare, och en rad säger
+  // hur länge börsen har mätt, så att det syns varför de visar samma sak.
+  const forsta = tider.length ? Math.min(...tider) : null, sista = tider.length ? Math.max(...tider) : null;
+  const span = forsta == null ? 0 : Math.round((sista - forsta) / DAG);
+  $(id).innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""} ${k !== "max" && forsta != null && v[1] > span + 1 ? "tunn" : ""}">${v[0]}</button>`).join("");
+  const dagar = PERIODER[st.period][1];
+  $(id + "not").textContent = forsta == null || dagar <= span + 1 ? "" : span < 1
+    ? "Börsen har bara mätt här en gång än, så ändringar syns från nästa mätning."
+    : `Börsen har mätt här i ${span} ${span === 1 ? "dag" : "dagar"} (sedan ${datum(forsta)}), så ${PERIODER[st.period][0]} visar allt som finns hittills.`;
+}
 function inomPeriod(pts){
   if (!pts.length) return pts;
   const slut = dag(pts.at(-1)[0]), dagar = PERIODER[st.period][1];
@@ -550,7 +565,7 @@ function ritaVal(){
   if (!kats.some(k => k.id === st.kat)) st.kat = kats[0]?.id;
   $("kategorier").innerHTML = katChips(kats);
   $("kallor").innerHTML = Object.entries(KALLOR).map(([k, v]) => `<button data-k="${k}" class="${k === st.kalla ? "vald" : ""}"><span class="prick" style="background:${v.farg}"></span>${v.namn} <span class="dolj-mobil">· ${v.vad}</span></button>`).join("");
-  $("perioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
+  periodKnappar("perioder", andelsPunkter(st.kalla, st.kat).map(p => dag(p[0])));
   $("urval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.urval));
 }
 
@@ -758,7 +773,7 @@ function uteRader(){
     const serie = uteSerie(m);
     const slut = serie.length ? serie.at(-1)[0] : 0, inom = serie.filter(p => p[0] >= slut - PERIODER[st.period][1] * DAG);
     ut.push({m, andel, antal: kalla === "tradera" ? ms[6] : ms[1], tak: kalla === "vinted" && !!ms[4],
-             utv: inom.length >= 2 ? inom.at(-1)[1] - inom[0][1] : null, nya: sista ? andelI(sista, m) : null, serie: inom});
+             utv: inom.length >= 2 ? inom.at(-1)[1] - inom[0][1] : null, nya: sista ? andelI(sista, m) : null, serie: inom, helaSerien: serie});
   }
   return ut.sort((a, b) => b.andel - a.andel);
 }
@@ -771,8 +786,8 @@ function ritaUte(){
   const kats = B.kategorier || [];
   $("utekategorier").innerHTML = katChips(kats);
   $("utekallor").innerHTML = ["vinted", "tradera"].map(k => `<button data-k="${k}" class="${k === st.utekalla ? "vald" : ""}"><span class="prick" style="background:${KALLOR[k].farg}"></span>${KALLOR[k].namn}${k === "vinted" ? " ≈" : ""}</button>`).join("");
-  $("uteperioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
   const kat = kats.find(k => k.id === st.kat), c = kategoriUte(st.utekalla, st.kat), lista = uteRader();
+  periodKnappar("uteperioder", lista.flatMap(r => r.helaSerien.map(p => p[0])));
   $("uteinfo").textContent = c
     ? `${kat ? kat.namn : ""} på ${KALLOR[st.utekalla].namn}: ${c.ungefar ? "ungefär " : ""}${(c.ungefar ? Math.round(c.n / 100) * 100 : c.n).toLocaleString("sv-SE")}${c.tak ? "+" : ""} annonser ute. ${st.utekalla === "vinted" ? "Uppskattat, eftersom Vinted slutar räkna vid 960." : "Exakt antal från Tradera."}`
     : `Andelen av allt ute räknas när ${kat ? kat.namn.toLowerCase() : "kategorin"} mätts på ${KALLOR[st.utekalla].namn}. Det görs inom ett dygn.`;
@@ -787,8 +802,8 @@ function ritaUte(){
     $("utestaplar").innerHTML = topp.map(r => `<div class="rad ${st.uteValda.includes(r.m) ? "vald" : ""}" data-m="${esc(r.m)}">
         <span class="namn">${esc(r.m)}${arAlarm(r.m) ? ` <span class="stjarna">★</span>` : ""}</span>
         <span class="stang"><i style="width:${(100 * r.andel / max).toFixed(1)}%;${st.uteValda.includes(r.m) ? `background:${farg(r.m)}` : ""}"></i></span>
-        <span class="tal">${pct(r.andel)}${r.tak ? "+" : ""}</span></div>`).join("") +
-      `<div class="rad ovr"><span class="namn">Övriga märken</span><span class="stang"><i style="width:0"></i></span><span class="tal">${pct(ovr)}</span></div>`;
+        <span class="tal">${pct(r.andel)}${r.tak ? "+" : ""}</span><span class="tal">${utv(r.utv, " pe")}</span></div>`).join("") +
+      `<div class="rad ovr"><span class="namn">Övriga märken</span><span class="stang"><i style="width:0"></i></span><span class="tal">${pct(ovr)}</span><span></span></div>`;
   }
   ritaUteDiagram(lista, farg);
   // Tabell
