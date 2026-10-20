@@ -18,6 +18,12 @@
   --vinted:#1268a8;--tradera:#9a6412;--plick:#b8336a;
   --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
 }
+/* Den publika börsen (/borsen/) har samma ljusa färger som startsidan */
+html.publik{
+  --bg:#f3f2ea;--kort:#fffffb;--kort2:#e7eade;--svag:#55604e;--linje:#d5d9cb;
+  --skugga:0 1px 2px rgba(25,35,20,.05),0 4px 14px rgba(25,35,20,.06);
+}
+html.publik .sidopanel button.vald,html.publik .chip.vald,html.publik .tagg{background:var(--meny);border-color:var(--meny)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
