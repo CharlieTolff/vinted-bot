@@ -227,8 +227,8 @@ class TraderaKalla:
     def __init__(self):
         self.salda = []
 
-    def sok(self, q, sida=1):
-        par = [("q", q), ("itemStatus", "Sold")]
+    def sok(self, q, sida=1, salda=True):
+        par = [("q", q)] + ([("itemStatus", "Sold")] if salda else [])
         if sida > 1:
             par.append(("paging", sida))
         text = vb.sidans_data(hamta("https://www.tradera.com/search?" + urllib.parse.urlencode(par)))
@@ -239,7 +239,19 @@ class TraderaKalla:
         res, _ = json.JSONDecoder().raw_decode(text, j + len('"result":'))
         return res
 
+    def ute(self, q):
+        """Antal aktiva annonser (allt som ligger ute nu) för en sökning, och om Tradera slutat räkna (tak)."""
+        res = self.sok(q, salda=False)
+        tak = "AboveCap" in str((res.get("itemsMatched") or {}).get("translationKey", ""))
+        time.sleep(random.uniform(1, 2))
+        return res.get("totalItemCount") or 0, tak
+
     def andel(self, kat, marken):
+        # Hela kategorins aktiva annonser, så att märkenas andel av allt som ligger ute kan räknas.
+        self.ute_kat = [0, False]
+        for q in kat["tradera"]:
+            n, tak = self.ute(q)
+            self.ute_kat = [self.ute_kat[0] + n, self.ute_kat[1] or tak]
         sett, per = set(), {}
         mn = marken_norm(marken)
         for q in kat["tradera"]:
@@ -280,7 +292,8 @@ class TraderaKalla:
                 dagar = max(7.0, (idag - min(datum)) / 86400 + 1)
                 fart += n / dagar * 7
             time.sleep(random.uniform(1, 2))
-        return {"antal": antal, "tak": tak, "median": median(priser), "p25": kvantil(priser, 0.25), "fart": round(fart, 1)}
+        ute = sum(self.ute('"%s" %s' % (namn, q))[0] for q in kat["tradera"])
+        return {"antal": antal, "tak": tak, "median": median(priser), "p25": kvantil(priser, 0.25), "fart": round(fart, 1), "ute": ute}
 
 
 # ---------- Plick ----------
@@ -428,7 +441,8 @@ def uppgifter(bors, marken):
         for kat in KATEGORIER:
             nyckel = "andel|%s|%s" % (kalla, kat["id"])
             senast = bors["senast"].get(nyckel, 0)
-            if nu - senast >= MATT_IGEN_TIMMAR * 3600:
+            saknar_ute = kalla == "tradera" and kat["id"] not in bors.get("tradera_ute", {})
+            if nu - senast >= MATT_IGEN_TIMMAR * 3600 or saknar_ute:
                 per_kalla[kalla].append((senast, nyckel, kalla, kat, None))
             for m in marken:
                 nyckel = "marke|%s|%s|%s" % (kalla, kat["id"], m)
@@ -439,6 +453,8 @@ def uppgifter(bors, marken):
                 if kalla == "vinted" and not tom and pts and (len(pts[-1]) < 7 or pts[-1][6] is None) \
                         and m in bors.get("vinted_sett", {}).get(kat["id"], {}):
                     vanta = FORSTA_SALDA_TIMMAR * 3600
+                if kalla == "tradera" and not tom and pts and len(pts[-1]) < 7:
+                    vanta = 0  # mättes innan antalet annonser ute fanns med
                 if nu - senast >= vanta:
                     per_kalla[kalla].append((senast, nyckel, kalla, kat, m))
     for k in per_kalla:
@@ -472,6 +488,8 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
         ovr = n - sum(v[0] for v in marken.values())
         satt_punkt(bors["andel"].setdefault(kalla, {}).setdefault(kat["id"], []), [idag, n, marken, ovr])
         if kalla == "tradera":
+            n_ute, tak_ute = kalla_obj.ute_kat
+            bors.setdefault("tradera_ute", {})[kat["id"]] = [idag, n_ute, 1 if tak_ute else 0]  # alla aktiva i kategorin
             spara_salda(bors, kat["id"], kalla_obj.salda, alarm)
             kalla_obj.salda = []
         return "%d annonser, störst %s" % (n, ", ".join(topp[:3]))
@@ -482,7 +500,7 @@ def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
     if kalla == "vinted":
         punkt += [r.get("gillas"), r.get("dygn")]  # gillas i snitt, sålda senaste dygnet
     elif kalla == "tradera":
-        punkt.append(r.get("fart"))  # sålda per vecka
+        punkt += [r.get("fart"), r.get("ute")]  # sålda per vecka, aktiva annonser ute nu
     satt_punkt(bors["marke"].setdefault(kalla, {}).setdefault(kat["id"], {}).setdefault(marke, []), punkt)
     return "%s st, median %s kr" % (r["antal"], r["median"])
 
