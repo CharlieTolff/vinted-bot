@@ -110,6 +110,26 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .vsvar .resultat b.plus{color:#7fd6a4}.vsvar .resultat b.minus{color:#f0a493}
 @media (max-width:900px){ .vfalt{grid-template-columns:repeat(2,minmax(0,1fr))} .vsvar{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .vfalt,.vsvar{grid-template-columns:minmax(0,1fr)} }
+/* Fixa bilder */
+.fbinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+#fblage{flex-wrap:wrap}
+.fbval{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.fbzon{display:grid;justify-items:center;gap:4px;padding:28px 16px;border:2px dashed var(--linje);border-radius:14px;background:var(--bg);cursor:pointer;text-align:center}
+.fbzon:hover,.fbzon.over{border-color:var(--guld)}
+.fbzon b{font-size:16px;background:var(--meny);color:var(--menytext);padding:10px 20px;border-radius:10px}
+.fbzon span{color:var(--svag);font-size:13px}
+.fbinfo{margin:0;padding-left:18px;color:var(--svag);font-size:13px;display:grid;gap:3px}
+.fbresultat{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.fbresultat:empty{display:none}
+.fbkort{border:1px solid var(--linje);border-radius:14px;overflow:hidden;background:var(--kort2)}
+.fbbild{position:relative;min-height:160px;background:var(--bg)}
+.fbbild img{width:100%;height:auto;display:block}
+.fbstatus{position:absolute;inset:auto 8px 8px 8px;background:rgba(20,20,20,.82);color:#fff;font-size:12.5px;padding:7px 10px;border-radius:9px;text-align:center}
+.fbstatus.fel{background:#8c2f22}
+.fbknappar{display:flex;gap:8px;padding:10px}
+.fbknappar .knapp{flex:1 1 0;padding:8px 6px;font-size:13px}
+.fbknappar .knapp:disabled{opacity:.5;cursor:default}
+#fbsparaalla{justify-self:start}
 .kort{background:var(--kort);border:1px solid var(--linje);border-radius:16px;box-shadow:var(--skugga);margin-bottom:20px;overflow:hidden}
 .korthuvud{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--linje)}
 .korthuvud .svag{flex:1 1 220px}
@@ -259,6 +279,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <div class="undermeny" data-grupp="vinst">
       <button data-vy="vinst">Vinstkalkyl<small>Inköpspris, säljpris och marginal</small></button>
     </div>
+    <button class="grupp" data-grupp="bilder" aria-expanded="false">Fixa bilder<small>Snyggare bilder säljer dyrare</small></button>
+    <div class="undermeny" data-grupp="bilder">
+      <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
+    </div>
   </nav>
   <div>
   <div class="vy" data-vy="analyser">
@@ -372,6 +396,33 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
         <div><span>Marginal</span><b class="tal" id="vmarg">–</b><small>av säljpriset</small></div>
       </div>
       <p class="hjalp" id="vnot"></p>
+    </div>
+  </section>
+  </div>
+
+  <div class="vy" data-vy="bilder">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Vit bakgrund på dina bilder</h2>
+      <span class="svag">Lägg in bilderna på plagget. Bakgrunden byts mot en ljus studiobakgrund med mjuk skugga. Plagget och personen ändras inte.</span>
+    </div>
+    <div class="fbinnehall">
+      <div class="fbval">
+        <span class="svag">Hur ser bilderna ut?</span>
+        <div class="chips" id="fblage"><button class="chip" data-l="person">Någon har på sig plagget</button><button class="chip" data-l="plagg">Plagget ligger eller hänger</button></div>
+      </div>
+      <label class="fbzon" id="fbzon">
+        <input type="file" id="fbfil" accept="image/*" multiple hidden>
+        <b>Välj bilder</b>
+        <span>eller dra in dem här</span>
+      </label>
+      <ul class="fbinfo">
+        <li>Bilderna stannar på din mobil eller dator. De skickas aldrig någonstans.</li>
+        <li id="fbstorlek"></li>
+        <li>Visa plagget som det är. Fläckar och skador ska synas på bilden, även med ny bakgrund.</li>
+      </ul>
+      <div class="fbresultat" id="fbresultat"></div>
+      <button class="knapp primar" id="fbsparaalla" hidden>Spara alla bilder</button>
     </div>
   </section>
   </div>
@@ -980,6 +1031,7 @@ function ritaVy(){
   $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
   $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
+  $("omdata").hidden = st.vy === "bilder";  // förklaringen gäller siffrorna, inte bildverktyget
 }
 function visaVy(vy){
   st.vy = vy; skriv("vy", vy); oppenGrupp = null;
@@ -1549,5 +1601,6 @@ ritaVy();
 
 start();
 </script>
+<script src="fixabild.js"></script>
 </body>
 </html>

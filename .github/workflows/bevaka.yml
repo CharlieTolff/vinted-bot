@@ -53,6 +53,25 @@ jobs:
           path: .bildmodell
           key: bildmodell-clip-vit-b-32
 
+      # Fixa bilder på hemsidan: bildmodellerna krymps en gång och sparas mellan körningarna.
+      - uses: actions/cache@v4
+        with:
+          path: .fixabild
+          key: fixabild-modeller-1
+
+      - name: Förbered bildmodellerna till Fixa bilder
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          mkdir -p .fixabild
+          for m in isnet-general-use u2net_human_seg; do
+            if [ ! -s .fixabild/$m.onnx ]; then
+              curl -sSfL -o /tmp/$m.onnx https://github.com/danielgatis/rembg/releases/download/v0.0.0/$m.onnx
+              python3 -m pip install --quiet numpy
+              python3 krymp_modell.py /tmp/$m.onnx /tmp/$m-liten.onnx && mv /tmp/$m-liten.onnx .fixabild/$m.onnx
+            fi
+          done
+
       - name: Installera bildkollen
         continue-on-error: true
         timeout-minutes: 3
@@ -107,7 +126,9 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js sokningar.json _site/
+          mkdir -p _site/modeller
+          cp .fixabild/*.onnx _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
@@ -119,7 +140,7 @@ jobs:
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
-          cp hemsida/stil.css _site/borsen/
+          cp hemsida/stil.css hemsida/fixabild.js _site/borsen/
 
       - uses: actions/upload-pages-artifact@v3
         with:
