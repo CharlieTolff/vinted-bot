@@ -24,7 +24,17 @@ a{color:inherit}
 .tal{font-variant-numeric:tabular-nums}
 
 
-main{max-width:1180px;margin:0 auto;padding:22px 24px 60px}
+main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
+/* Sidopanel med vyerna */
+.layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:22px;align-items:start}
+.sidopanel{position:sticky;top:14px;display:flex;flex-direction:column;gap:4px;background:var(--kort);border:1px solid var(--linje);border-radius:16px;padding:10px;box-shadow:var(--skugga)}
+.sidopanel .rubrik{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--svag);padding:4px 10px 6px}
+.sidopanel button{font:inherit;font-size:14px;text-align:left;border:0;background:none;color:var(--text);padding:9px 11px;border-radius:10px;cursor:pointer;display:flex;flex-direction:column;gap:1px}
+.sidopanel button small{font-size:12px;color:var(--svag)}
+.sidopanel button:hover{background:var(--kort2)}
+.sidopanel button.vald{background:#141414;color:var(--guldljus)}
+.sidopanel button.vald small{color:var(--menysvag)}
+.vy[hidden]{display:none}
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
 h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .svag{color:var(--svag);font-size:13px}
@@ -105,6 +115,13 @@ svg.spark{display:block;margin-left:auto}
 .liten{font-size:12px;color:var(--svag);font-weight:400}
 .info b{color:var(--text)}
 
+@media (max-width:900px){
+  .layout{grid-template-columns:minmax(0,1fr);gap:14px}
+  .sidopanel{position:static;flex-direction:row;overflow-x:auto;scrollbar-width:none;padding:6px;gap:4px}
+  .sidopanel::-webkit-scrollbar{display:none}
+  .sidopanel .rubrik,.sidopanel button small{display:none}
+  .sidopanel button{flex:none;white-space:nowrap;padding:7px 12px}
+}
 @media (max-width:760px){
   main{padding:16px 16px 48px}
   h1{font-size:23px}
@@ -172,6 +189,17 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <div class="svag" id="uppdaterad"></div>
   </div>
 
+  <div class="layout">
+  <nav class="sidopanel" id="vyer" aria-label="Välj vy">
+    <div class="rubrik">Visa</div>
+    <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
+    <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
+    <button data-vy="lagen">Bästa köplägen<small>Köp på Vinted, sälj på Tradera</small></button>
+    <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
+    <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
+  </nav>
+  <div>
+  <div class="vy" data-vy="analyser">
   <section class="kort" id="analyser">
     <div class="korthuvud">
       <h2>Egna analyser</h2>
@@ -180,7 +208,9 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     </div>
     <div id="analysinnehall"></div>
   </section>
+  </div>
 
+  <div class="vy" data-vy="andel">
   <div class="rubrikrad" style="margin-top:8px;margin-bottom:12px"><div><h2>Märken per kategori</h2>
     <p class="forklara"><b>Andel nya</b> är hur stor del av de senast upplagda annonserna (ungefär 900 per kategori) som är av märket, alltså hur mycket som läggs ut just nu. <b>Annonser totalt</b> är alla märkets annonser i kategorin, även gamla som inte sålts. <b>Andel av allt ute</b> är hur stor del av alla annonser som ligger ute i kategorin just nu som är av märket, och listan rankas efter den. På Tradera är den exakt, på Vinted en uppskattning (≈) eftersom Vinted slutar räkna vid 960. Många totalt men låg andel nya betyder att annonserna blir liggande. På Tradera räknas andelen på det som sålts, så där betyder stigande andel att märket säljer bättre. Ändringen visas i procentenheter (pe). Tryck på ett märke för att se mer.</p></div></div>
   <div class="kontroller">
@@ -204,7 +234,9 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
 
   <section class="kort" id="detalj" hidden></section>
+  </div>
 
+  <div class="vy" data-vy="lagen">
   <section class="kort">
     <div class="korthuvud">
       <h2 id="lagerubrik">Bästa köplägena</h2>
@@ -213,10 +245,35 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     </div>
     <div class="tabellram"><table id="lagetabell"></table></div>
   </section>
+  </div>
+
+  <div class="vy" data-vy="trender">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Trender</h2>
+      <span class="svag">Märkena vars andel ökat eller minskat mest under perioden, i alla kategorier. På Vinted är det andelen av nya annonser, på Tradera andelen av det som sålts.</span>
+      <div class="segment" id="trendperioder" aria-label="Period"></div>
+      <div class="segment" id="trendriktning"><button data-v="upp">Ökar</button><button data-v="ned">Minskar</button></div>
+    </div>
+    <div class="tabellram"><table id="trendtabell"></table></div>
+  </section>
+  </div>
+
+  <div class="vy" data-vy="fart">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Säljer snabbast</h2>
+      <span class="svag">Dina märken i alla kategorier, efter hur många som sålts senaste dygnet på Vinted och Tradera tillsammans.</span>
+    </div>
+    <div class="tabellram"><table id="farttabell"></table></div>
+  </section>
+  </div>
 
   <section class="kort">
     <div class="info" id="omdata"></div>
   </section>
+  </div>
+  </div>
 </main>
 
 <dialog id="analysdialog">
@@ -259,7 +316,8 @@ const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", 
 
 let B = null;
 let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
-          sort: las("sort2", ["ute", -1]), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop")};
+          sort: las("sort2", ["ute", -1]), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
+          vy: las("vy", "andel"), trend: las("trend", "upp")};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
              jackor: ["jacka"], dun: ["dunjacka", "dunväst"], kavajer: ["kavaj"], jeans: []};
@@ -528,6 +586,71 @@ function ritaLagen(){
   }
 }
 
+// ---------- Trender och snabbast sålda ----------
+function trender(){
+  // Andelsändring under perioden för varje märke, kategori och källa (Vinted och Tradera).
+  const ut = [];
+  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
+    const pts = andelsPunkter(kalla, kat.id), sista = pts.at(-1);
+    if (!sista) continue;
+    for (const m of new Set([...Object.keys(sista[2]), ...alarmMarken()])) {
+      if (INTE_MARKEN.includes(m.toLowerCase())) continue;
+      const d = forandring(pts, p => andelI(p, m), false), nu = andelI(sista, m);
+      if (d == null || nu == null || Math.abs(d) < 0.1) continue;
+      ut.push({m, kat, kalla, d, nu});
+    }
+  }
+  return ut.sort((a, b) => st.trend === "upp" ? b.d - a.d : a.d - b.d).filter(x => st.trend === "upp" ? x.d > 0 : x.d < 0).slice(0, 25);
+}
+function ritaTrender(){
+  $("trendperioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
+  $("trendriktning").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.trend));
+  const l = trender(), per = PERIODER[st.period][0];
+  $("trendtabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Källa</th><th>Ändring ${per}</th><th>Andel nu</th></tr></thead><tbody>` +
+    l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}" data-kalla="${x.kalla}">
+      <td><div class="namncell"><span class="n">${esc(x.m)}</span>${arAlarm(x.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}<span class="liten">${esc(x.kat.namn)}</span></div></td>
+      <td><span class="prick" style="background:${KALLOR[x.kalla].farg}"></span> ${KALLOR[x.kalla].namn}</td>
+      <td class="tal">${utv(x.d, " pe")}</td>
+      <td class="tal">${pct(x.nu)}</td></tr>`).join("") + "</tbody>"
+    : `<tbody><tr><td class="tomt">Trenderna syns när kategorierna mätts minst två gånger under perioden.</td></tr></tbody>`;
+}
+function ritaFart(){
+  const ut = [];
+  for (const kat of B.kategorier || []) for (const m of alarmMarken()) {
+    const d = fartDelar(kat.id, m), f = fart(kat.id, m);
+    if (f == null || f <= 0) continue;
+    const tr = markePunkter("tradera", kat.id, m).at(-1), vi = markePunkter("vinted", kat.id, m).at(-1);
+    ut.push({m, kat, f, d, salj: tr ? tr[2] : null, beg: vi ? vi[2] : null});
+  }
+  ut.sort((a, b) => b.f - a.f);
+  const tal = x => x == null ? "–" : x.toLocaleString("sv-SE", {maximumFractionDigits: 1});
+  $("farttabell").innerHTML = ut.length ? `<thead><tr><th>Märke</th><th>Sålda 24 h</th><th class="dolj-mobil">Vinted</th><th class="dolj-mobil">Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Begärt Vinted</th></tr></thead><tbody>` +
+    ut.slice(0, 30).map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
+      <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
+      <td class="tal"><b>${tal(x.f)}</b></td>
+      <td class="tal dolj-mobil">${tal(x.d.vinted)}</td>
+      <td class="tal dolj-mobil">${tal(x.d.tradera)}</td>
+      <td class="tal">${kr(x.salj)}</td>
+      <td class="tal dolj-mobil">${kr(x.beg)}</td></tr>`).join("") + "</tbody>"
+    : `<tbody><tr><td class="tomt">Sålda räknas när dina märken mätts två gånger. Det görs inom ett dygn.</td></tr></tbody>`;
+}
+function ritaVy(){
+  $("vyer").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
+  document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
+}
+function visaVy(vy){
+  st.vy = vy; skriv("vy", vy); ritaVy();
+  if (B && B.kategorier) rita();
+}
+function oppnaMarke(m, kat, kalla){
+  // Från köplägen, trender och snabbast sålda: visa märket i andelsvyn.
+  st.kat = kat; skriv("kat", kat);
+  if (kalla) { st.kalla = kalla; skriv("kalla", kalla); }
+  if (!arAlarm(m)) { st.urval = "alla"; skriv("urval", st.urval); }
+  st.marke = m; history.replaceState(null, "", "#" + encodeURIComponent(m));
+  visaVy("andel"); $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
+}
+
 // ---------- Märkessidan ----------
 function vintedLank(m){
   const id = (B.vinted_marken || {})[m], kid = (B.vinted_kategorier || {})[st.kat];
@@ -732,7 +855,7 @@ function ritaOm(){
 }
 
 function rita(){
-  ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm();
+  ritaVy(); ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm(); ritaTrender(); ritaFart();
 }
 
 // ---------- Händelser ----------
@@ -751,14 +874,14 @@ $("tabell").addEventListener("click", e => {
   if (tr) valjMarke(tr.dataset.m);
 });
 $("lageval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.lage = b.dataset.v; skriv("lage", st.lage); ritaLagen(); });
-$("lagetabell").addEventListener("click", e => {
+for (const id of ["lagetabell", "trendtabell", "farttabell"]) $(id).addEventListener("click", e => {
   if (e.target.closest("a")) return;
   const tr = e.target.closest("tr[data-m]"); if (!tr) return;
-  st.kat = tr.dataset.k; skriv("kat", st.kat);
-  if (!arAlarm(tr.dataset.m)) { st.urval = "alla"; skriv("urval", st.urval); }
-  st.marke = tr.dataset.m; history.replaceState(null, "", "#" + encodeURIComponent(st.marke));
-  rita(); $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
+  oppnaMarke(tr.dataset.m, tr.dataset.k, tr.dataset.kalla);
 });
+$("vyer").addEventListener("click", e => { const b = e.target.closest("[data-vy]"); if (b) visaVy(b.dataset.vy); });
+$("trendperioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
+$("trendriktning").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.trend = b.dataset.v; skriv("trend", st.trend); ritaTrender(); });
 $("rutor").addEventListener("click", e => { const r = e.target.closest("[data-m]"); if (r) valjMarke(r.dataset.m); });
 $("detalj").addEventListener("click", e => {
   const b = e.target.closest("#mattval [data-k]");
@@ -787,7 +910,7 @@ async function start(){
   }
   for (const k of ["andel", "marke", "alarm"]) B[k] = B[k] || {};
   const h = decodeURIComponent(location.hash.slice(1));
-  if (h) st.marke = h;
+  if (h) { st.marke = h; st.vy = "andel"; }
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
   $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
@@ -989,6 +1112,7 @@ async function sparaAnalyser(ny){
     return false;
   }
 }
+ritaVy();
 startAnalyser();
 
 start();
