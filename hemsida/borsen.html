@@ -7,13 +7,16 @@
 <meta name="description" content="Märkesbörsen visar vilka märken som säljer på Vinted och Tradera, vad de säljs för och var marginalen finns.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:light;
-  --bg:#ffffff;--yta:#f4f6f5;--yta2:#e9eeec;--text:#14201c;--svag:#5b6b65;--linje:#e1e7e4;
-  --gron:#0a9d6a;--gronmork:#06422f;--gronljus:#e3f6ee;--rod:#d23f31;--rodljus:#fcebe9;
-  --skugga:0 1px 2px rgba(10,40,30,.06),0 10px 30px -12px rgba(10,40,30,.18);
+  /* Samma färger som resten av sidan: salviagrönt, guld och mörkgrön meny */
+  --bg:#b4bdab;--kort:#d4dacc;--yta:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#a3ad99;
+  --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;--guldmork:#8f6d2c;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;
+  --gron:#1d7a50;--gronljus:#c3dcc6;--rod:#b23b27;--rodljus:#e6cbc3;
+  --skugga:0 1px 2px rgba(25,35,20,.08),0 12px 32px -14px rgba(25,35,20,.3);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -25,35 +28,35 @@ h1,h2,h3{margin:0;letter-spacing:-.03em}
 .upp{color:var(--gron)}.ned{color:var(--rod)}
 
 /* Meny */
-.meny{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--linje)}
+.meny{position:sticky;top:0;z-index:10;background:var(--meny);color:var(--menytext);border-bottom:1px solid var(--menylinje)}
 .meny .inre{display:flex;align-items:center;gap:22px;height:64px}
-.logga{display:flex;align-items:center;gap:9px;text-decoration:none;font-weight:800;font-size:18px;letter-spacing:-.03em}
-.logga i{width:26px;height:26px;border-radius:8px;background:var(--gron);display:inline-flex;align-items:flex-end;justify-content:center;gap:2px;padding:6px 5px}
-.logga i b{display:block;width:3px;background:#fff;border-radius:1px}
+.logga{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.08em;color:var(--guldljus)}
+.logga i{width:26px;height:26px;border-radius:8px;background:var(--guld);display:inline-flex;align-items:flex-end;justify-content:center;gap:2px;padding:6px 5px}
+.logga i b{display:block;width:3px;background:#141414;border-radius:1px}
 .meny nav{display:flex;gap:4px;margin-left:auto}
-.meny nav a{text-decoration:none;color:var(--svag);font-weight:500;font-size:15px;padding:8px 12px;border-radius:10px}
-.meny nav a:hover{background:var(--yta);color:var(--text)}
-.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;text-decoration:none;border-radius:999px;padding:13px 26px;background:var(--gron);color:#fff;border:0;cursor:pointer;transition:transform .15s,background .15s;white-space:nowrap}
-.knapp:hover{background:#088a5d;transform:translateY(-1px)}
+.meny nav a{text-decoration:none;color:var(--menytext);font-weight:500;font-size:15px;padding:8px 12px;border-radius:10px}
+.meny nav a:hover{background:#3b4837}
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;text-decoration:none;border-radius:999px;padding:13px 26px;background:var(--guld);color:#141414;border:0;cursor:pointer;transition:transform .15s,background .15s;white-space:nowrap}
+.knapp:hover{background:var(--guldljus);transform:translateY(-1px)}
 .knapp.liten{padding:9px 18px;font-size:14.5px}
-.lank{color:var(--gronmork);font-weight:600;text-decoration:none;font-size:15px}
+.lank{color:var(--guldtext);font-weight:600;text-decoration:none;font-size:15px}
 .lank:hover{text-decoration:underline}
 
 /* Topp */
-.hjalte{padding:64px 0 40px;background:linear-gradient(180deg,var(--gronljus),#fff 78%)}
+.hjalte{padding:64px 0 40px;background:linear-gradient(180deg,#c6cdbd,var(--bg) 78%)}
 .hjalte .inre{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center}
 .hjalte h1{font-size:56px;line-height:1.04;font-weight:800;margin-bottom:20px}
-.hjalte h1 em{font-style:normal;color:var(--gron)}
+.hjalte h1 em{font-style:normal;color:var(--guldtext)}
 .hjalte p{font-size:19px;color:var(--svag);margin:0 0 30px;max-width:34em}
 .cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px}
 .cta small{color:var(--svag);font-size:14px}
 .fortroende{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:28px;font-size:14px;color:var(--svag)}
 .fortroende b{color:var(--text)}
-.puls{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gron);margin-right:7px;box-shadow:0 0 0 0 #0a9d6a66;animation:puls 2s infinite}
-@keyframes puls{70%{box-shadow:0 0 0 8px #0a9d6a00}100%{box-shadow:0 0 0 0 #0a9d6a00}}
+.puls{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gron);margin-right:7px;box-shadow:0 0 0 0 #1d7a5066;animation:puls 2s infinite}
+@keyframes puls{70%{box-shadow:0 0 0 8px #1d7a5000}100%{box-shadow:0 0 0 0 #1d7a5000}}
 
 /* Lista som på en börs */
-.lista{background:#fff;border:1px solid var(--linje);border-radius:20px;box-shadow:var(--skugga);overflow:hidden}
+.lista{background:var(--kort);border:1px solid var(--linje);border-radius:20px;box-shadow:var(--skugga);overflow:hidden}
 .lista .huvud{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:18px 20px 12px}
 .lista h3{font-size:17px}
 .lista .huvud span{font-size:13px;color:var(--svag)}
@@ -78,36 +81,39 @@ h1,h2,h3{margin:0;letter-spacing:-.03em}
 section{padding:84px 0}
 .rubrik{max-width:720px;margin-bottom:40px}
 .rubrik.mitt{text-align:center;margin-inline:auto}
-.rubrik .over{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gron);margin-bottom:10px}
+.rubrik .over{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--guldtext);margin-bottom:10px}
 .rubrik h2{font-size:40px;line-height:1.1;font-weight:800}
 .rubrik p{font-size:18px;color:var(--svag);margin:14px 0 0}
 
 /* Samma plagg, olika pris */
 .jamfor{display:grid;grid-template-columns:1fr auto 1fr;gap:22px;align-items:center;max-width:860px;margin:0 auto}
-.pris{background:var(--yta);border-radius:22px;padding:28px;text-align:center}
+.pris{background:var(--kort);border-radius:22px;padding:28px;text-align:center}
 .pris .var{font-size:14px;color:var(--svag);font-weight:500}
 .pris .belopp{font-size:46px;font-weight:800;letter-spacing:-.04em;margin:6px 0 2px}
 .pris .vad{font-size:15px;font-weight:600}
-.pris.salj{background:var(--gronmork);color:#fff}
-.pris.salj .var{color:#a9d8c4}
-.pil{font-size:30px;color:var(--gron);font-weight:700}
+.pris.salj{background:var(--meny);color:var(--menytext)}
+.pris.salj .var{color:var(--menysvag)}
+.pris.salj .belopp{color:var(--guldljus)}
+.pil{font-size:30px;color:var(--guldtext);font-weight:700}
 .vinst{text-align:center;margin-top:26px;font-size:18px}
 .vinst b{color:var(--gron);font-size:22px}
 .vinst p{color:var(--svag);font-size:15px;margin:8px 0 0}
 
 /* Tre löften */
 .loften{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-.lofte{border:1px solid var(--linje);border-radius:22px;padding:26px;background:#fff}
-.lofte .nr{width:44px;height:44px;border-radius:14px;background:var(--gronljus);color:var(--gron);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;margin-bottom:18px}
+.lofte{border:1px solid var(--linje);border-radius:22px;padding:26px;background:var(--kort)}
+.lofte .nr{width:44px;height:44px;border-radius:14px;background:#141414;color:var(--guldljus);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;margin-bottom:18px}
 .lofte h3{font-size:21px;margin-bottom:8px}
 .lofte p{margin:0;color:var(--svag)}
 
 /* Marknaden */
 .marknad{background:var(--yta)}
+.band{background:var(--meny)!important;color:var(--menytext);border-color:var(--menylinje)!important}
+.band .upp{color:#7fd1a4}.band .ned{color:#f08f7f}
 .tva{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
 
 /* Pris */
-.priskort{max-width:460px;margin:0 auto;border-radius:26px;padding:34px;background:#fff;border:2px solid var(--gron);box-shadow:var(--skugga);text-align:center}
+.priskort{max-width:460px;margin:0 auto;border-radius:26px;padding:34px;background:var(--kort);border:2px solid var(--guld);box-shadow:var(--skugga);text-align:center}
 .priskort .belopp{font-size:54px;font-weight:800;letter-spacing:-.04em}
 .priskort .belopp small{font-size:17px;font-weight:500;color:var(--svag)}
 .priskort ul{list-style:none;padding:0;margin:22px 0 26px;display:grid;gap:10px;text-align:left}
@@ -117,16 +123,16 @@ section{padding:84px 0}
 .priskort .liten{font-size:13.5px;color:var(--svag);margin:12px 0 0}
 
 .fragor{max-width:760px;margin:0 auto;display:grid;gap:10px}
-details{border:1px solid var(--linje);border-radius:16px;padding:18px 22px}
+details{border:1px solid var(--linje);border-radius:16px;padding:18px 22px;background:var(--kort)}
 summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
-summary::after{content:"+";color:var(--gron);font-size:22px;line-height:1}
+summary::after{content:"+";color:var(--guldtext);font-size:22px;line-height:1}
 details[open] summary::after{content:"−"}
 details p{margin:10px 0 0;color:var(--svag)}
 
-.slut{background:var(--gronmork);color:#fff;text-align:center}
+.slut{background:var(--meny);color:var(--menytext);text-align:center}
 .slut h2{font-size:42px;font-weight:800;margin-bottom:14px}
-.slut p{color:#a9d8c4;font-size:18px;margin:0 0 30px}
-.slut .knapp{background:#fff;color:var(--gronmork)}
+.slut p{color:var(--menysvag);font-size:18px;margin:0 0 30px}
+.slut h2{color:#fff}
 footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
 
 @media (max-width:920px){
