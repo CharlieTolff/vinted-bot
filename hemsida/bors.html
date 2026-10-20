@@ -87,6 +87,22 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .ruta .varde{font-size:14px;color:var(--svag)}
 
 /* Kort och tabell */
+/* Räkna din vinst */
+.vkalk{padding:16px}
+.vfalt{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.vfalt label{display:grid;gap:5px;font-size:12.5px;font-weight:600;color:var(--svag);align-content:end}
+.vfalt select,.vfalt input{font:inherit;font-size:15px;color:var(--text);background:var(--bg);border:1px solid var(--linje);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.vsvar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.vsvar div{border-radius:14px;padding:16px;background:var(--kort2);text-align:center}
+.vsvar span{display:block;font-size:13px;color:var(--svag)}
+.vsvar b{display:block;font-size:28px;font-weight:800;letter-spacing:-.03em;margin:3px 0}
+.vsvar small{color:var(--svag);font-size:12.5px}
+.vsvar .resultat{background:var(--meny);color:var(--menytext)}
+.vsvar .resultat span,.vsvar .resultat small{color:var(--menysvag)}
+.vsvar b.plus{color:var(--plus)}.vsvar b.minus{color:var(--minus)}
+.vsvar .resultat b.plus{color:#7fd6a4}.vsvar .resultat b.minus{color:#f0a493}
+@media (max-width:900px){ .vfalt{grid-template-columns:repeat(2,minmax(0,1fr))} .vsvar{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:480px){ .vfalt,.vsvar{grid-template-columns:minmax(0,1fr)} }
 .kort{background:var(--kort);border:1px solid var(--linje);border-radius:16px;box-shadow:var(--skugga);margin-bottom:20px;overflow:hidden}
 .korthuvud{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--linje)}
 .korthuvud .svag{flex:1 1 220px}
@@ -217,6 +233,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <div class="layout">
   <nav class="sidopanel" id="vyer" aria-label="Välj vy">
     <div class="rubrik">Visa</div>
+    <button data-vy="vinst">Räkna din vinst<small>Inköpspris, säljpris och marginal</small></button>
     <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
     <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
     <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
@@ -312,6 +329,31 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <div class="segment" id="trendriktning"><button data-v="upp">Ökar</button><button data-v="ned">Minskar</button></div>
     </div>
     <div class="tabellram"><table id="trendtabell"></table></div>
+  </section>
+  </div>
+
+  <div class="vy" data-vy="vinst">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Räkna din vinst</h2>
+      <span class="svag">Skriv in vad du betalar, från en leverantör, en loppis eller en annons. Börsen visar vad märket faktiskt säljs för och vad du får över.</span>
+    </div>
+    <div class="vkalk">
+      <div class="vfalt">
+        <label>Kategori<select id="vkat"></select></label>
+        <label>Märke<select id="vmarke"></select></label>
+        <label>Inköpspris per plagg (kr)<input id="vpris" type="number" inputmode="decimal" min="0" step="1" placeholder="199"></label>
+        <label>Frakt och avgifter per plagg (kr)<input id="vkost" type="number" inputmode="decimal" min="0" step="1" placeholder="0"></label>
+        <label>Antal plagg<input id="vantal" type="number" inputmode="numeric" min="1" step="1" value="1"></label>
+      </div>
+      <div class="vsvar">
+        <div><span>Säljs normalt för</span><b class="tal" id="vsalj">–</b><small id="vsaljinfo">&nbsp;</small></div>
+        <div><span>Säljs ofta från</span><b class="tal" id="vlag">–</b><small id="vlaginfo">billigaste fjärdedelen</small></div>
+        <div class="resultat"><span id="vvinstrubrik">Din vinst</span><b class="tal" id="vvinst">–</b><small id="vvinstinfo">skriv in ditt inköpspris</small></div>
+        <div><span>Marginal</span><b class="tal" id="vmarg">–</b><small>av säljpriset</small></div>
+      </div>
+      <p class="hjalp" id="vnot"></p>
+    </div>
   </section>
   </div>
 
@@ -853,6 +895,63 @@ function valjUteMarke(m){
   ritaUte();
 }
 
+// ---------- Räkna din vinst ----------
+function vinstMarken(kat){
+  // Märken med slutpriser på Tradera (minst 5 sålda), annars begärt pris på Vinted.
+  const ut = new Map();
+  for (const [m, pts] of Object.entries(((B.marke.tradera || {})[kat]) || {})) {
+    const p = pts.at(-1);
+    if (p && p[2] && p[1] >= 5) ut.set(m, {m, kalla: "tradera", d: p[0], n: p[1], median: p[2], p25: p[3]});
+  }
+  for (const [m, pts] of Object.entries(((B.marke.vinted || {})[kat]) || {})) {
+    const p = pts.at(-1);
+    if (!p || !p[2]) continue;
+    if (ut.has(m)) ut.get(m).begart = p[2];
+    else if (p[1] >= 5) ut.set(m, {m, kalla: "vinted", d: p[0], n: p[1], median: p[2], p25: p[3], begart: p[2]});
+  }
+  return [...ut.values()].filter(x => !["övriga", "okänt"].includes(x.m.toLowerCase())).sort((a, b) => a.m.localeCompare(b.m, "sv"));
+}
+function ritaVinst(){
+  const kSel = $("vkat"), mSel = $("vmarke");
+  const kats = (B.kategorier || []).filter(k => !k.vantar && vinstMarken(k.id).length);
+  if (!kats.length) { $("vnot").textContent = "Kalkylen fylls i när börsen har mätt priser för några märken."; return; }
+  const kat = kats.some(k => k.id === kSel.value) ? kSel.value : kats.some(k => k.id === st.kat) ? st.kat : kats[0].id;
+  kSel.innerHTML = kats.map(k => `<option value="${k.id}"${k.id === kat ? " selected" : ""}>${esc(k.namn)}</option>`).join("");
+  const lista = vinstMarken(kat), valt = lista.some(x => x.m === mSel.value) ? mSel.value : lista.reduce((a, b) => b.n > a.n ? b : a).m;
+  mSel.innerHTML = lista.map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
+  raknaVinst();
+}
+function raknaVinst(){
+  const x = vinstMarken($("vkat").value).find(x => x.m === $("vmarke").value);
+  if (!x) return;
+  const pris = parseFloat($("vpris").value), kost = parseFloat($("vkost").value) || 0, antal = Math.max(1, parseInt($("vantal").value) || 1);
+  const tr = x.kalla === "tradera";
+  $("vsalj").textContent = kr(x.median);
+  $("vsaljinfo").textContent = tr ? `medianpris för ${x.n} sålda på Tradera` : `begärt pris på Vinted (${x.n} annonser), inget slutpris än`;
+  $("vlag").textContent = x.p25 ? kr(x.p25) : "–";
+  $("vlaginfo").textContent = tr ? "billigaste fjärdedelen av de sålda" : "billigaste fjärdedelen av annonserna";
+  const v = $("vvinst"), m = $("vmarg");
+  $("vvinstrubrik").textContent = antal > 1 ? `Din vinst på ${antal} plagg` : "Din vinst per plagg";
+  if (isNaN(pris)) {
+    v.textContent = m.textContent = "–"; v.className = m.className = "tal";
+    $("vvinstinfo").textContent = "skriv in ditt inköpspris";
+  } else {
+    const per = x.median - pris - kost, lag = x.p25 ? x.p25 - pris - kost : null, tot = per * antal;
+    const tecken = n => (n > 0 ? "+" : n < 0 ? "−" : "") + kr(Math.abs(n));
+    v.textContent = tecken(tot); v.className = "tal " + (tot > 0 ? "plus" : tot < 0 ? "minus" : "");
+    m.textContent = pct(100 * per / x.median); m.className = "tal " + (per > 0 ? "plus" : per < 0 ? "minus" : "");
+    $("vvinstinfo").textContent = (antal > 1 ? `${tecken(per)} per plagg` : "") +
+      (lag == null ? "" : `${antal > 1 ? ", " : ""}${tecken(lag * antal)} om det säljs i underkant`);
+  }
+  $("vnot").textContent = `Priserna är från ${datumLang(dag(x.d))}.` +
+    (tr && x.begart ? ` På Vinted begärs ${x.m} normalt ${kr(x.begart)}.` : "") +
+    (isNaN(pris) ? "" : ` För att gå jämnt upp behöver du sälja för minst ${kr(pris + kost)}.`) +
+    " Skick och storlek påverkar priset, så räkna med lite marginal.";
+}
+$("vkat").addEventListener("change", () => { $("vmarke").value = ""; ritaVinst(); });
+$("vmarke").addEventListener("change", raknaVinst);
+for (const id of ["vpris", "vkost", "vantal"]) $(id).addEventListener("input", raknaVinst);
+
 function ritaVy(){
   $("vyer").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
@@ -1075,7 +1174,7 @@ function ritaOm(){
 
 function rita(){
   uteMinne = new Map();
-  ritaVy(); ritaUte(); ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm(); ritaTrender(); ritaFart();
+  ritaVy(); ritaUte(); ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm(); ritaTrender(); ritaFart(); ritaVinst();
 }
 
 // ---------- Händelser ----------
@@ -1142,6 +1241,8 @@ async function start(){
     try { egnaKat = await fetch((PUBLIK ? "../" : "") + EGNA_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { egnaKat = []; }
     lagTillVantande();
   }
+  const vyParam = new URLSearchParams(location.search).get("vy");
+  if (vyParam && document.querySelector(`.vy[data-vy="${CSS.escape(vyParam)}"]`)) st.vy = vyParam;
   const h = decodeURIComponent(location.hash.slice(1));
   if (h) { st.marke = h; st.vy = "andel"; }
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;

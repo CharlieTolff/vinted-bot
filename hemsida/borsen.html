@@ -115,6 +115,8 @@ section{padding:84px 0}
 .svar .resultat{background:var(--meny);color:var(--menytext)}
 .svar .resultat span,.svar .resultat small{color:var(--menysvag)}
 .svar .resultat b.plus{color:#7fd6a4}.svar .resultat b.minus{color:#f0a493}
+.exempelrubrik{text-align:center;font-size:17px;margin-bottom:4px}
+.mitt{text-align:center}
 .kalkyl .not{font-size:13px;color:var(--svag);margin:14px 0 0;text-align:center}
 .loften{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
 .lofte{border:1px solid var(--linje);border-radius:22px;padding:26px;background:var(--kort)}
@@ -235,20 +237,17 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     <div class="rubrik mitt">
       <div class="over">Vinstkalkylen</div>
       <h2>Vad kan du tjäna på det du hittat?</h2>
-      <p>Välj märke och skriv vad du betalar. Börsen visar vad märket faktiskt säljs för och vad du får över.</p>
+      <p>Oavsett om du köper från en leverantör, på loppis eller i en annons: skriv in vad du betalar, så visar börsen vad märket faktiskt säljs för och vad du får över.</p>
     </div>
     <div class="kalkyl">
-      <div class="falt">
-        <label>Kategori<select id="kkat"></select></label>
-        <label>Märke<select id="kmarke"></select></label>
-        <label>Ditt inköpspris (kr)<input id="kpris" type="number" inputmode="numeric" min="0" step="10" placeholder="150"></label>
-      </div>
+      <div class="exempelrubrik" id="kexempel">Exempel</div>
       <div class="svar">
+        <div><span>Inköpspris från leverantör</span><b class="tal" id="kpris">199 kr</b><small>per plagg</small></div>
         <div><span>Säljs normalt för</span><b class="tal" id="ksalj">–</b><small id="ksaljinfo">&nbsp;</small></div>
-        <div><span>Säljs ofta från</span><b class="tal" id="klag">–</b><small>billigaste fjärdedelen av de sålda</small></div>
-        <div class="resultat"><span>Din vinst per plagg</span><b class="tal" id="kvinst">–</b><small id="kvinstinfo">före frakt och avgifter</small></div>
+        <div class="resultat"><span>Din vinst per plagg</span><b class="tal plus" id="kvinst">–</b><small id="kvinstinfo">före frakt och avgifter</small></div>
       </div>
       <p class="not" id="knot">Laddar marknaden…</p>
+      <div class="mitt" style="margin-top:16px"><a class="knapp" href="app.html?vy=vinst">Räkna på dina egna plagg</a></div>
     </div>
   </div>
 </section>
@@ -498,50 +497,22 @@ async function start(){
     `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark"></span><span class="v tal">${x.n} st</span><span class="f tal upp">${x.median ? kr(x.median) : pct(x.andel)}</span></div>`).join("") ||
     `<div class="rad"><span class="n">Inga sålda mätta än.</span></div>`;
 
-  // Vinstkalkylen: märken med sålda på Tradera, med ett verkligt köpläge ifyllt från början.
-  const mv = (B.marke || {}).vinted || {}, mt = (B.marke || {}).tradera || {};
-  const urval = {};
-  let bast = null;
-  for (const k of kats) for (const m of Object.keys(mt[k.id] || {})) {
-    const tr = (mt[k.id][m] || []).at(-1), vi = ((mv[k.id] || {})[m] || []).at(-1);
-    if (!tr || !tr[2] || tr[1] < 5 || INTE.includes(m.toLowerCase())) continue;
-    (urval[k.id] = urval[k.id] || []).push({m, tr, vi});
-    // Det märke som sålts flest gånger, bland dem där billiga Vinted-annonser ger minst 100 kr
-    if (vi && vi[3] && vi[1] >= 10 && tr[1] >= 10 && tr[2] - vi[3] >= 100 && (!bast || tr[1] > bast.tr[1])) bast = {k: k.id, m, tr, vi};
+  // Vinstexemplet: en stickad tröja för 199 kr från en leverantör, med ett märke som sålts många gånger.
+  const INKOP = 199, mt = (B.marke || {}).tradera || {};
+  const kandidater = [];
+  for (const k of kats) for (const [m, pts] of Object.entries(mt[k.id] || {})) {
+    const p = pts.at(-1);
+    if (p && p[2] && p[1] >= 10 && p[2] - INKOP >= 80 && p[2] - INKOP < 2000 && !INTE.includes(m.toLowerCase())) kandidater.push({k, m, d: p[0], n: p[1], median: p[2]});
   }
-  const katMed = kats.filter(k => urval[k.id]);
-  if (!katMed.length) { $("knot").textContent = "Vinstkalkylen fylls i när börsen har mätt slutpriser för några märken."; return; }
-  for (const l of Object.values(urval)) l.sort((a, b) => a.m.localeCompare(b.m, "sv"));
-  const kSel = $("kkat"), mSel = $("kmarke"), pIn = $("kpris");
-  kSel.innerHTML = katMed.map(k => `<option value="${k.id}">${esc(k.namn)}</option>`).join("");
-  const fyllMarken = valt => {
-    mSel.innerHTML = urval[kSel.value].map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
-  };
-  const raknaut = () => {
-    const x = urval[kSel.value].find(x => x.m === mSel.value);
-    if (!x) return;
-    const [d, n, median, p25] = x.tr, pris = parseFloat(pIn.value);
-    $("ksalj").textContent = kr(median);
-    $("ksaljinfo").textContent = `medianpris för ${n} sålda på Tradera`;
-    $("klag").textContent = p25 ? kr(p25) : "–";
-    const v = $("kvinst");
-    if (isNaN(pris)) { v.textContent = "–"; v.className = "tal"; $("kvinstinfo").textContent = "skriv in ditt inköpspris"; }
-    else {
-      const vinst = median - pris;
-      v.textContent = (vinst > 0 ? "+" : vinst < 0 ? "−" : "") + kr(Math.abs(vinst));
-      v.className = "tal " + (vinst > 0 ? "plus" : vinst < 0 ? "minus" : "");
-      const lag = p25 ? p25 - pris : null;
-      $("kvinstinfo").textContent = (lag == null ? "" : lag > 0 ? `+${kr(lag)} även i underkant, ` : lag < 0 && vinst > 0 ? `${kr(-lag)} back om det säljs i underkant, ` : "") + "före frakt och avgifter";
-    }
-    const begart = x.vi && x.vi[2] ? ` På Vinted begärs ${x.m} normalt ${kr(x.vi[2])}.` : "";
-    $("knot").textContent = `Riktiga slutpriser ur börsen, mätta ${new Date(dag(d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}.${begart} Skick och storlek påverkar priset.`;
-  };
-  kSel.onchange = () => { fyllMarken(); raknaut(); };
-  mSel.onchange = raknaut;
-  pIn.oninput = raknaut;
-  if (bast) { kSel.value = bast.k; fyllMarken(bast.m); pIn.value = Math.round(bast.vi[3] / 10) * 10; }
-  else fyllMarken();
-  raknaut();
+  const ex = kandidater.filter(x => x.k.id === "stickat").sort((a, b) => b.n - a.n)[0] || kandidater.sort((a, b) => b.n - a.n)[0];
+  if (!ex) { $("knot").textContent = "Exemplet fylls i när börsen har mätt slutpriser för några märken."; return; }
+  const vinst = ex.median - INKOP, plagg = ex.k.id === "stickat" ? "stickad tröja" : ex.k.namn.toLowerCase();
+  $("kexempel").innerHTML = `Exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>`;
+  $("ksalj").textContent = kr(ex.median);
+  $("ksaljinfo").textContent = `medianpris för ${ex.n} sålda på Tradera`;
+  $("kvinst").textContent = "+" + kr(vinst);
+  $("kvinstinfo").textContent = `${pct(100 * vinst / ex.median, 0)} marginal, före frakt och avgifter`;
+  $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
 }
 start();
 </script>
