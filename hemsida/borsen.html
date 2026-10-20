@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Märkesbörsen</title>
+<meta name="description" content="Se vilka märken som säljer på Vinted, Tradera och Plick, vad de säljs för och var det finns pengar att tjäna.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
+  --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
+  --plus:#1d7a50;--minus:#b23b27;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
+  --vinted:#1268a8;--tradera:#9a6412;--plick:#b8336a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.tal{font-variant-numeric:tabular-nums}
+.inre{max-width:1120px;margin:0 auto;padding:0 24px}
+h1,h2,h3{letter-spacing:-.025em;margin:0}
+
+.knapp{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;font-size:15px;text-decoration:none;border-radius:12px;padding:12px 20px;border:1px solid transparent;cursor:pointer;transition:transform .15s,filter .15s}
+.knapp:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.knapp.guld{background:var(--guld);color:#141414}
+.knapp.mork{background:#141414;color:var(--guldljus)}
+.knapp.ljus{background:transparent;color:var(--text);border-color:var(--linje)}
+
+/* Topp */
+.hjalte{background:var(--meny);color:var(--menytext);padding:70px 0 80px;position:relative;overflow:hidden}
+.hjalte::after{content:"";position:absolute;inset:auto -10% -60% 40%;height:120%;background:radial-gradient(closest-side,#d2ae6233,transparent);pointer-events:none}
+.hjalte .inre{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:48px;align-items:center;position:relative;z-index:1}
+.etikett{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guldljus);font-weight:600}
+.hjalte h1{font-size:48px;line-height:1.08;margin:14px 0 18px;color:#fff}
+.hjalte h1 em{font-style:normal;color:var(--guldljus)}
+.hjalte p{font-size:18px;color:var(--menytext);opacity:.88;margin:0 0 28px;max-width:56ch}
+.hjalte .knappar{display:flex;flex-wrap:wrap;gap:12px}
+.hjalte .knapp.ljus{color:var(--menytext);border-color:var(--menylinje)}
+.liv{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:30px;font-size:14px;color:var(--menysvag)}
+.liv b{color:var(--menytext)}
+.prick{width:8px;height:8px;border-radius:50%;display:inline-block;background:#4ade80;box-shadow:0 0 0 4px #4ade8033;margin-right:6px;vertical-align:1px}
+
+.smak{background:var(--kort);color:var(--text);border-radius:20px;padding:20px 22px;box-shadow:0 20px 60px -20px #000a}
+.smak .rubrik{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:14px}
+.smak h3{font-size:16px}
+.smak .svag{font-size:12.5px;color:var(--svag)}
+.stapel{display:grid;grid-template-columns:120px minmax(0,1fr) 54px;gap:10px;align-items:center;font-size:14px;margin:9px 0}
+.stapel .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.stapel .s{height:12px;border-radius:4px;background:color-mix(in srgb,var(--linje) 45%,transparent);overflow:hidden}
+.stapel .s i{display:block;height:100%;border-radius:4px;background:var(--guld);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.stapel .v{text-align:right}
+.smak .fot{margin-top:14px;padding-top:12px;border-top:1px solid color-mix(in srgb,var(--linje) 50%,transparent);font-size:13px;color:var(--svag)}
+.smak .fot b{color:var(--plus)}
+
+/* Delar */
+section{padding:72px 0}
+.rubrikdel{text-align:center;max-width:680px;margin:0 auto 40px}
+.rubrikdel h2{font-size:34px;margin:10px 0 12px}
+.rubrikdel p{color:var(--svag);margin:0;font-size:17px}
+.rubrikdel .etikett{color:var(--guldtext)}
+.rutnat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.funktion{background:var(--kort);border-radius:18px;padding:22px;border:1px solid color-mix(in srgb,var(--linje) 50%,transparent)}
+.funktion .ikon{width:40px;height:40px;border-radius:12px;background:#141414;color:var(--guldljus);display:flex;align-items:center;justify-content:center;font-size:19px;margin-bottom:14px}
+.funktion h3{font-size:17px;margin-bottom:6px}
+.funktion p{margin:0;color:var(--svag);font-size:14.5px}
+
+.steg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;counter-reset:steg}
+.steg div{padding:22px;border-radius:18px;background:var(--kort2)}
+.steg div::before{counter-increment:steg;content:counter(steg);display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--guld);color:#141414;font-weight:700;align-items:center;justify-content:center;margin-bottom:12px}
+.steg h3{font-size:17px;margin-bottom:6px}
+.steg p{margin:0;color:var(--svag);font-size:14.5px}
+
+.mork{background:var(--meny);color:var(--menytext)}
+.mork .rubrikdel p{color:var(--menysvag)}
+.mork .rubrikdel .etikett{color:var(--guldljus)}
+.priskort{max-width:440px;margin:0 auto;background:var(--kort);color:var(--text);border-radius:22px;padding:30px;box-shadow:0 24px 60px -24px #000c;border:2px solid var(--guld)}
+.priskort .namn{font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--guldtext)}
+.priskort .pris{font-size:46px;font-weight:700;letter-spacing:-.03em;margin:8px 0 2px}
+.priskort .pris small{font-size:16px;font-weight:500;color:var(--svag)}
+.priskort ul{list-style:none;padding:0;margin:20px 0 24px;display:grid;gap:9px}
+.priskort li{padding-left:28px;position:relative;font-size:15px}
+.priskort li::before{content:"✓";position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;background:var(--plus);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center}
+.priskort .knapp{width:100%}
+.priskort .liten{text-align:center;font-size:13px;color:var(--svag);margin:12px 0 0}
+
+.fragor{max-width:760px;margin:0 auto;display:grid;gap:10px}
+details{background:var(--kort);border-radius:14px;padding:16px 20px;border:1px solid color-mix(in srgb,var(--linje) 50%,transparent)}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::after{content:"+";color:var(--guldtext);font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:10px 0 0;color:var(--svag);font-size:15px}
+
+.slut{text-align:center}
+.slut h2{font-size:32px;margin-bottom:14px}
+.slut p{color:var(--svag);margin:0 0 24px}
+footer{padding:28px 0 40px;text-align:center;color:var(--svag);font-size:13px}
+
+@media (max-width:900px){
+  .hjalte .inre{grid-template-columns:minmax(0,1fr);gap:36px}
+  .rutnat,.steg{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:560px){
+  .inre{padding:0 16px}
+  .hjalte{padding:44px 0 56px}
+  .hjalte h1{font-size:34px}
+  .hjalte p{font-size:16px}
+  section{padding:52px 0}
+  .rubrikdel h2{font-size:26px}
+  .stapel{grid-template-columns:92px minmax(0,1fr) 48px;font-size:13px}
+  .hjalte .knapp{flex:1 1 auto}
+}
+</style>
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+<header>
+  <div class="headin">
+    <a class="logga" href="index.html">Märkesbörsen</a>
+    <nav class="flikar"><a href="#funktioner">Funktioner</a><a href="#pris">Pris</a><a href="app.html" class="vald">Öppna börsen</a></nav>
+  </div>
+</header>
+
+<div class="hjalte">
+  <div class="inre">
+    <div>
+      <div class="etikett">Marknadsdata för second hand</div>
+      <h1>Se vilka märken som säljer, <em>innan alla andra gör det.</em></h1>
+      <p>Märkesbörsen mäter varje dygn tusentals annonser på Vinted, Tradera och Plick. Du ser vilka märken som tar marknadsandelar, vad de faktiskt säljs för och var det finns pengar att tjäna på att köpa och sälja vidare.</p>
+      <div class="knappar">
+        <a class="knapp guld" href="app.html">Öppna börsen</a>
+        <a class="knapp ljus" href="#pris">Se pris</a>
+      </div>
+      <div class="liv" id="liv"><span><span class="prick"></span>Uppdateras flera gånger om dagen</span></div>
+    </div>
+    <div class="smak" id="smak">
+      <div class="rubrik"><h3 id="smakrubrik">Mest sålda märken just nu</h3><span class="svag" id="smakkalla">Tradera</span></div>
+      <div id="smakstaplar"></div>
+      <div class="fot" id="smakfot">Laddar dagens siffror…</div>
+    </div>
+  </div>
+</div>
+
+<section id="funktioner">
+  <div class="inre">
+    <div class="rubrikdel">
+      <div class="etikett">Allt på ett ställe</div>
+      <h2>Som en börs, fast för märkeskläder</h2>
+      <p>Sluta gissa vad som går att sälja. Börsen visar det i siffror, kategori för kategori.</p>
+    </div>
+    <div class="rutnat">
+      <div class="funktion"><div class="ikon">◔</div><h3>Andel av allt ute</h3><p>Hur stor del av alla annonser i en kategori som är ett visst märke, rankat från störst till minst. Med staplar och diagram över tid.</p></div>
+      <div class="funktion"><div class="ikon">↗</div><h3>Trender</h3><p>Märkena som ökar eller minskar mest den senaste veckan, månaden eller året, i alla kategorier.</p></div>
+      <div class="funktion"><div class="ikon">kr</div><h3>Bästa köplägen</h3><p>Vad ett märke kostar billigt på Vinted mot vad det faktiskt säljs för på Tradera. Skillnaden är din marginal.</p></div>
+      <div class="funktion"><div class="ikon">⚡</div><h3>Säljer snabbast</h3><p>Hur många av varje märke som sålts senaste dygnet, så du vet vad som går åt direkt och vad som blir liggande.</p></div>
+      <div class="funktion"><div class="ikon">▤</div><h3>Pris och historik</h3><p>Begärt pris, slutpris och prisutveckling för varje märke, med diagram där du kan mäta skillnaden mellan två dagar.</p></div>
+      <div class="funktion"><div class="ikon">◎</div><h3>Tre marknader</h3><p>Vinted visar utbudet, Tradera visar vad som faktiskt säljs och till vilket pris, och Plick visar resten av marknaden.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="inre">
+    <div class="rubrikdel">
+      <div class="etikett">Så funkar det</div>
+      <h2>Från gissning till beslut</h2>
+    </div>
+    <div class="steg">
+      <div><h3>Vi mäter marknaden</h3><p>Varje dygn hämtas de nyaste annonserna och de senast sålda i varje kategori, och varje märke räknas för sig.</p></div>
+      <div><h3>Du ser vad som rör sig</h3><p>Andelar, priser, trender och sålda per dygn samlas i en vy, så du ser direkt vilka märken som är på väg upp.</p></div>
+      <div><h3>Du köper rätt</h3><p>Köp det som säljer, till ett pris som lämnar marginal, och låt bli det som blir liggande.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="mork" id="pris">
+  <div class="inre">
+    <div class="rubrikdel">
+      <div class="etikett">Pris</div>
+      <h2>Ett köp som betalar sig självt</h2>
+      <p>Ett enda bättre köp i månaden täcker prenumerationen.</p>
+    </div>
+    <div class="priskort">
+      <div class="namn">Märkesbörsen</div>
+      <div class="pris"><span id="prisbelopp">99 kr</span> <small>/ månad</small></div>
+      <div class="svag" style="color:var(--svag)">Ingen bindningstid</div>
+      <ul>
+        <li>Andel av allt ute i alla kategorier</li>
+        <li>Trender, köplägen och snabbast sålda</li>
+        <li>Vinted, Tradera och Plick</li>
+        <li>Nya siffror flera gånger om dagen</li>
+        <li>Diagram och historik för varje märke</li>
+      </ul>
+      <a class="knapp guld" id="prenumerera" href="app.html">Prenumerera</a>
+      <p class="liten" id="prisinfo">Säg upp när du vill.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="inre">
+    <div class="rubrikdel">
+      <div class="etikett">Frågor</div>
+      <h2>Bra att veta</h2>
+    </div>
+    <div class="fragor">
+      <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna som ligger ute på Vinted, Tradera och Plick. Varje dygn hämtas ett stickprov per kategori, och varje märke räknas dessutom för sig. På Tradera används det som faktiskt sålts och slutpriset.</p></details>
+      <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
+      <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som koftor, stickat, skjortor, overshirts, jackor, dunjackor, kavajer och jeans.</p></details>
+      <details><summary>Varför står det ≈ vid Vinted?</summary><p>Vinted slutar räkna vid 960 annonser per sökning, så hur många annonser som ligger ute i en hel kategori uppskattas. På Tradera räknas det exakt.</p></details>
+      <details><summary>Kan jag säga upp?</summary><p>Ja, när du vill. Det finns ingen bindningstid.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="slut" style="padding-top:0">
+  <div class="inre">
+    <h2>Se själv vad som säljer i dag</h2>
+    <p>Börsen är redan igång och mäter marknaden just nu.</p>
+    <a class="knapp mork" href="app.html">Öppna börsen</a>
+  </div>
+</section>
+
+<footer>Märkesbörsen · Marknadsdata från Vinted, Tradera och Plick</footer>
+
+<script>
+// Ändra här när betalningen är klar: en betallänk (t.ex. Stripe) och priset.
+const BETALLANK = "";
+const PRIS = "99 kr";
+
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const pct = v => v.toLocaleString("sv-SE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " %";
+document.getElementById("prisbelopp").textContent = PRIS;
+if (BETALLANK) document.getElementById("prenumerera").href = BETALLANK;
+else document.getElementById("prisinfo").textContent = "Gratis att prova medan börsen är ny. Säg upp när du vill.";
+
+async function start(){
+  let B;
+  try { B = await fetch("../bors.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
+  if (!B || !B.kategorier) return;
+  const kats = B.kategorier;
+  // Siffror i toppen
+  const marken = new Set(), andel = B.andel || {};
+  let annonser = 0;
+  for (const kalla of Object.keys(andel)) for (const k of kats) {
+    const p = (andel[kalla][k.id] || []).at(-1);
+    if (!p) continue;
+    annonser += p[1];
+    Object.keys(p[2]).forEach(m => marken.add(m));
+  }
+  for (const kalla of Object.values(B.marke || {})) for (const k of Object.values(kalla)) Object.keys(k).forEach(m => marken.add(m));
+  const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
+  document.getElementById("liv").innerHTML =
+    (t ? `<span><span class="prick"></span>Senast mätt <b>${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</b></span>` : "") +
+    `<span><b>${kats.length}</b> kategorier</span><span><b>${marken.size.toLocaleString("sv-SE")}</b> märken</span><span><b>${annonser.toLocaleString("sv-SE")}</b> annonser i senaste stickproven</span>`;
+  document.getElementById("katlista").textContent = "Herrkläder: " + kats.map(k => k.namn.toLowerCase()).join(", ") + ".";
+  // Smakprov: mest sålda märken på Tradera senaste veckan, i den kategori som har flest sålda.
+  const veckor = B.tradera_veckor || {};
+  let bast = null;
+  for (const k of kats) {
+    const v = (veckor[k.id] || []).filter(p => p[1] >= 5);
+    const p = v.length > 1 ? v.at(-2) : v.at(-1);
+    if (p && (!bast || p[1] > bast.p[1])) bast = {k, p};
+  }
+  if (!bast) {
+    for (const k of kats) { const p = ((andel.tradera || {})[k.id] || []).at(-1); if (p && (!bast || p[1] > bast.p[1])) bast = {k, p}; }
+  }
+  if (!bast) { document.getElementById("smak").hidden = true; return; }
+  const {k, p} = bast;
+  const topp = Object.entries(p[2]).filter(([m]) => !["Övriga", "Vintage"].includes(m)).sort((a, b) => b[1][0] - a[1][0]).slice(0, 6);
+  const max = Math.max(...topp.map(x => x[1][0]), 1);
+  document.getElementById("smakrubrik").textContent = `Mest sålda märken, ${k.namn.toLowerCase()}`;
+  document.getElementById("smakkalla").textContent = "Tradera, senaste veckan";
+  document.getElementById("smakstaplar").innerHTML = topp.map(([m, [n]]) =>
+    `<div class="stapel"><span class="n">${esc(m)}</span><span class="s"><i data-w="${(100 * n / max).toFixed(1)}"></i></span><span class="v tal">${pct(100 * n / p[1])}</span></div>`).join("");
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll("#smakstaplar i").forEach(i => i.style.width = i.dataset.w + "%")));
+  const [m, [n, median]] = topp[0];
+  document.getElementById("smakfot").innerHTML = `<b>${esc(m)}</b> stod för ${pct(100 * n / p[1])} av allt som såldes${median ? `, till ett medianpris på ${Math.round(median).toLocaleString("sv-SE")} kr` : ""}. Se alla märken och kategorier i börsen.`;
+}
+start();
+</script>
+</body>
+</html>

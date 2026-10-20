@@ -35,6 +35,7 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .sidopanel button.vald{background:#141414;color:var(--guldljus)}
 .sidopanel button.vald small{color:var(--menysvag)}
 .vy[hidden]{display:none}
+.publik [data-vy="analyser"],.publik a.skapa[href*="nytt="]{display:none!important}
 .utestaplar{padding:12px 16px 14px;display:grid;gap:7px}
 .utestaplar .rad{display:grid;grid-template-columns:150px minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;border-radius:8px;padding:2px 4px}
 .utestaplar .rad:hover{background:var(--kort2)}
@@ -304,7 +305,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <section class="kort">
     <div class="korthuvud">
       <h2>Säljer snabbast</h2>
-      <span class="svag">Dina märken i alla kategorier, efter hur många som sålts senaste dygnet på Vinted och Tradera tillsammans.</span>
+      <span class="svag" id="fartinfo">Dina märken i alla kategorier, efter hur många som sålts senaste dygnet på Vinted och Tradera tillsammans.</span>
     </div>
     <div class="tabellram"><table id="farttabell"></table></div>
   </section>
@@ -335,6 +336,15 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
 </dialog>
 
 <script>
+// Den publika börsen (borsen/app.html) visar samma sida, men utan alarm, egna analyser och bokföring.
+const PUBLIK = location.pathname.includes("/borsen/");
+document.documentElement.classList.toggle("publik", PUBLIK);
+if (PUBLIK) {
+  document.querySelector(".headin").innerHTML = `<a class="logga" href="index.html">Märkesbörsen</a><nav class="flikar"><a href="index.html">Start</a><a href="app.html" class="vald">Börsen</a></nav>`;
+  for (const [id, text] of [["urval", ["Mätta märken", "Alla märken"]], ["lageval", ["Mätta märken", "Fler märken som säljer"]]])
+    document.querySelectorAll(`#${id} button`).forEach((b, i) => b.textContent = text[i]);
+}
+const DINA = PUBLIK ? "de mätta" : "dina";
 const KALLOR = {
   vinted: {namn: "Vinted", vad: "utbud", farg: "var(--vinted)", hex: "#1268a8",
            andel: "Andel av nya annonser", kort: "Andel nya", pris: "Begärt pris", antal: "Annonser totalt"},
@@ -365,8 +375,14 @@ const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjorto
 const LANDER = ["SE", "DK", "FI", "PL"];
 
 // ---------- Data ----------
-function alarmMarken(){ return Object.keys(B.alarm || {}) }
-function arAlarm(m){ return !!(B.alarm || {})[m] }
+let mattaMarken = null;
+function alarmMarken(){
+  // Publikt: alla märken som mäts var för sig, i stället för dina alarm-märken.
+  if (!PUBLIK) return Object.keys(B.alarm || {});
+  if (!mattaMarken) mattaMarken = [...new Set(Object.values(B.marke).flatMap(k => Object.values(k).flatMap(Object.keys)))];
+  return mattaMarken;
+}
+function arAlarm(m){ return !PUBLIK && !!(B.alarm || {})[m] }
 
 function andelsPunkter(kalla, kat){
   // Tradera: veckor räknade på sålda annonser (har historik direkt). Annars en punkt per mätdag.
@@ -567,7 +583,7 @@ function ritaTabell(){
       <td class="tal dolj-mobil">${utv(r.prisUtv, " %")}</td>
       <td class="tal dolj-mobil">${antalText(r)}</td>
       <td class="tal dolj-mobil" title="${esc(fartText(st.kat, r.m))}">${r.fart == null ? "–" : r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
-    </tr>`).join("") + (tomma ? `<tr><td colspan="${kol.length}" class="svag" style="text-align:left;cursor:default">${tomma} av dina märken har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
+    </tr>`).join("") + (tomma ? `<tr><td colspan="${kol.length}" class="svag" style="text-align:left;cursor:default">${tomma} av ${DINA} märkena har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
 }
 
 function uteTitel(r){
@@ -632,11 +648,11 @@ function ritaLagen(){
         <td class="tal">${utv(x.marg, " kr", 0)}</td>
         <td class="tal dolj-mobil">${x.fart == null ? "–" : x.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
         <td><a class="skapa" href="${alarmLank(x.m, x.kat.id, x.kop)}" title="Nytt alarm med maxpris ${kr(avrunda(x.kop))}">+ Alarm</a></td></tr>`).join("") + "</tbody>"
-      : `<tbody><tr><td class="tomt">Köplägena räknas när dina märken mätts på både Vinted och Tradera. Det görs inom ett dygn.</td></tr></tbody>`;
+      : `<tbody><tr><td class="tomt">Köplägena räknas när ${DINA} märkena mätts på både Vinted och Tradera. Det görs inom ett dygn.</td></tr></tbody>`;
   } else {
     const l = nyaMarken();
     $("lagerubrik").textContent = "Nya märken att bevaka";
-    $("lageinfo").textContent = "Märken som säljer ofta på Tradera för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
+    $("lageinfo").textContent = PUBLIK ? "Märken som säljer ofta på Tradera för minst 200 kr, utöver de som mäts var för sig." : "Märken som säljer ofta på Tradera för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
     $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Sålda</th><th>Andel</th><th>Slutpris</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
       l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
         <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
@@ -693,7 +709,7 @@ function ritaFart(){
       <td class="tal dolj-mobil">${tal(x.d.tradera)}</td>
       <td class="tal">${kr(x.salj)}</td>
       <td class="tal dolj-mobil">${kr(x.beg)}</td></tr>`).join("") + "</tbody>"
-    : `<tbody><tr><td class="tomt">Sålda räknas när dina märken mätts två gånger. Det görs inom ett dygn.</td></tr></tbody>`;
+    : `<tbody><tr><td class="tomt">Sålda räknas när ${DINA} märkena mätts två gånger. Det görs inom ett dygn.</td></tr></tbody>`;
 }
 // ---------- Andel av allt ute ----------
 const UTE_FARGER = ["#1268a8", "#b23b27", "#1d7a50", "#9a6412", "#6b4fa0", "#b8336a", "#2f3b2c", "#0f7d86"];
@@ -755,7 +771,7 @@ function ritaUte(){
       <td class="tal dolj-mobil">${r.antal.toLocaleString("sv-SE")}${r.tak ? "+" : ""}</td>
       <td class="tal dolj-mobil">${pct(r.nya)}</td>
       <td><a class="skapa" href="#" data-mer="${esc(r.m)}">Mer</a></td></tr>`).join("") + "</tbody>"
-    : `<tbody><tr><td class="tomt">Märken visas här när de räknats i kategorin. Märkena hämtas från dina alarm.</td></tr></tbody>`;
+    : `<tbody><tr><td class="tomt">Märken visas här när de räknats i kategorin.</td></tr></tbody>`;
 }
 function ritaUteDiagram(lista, farg){
   const el = $("utediagram");
@@ -1007,8 +1023,8 @@ function ritaOm(){
     <b>Andel nya</b> är hur stor del av stickprovet (de senast upplagda annonserna) som är av märket, medan <b>Annonser totalt</b> räknar alla märkets annonser i kategorin. <b>Andel av allt ute</b> är märkets annonser delat med alla annonser som ligger ute i kategorin: på Tradera räknas båda exakt, på Vinted uppskattas kategorins storlek från märken under 960 annonser (deras antal delat med deras andel av de nya), och märken med över 960 får andelen av de nya. <b>pe</b> betyder procentenheter. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
     <b>Pris</b> är medianpriset när man söker på bara det märket i kategorin (begärt pris på Vinted och Plick, slutpris på Tradera).
     <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda 24 h</b> är hur många av märket som sålts senaste dygnet i kategorin. På Vinted gås alla märkets annonser igenom (upp till 960) ungefär en gång per dygn, och de som fanns förra gången men är borta nu räknas som sålda (några kan vara borttagna). Tradera visar sålda direkt, där räknas snittet per dygn senaste veckan. Plick visar inte sålda och räknas inte. "–" betyder att märket inte hunnit mätas två gånger än.
-    <b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
-    Märkena hämtas från dina alarm, så nya alarm-märken kommer med automatiskt.${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
+    ${PUBLIK ? "" : `<b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
+    Märkena hämtas från dina alarm, så nya alarm-märken kommer med automatiskt.`}${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
 }
 
 function rita(){
@@ -1066,7 +1082,7 @@ addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout((
 
 async function start(){
   try {
-    B = await fetch("bors.json", {cache: "no-store"}).then(r => { if (!r.ok) throw 0; return r.json() });
+    B = await fetch(PUBLIK ? "../bors.json" : "bors.json", {cache: "no-store"}).then(r => { if (!r.ok) throw 0; return r.json() });
   } catch {
     B = null;
   }
@@ -1279,8 +1295,11 @@ async function sparaAnalyser(ny){
     return false;
   }
 }
+if (PUBLIK) {
+  if (st.vy === "analyser") st.vy = "ute";
+  $("fartinfo").textContent = $("fartinfo").textContent.replace("Dina märken", "De mätta märkena");
+} else startAnalyser();
 ritaVy();
-startAnalyser();
 
 start();
 </script>

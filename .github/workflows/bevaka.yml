@@ -114,6 +114,11 @@ jobs:
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
           cp spaning.json _site/ 2>/dev/null || echo "{}" > _site/spaning.json
           cp spaningar.json _site/
+          # Den publika börsen: en startsida och börsen utan alarm och egna analyser.
+          mkdir -p _site/borsen
+          cp hemsida/borsen.html _site/borsen/index.html
+          cp hemsida/bors.html _site/borsen/app.html
+          cp hemsida/stil.css _site/borsen/
 
       - uses: actions/upload-pages-artifact@v3
         with:
