@@ -171,6 +171,18 @@ td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weigh
 .fbinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 #fblage{flex-wrap:wrap}
 .fbval{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.fbarmar{display:flex;gap:18px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:16px 18px;border-radius:14px;background:#fff6e0;border:2px solid var(--guld);box-shadow:var(--skugga-liten,none)}
+.fbarmartext{flex:1 1 260px;min-width:0}
+.fbarmartext b{display:block;font-size:20px;line-height:1.25;color:#3a2a05}
+.fbarmartext p{margin:6px 0 0;font-size:14.5px;line-height:1.5;color:#4a3a18}
+.fbarmarbilder{display:flex;gap:12px}
+.fbarmarbilder figure{margin:0;display:grid;justify-items:center;gap:4px;background:#fff;border-radius:10px;padding:8px 10px;border:1px solid #ecdcb0}
+.fbarmarbilder svg{width:56px;height:77px}
+.fbarmarbilder .fel svg{fill:#c8b8b0}.fbarmarbilder .fel svg rect[transform]{fill:#c0392b}
+.fbarmarbilder .ratt svg{fill:#2f6b3f}
+.fbarmarbilder figcaption{font-size:12.5px;font-weight:700}
+.fbarmarbilder .fel figcaption{color:#c0392b}.fbarmarbilder .ratt figcaption{color:#2f6b3f}
+.fbarmar[hidden]{display:none}
 .fbzon{display:grid;justify-items:center;gap:4px;padding:28px 16px;border:2px dashed var(--linje);border-radius:14px;background:var(--bg);cursor:pointer;text-align:center}
 .fbzon:hover,.fbzon.over{border-color:var(--guld)}
 .fbzon b{font-size:16px;background:var(--meny);color:var(--menytext);padding:10px 20px;border-radius:10px}
@@ -582,6 +594,16 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
         <span class="svag">Hur ser bilderna ut?</span>
         <div class="chips" id="fblage"><button class="chip" data-l="person">Någon har på sig plagget</button><button class="chip" data-l="plagg">Plagget ligger eller hänger</button></div>
       </div>
+      <div class="fbarmar" id="fbarmar">
+        <div class="fbarmartext">
+          <b>Viktigt: håll armarna intill kroppen</b>
+          <p>Glipor mellan armarna och kroppen är det svåraste för verktyget. Där kan bakgrunden bli fläckig och bilden se redigerad ut. Stå med armarna tätt intill kroppen när du tar bilden, så blir resultatet mycket bättre.</p>
+        </div>
+        <div class="fbarmarbilder">
+          <figure class="fel"><svg viewBox="0 0 80 110" aria-hidden="true"><circle cx="40" cy="14" r="10"/><rect x="25" y="28" width="30" height="46" rx="8"/><rect x="8" y="30" width="9" height="40" rx="4.5" transform="rotate(14 12 30)"/><rect x="63" y="30" width="9" height="40" rx="4.5" transform="rotate(-14 68 30)"/><rect x="27" y="72" width="11" height="34" rx="5"/><rect x="42" y="72" width="11" height="34" rx="5"/></svg><figcaption>✗ Glipa</figcaption></figure>
+          <figure class="ratt"><svg viewBox="0 0 80 110" aria-hidden="true"><circle cx="40" cy="14" r="10"/><rect x="25" y="28" width="30" height="46" rx="8"/><rect x="16" y="30" width="9" height="42" rx="4.5"/><rect x="55" y="30" width="9" height="42" rx="4.5"/><rect x="27" y="72" width="11" height="34" rx="5"/><rect x="42" y="72" width="11" height="34" rx="5"/></svg><figcaption>✓ Armarna intill</figcaption></figure>
+        </div>
+      </div>
       <label class="fbzon" id="fbzon">
         <input type="file" id="fbfil" accept="image/*" multiple hidden>
         <b>Välj bilder</b>
@@ -590,7 +612,6 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <ul class="fbinfo">
         <li>Bilderna stannar på din mobil eller dator. De skickas aldrig någonstans.</li>
         <li id="fbstorlek"></li>
-        <li><b>Tips:</b> håll armarna intill kroppen på bilden, utan glipa mellan arm och kropp. Då blir bakgrunden mycket snyggare.</li>
         <li>Visa plagget som det är. Fläckar och skador ska synas på bilden, även med ny bakgrund.</li>
       </ul>
       <div class="fbresultat" id="fbresultat"></div>
