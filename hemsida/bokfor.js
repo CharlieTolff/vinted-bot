@@ -73,7 +73,7 @@ function rita(){
         <td><span class="bfstatus s${STATUS.indexOf(p.status)}">${esc(p.status)}</span></td>
         <td class="tal">${krText(p.inkop)}</td>
         <td class="tal dolj-mobil">${p.status === "Såld" ? krText(p.salj) : "–"}</td>
-        <td class="tal ${vi > 0 ? "plus" : vi < 0 ? "minus" : ""}">${vi == null ? "–" : tecken(vi)}</td>
+        <td class="tal ${vi > 0 ? "plus" : vi < 0 ? "minus" : ""}">${p.status === "Såld" ? (vi == null ? "–" : tecken(vi)) : `<button class="knapp bfsaltknapp" data-salj="${esc(p.id)}">Sålt</button>`}</td>
         <td class="dolj-mobil svag">${esc((p.status === "Såld" ? p.saljdatum : p.inkopsdatum) || "")}</td></tr>`;
     }).join("") + "</tbody>";
 }
@@ -104,7 +104,7 @@ function gissaKategori(namn){
 }
 const alternativ = (lista, valt) => lista.map(v => `<option${v === valt ? " selected" : ""}>${esc(v)}</option>`).join("");
 let redigerar = null;
-function oppna(p, notis, bild){
+function oppna(p, notis, bild, fokus){
   redigerar = p?.id || null;
   const f = $("bfform");
   f.reset();
@@ -125,7 +125,7 @@ function oppna(p, notis, bild){
   $("bftabort").hidden = !redigerar;
   visaSalj();
   $("bfdialog").showModal();
-  (notis ? f.inkop : f.namn).focus();
+  (f[fokus] || (notis ? f.inkop : f.namn)).focus();
 }
 function visaSalj(){
   const f = $("bfform"), sald = f.status.value === "Såld";
@@ -206,13 +206,53 @@ async function franSkarmbild(fil){
     const notis = hittat.length
       ? `Jag läste av skärmbilden (${hittat.join(", ")}). Kolla att allt stämmer och fyll i <b>vad du köpte plagget för</b>.`
       : `Jag hittade inte priset på skärmbilden. Fyll i det själv, och prova gärna en skärmbild där priset syns tydligt.`;
-    oppna({status: "Såld", namn: t.namn, marke: t.marke, storlek: t.storlek, salj: t.pris, saldPa: t.kalla || "Vinted", saljdatum: t.datum || idag()}, notis, bildUrl);
+    const sale = {status: "Såld", salj: t.pris, saldPa: t.kalla || "Vinted", saljdatum: t.datum || idag()};
+    const lager = hittaILager(t);
+    if (lager) oppna({...lager, ...sale}, `Jag hittade <b>${esc(lager.namn || lager.marke)}</b> i ditt lager och markerar den som såld. Kolla att priset stämmer. Fel plagg? Tryck Avbryt och lägg till det själv.`, bildUrl, "salj");
+    else oppna({...sale, namn: t.namn, marke: t.marke, storlek: t.storlek}, notis, bildUrl);
   } catch (e) {
     console.error(e);
     oppna({status: "Såld", saljdatum: idag()}, "Det gick inte att läsa skärmbilden just nu. Fyll i uppgifterna själv i stället.", bildUrl);
   } finally {
     knapp.disabled = false; knapp.textContent = text;
   }
+}
+
+// Snabbt sätt att markera ett plagg som sålt: bara priset och var.
+let saltId = null, saltPa = "Vinted";
+function oppnaSalt(p){
+  saltId = p.id; saltPa = p.saldPa || "Vinted";
+  $("bfsalttitel").textContent = `Sålt: ${p.namn || p.marke || "plagget"}`;
+  $("bfsaltpris").value = "";
+  $("bfsaltpa").innerHTML = SALD.map(v => `<button type="button" class="chip${v === saltPa ? " vald" : ""}" data-pa="${esc(v)}">${esc(v)}</button>`).join("");
+  visaSaltVinst();
+  $("bfsaltdialog").showModal();
+  $("bfsaltpris").focus();
+}
+function visaSaltVinst(){
+  const p = poster.find(x => x.id === saltId), pris = tal($("bfsaltpris").value), r = $("bfsaltvinst");
+  if (pris == null || !p) { r.textContent = p?.inkop != null ? `Du köpte den för ${krText(p.inkop)}.` : ""; r.className = "bfresultat"; return; }
+  const v = pris - (p.inkop || 0) - (p.kostnad || 0);
+  r.className = "bfresultat " + (v >= 0 ? "plus" : "minus");
+  r.innerHTML = `Din vinst: <b>${tecken(v)}</b>`;
+}
+function sparaSalt(e){
+  e.preventDefault();
+  const pris = tal($("bfsaltpris").value);
+  if (pris == null) { $("bfsaltpris").focus(); return; }
+  poster = poster.map(p => p.id === saltId ? {...p, status: "Såld", salj: pris, saldPa: saltPa, saljdatum: idag()} : p);
+  spara(); rita();
+  $("bfsaltdialog").close();
+}
+
+// Ett sålt plagg finns oftast redan i lagret: samma märke, och samma storlek om den syns.
+function hittaILager(t){
+  const n = x => String(x || "").toLowerCase().replace(/[^a-z0-9åäö]/g, "");
+  if (!t.marke) return null;
+  const kand = poster.filter(p => p.status !== "Såld" && n(p.marke) === n(t.marke));
+  const sammaStl = kand.filter(p => t.storlek && n(p.storlek) === n(t.storlek));
+  const lista = sammaStl.length ? sammaStl : t.storlek ? kand.filter(p => !p.storlek) : kand;
+  return lista.sort((a, b) => (a.inkopsdatum || "").localeCompare(b.inkopsdatum || ""))[0] || null;
 }
 
 // ---------- Export och säkerhetskopia ----------
@@ -249,9 +289,16 @@ function init(){
     if (!confirm("Ta bort plagget från bokföringen?")) return;
     poster = poster.filter(p => p.id !== redigerar); spara(); rita(); $("bfdialog").close();
   });
-  $("bftabell").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if (tr) oppna(poster.find(p => p.id === tr.dataset.id)); });
+  $("bftabell").addEventListener("click", e => {
+    const s = e.target.closest("[data-salj]");
+    if (s) return oppnaSalt(poster.find(x => x.id === s.dataset.salj));
+    const tr = e.target.closest("tr[data-id]"); if (tr) oppna(poster.find(p => p.id === tr.dataset.id)); });
   $("bffilter").addEventListener("click", e => { const b = e.target.closest("[data-f]"); if (!b) return; filter = b.dataset.f; try { localStorage.setItem("bokforing-filter", filter); } catch {} rita(); });
   $("bfperiod").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return; period = b.dataset.p; try { localStorage.setItem("bokforing-period", period); } catch {} rita(); });
+  $("bfsaltform").addEventListener("submit", sparaSalt);
+  $("bfsaltpris").addEventListener("input", visaSaltVinst);
+  $("bfsaltavbryt").addEventListener("click", () => $("bfsaltdialog").close());
+  $("bfsaltpa").addEventListener("click", e => { const b = e.target.closest("[data-pa]"); if (!b) return; saltPa = b.dataset.pa; $("bfsaltpa").querySelectorAll("[data-pa]").forEach(x => x.classList.toggle("vald", x === b)); });
   $("bfexport").addEventListener("click", exportera);
   $("bfkopia").addEventListener("click", () => laddaNer(`bokforing-sakerhetskopia-${idag()}.json`, "application/json", JSON.stringify(poster, null, 1)));
   $("bfaterstall").addEventListener("click", () => $("bfaterfil").click());

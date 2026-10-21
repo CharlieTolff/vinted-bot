@@ -122,6 +122,9 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .bfstatus{font-size:12px;border-radius:999px;padding:2px 9px;white-space:nowrap;background:var(--kort2);color:var(--svag)}
 .bfstatus.s1{background:color-mix(in srgb,var(--guld) 22%,var(--kort));color:var(--guldtext)}
 .bfstatus.s2{background:color-mix(in srgb,var(--plus) 16%,var(--kort));color:var(--plus)}
+#bftabell .bfsaltknapp{padding:5px 14px;font-size:13px;font-weight:700;background:var(--meny);color:var(--menytext);border-color:var(--meny)}
+.litendialog{max-width:420px}
+.bfresultat:empty{display:none}
 td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weight:600}
 #bftabell td,#bftabell th{text-align:left}
 #bftabell td.tal,#bftabell th:nth-child(3),#bftabell th:nth-child(4),#bftabell th:nth-child(5){text-align:right}
@@ -514,6 +517,19 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </div>
   </div>
 </main>
+
+<dialog id="bfsaltdialog" class="litendialog">
+  <h2 id="bfsalttitel" style="margin-top:0">Sålt</h2>
+  <form id="bfsaltform" method="dialog">
+    <label>Vad sålde du den för? (kr)<input id="bfsaltpris" inputmode="decimal" placeholder="300" autocomplete="off"></label>
+    <div><span class="hjalp">Var sålde du den?</span><div class="chips" id="bfsaltpa" style="flex-wrap:wrap;margin-top:6px"></div></div>
+    <p class="bfresultat" id="bfsaltvinst"></p>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button type="button" class="knapp" id="bfsaltavbryt">Avbryt</button>
+      <button type="submit" class="knapp primar">Spara</button>
+    </div>
+  </form>
+</dialog>
 
 <dialog id="bfdialog">
   <h2 id="bftitel" style="margin-top:0">Lägg till plagg</h2>
