@@ -126,7 +126,7 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js sokningar.json _site/
           mkdir -p _site/modeller
           cp .fixabild/*.onnx _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
@@ -140,7 +140,7 @@ jobs:
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
-          cp hemsida/stil.css hemsida/fixabild.js _site/borsen/
+          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js _site/borsen/
 
       - uses: actions/upload-pages-artifact@v3
         with:
