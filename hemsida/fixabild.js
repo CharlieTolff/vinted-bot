@@ -29,7 +29,7 @@ function laddaOrt(){
     const s = document.createElement("script");
     s.src = ORT + "ort.webgpu.min.js";
     s.onload = () => { ort.env.wasm.wasmPaths = ORT; ok(ort); };
-    s.onerror = () => { ortLaddas = null; fel(new Error("Kunde inte ladda bildverktyget. Kolla att du är uppkopplad.")); };
+    s.onerror = () => { ortLaddas = null; fel(Object.assign(new Error("Kunde inte ladda bildverktyget. Kolla att du är uppkopplad."), {visa: true})); };
     document.head.appendChild(s);
   });
 }
@@ -39,7 +39,7 @@ async function hamtaModell(namn, visa){
   let cache = null;
   try { cache = await caches.open("fixabild-1"); const finns = await cache.match(url); if (finns) return new Uint8Array(await finns.arrayBuffer()); } catch { cache = null; }
   const svar = await fetch(url);
-  if (!svar.ok) throw new Error("Bildverktyget finns inte på servern än. Försök igen om en stund.");
+  if (!svar.ok) throw Object.assign(new Error("Bildverktyget finns inte på servern än. Försök igen om en stund."), {visa: true});
   const total = +svar.headers.get("content-length") || m.mb * 1e6;
   const delar = []; let fatt = 0;
   const las = svar.body.getReader();
@@ -55,19 +55,39 @@ async function hamtaModell(namn, visa){
   return data;
 }
 
-const sessioner = {};
-async function session(namn, visa){
-  if (sessioner[namn]) return sessioner[namn];
-  const ort = await laddaOrt();
-  const data = await hamtaModell(namn, visa);
-  visa(1, "Startar bildverktyget …");
-  const forsok = navigator.gpu ? [["webgpu", "wasm"], ["wasm"]] : [["wasm"]];
+const sessioner = {}, modelldata = {};
+let utanGpu = !navigator.gpu;  // grafikkortet hoppas över om det inte klarar modellerna
+async function skapaSession(namn){
+  const forsok = utanGpu ? [["wasm"]] : [["webgpu", "wasm"], ["wasm"]];
   let senaste;
   for (const ep of forsok) {
-    try { return sessioner[namn] = await ort.InferenceSession.create(data, {executionProviders: ep}); }
+    try { return sessioner[namn] = {sess: await ort.InferenceSession.create(modelldata[namn], {executionProviders: ep}), gpu: ep[0] === "webgpu"}; }
     catch (e) { senaste = e; }
   }
   throw senaste;
+}
+async function session(namn, visa){
+  if (sessioner[namn]) return sessioner[namn];
+  await laddaOrt();
+  modelldata[namn] ??= await hamtaModell(namn, visa);
+  visa(1, "Startar bildverktyget …");
+  return skapaSession(namn);
+}
+async function kor(namn, matning){
+  if (!sessioner[namn]) await skapaSession(namn);
+  try {
+    const {sess} = sessioner[namn];
+    return (await sess.run({[sess.inputNames[0]]: matning}))[sess.outputNames[0]];
+  } catch (e) {
+    // Vissa delar av modellerna går inte att köra på grafikkortet i alla
+    // webbläsare. Då körs de på processorn i stället, lite långsammare.
+    if (!sessioner[namn].gpu) throw e;
+    console.warn("Grafikkortet klarade inte modellen, kör på processorn", e);
+    utanGpu = true;
+    for (const n in sessioner) if (sessioner[n].gpu) { sessioner[n].sess.release?.(); delete sessioner[n]; }
+    await skapaSession(namn);
+    return kor(namn, matning);
+  }
 }
 
 // ---------- Bildmatte ----------
@@ -135,9 +155,8 @@ async function korModell(namn, bild, w, h){
   for (let i = 0; i < px.length; i++) if ((i & 3) !== 3 && px[i] > max) max = px[i];
   const x = new Float32Array(3 * s * s);
   for (let i = 0; i < s * s; i++) for (let k = 0; k < 3; k++) x[k * s * s + i] = (px[i * 4 + k] / max - m.medel[k]) / m.std[k];
-  const sess = sessioner[namn];
-  const ut = await sess.run({[sess.inputNames[0]]: new ort.Tensor("float32", x, [1, 3, s, s])});
-  const o = ut[sess.outputNames[0]].data.subarray(0, s * s);
+  const ut = await kor(namn, new ort.Tensor("float32", x, [1, 3, s, s]));
+  const o = ut.data.subarray(0, s * s);
   let lo = Infinity, hi = -Infinity;
   for (const v of o) { if (v < lo) lo = v; if (v > hi) hi = v; }
   const n = new Float32Array(s * s), d = Math.max(hi - lo, 1e-6);
@@ -324,7 +343,7 @@ async function fixa(j){
     j.k.jobb = j;
   } catch (e) {
     console.error(e);
-    status.textContent = e && e.message && !/^\d/.test(e.message) && e.message.length < 120 ? e.message : "Det gick inte att fixa bilden. Prova en annan bild eller ladda om sidan.";
+    status.textContent = e && e.visa ? e.message : "Det gick inte att fixa bilden. Prova en annan bild eller ladda om sidan.";
     status.classList.add("fel");
   }
 }
