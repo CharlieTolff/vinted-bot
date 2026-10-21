@@ -57,11 +57,11 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .fixabild
-          key: fixabild-modeller-1
+          key: fixabild-modeller-2-${{ hashFiles('clip_etiketter.py') }}
 
       - name: Förbered bildmodellerna till Fixa bilder
         continue-on-error: true
-        timeout-minutes: 5
+        timeout-minutes: 8
         run: |
           mkdir -p .fixabild
           for m in isnet-general-use u2net_human_seg; do
@@ -71,6 +71,11 @@ jobs:
               python3 krymp_modell.py /tmp/$m.onnx /tmp/$m-liten.onnx && mv /tmp/$m-liten.onnx .fixabild/$m.onnx
             fi
           done
+          # AI:n som känner igen plagget i Skriv beskrivning (CLIP, samma som bildkollen).
+          if [ ! -s .fixabild/clip-bild.onnx ] || [ ! -s .fixabild/clip-etiketter.json ]; then
+            python3 -m pip install --quiet numpy fastembed
+            python3 clip_etiketter.py .fixabild
+          fi
 
       - name: Installera bildkollen
         continue-on-error: true
@@ -128,7 +133,7 @@ jobs:
           mkdir -p _site
           cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js sokningar.json _site/
           mkdir -p _site/modeller
-          cp .fixabild/*.onnx _site/modeller/ 2>/dev/null || true
+          cp .fixabild/*.onnx .fixabild/*.json _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json

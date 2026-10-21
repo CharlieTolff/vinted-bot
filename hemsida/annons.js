@@ -156,6 +156,85 @@ function plaggfarg(bild){
   if (!bast || bast[0] < 20) return "";
   return fargnamn(bast[1] / bast[0], bast[2] / bast[0], bast[3] / bast[0]);
 }
+// Den lilla AI:n (CLIP) som känner igen plagget. Bilddelen körs i
+// webbläsaren; plaggens och mönstrens textvektorer är uträknade i förväg
+// (clip_etiketter.py), så textdelen behövs inte här.
+const ORT = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/";
+const MAPP = location.pathname.includes("/borsen/") ? "../modeller/" : "modeller/";
+const CLIP_MB = 88;
+// Är AI:n osäker mellan liknande plagg (hoodie eller sweatshirt) skrivs det
+// allmänna namnet, och är den osäker på allt lämnas rutan tom.
+const FAMILJER = {
+  "Tröja": ["Långärmad tröja", "Stickad tröja", "Sweatshirt", "Hoodie", "Zip-hoodie", "Kofta", "Halvzip-tröja", "Fleecetröja"],
+  "Jacka": ["Jacka", "Dunjacka", "Jeansjacka", "Skinnjacka", "Rock", "Trenchcoat", "Väst", "Kavaj", "Fleecetröja"],
+  "Byxor": ["Jeans", "Byxor", "Mjukisbyxor"],
+  "Skor": ["Sneakers", "Kängor", "Skor"],
+};
+const PLAGG_SAKER = 0.45, FAMILJ_SAKER = 0.6, MONSTER_SAKER = {"Tryck på framsidan": 0.9}, MONSTER_ANNARS = 0.6;
+let ortLaddas = null, clipLaddas = null;
+function laddaOrt(){
+  if (window.ort) return Promise.resolve();
+  return ortLaddas ??= new Promise((ok, fel) => {
+    const s = document.createElement("script");
+    s.src = ORT + "ort.min.js";
+    s.onload = () => { ort.env.wasm.wasmPaths = ORT; ok(); };
+    s.onerror = () => { ortLaddas = null; fel(new Error("ladda")); };
+    document.head.appendChild(s);
+  });
+}
+async function hamta(url, visa){
+  let cache = null;
+  try { cache = await caches.open("fixabild-1"); const finns = await cache.match(url); if (finns) return new Uint8Array(await finns.arrayBuffer()); } catch { cache = null; }
+  const svar = await fetch(url);
+  if (!svar.ok) throw new Error("saknas " + url);
+  const total = +svar.headers.get("content-length") || CLIP_MB * 1e6, las = svar.body.getReader(), delar = [];
+  let fatt = 0;
+  for (;;) { const {done, value} = await las.read(); if (done) break; delar.push(value); fatt += value.length; visa?.(fatt / total); }
+  const data = new Uint8Array(fatt); let i = 0;
+  for (const d of delar) { data.set(d, i); i += d.length; }
+  try { await cache?.put(url, new Response(data)); } catch {}
+  return data;
+}
+function laddaClip(visa){
+  return clipLaddas ??= (async () => {
+    await laddaOrt();
+    const [modell, etiketter] = await Promise.all([hamta(MAPP + "clip-bild.onnx", visa), fetch(MAPP + "clip-etiketter.json").then(r => r.json())]);
+    visa?.(1);
+    return {sess: await ort.InferenceSession.create(modell, {executionProviders: ["wasm"]}), etiketter};
+  })().catch(e => { clipLaddas = null; throw e; });
+}
+const MEDEL = [0.48145466, 0.4578275, 0.40821073], STD = [0.26862954, 0.26130258, 0.27577711];
+function andelar(grupp, v){
+  // Samma räkning som CLIP själv: likhet gånger 100, sedan softmax.
+  const namn = Object.keys(grupp), z = namn.map(n => 100 * grupp[n].reduce((s, x, i) => s + x * v[i], 0));
+  const mx = Math.max(...z), e = z.map(x => Math.exp(x - mx)), sum = e.reduce((a, b) => a + b, 0);
+  return Object.fromEntries(namn.map((n, i) => [n, e[i] / sum]));
+}
+const topp = p => Object.entries(p).sort((a, b) => b[1] - a[1])[0];
+function valjPlagg(p){
+  const [namn, andel] = topp(p);
+  if (andel >= PLAGG_SAKER) return namn;
+  const [familj, summa] = topp(Object.fromEntries(Object.entries(FAMILJER).map(([f, l]) => [f, l.reduce((s, n) => s + (p[n] || 0), 0)])));
+  return summa >= FAMILJ_SAKER ? familj : "";
+}
+function valjMonster(p){
+  const [namn, andel] = topp(p);
+  return namn && andel >= (MONSTER_SAKER[namn] ?? MONSTER_ANNARS) ? namn : "";
+}
+async function kannIgen(bild, visa){
+  const {sess, etiketter} = await laddaClip(visa);
+  // Kortaste sidan till 224, sedan mitten 224 x 224, som CLIP själv gör.
+  const f = 224 / Math.min(bild.width, bild.height), w = Math.max(224, Math.round(bild.width * f)), h = Math.max(224, Math.round(bild.height * f));
+  const c = document.createElement("canvas"); c.width = c.height = 224;
+  const g = c.getContext("2d", {willReadFrequently: true});
+  g.imageSmoothingQuality = "high";
+  g.drawImage(bild, -Math.floor((w - 224) / 2), -Math.floor((h - 224) / 2), w, h);
+  const d = g.getImageData(0, 0, 224, 224).data, x = new Float32Array(3 * 224 * 224);
+  for (let p = 0; p < 224 * 224; p++) for (let k = 0; k < 3; k++) x[k * 224 * 224 + p] = (d[4 * p + k] / 255 - MEDEL[k]) / STD[k];
+  const ut = await sess.run({[sess.inputNames[0]]: new ort.Tensor("float32", x, [1, 3, 224, 224])});
+  const v = ut[sess.outputNames[0]].data, n = Math.hypot(...v), vn = Array.from(v, a => a / n);
+  return {plagg: valjPlagg(andelar(etiketter.plagg, vn)), monster: valjMonster(andelar(etiketter.monster, vn))};
+}
 const lista = v => v.length > 1 ? v.slice(0, -1).join(", ") + " och " + v[v.length - 1] : v.join("");
 async function franBilder(filer){
   filer = [...filer].filter(f => /^image\//.test(f.type)).slice(0, 4);
@@ -180,15 +259,25 @@ async function franBilder(filer){
     const t = tolka(lasta.map(l => l.text).join("\n"), marken);
     // Bilden med minst text är bilden på själva plagget.
     const plagg = [...lasta].sort((a, b) => a.ord - b.ord)[0];
-    const farg = lasta.length > 1 || plagg.ord < 4 ? plaggfarg(plagg.bild) : "";
+    const harPlagg = lasta.length > 1 || plagg.ord < 4;
+    const farg = harPlagg ? plaggfarg(plagg.bild) : "";
+    let ai = {plagg: "", monster: ""};
+    if (harPlagg) {
+      try {
+        visa("Känner igen plagget …");
+        ai = await kannIgen(plagg.bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %` : "Känner igen plagget …"));
+      } catch (e) { console.error(e); }
+    }
     const fyllt = [];
     const satt = (id, v, namn) => { if (v) { $(id).value = v; fyllt.push(namn); } };
+    satt("abplagg", ai.plagg, "plagg");
     satt("abmarke", t.marke, "märke"); satt("abstorlek", t.storlek, "storlek");
     satt("abmaterial", t.material, "material"); satt("abfarg", farg, "färg");
+    if (ai.monster && !$("abdetaljer").value) satt("abdetaljer", ai.monster, "mönster");
     rita();
-    const saknas = [!t.marke && "märke", !t.storlek && "storlek", !t.material && "material"].filter(Boolean);
+    const saknas = [!ai.plagg && "vad det är för plagg", !t.marke && "märke", !t.storlek && "storlek", !t.material && "material"].filter(Boolean);
     notis.innerHTML = fyllt.length
-      ? `Jag fyllde i ${lista(fyllt)}. Kolla att det stämmer och skriv vad det är för plagg${saknas.length ? `, och ${lista(saknas)} om du vet` : ""}.`
+      ? `Jag fyllde i ${lista(fyllt)}. Kolla att allt stämmer${saknas.length ? ` och skriv ${lista(saknas)} om du vet` : ""}, välj skick och kopiera.`
       : "Jag kunde inte läsa något från bilderna. Prova en skarp bild på lappen, rakt framifrån och i bra ljus, eller fyll i själv.";
     notis.hidden = false;
     if (!$("abplagg").value) $("abplagg").focus();
