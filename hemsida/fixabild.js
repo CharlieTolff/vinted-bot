@@ -203,12 +203,13 @@ async function gorVit(bild, w, h, steg){
   await vila();
 
   // Studioljus: mjuk radiell avtoning från strax ovanför mitten.
-  const bg = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+  const bg = [new Float32Array(N), new Float32Array(N), new Float32Array(N)], ljus = new Float32Array(N);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = y * w + x;
     const r = Math.hypot((x - w / 2) / (w * 0.75), (y - h * 0.42) / (h * 0.85));
     const studio = (VIT_MITT - (VIT_MITT - VIT_KANT) * Math.pow(klipp(r, 0, 1), 1.6)) * (1 + SIDLJUS / 2 - SIDLJUS * x / w);
     const sk = (1 - SKUGGSTYRKA * klipp(nara[i] * 6, 0, 1) * (1 - skugga[i])) * (1 - KASTSKUGGA * kast[i]);
+    ljus[i] = studio * sk;  // sparas så att bakgrundsfärgen kan bytas utan att räkna om allt
     for (let k = 0; k < 3; k++) bg[k][i] = studio * sk * BG_TON[k];
   }
 
@@ -258,9 +259,32 @@ async function gorVit(bild, w, h, steg){
     }
   }
   for (let i = 0; i < N; i++) { px.data[i * 4] = ut[0][i]; px.data[i * 4 + 1] = ut[1][i]; px.data[i * 4 + 2] = ut[2][i]; px.data[i * 4 + 3] = 255; }
-  g.putImageData(px, 0, 0);
+  return {px, alfa, ljus, w, h};
+}
+// ---------- Bakgrundsfärg ----------
+// Färgen anges som den ljusaste punkten på bakgrunden; skuggor och studioljus
+// följer med, så även en färgad bakgrund ser ut som en riktig vägg.
+const FARGER = [
+  ["Vit", BG_TON.map(t => t * VIT_MITT)], ["Kritvit", [255, 255, 255]], ["Ljusgrå", [228, 228, 226]],
+  ["Grå", [190, 191, 192]], ["Mörkgrå", [92, 94, 97]], ["Svart", [34, 34, 36]],
+  ["Beige", [236, 222, 200]], ["Sand", [214, 194, 160]], ["Kamel", [184, 146, 102]],
+  ["Ljusrosa", [244, 214, 216]], ["Persika", [246, 204, 176]], ["Terrakotta", [190, 110, 82]],
+  ["Ljusgul", [246, 234, 180]], ["Mint", [204, 232, 214]], ["Salvia", [170, 186, 160]],
+  ["Skogsgrön", [52, 84, 64]], ["Ljusblå", [200, 220, 238]], ["Himmelsblå", [140, 182, 222]],
+  ["Marinblå", [36, 52, 86]], ["Lavendel", [214, 204, 236]], ["Vinröd", [112, 40, 52]],
+];
+const hex = c => "#" + c.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+function farga(r, farg){
+  const {px, alfa, ljus, w, h, bas} = r, d = px.data, c0 = FARGER[0][1];
+  for (let i = 0, n = w * h; i < n; i++) {
+    const t = (1 - alfa[i]) * ljus[i] / VIT_MITT;
+    for (let k = 0; k < 3; k++) d[i * 4 + k] = bas[i * 4 + k] + t * (farg[k] - c0[k]);
+  }
+  const c = new OffscreenCanvas(w, h);
+  c.getContext("2d").putImageData(px, 0, 0);
   return c.convertToBlob({type: "image/jpeg", quality: 0.93});
 }
+
 // Normalfördelat brus (filmkorn), samma varje gång.
 let fro = 12345;
 function slump(){
@@ -280,6 +304,7 @@ function nyttKort(fil){
   const k = document.createElement("div");
   k.className = "fbkort";
   k.innerHTML = `<div class="fbbild"><img alt=""><span class="fbstatus">Väntar …</span></div>
+    <div class="fbfarger" hidden></div>
     <div class="fbknappar"><button class="knapp fbfore" disabled>Visa före</button><button class="knapp primar fbspara" disabled>Spara bild</button></div>`;
   const url = URL.createObjectURL(fil);
   k.querySelector("img").src = url;
@@ -304,20 +329,42 @@ async function fixa(j){
     const bild = await createImageBitmap(j.fil);
     const f = Math.min(1, MAX_SIDA / Math.max(bild.width, bild.height));
     const w = Math.round(bild.width * f), h = Math.round(bild.height * f);
-    const blob = await gorVit(bild, w, h, steg);
-    j.efter = URL.createObjectURL(blob); j.blob = blob;
-    j.namn = j.fil.name.replace(/\.[^.]+$/, "") + "-vit.jpg";
-    const img = j.k.querySelector("img");
-    img.src = j.efter;
+    const r = await gorVit(bild, w, h, steg);
+    r.bas = Uint8ClampedArray.from(r.px.data);
+    const img = j.k.querySelector("img"), grund = j.fil.name.replace(/\.[^.]+$/, "");
+    let visarFore = false, version = 0;
+    async function visaFarg(namn, farg){
+      const v = ++version, blob = await farga(r, farg);
+      if (v !== version) return;  // en nyare färg hann väljas
+      if (j.efter) URL.revokeObjectURL(j.efter);
+      j.efter = URL.createObjectURL(blob); j.blob = blob;
+      j.namn = `${grund}-${namn.toLowerCase().replace(/[^a-z0-9åäö]+/g, "-")}.jpg`;
+      if (!visarFore) img.src = j.efter;
+    }
+    await visaFarg(FARGER[0][0], FARGER[0][1]);
     status.remove();
     j.k.classList.add("klar");
     const fore = j.k.querySelector(".fbfore"), spara = j.k.querySelector(".fbspara");
     fore.disabled = spara.disabled = false;
-    let visarFore = false;
     fore.addEventListener("click", () => {
       visarFore = !visarFore;
       img.src = visarFore ? j.fore : j.efter;
       fore.textContent = visarFore ? "Visa efter" : "Visa före";
+    });
+    const rutor = j.k.querySelector(".fbfarger");
+    rutor.innerHTML = FARGER.map(([n, c], i) => `<button class="${i ? "" : "vald"}" data-i="${i}" title="${n}" aria-label="${n}" style="background:${hex(c)}"></button>`).join("") +
+      `<label class="egen" title="Egen färg" aria-label="Egen färg"><input type="color" value="#9ab0c8">+</label>`;
+    rutor.hidden = false;
+    const markera = el => { rutor.querySelectorAll(".vald").forEach(b => b.classList.remove("vald")); el.classList.add("vald"); };
+    rutor.addEventListener("click", e => {
+      const b = e.target.closest("button[data-i]"); if (!b) return;
+      markera(b);
+      const [n, c] = FARGER[+b.dataset.i]; visaFarg(n, c);
+    });
+    const egen = rutor.querySelector("input");
+    egen.addEventListener("input", () => {
+      markera(egen.parentElement); egen.parentElement.style.background = egen.value;
+      visaFarg("egen-farg", [1, 3, 5].map(i => parseInt(egen.value.slice(i, i + 2), 16)));
     });
     spara.addEventListener("click", () => sparaBilder([j]));
     j.k.jobb = j;
