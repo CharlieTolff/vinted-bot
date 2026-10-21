@@ -242,6 +242,14 @@ svg.spark{display:block;margin-left:auto}
 .tagg{font-size:12.5px;background:#141414;color:var(--guldljus);border-radius:8px;padding:2px 9px;text-decoration:none}
 .lank{font-size:13px;color:var(--guldtext);font-weight:600;text-decoration:none;border:1px solid color-mix(in srgb,var(--guld) 50%,var(--linje));border-radius:999px;padding:3px 11px;background:color-mix(in srgb,var(--guld) 8%,var(--kort))}
 .diagramval{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 18px 0}
+.diagramsum{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;padding:6px 18px 0}
+#diagperiodernot{display:block;max-width:none;padding:6px 18px 0}
+#diagperiodernot:empty{display:none}
+.diagramsum b{font-size:28px;letter-spacing:-.02em}
+.diagramsum .upp{color:var(--plus);font-weight:700}.diagramsum .ned{color:var(--minus);font-weight:700}
+.kallchip{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:13px;border:1px solid var(--linje);background:var(--kort);color:var(--svag);border-radius:999px;padding:4px 11px;cursor:pointer}
+.kallchip.pa{color:var(--text);border-color:var(--text)}
+.kallchip:disabled{cursor:default;opacity:1;color:var(--text);font-weight:600}
 .diagram{position:relative;padding:6px 10px 4px 0;touch-action:pan-y}
 .diagram svg{display:block;width:100%;user-select:none}
 .diagram text{font:11.5px Inter,system-ui,sans-serif;fill:var(--svag)}
@@ -747,7 +755,7 @@ const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", 
 
 let B = null;
 let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
-          sort: las("sort3", {}), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
+          sort: las("sort3", {}), jamfor: las("jamfor", {}), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
           vy: las("vy", "andel"), trend: las("trend", "upp"), utekalla: las("utekalla", "vinted"), uteValda: null};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
@@ -764,7 +772,7 @@ function alarmMarken(){
 }
 function arAlarm(m){ return !PUBLIK && !!(B.alarm || {})[m] }
 
-function andelsPunkter(kalla, kat){
+function andelsPunkter(kalla, kat, medPagaende){
   // Tradera: veckor räknade på sålda annonser (har historik direkt). Annars en punkt per mätdag.
   if (kalla === "tradera" && B.tradera_veckor && (B.tradera_veckor[kat] || []).length) {
     // Veckor med bara en liten del av försäljningen är inte hela (den första veckan har bara
@@ -772,7 +780,7 @@ function andelsPunkter(kalla, kat){
     const alla = B.tradera_veckor[kat], storst = Math.max(0, ...alla.map(p => p[1]));
     const v = alla.filter(p => p[1] >= 5 && p[1] >= 0.4 * storst);
     // Veckan som pågår är inte klar och hoppas över, utom när den är den enda.
-    return v.length > 1 && dag(v.at(-1)[0]) + 7 * DAG > Date.now() ? v.slice(0, -1) : v;
+    return !medPagaende && v.length > 1 && dag(v.at(-1)[0]) + 7 * DAG > Date.now() ? v.slice(0, -1) : v;
   }
   return (B.andel[kalla] || {})[kat] || [];
 }
@@ -1330,10 +1338,13 @@ function ritaDetalj(){
         <button data-k="pris" class="${st.matt === "pris" ? "vald" : ""}">Pris</button>
         <button data-k="antal" class="${st.matt === "antal" ? "vald" : ""}">Antal</button>
       </div>
+      <div class="segment" id="diagperioder" aria-label="Period"></div>
     </div>
+    <span class="periodnot" id="diagperiodernot"></span>
+    <div class="diagramsum" id="diagramsum"></div>
     <div class="diagram" id="diagram"></div>
     <div class="forklaring" id="forklaring"></div>
-    <div class="dragtips">Dra över diagrammet för att mäta hur mycket det gått upp eller ner mellan två dagar.</div>
+    <div class="dragtips">Dra över grafen för att se värdet en viss dag. Håll nere och dra för att se hur mycket det ändrats mellan två dagar. Tryck på en källa ovanför för att jämföra.</div>
     <div class="tabellram"><table id="katabell"></table></div>`;
   ritaDiagram();
   ritaKategoritabell();
@@ -1344,14 +1355,15 @@ function serier(){
   if (st.matt === "andel") {
     return Object.keys(KALLOR).map(k => ({
       k, namn: KALLOR[k].namn + (k === "tradera" ? " (sålda)" : ""), farg: KALLOR[k].hex, huvud: k === st.kalla,
-      pts: andelsPunkter(k, kat).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
+      // Grafen tar med veckan som pågår, så att kurvan når fram till idag.
+      pts: andelsPunkter(k, kat, true).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
     })).filter(s => s.pts.length);
   }
   const i = st.matt === "pris" ? 2 : 1;
   return Object.keys(KALLOR).map(k => {
     let pts = markePunkter(k, kat, m).map(p => [dag(p[0]), p[i]]).filter(p => p[1] != null);
     if (!pts.length && k === "tradera") {  // veckorna från sålda annonser
-      pts = andelsPunkter(k, kat).filter(p => p[2][m]).map(p => [dag(p[0]), p[2][m][i === 2 ? 1 : 0]]);
+      pts = andelsPunkter(k, kat, true).filter(p => p[2][m]).map(p => [dag(p[0]), p[2][m][i === 2 ? 1 : 0]]);
     }
     return {k, namn: KALLOR[k].namn + (k === "tradera" ? (i === 2 ? " slutpris" : " sålda") : (i === 2 ? " begärt" : " annonser")),
             farg: KALLOR[k].hex, huvud: k === st.kalla, pts};
@@ -1365,101 +1377,155 @@ function format(v){
   return Math.round(v).toLocaleString("sv-SE");
 }
 
+const klippV = (x, a, b) => x < a ? a : x > b ? b : x;
 function ritaDiagram(){
+  // Som en aktiegraf: vald källa som yta, period att välja, dra över för att se värdet en dag
+  // och hur mycket det ändrats. Andra källor kan läggas till som tunna linjer.
   const el = $("diagram");
   const alla = serier();
   const dagar = PERIODER[st.period][1];
   const slut = Math.max(0, ...alla.flatMap(s => s.pts.map(p => p[0])));
-  const lista = alla.map(s => ({...s, pts: s.pts.filter(p => p[0] >= slut - dagar * DAG)})).filter(s => s.pts.length);
-  // Huvudserien (vald källa) ritas sist så den ligger överst.
-  lista.sort((a, b) => a.huvud - b.huvud);
-  $("forklaring").innerHTML = lista.map(s => `<span><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}${s.huvud ? "" : ""}</span>`).join("");
-  if (!lista.length) { el.innerHTML = `<div class="tomt">Inga mätningar av ${esc(st.marke)} här än.</div>`; return; }
-  const W = Math.max(300, el.clientWidth - 10), Hh = W < 500 ? 220 : 280;
-  const pad = {l: 58, r: 14, t: 34, b: 28};
+  const allaTider = alla.flatMap(s => s.pts.map(p => p[0]));
+  periodKnappar("diagperioder", allaTider);
+  const synlig = s => s.huvud || st.jamfor[s.k];
+  const iPeriod = alla.map(s => ({...s, pts: s.pts.filter(p => p[0] >= slut - dagar * DAG)})).filter(s => s.pts.length);
+  if (!iPeriod.some(s => s.huvud) && iPeriod.length) iPeriod[0].huvud = true;
+  const lista = iPeriod.filter(synlig).sort((a, b) => a.huvud - b.huvud);
+  $("forklaring").innerHTML = iPeriod.map(s => `<button class="kallchip ${synlig(s) ? "pa" : ""}" data-k="${s.k}" ${s.huvud ? "disabled" : ""}><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}${s.huvud ? "" : synlig(s) ? " ✕" : " +"}</button>`).join("");
+  const sum = $("diagramsum");
+  if (!lista.length) { sum.innerHTML = ""; el.innerHTML = `<div class="tomt">Inga mätningar av ${esc(st.marke)} här än.</div>`; return; }
+  const huvud = lista.find(s => s.huvud);
+  const forst = huvud.pts[0];
+  const skillnad = (a, b) => a == null || b == null ? null : st.matt === "andel" ? b - a : a ? 100 * (b - a) / a : null;
+  const visaSum = (p, ar) => {
+    const d = skillnad(forst[1], p[1]);
+    sum.innerHTML = `<b>${format(p[1])}</b><span class="${d > 0 ? "upp" : d < 0 ? "ned" : "svag"}">${d == null || p === forst ? "" : (d > 0 ? "▲ +" : d < 0 ? "▼ −" : "± ") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " %-enheter" : " %")}</span>
+      <span class="svag">${esc(huvud.namn)} · ${ar ? datumLang(p[0]) : `sedan ${datum(forst[0])}`}</span>`;
+  };
+  visaSum(huvud.pts.at(-1), false);
+
+  const W = Math.max(300, el.clientWidth - 10), Hh = W < 500 ? 240 : 320;
+  const pad = {l: 62, r: 14, t: 16, b: 30};
   const xs = lista.flatMap(s => s.pts.map(p => p[0])), ys = lista.flatMap(s => s.pts.map(p => p[1]));
   let x0 = Math.min(...xs), x1 = Math.max(...xs);
   if (x1 - x0 < 2 * DAG) { x0 -= 3 * DAG; x1 += 3 * DAG; }
   let y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const luft = (y1 - y0) * 0.12 || Math.max(1, y1 * 0.1);
+  const luft = (y1 - y0) * 0.15 || Math.max(1, y1 * 0.1);
   y0 = Math.max(0, y0 - luft); y1 = y1 + luft;
   const X = x => pad.l + (W - pad.l - pad.r) * (x - x0) / (x1 - x0);
   const Y = y => Hh - pad.b - (Hh - pad.t - pad.b) * (y - y0) / ((y1 - y0) || 1);
-  // Rutnät
-  const steg = 4, rutor = [];
-  for (let i = 0; i <= steg; i++) {
-    const v = y0 + (y1 - y0) * i / steg, y = Y(v);
+  const rutor = [];
+  for (let i = 0; i <= 4; i++) {
+    const v = y0 + (y1 - y0) * i / 4, y = Y(v);
     rutor.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--linje)" stroke-opacity=".55" ${i ? 'stroke-dasharray="2 4"' : ""}/>
       <text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${format(v)}</text>`);
   }
   const antalX = Math.min(6, Math.max(2, Math.floor((W - pad.l) / 90)));
   for (let i = 0; i < antalX; i++) {
     const t = x0 + (x1 - x0) * i / (antalX - 1);
-    rutor.push(`<text x="${X(t)}" y="${Hh - 8}" text-anchor="${i === 0 ? "start" : i === antalX - 1 ? "end" : "middle"}">${datum(t)}</text>`);
+    rutor.push(`<text x="${X(t)}" y="${Hh - 9}" text-anchor="${i === 0 ? "start" : i === antalX - 1 ? "end" : "middle"}">${datum(t)}</text>`);
   }
+  // Mjuk kurva genom punkterna (utan att svänga över eller under dem).
+  const kurva = pts => {
+    const P = pts.map(p => [X(p[0]), Y(p[1])]);
+    if (P.length < 3) return P.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join("");
+    let d = `M${P[0][0].toFixed(1)} ${P[0][1].toFixed(1)}`;
+    for (let i = 0; i < P.length - 1; i++) {
+      const [a, b, c, e] = [P[Math.max(0, i - 1)], P[i], P[i + 1], P[Math.min(P.length - 1, i + 2)]];
+      const k = 0.18, ymin = Math.min(b[1], c[1]), ymax = Math.max(b[1], c[1]);
+      const c1 = [b[0] + (c[0] - a[0]) * k, klippV(b[1] + (c[1] - a[1]) * k, ymin, ymax)];
+      const c2 = [c[0] - (e[0] - b[0]) * k, klippV(c[1] - (e[1] - b[1]) * k, ymin, ymax)];
+      d += `C${c1[0].toFixed(1)} ${c1[1].toFixed(1)},${c2[0].toFixed(1)} ${c2[1].toFixed(1)},${c[0].toFixed(1)} ${c[1].toFixed(1)}`;
+    }
+    return d;
+  };
   const linjer = lista.map(s => {
-    const d = s.pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + " " + Y(p[1]).toFixed(1)).join("");
-    const prickar = s.pts.length < 25 ? s.pts.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.huvud ? 3 : 2.2}" fill="${s.farg}" stroke="var(--kort)" stroke-width="1.5"/>`).join("") : "";
-    const yta = s.huvud && s.pts.length > 1 ? `<path d="${d}L${X(s.pts.at(-1)[0])} ${Hh - pad.b}L${X(s.pts[0][0])} ${Hh - pad.b}Z" fill="${s.farg}" fill-opacity=".08"/>` : "";
-    return `${yta}<path d="${d}" fill="none" stroke="${s.farg}" stroke-width="${s.huvud ? 2.4 : 1.6}" stroke-opacity="${s.huvud ? 1 : .75}" stroke-linejoin="round" stroke-linecap="round"/>${prickar}`;
+    const d = kurva(s.pts);
+    const prickar = s.pts.length < 16 ? s.pts.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.huvud ? 2.8 : 2}" fill="${s.farg}" stroke="var(--kort)" stroke-width="1.4"/>`).join("") : "";
+    const yta = s.huvud && s.pts.length > 1 ? `<path d="${d}L${X(s.pts.at(-1)[0])} ${Hh - pad.b}L${X(s.pts[0][0])} ${Hh - pad.b}Z" fill="url(#ytfarg)"/>` : "";
+    return `${yta}<path d="${d}" fill="none" stroke="${s.farg}" stroke-width="${s.huvud ? 2.6 : 1.6}" stroke-opacity="${s.huvud ? 1 : .8}" stroke-linejoin="round" stroke-linecap="round"/>${prickar}`;
   }).join("");
-  const enPunkt = lista.every(s => s.pts.length < 2);
+  const kort = Math.round((Math.max(...allaTider) - Math.min(...allaTider)) / DAG);
   el.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" height="${Hh}" role="img" aria-label="Diagram över ${esc(st.marke)}">
+      <defs><linearGradient id="ytfarg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${huvud.farg}" stop-opacity=".32"/><stop offset="1" stop-color="${huvud.farg}" stop-opacity="0"/></linearGradient></defs>
       ${rutor.join("")}
       <rect id="mattyta" x="0" y="${pad.t}" width="0" height="${Hh - pad.t - pad.b}" fill="var(--guld)" fill-opacity=".16" visibility="hidden"/>
       ${linjer}
-      <line id="sikte" x1="0" x2="0" y1="${pad.t}" y2="${Hh - pad.b}" stroke="var(--text)" stroke-opacity=".35" visibility="hidden"/>
+      <g id="sikte" visibility="hidden">
+        <line id="siktex" x1="0" x2="0" y1="${pad.t}" y2="${Hh - pad.b}" stroke="var(--text)" stroke-opacity=".45" stroke-dasharray="3 3"/>
+        <line id="siktey" x1="${pad.l}" x2="${W - pad.r}" y1="0" y2="0" stroke="var(--text)" stroke-opacity=".25" stroke-dasharray="3 3"/>
+        <circle id="siktep" r="5" fill="${huvud.farg}" stroke="var(--kort)" stroke-width="2.5"/>
+        <rect id="ylapp" x="2" y="0" width="${pad.l - 6}" height="20" rx="5" fill="${huvud.farg}"/>
+        <text id="ytext" x="${(pad.l - 4) / 2}" y="0" text-anchor="middle" style="fill:#fff;font-weight:700"></text>
+        <rect id="xlapp" x="0" y="${Hh - pad.b + 4}" width="86" height="20" rx="5" fill="var(--meny,#1f2a22)"/>
+        <text id="xtext" x="0" y="${Hh - pad.b + 18}" text-anchor="middle" style="fill:#fff;font-weight:600"></text>
+      </g>
       <rect id="fanga" x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${Hh}" fill="transparent" style="cursor:crosshair"/>
     </svg>
-    ${enPunkt ? `<div class="matt" style="background:var(--kort2);color:var(--svag);font-weight:500">Första mätningen. Kurvan växer för varje dag.</div>` : ""}
+    ${kort < 2 ? `<div class="matt" style="background:var(--kort2);color:var(--svag);font-weight:500">Första mätningen. Kurvan växer för varje dag.</div>` : ""}
     <div class="tips" id="tips" hidden></div><div class="matt" id="mattlapp" hidden></div>`;
 
-  // Hovra och dra för att mäta
   const svg = el.querySelector("svg"), fanga = el.querySelector("#fanga"), sikte = el.querySelector("#sikte"),
         tips = el.querySelector("#tips"), yta = el.querySelector("#mattyta"), lapp = el.querySelector("#mattlapp");
-  const huvud = lista.find(s => s.huvud) || lista.at(-1);
+  const satt = (id, a) => { const n = el.querySelector("#" + id); for (const k in a) n.setAttribute(k, a[k]); return n; };
   const tider = [...new Set(xs)].sort((a, b) => a - b);
   const narmast = t => tider.reduce((b, x) => Math.abs(x - t) < Math.abs(b - t) ? x : b, tider[0]);
-  const varde = (s, t) => (s.pts.find(p => p[0] === t) || [])[1];
-  const tillT = e => { const r = svg.getBoundingClientRect(); const x = (e.clientX - r.left) * W / r.width; return {x, t: x0 + (x - pad.l) / (W - pad.l - pad.r) * (x1 - x0)}; };
-  let drag = null;
-  const visaTips = (t, e) => {
-    const r = el.getBoundingClientRect();
-    sikte.setAttribute("x1", X(t)); sikte.setAttribute("x2", X(t)); sikte.setAttribute("visibility", "visible");
-    tips.innerHTML = `<div style="opacity:.75;margin-bottom:2px">${datumLang(t)}</div>` + lista.slice().reverse().map(s => {
-      const v = varde(s, t); return v == null ? "" : `<div class="rad"><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}: <b>${format(v)}</b></div>`;
-    }).join("");
-    tips.hidden = false;
-    const px = X(t) * r.width / W;
-    tips.style.left = Math.min(Math.max(0, px + 12), r.width - tips.offsetWidth - 4) + "px";
-    tips.style.top = "36px";
+  // Värdet en dag: punkten den dagen, annars rakt mellan grannarna (så att linjen går att följa).
+  const varde = (s, t) => {
+    const p = s.pts.find(q => q[0] === t); if (p) return p[1];
+    const i = s.pts.findIndex(q => q[0] > t); if (i <= 0) return null;
+    const a = s.pts[i - 1], b = s.pts[i]; return a[1] + (b[1] - a[1]) * (t - a[0]) / (b[0] - a[0]);
   };
+  const tillT = e => { const r = svg.getBoundingClientRect(); const x = (e.clientX - r.left) * W / r.width; return x0 + (x - pad.l) / (W - pad.l - pad.r) * (x1 - x0); };
+  let drag = null;
+  const visa = t => {
+    const r = el.getBoundingClientRect(), v = varde(huvud, t);
+    sikte.setAttribute("visibility", "visible");
+    satt("siktex", {x1: X(t), x2: X(t)});
+    if (v != null) {
+      satt("siktey", {y1: Y(v), y2: Y(v), visibility: "inherit"}); satt("siktep", {cx: X(t), cy: Y(v), visibility: "inherit"});
+      satt("ylapp", {y: Y(v) - 10, visibility: "inherit"}); satt("ytext", {y: Y(v) + 4, visibility: "inherit"}).textContent = format(v);
+      visaSum([t, v], true);
+    } else for (const id of ["siktey", "siktep", "ylapp", "ytext"]) satt(id, {visibility: "hidden"});
+    satt("xlapp", {x: klippV(X(t) - 43, pad.l, W - pad.r - 86)}); satt("xtext", {x: klippV(X(t), pad.l + 43, W - pad.r - 43)}).textContent = datum(t);
+    const andra = lista.filter(s => !s.huvud);
+    tips.innerHTML = andra.map(s => { const w = varde(s, t); return w == null ? "" : `<div class="rad"><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}: <b>${format(w)}</b></div>`; }).join("");
+    tips.hidden = !tips.innerHTML;
+    if (!tips.hidden) {
+      const px = X(t) * r.width / W;
+      tips.style.left = Math.min(Math.max(0, px + 12), r.width - tips.offsetWidth - 4) + "px"; tips.style.top = "10px";
+    }
+  };
+  const gom = () => { tips.hidden = true; sikte.setAttribute("visibility", "hidden"); visaSum(huvud.pts.at(-1), false); };
   fanga.addEventListener("pointermove", e => {
-    const {t} = tillT(e); const n = narmast(t);
+    const n = narmast(tillT(e));
     if (drag) {
       drag.slut = n;
       const a = Math.min(drag.start, n), b = Math.max(drag.start, n);
       yta.setAttribute("x", X(a)); yta.setAttribute("width", Math.max(1, X(b) - X(a))); yta.setAttribute("visibility", "visible");
-      const s = huvud;
-      const va = varde(s, a), vb = varde(s, b);
-      if (va != null && vb != null && a !== b) {
-        const diff = st.matt === "andel" ? vb - va : (va ? 100 * (vb - va) / va : null);
-        lapp.innerHTML = `${esc(s.namn)}: ${diff == null ? "–" : (diff > 0 ? "▲ +" : diff < 0 ? "▼ −" : "") + Math.abs(diff).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " procentenheter" : " %")} <span style="opacity:.7;font-weight:500">${datum(a)} → ${datum(b)}</span>`;
-        lapp.style.background = diff > 0 ? "var(--plus)" : diff < 0 ? "var(--minus)" : "#141414";
+      const d = skillnad(varde(huvud, a), varde(huvud, b));
+      if (d != null && a !== b) {
+        lapp.innerHTML = `${(d > 0 ? "▲ +" : d < 0 ? "▼ −" : "") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " %-enheter" : " %")} <span style="opacity:.75;font-weight:500">${datum(a)} → ${datum(b)}</span>`;
+        lapp.style.background = d > 0 ? "var(--plus)" : d < 0 ? "var(--minus)" : "#141414";
         lapp.hidden = false;
       }
     }
-    visaTips(n, e);
+    visa(n);
   });
   fanga.addEventListener("pointerdown", e => {
-    const {t} = tillT(e); drag = {start: narmast(t)};
+    drag = {start: narmast(tillT(e))};
     fanga.setPointerCapture(e.pointerId); lapp.hidden = true; yta.setAttribute("visibility", "hidden");
     if (e.pointerType === "touch") el.style.touchAction = "none";
+    visa(drag.start);
   });
-  const slapp = () => { if (drag && drag.slut === undefined) yta.setAttribute("visibility", "hidden"); drag = null; el.style.touchAction = ""; };
+  const slapp = e => {
+    if (drag && drag.slut === undefined) yta.setAttribute("visibility", "hidden");
+    drag = null; el.style.touchAction = "";
+    if (e && e.pointerType === "touch") gom();
+  };
   fanga.addEventListener("pointerup", slapp);
   fanga.addEventListener("pointercancel", slapp);
-  fanga.addEventListener("pointerleave", () => { if (!drag) { tips.hidden = true; sikte.setAttribute("visibility", "hidden"); } });
+  fanga.addEventListener("pointerleave", () => { if (!drag) gom(); });
 }
 
 function ritaKategoritabell(){
@@ -1549,6 +1615,10 @@ $("rutor").addEventListener("click", e => { const r = e.target.closest("[data-m]
 $("detalj").addEventListener("click", e => {
   const b = e.target.closest("#mattval [data-k]");
   if (b) { st.matt = b.dataset.k; skriv("matt", st.matt); ritaDetalj(); return; }
+  const p = e.target.closest("#diagperioder [data-k]");
+  if (p) { st.period = p.dataset.k; skriv("period", st.period); rita(); return; }
+  const kc = e.target.closest(".kallchip[data-k]");
+  if (kc && !kc.disabled) { st.jamfor[kc.dataset.k] = !st.jamfor[kc.dataset.k]; skriv("jamfor", st.jamfor); ritaDiagram(); return; }
   const tr = e.target.closest("#katabell tr[data-k]");
   if (tr) { st.kat = tr.dataset.k; skriv("kat", st.kat); rita(); }
 });
