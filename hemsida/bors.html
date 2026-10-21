@@ -747,7 +747,7 @@ const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", 
 
 let B = null;
 let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
-          sort: las("sort2", ["ute", -1]), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
+          sort: las("sort3", {}), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
           vy: las("vy", "andel"), trend: las("trend", "upp"), utekalla: las("utekalla", "vinted"), uteValda: null};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
@@ -767,7 +767,10 @@ function arAlarm(m){ return !PUBLIK && !!(B.alarm || {})[m] }
 function andelsPunkter(kalla, kat){
   // Tradera: veckor räknade på sålda annonser (har historik direkt). Annars en punkt per mätdag.
   if (kalla === "tradera" && B.tradera_veckor && (B.tradera_veckor[kat] || []).length) {
-    const v = B.tradera_veckor[kat].filter(p => p[1] >= 5);
+    // Veckor med bara en liten del av försäljningen är inte hela (den första veckan har bara
+    // de sista dagarna med, eftersom Tradera bara visar det som sålts nyligen) och hoppas över.
+    const alla = B.tradera_veckor[kat], storst = Math.max(0, ...alla.map(p => p[1]));
+    const v = alla.filter(p => p[1] >= 5 && p[1] >= 0.4 * storst);
     // Veckan som pågår är inte klar och hoppas över, utom när den är den enda.
     return v.length > 1 && dag(v.at(-1)[0]) + 7 * DAG > Date.now() ? v.slice(0, -1) : v;
   }
@@ -958,7 +961,8 @@ function ritaTabell(){
   const alla = rader();
   let lista = alla.filter(r => r.andel || r.pris != null || r.antal);
   const tomma = alla.length - lista.length;
-  const [nyckel, riktning] = st.sort;
+  // Tradera visar det som sålts, så där rankas listan efter andelen av det sålda.
+  const [nyckel, riktning] = st.sort[st.kalla] || (st.kalla === "vinted" ? ["ute", -1] : ["andel", -1]);
   lista.sort((a, b) => {
     if (nyckel === "m") return riktning * a.m.localeCompare(b.m, "sv");
     const x = a[nyckel] ?? -Infinity, y = b[nyckel] ?? -Infinity;
@@ -1505,7 +1509,8 @@ $("tabell").addEventListener("click", e => {
   if (th) {
     if (th.dataset.ingen) return;
     const k = th.dataset.k;
-    st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "m" ? 1 : -1)]; skriv("sort2", st.sort); ritaTabell(); return;
+    const [n0, r0] = st.sort[st.kalla] || (st.kalla === "vinted" ? ["ute", -1] : ["andel", -1]);
+    st.sort[st.kalla] = [k, n0 === k ? -r0 : (k === "m" ? 1 : -1)]; skriv("sort3", st.sort); ritaTabell(); return;
   }
   const tr = e.target.closest("tr[data-m]");
   if (tr) valjMarke(tr.dataset.m);
