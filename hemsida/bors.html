@@ -145,6 +145,23 @@ td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weigh
 @media (max-width:480px){ .bfinnehall .bfsiffror{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .bfsiffror div{padding:12px 8px} .bfsiffror b{font-size:21px} }
 @media (max-width:560px){ #bfdialog .bfrad{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} #bfdialog{padding:18px 16px 16px} }
 
+/* Skriv beskrivning */
+.abinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:start}
+.abform{display:grid;gap:14px}
+.abrad{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.abform label{display:grid;gap:5px;font-size:12.5px;font-weight:600;color:var(--svag);align-content:start}
+.abform label .hjalp{font-weight:400}
+.abform input:not([type=checkbox]){font:inherit;font-size:15px;color:var(--text);background:var(--bg);border:1px solid var(--linje);border-radius:10px;padding:9px 10px;width:100%;min-width:0}
+.ablabel{display:block;font-size:12.5px;font-weight:600;color:var(--svag);margin-bottom:6px}
+#abskick{flex-wrap:wrap}
+.abval{display:flex;flex-wrap:wrap;gap:8px 18px}
+.abform .abkryss{display:flex;align-items:center;gap:7px;font-weight:500;font-size:13.5px;color:var(--text)}
+.abresultat{position:sticky;top:14px;background:var(--kort2);border-radius:14px;padding:14px;box-shadow:var(--skugga-liten,none)}
+#abtext{width:100%;font:inherit;font-size:14.5px;line-height:1.55;color:var(--text);background:var(--kort);border:1px solid var(--linje);border-radius:10px;padding:12px;resize:vertical}
+.abtom{margin:0 0 4px;color:var(--svag);font-size:13.5px;padding:24px 8px;text-align:center}
+.abknappar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+@media (max-width:900px){ .abinnehall{grid-template-columns:minmax(0,1fr)} .abresultat{position:static} }
+
 /* Fixa bilder */
 .fbinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 #fblage{flex-wrap:wrap}
@@ -347,9 +364,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <div class="undermeny" data-grupp="bokforing">
       <button data-vy="bokforing">Mina affärer<small>Köpt, sålt och vinst</small></button>
     </div>
-    <button class="grupp" data-grupp="bilder" aria-expanded="false">Fixa bilder<small>Snyggare bilder säljer dyrare</small></button>
+    <button class="grupp" data-grupp="bilder" aria-expanded="false">Fixa annonsen<small>Bilder och text som säljer</small></button>
     <div class="undermeny" data-grupp="bilder">
       <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
+      <button data-vy="beskrivning">Skriv beskrivning<small>Färdig text att kopiera</small></button>
     </div>
   </nav>
   <div>
@@ -494,6 +512,46 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <span class="hjalp">Bokföringen sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
       <span class="bffotknappar"><button class="knapp" id="bfexport">Ladda ner till Excel</button><button class="knapp" id="bfkopia">Spara säkerhetskopia</button><button class="knapp" id="bfaterstall">Läs in säkerhetskopia</button></span>
       <input type="file" id="bfaterfil" accept="application/json,.json" hidden>
+    </div>
+  </section>
+  </div>
+
+  <div class="vy" data-vy="beskrivning">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Skriv beskrivning</h2>
+      <span class="svag">Fyll i det du vet om plagget, så skrivs beskrivningen åt dig. Kopiera den sedan och klistra in på Vinted eller Tradera.</span>
+    </div>
+    <div class="abinnehall">
+      <form id="abform" class="abform" onsubmit="return false">
+        <div class="abrad">
+          <label>Plagg<input id="abplagg" placeholder="Zip-kofta" autocomplete="off"></label>
+          <label>Märke<input id="abmarke" placeholder="J.Lindeberg" autocomplete="off"></label>
+          <label>Storlek<input id="abstorlek" placeholder="S" autocomplete="off"></label>
+          <label>Färg<input id="abfarg" placeholder="Mörkgrön" autocomplete="off"></label>
+        </div>
+        <div><span class="ablabel">Skick</span><div class="chips" id="abskick"></div></div>
+        <div class="abrad">
+          <label><span>Material <span class="hjalp">(står på lappen)</span></span><input id="abmaterial" placeholder="100 % merinoull" autocomplete="off"></label>
+          <label><span>Detaljer <span class="hjalp">(valfritt)</span></span><input id="abdetaljer" placeholder="Dragkedja, ribbade muddar" autocomplete="off"></label>
+        </div>
+        <div class="abrad">
+          <label><span>Längd i cm <span class="hjalp">(valfritt)</span></span><input id="ablangd" inputmode="decimal" placeholder="68" autocomplete="off"></label>
+          <label><span>Bredd i cm <span class="hjalp">(armhåla till armhåla)</span></span><input id="abbredd" inputmode="decimal" placeholder="52" autocomplete="off"></label>
+          <label><span>Fel <span class="hjalp">(om det finns, var ärlig)</span></span><input id="abfel" placeholder="Liten fläck på vänster ärm" autocomplete="off"></label>
+        </div>
+        <label><span>Varför du säljer <span class="hjalp">(valfritt)</span></span><input id="abvarfor" placeholder="Passar mig inte längre" autocomplete="off"></label>
+        <div class="abval">
+          <label class="abkryss"><input type="checkbox" id="absamkop" checked> Nämn samköpsrabatt</label>
+          <label class="abkryss"><input type="checkbox" id="abemoji" checked> En emoji på slutet</label>
+        </div>
+      </form>
+      <div class="abresultat">
+        <span class="ablabel">Din beskrivning</span>
+        <p class="abtom" id="abtom">Skriv vad det är för plagg eller märke, så dyker beskrivningen upp här.</p>
+        <textarea id="abtext" rows="14" spellcheck="false" hidden></textarea>
+        <div class="abknappar"><button class="knapp primar" id="abkopiera" disabled>Kopiera beskrivningen</button><button class="knapp" id="abrensa">Börja om</button></div>
+      </div>
     </div>
   </section>
   </div>
@@ -1175,7 +1233,7 @@ function ritaVy(){
   $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
   $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
-  $("omdata").hidden = st.vy === "bilder" || st.vy === "bokforing";  // förklaringen gäller siffrorna, inte bildverktyget
+  $("omdata").hidden = ["bilder", "bokforing", "beskrivning"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
 }
 function visaVy(vy){
   st.vy = vy; skriv("vy", vy); oppenGrupp = null;
@@ -1747,5 +1805,6 @@ start();
 </script>
 <script src="fixabild.js"></script>
 <script src="bokfor.js"></script>
+<script src="annons.js"></script>
 </body>
 </html>
