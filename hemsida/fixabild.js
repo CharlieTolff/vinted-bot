@@ -17,7 +17,7 @@ const SKUGGSTYRKA = 0.85, VITBALANS = 0.6, SKUGGLYFT = 0.85, KONTRAST = 0.05, KA
 const LUM = [0.299, 0.587, 0.114];
 
 const $ = id => document.getElementById(id);
-const vila = () => new Promise(r => setTimeout(r, 0));
+const vila = () => new Promise(r => setTimeout(r, 50));  // ger webbläsaren tid att visa ny text
 let lage = "person";
 try { lage = localStorage.getItem("fixabild-lage") || "person"; } catch {}
 
@@ -27,7 +27,7 @@ function laddaOrt(){
   if (window.ort) return Promise.resolve(window.ort);
   return ortLaddas ??= new Promise((ok, fel) => {
     const s = document.createElement("script");
-    s.src = ORT + "ort.webgpu.min.js";
+    s.src = ORT + "ort.min.js";
     s.onload = () => { ort.env.wasm.wasmPaths = ORT; ok(ort); };
     s.onerror = () => { ortLaddas = null; fel(Object.assign(new Error("Kunde inte ladda bildverktyget. Kolla att du är uppkopplad."), {visa: true})); };
     document.head.appendChild(s);
@@ -55,39 +55,19 @@ async function hamtaModell(namn, visa){
   return data;
 }
 
-const sessioner = {}, modelldata = {};
-let utanGpu = !navigator.gpu;  // grafikkortet hoppas över om det inte klarar modellerna
-async function skapaSession(namn){
-  const forsok = utanGpu ? [["wasm"]] : [["webgpu", "wasm"], ["wasm"]];
-  let senaste;
-  for (const ep of forsok) {
-    try { return sessioner[namn] = {sess: await ort.InferenceSession.create(modelldata[namn], {executionProviders: ep}), gpu: ep[0] === "webgpu"}; }
-    catch (e) { senaste = e; }
-  }
-  throw senaste;
-}
+// Modellerna körs på processorn (wasm). Grafikkortsläget (WebGPU) klarar inte
+// alla delar av dem och fastnade i Chrome.
+const sessioner = {};
 async function session(namn, visa){
   if (sessioner[namn]) return sessioner[namn];
   await laddaOrt();
-  modelldata[namn] ??= await hamtaModell(namn, visa);
-  visa(1, "Startar bildverktyget …");
-  return skapaSession(namn);
+  const data = await hamtaModell(namn, visa);
+  visa(1, "Startar bildverktyget …"); await vila();
+  return sessioner[namn] = await ort.InferenceSession.create(data, {executionProviders: ["wasm"]});
 }
 async function kor(namn, matning){
-  if (!sessioner[namn]) await skapaSession(namn);
-  try {
-    const {sess} = sessioner[namn];
-    return (await sess.run({[sess.inputNames[0]]: matning}))[sess.outputNames[0]];
-  } catch (e) {
-    // Vissa delar av modellerna går inte att köra på grafikkortet i alla
-    // webbläsare. Då körs de på processorn i stället, lite långsammare.
-    if (!sessioner[namn].gpu) throw e;
-    console.warn("Grafikkortet klarade inte modellen, kör på processorn", e);
-    utanGpu = true;
-    for (const n in sessioner) if (sessioner[n].gpu) { sessioner[n].sess.release?.(); delete sessioner[n]; }
-    await skapaSession(namn);
-    return kor(namn, matning);
-  }
+  const sess = sessioner[namn];
+  return (await sess.run({[sess.inputNames[0]]: matning}))[sess.outputNames[0]];
 }
 
 // ---------- Bildmatte ----------
@@ -188,7 +168,7 @@ async function gorVit(bild, w, h, steg){
   g.drawImage(bild, 0, 0, w, h);
   const px = g.getImageData(0, 0, w, h);
   const N = w * h, I = [0, 1, 2].map(k => { const a = new Float32Array(N); for (let i = 0; i < N; i++) a[i] = px.data[i * 4 + k]; return a; });
-  steg("Hittar plagget …");
+  steg("Hittar plagget … det kan ta upp till en halv minut"); await vila();
   const alfa = await maskFor(bild, w, h);
   steg("Byter bakgrund …"); await vila();
   const lum = new Float32Array(N);
