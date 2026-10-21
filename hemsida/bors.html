@@ -110,6 +110,38 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .vsvar .resultat b.plus{color:#7fd6a4}.vsvar .resultat b.minus{color:#f0a493}
 @media (max-width:900px){ .vfalt{grid-template-columns:repeat(2,minmax(0,1fr))} .vsvar{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .vfalt,.vsvar{grid-template-columns:minmax(0,1fr)} }
+/* Bokföring */
+.bfinnehall{padding:16px 16px 6px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.bfinnehall .vsvar{margin-top:0}
+.bfknapprad{display:flex;flex-wrap:wrap;gap:10px}
+.bfknapprad .knapp{font-size:14.5px;padding:10px 16px}
+#bfperiod,#bffilter{flex-wrap:wrap}
+.bfnamn{display:flex;flex-direction:column;max-width:280px;white-space:normal}
+.bfnamn b{font-weight:600}
+.bfnamn small{color:var(--svag);font-size:12px}
+.bfstatus{font-size:12px;border-radius:999px;padding:2px 9px;white-space:nowrap;background:var(--kort2);color:var(--svag)}
+.bfstatus.s1{background:color-mix(in srgb,var(--guld) 22%,var(--kort));color:var(--guldtext)}
+.bfstatus.s2{background:color-mix(in srgb,var(--plus) 16%,var(--kort));color:var(--plus)}
+td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weight:600}
+#bftabell td,#bftabell th{text-align:left}
+#bftabell td.tal,#bftabell th:nth-child(3),#bftabell th:nth-child(4),#bftabell th:nth-child(5){text-align:right}
+.bffot{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:12px 16px 16px;border-top:1px solid var(--linje)}
+.bffot .hjalp{flex:1 1 260px}
+.bffotknappar{display:flex;flex-wrap:wrap;gap:8px}
+#bfdialog select{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;border:1px solid var(--linje);background:var(--kort2);color:var(--text)}
+#bfdialog .bfrad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#bfdialog [hidden]{display:none!important}
+#bfdialog input,#bfdialog select{width:100%;min-width:0}
+.bfnotisrad{display:flex;gap:12px;align-items:flex-start}
+.bfnotisrad:has(> :not([hidden])){margin-bottom:2px}
+#bfbild{width:72px;max-height:130px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid var(--linje);flex:none}
+.bfnotis{margin:0;font-size:13.5px;background:color-mix(in srgb,var(--guld) 14%,var(--kort));border-radius:10px;padding:10px 12px}
+.bfresultat{margin:0;font-size:15px;padding:10px 12px;border-radius:10px;background:var(--kort2)}
+.bfresultat.plus b{color:var(--plus)}.bfresultat.minus b{color:var(--minus)}
+.bfresultat span{color:var(--svag);font-size:13px}
+@media (max-width:480px){ .bfinnehall .bfsiffror{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .bfsiffror div{padding:12px 8px} .bfsiffror b{font-size:21px} }
+@media (max-width:560px){ #bfdialog .bfrad{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} #bfdialog{padding:18px 16px 16px} }
+
 /* Fixa bilder */
 .fbinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
 #fblage{flex-wrap:wrap}
@@ -284,6 +316,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <div class="undermeny" data-grupp="vinst">
       <button data-vy="vinst">Vinstkalkyl<small>Inköpspris, säljpris och marginal</small></button>
     </div>
+    <button class="grupp" data-grupp="bokforing" aria-expanded="false">Bokföring<small>Håll koll på vinsten</small></button>
+    <div class="undermeny" data-grupp="bokforing">
+      <button data-vy="bokforing">Mina affärer<small>Köpt, sålt och vinst</small></button>
+    </div>
     <button class="grupp" data-grupp="bilder" aria-expanded="false">Fixa bilder<small>Snyggare bilder säljer dyrare</small></button>
     <div class="undermeny" data-grupp="bilder">
       <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
@@ -405,6 +441,36 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
   </div>
 
+  <div class="vy" data-vy="bokforing">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Din bokföring</h2>
+      <span class="svag">Allt du köper och säljer på ett ställe. Lägg till ett plagg själv, eller ta en skärmbild när du har sålt något så fyller sidan i det mesta åt dig.</span>
+    </div>
+    <div class="bfinnehall">
+      <div class="chips" id="bfperiod"><button class="chip" data-p="allt">Allt</button><button class="chip" data-p="manad">Den här månaden</button><button class="chip" data-p="ar">I år</button></div>
+      <div class="vsvar bfsiffror">
+        <div class="resultat"><span>Din vinst</span><b class="tal" id="bfvinst">0 kr</b><small id="bfvinstinfo">&nbsp;</small></div>
+        <div><span>Sålt för</span><b class="tal" id="bfsalt">–</b><small id="bfsaltinfo">&nbsp;</small></div>
+        <div><span>Vinst per plagg</span><b class="tal" id="bfsnitt">–</b><small>i snitt</small></div>
+        <div><span>I lager nu</span><b class="tal" id="bflager">–</b><small id="bflagerinfo">&nbsp;</small></div>
+      </div>
+      <div class="bfknapprad">
+        <button class="knapp primar" id="bfny">+ Lägg till plagg</button>
+        <button class="knapp primar" id="bfskarm">Lägg till från skärmbild</button>
+        <input type="file" id="bfskarmfil" accept="image/*" hidden>
+      </div>
+      <div class="chips" id="bffilter"><button class="chip" data-f="alla">Alla</button><button class="chip" data-f="I lager">I lager</button><button class="chip" data-f="Upplagd">Upplagda</button><button class="chip" data-f="Såld">Sålda</button></div>
+    </div>
+    <div class="tabellram"><table id="bftabell"></table></div>
+    <div class="bffot">
+      <span class="hjalp">Bokföringen sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
+      <span class="bffotknappar"><button class="knapp" id="bfexport">Ladda ner till Excel</button><button class="knapp" id="bfkopia">Spara säkerhetskopia</button><button class="knapp" id="bfaterstall">Läs in säkerhetskopia</button></span>
+      <input type="file" id="bfaterfil" accept="application/json,.json" hidden>
+    </div>
+  </section>
+  </div>
+
   <div class="vy" data-vy="bilder">
   <section class="kort">
     <div class="korthuvud">
@@ -448,6 +514,39 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </div>
   </div>
 </main>
+
+<dialog id="bfdialog">
+  <h2 id="bftitel" style="margin-top:0">Lägg till plagg</h2>
+  <form id="bfform" method="dialog">
+    <div class="bfnotisrad"><img id="bfbild" alt="Skärmbilden" hidden><p class="bfnotis" id="bfnotis" hidden></p></div>
+    <label>Plagg<input name="namn" placeholder="Hollister hoodie, vit/röd" autocomplete="off"></label>
+    <div class="bfrad">
+      <label>Märke<input name="marke" list="bfmarken" placeholder="Hollister" autocomplete="off"></label>
+      <label>Kategori<select name="kategori"></select></label>
+      <label>Storlek<input name="storlek" placeholder="M" autocomplete="off"></label>
+    </div>
+    <div class="bfrad">
+      <label>Inköpspris (kr)<input name="inkop" inputmode="decimal" placeholder="150" autocomplete="off"></label>
+      <label>Köpt på<select name="kopt"></select></label>
+      <label>Inköpsdatum<input name="inkopsdatum" type="date"></label>
+    </div>
+    <label>Status<select name="status"></select></label>
+    <div class="bfrad bfsald">
+      <label>Såld för (kr)<input name="salj" inputmode="decimal" placeholder="300" autocomplete="off"></label>
+      <label>Såld på<select name="saldPa"></select></label>
+      <label>Säljdatum<input name="saljdatum" type="date"></label>
+    </div>
+    <label class="bfsald">Frakt och avgifter du betalat (kr)<input name="kostnad" inputmode="decimal" placeholder="0" autocomplete="off"></label>
+    <p class="bfresultat" id="bfresultat" hidden></p>
+    <label>Anteckning<input name="anteckning" placeholder="T.ex. liten fläck på ärmen" autocomplete="off"></label>
+    <datalist id="bfmarken"></datalist>
+    <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap">
+      <button type="button" class="knapp fara" id="bftabort" style="margin-right:auto">Ta bort</button>
+      <button type="button" class="knapp" id="bfavbryt">Avbryt</button>
+      <button type="submit" class="knapp primar">Spara</button>
+    </div>
+  </form>
+</dialog>
 
 <dialog id="katdialog">
   <h2 style="margin-top:0">Nytt filter</h2>
@@ -1036,7 +1135,7 @@ function ritaVy(){
   $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
   $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
-  $("omdata").hidden = st.vy === "bilder";  // förklaringen gäller siffrorna, inte bildverktyget
+  $("omdata").hidden = st.vy === "bilder" || st.vy === "bokforing";  // förklaringen gäller siffrorna, inte bildverktyget
 }
 function visaVy(vy){
   st.vy = vy; skriv("vy", vy); oppenGrupp = null;
@@ -1607,5 +1706,6 @@ ritaVy();
 start();
 </script>
 <script src="fixabild.js"></script>
+<script src="bokfor.js"></script>
 </body>
 </html>
