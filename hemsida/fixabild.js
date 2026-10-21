@@ -314,6 +314,7 @@ const ko = [];
 let jobbar = false;
 function ritaLage(){
   $("fblage").querySelectorAll("[data-l]").forEach(b => b.classList.toggle("vald", b.dataset.l === lage));
+  if ($("fbarmar")) $("fbarmar").hidden = lage !== "person";
   const mb = MODELLER.isnet.mb + (lage === "person" ? MODELLER.human.mb : 0);
   $("fbstorlek").textContent = `Första gången laddas bildverktyget ner (ungefär ${mb} MB), sedan går det fort.`;
 }
