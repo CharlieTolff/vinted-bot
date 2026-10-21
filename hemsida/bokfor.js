@@ -85,6 +85,7 @@ function marken(){
   for (const p of poster) if (p.marke) s.add(p.marke);
   return [...s].sort((a, b) => a.localeCompare(b, "sv"));
 }
+window.BokforMarken = () => marken();
 function kategorier(){
   const s = new Set();
   try { for (const k of B?.kategorier || []) if (!k.vantar) s.add(k.namn); } catch {}

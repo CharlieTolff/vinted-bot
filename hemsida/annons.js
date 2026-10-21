@@ -1,7 +1,60 @@
 // Skriv beskrivning: gör en färdig annonstext att kopiera in på Vinted eller
 // Tradera. Strukturen: inledning, punkter med skick, material, detaljer och
 // mått, ärlig rad om eventuella fel och en kort avslutning.
-(() => {
+// Bilder: texten på lappen läses med Tesseract (OCR) i webbläsaren för märke,
+// storlek och material, och färgen tas från bilden på plagget. Inget skickas
+// någonstans.
+(rot => {
+const MATERIAL = [[/^(merino)/, "merinoull"], [/^(cotton|coton|baumwolle|bomull|algod)/, "bomull"], [/^(wool|wolle|laine|ull|lana)/, "ull"],
+  [/^(cashmere|kaschmir|kashmir|cachemire)/, "kashmir"], [/^(polyester|polyest)/, "polyester"], [/^(elastan|spandex|lycra)/, "elastan"],
+  [/^(viscose|viskos|viscosa)/, "viskos"], [/^(polyamid|nylon)/, "polyamid"], [/^(linen|leinen|lin$|linne)/, "linne"], [/^(silk|seide|soie|siden)/, "siden"],
+  [/^(acryl|akryl)/, "akryl"], [/^(leather|leder|cuir|läder)/, "läder"], [/^(lyocell|tencel)/, "lyocell"], [/^(modal)/, "modal"], [/^(down|daun|dun)$/, "dun"], [/^(feather|federn|fjäder)/, "fjäder"]];
+const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "");
+function tolka(text, marken){
+  const rader = String(text || "").split(/\r?\n/).map(r => r.replace(/\s+/g, " ").trim()).filter(Boolean);
+  const hel = rader.join("\n"), ut = {marke: "", storlek: "", material: ""};
+  const nh = norm(hel);
+  for (const m of marken || []) { const n = norm(m); if (n.length >= 3 && nh.includes(n) && n.length > norm(ut.marke).length) ut.marke = m; }
+  const s = hel.match(/(?:size|storlek|taille|gr(?:ö|o)(?:ß|ss)e|talla|gr\.)[:\s]*(W\s?\d{2}(?:\s?L\s?\d{2})?|XXXL|XXL|XL|XS|XXS|[SML]\b|\d{2,3}\b)/i)
+    || hel.match(/\b(W\s?\d{2}\s?L\s?\d{2})\b/i)
+    || hel.match(/^[^A-Za-z0-9]*(XXXL|XXL|XL|XS|XXS|S|M|L)(?=[\s\/|·.,-]|$)/m)
+    || hel.match(/\b(?:EUR?|EU)\s?(\d{2})\b/);
+  if (s) ut.storlek = s[1].toUpperCase().replace(/\s+/g, " ");
+  // Lappar upprepar samma sak på flera språk, så sluta när det blir 100 %.
+  const delar = [], sett = new Set();
+  let summa = 0;
+  for (const m of hel.matchAll(/(\d{1,3})\s*%\s*([A-Za-zÅÄÖåäöéÉüÜ]+)/g)) {
+    const p = +m[1], ord = m[2].toLowerCase();
+    const hit = MATERIAL.find(([r]) => r.test(ord));
+    if (summa >= 100) break;
+    if (!hit || p < 1 || p > 100 || summa + p > 100 || sett.has(hit[1])) continue;
+    sett.add(hit[1]); delar.push([p, hit[1]]); summa += p;
+  }
+  if (delar.length) ut.material = delar.sort((a, b) => b[0] - a[0]).map(([p, n]) => `${p} % ${n}`).join(", ");
+  return ut;
+}
+function fargnamn(r, g, b){
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2, d = mx - mn;
+  const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  let h = 0;
+  if (d) h = mx === r ? 60 * (((g - b) / d) % 6) : mx === g ? 60 * ((b - r) / d + 2) : 60 * ((r - g) / d + 4);
+  if (h < 0) h += 360;
+  if (l < 0.13) return "Svart";
+  if (s < 0.14 || (s < 0.22 && l < 0.25)) return l > 0.86 ? "Vit" : l > 0.68 ? "Ljusgrå" : l < 0.3 ? "Mörkgrå" : "Grå";
+  if (l > 0.9) return "Vit";
+  if (h < 14 || h >= 345) return l < 0.3 ? "Vinröd" : l > 0.72 ? "Rosa" : "Röd";
+  if (h < 45) return (l > 0.68 && s < 0.6) || (l > 0.6 && s < 0.4) ? "Beige" : l < 0.42 || s < 0.45 ? "Brun" : "Orange";
+  if (h < 68) return l > 0.65 && s < 0.6 ? "Beige" : l < 0.4 || s < 0.4 ? "Olivgrön" : "Gul";
+  if (h < 165) return l < 0.28 ? "Mörkgrön" : s < 0.3 ? "Olivgrön" : l > 0.68 ? "Ljusgrön" : "Grön";
+  if (h < 200) return l < 0.3 ? "Petrol" : "Turkos";
+  if (h < 250) return l < 0.3 ? "Marinblå" : l > 0.68 ? "Ljusblå" : "Blå";
+  if (h < 290) return l > 0.7 ? "Ljuslila" : "Lila";
+  return l < 0.3 ? "Vinröd" : "Rosa";
+}
+rot.AnnonsTolka = tolka;
+rot.AnnonsFarg = fargnamn;
+if (typeof document === "undefined") { if (typeof module !== "undefined") module.exports = {tolka, fargnamn}; return; }
 const $ = id => document.getElementById(id);
 const SKICK = {
   "Ny med lappar": "Ny med lappar kvar, aldrig använd",
@@ -49,6 +102,104 @@ async function kopiera(){
   knapp.textContent = "Kopierad ✓";
   setTimeout(() => { knapp.textContent = "Kopiera beskrivningen"; }, 1800);
 }
+// ---------- Fyll i från bilder ----------
+const TESS = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+let tessLaddas = null;
+function laddaTesseract(){
+  if (window.Tesseract) return Promise.resolve();
+  return tessLaddas ??= new Promise((ok, fel) => {
+    const s = document.createElement("script");
+    s.src = TESS; s.onload = ok;
+    s.onerror = () => { tessLaddas = null; fel(new Error("ladda")); };
+    document.head.appendChild(s);
+  });
+}
+function rita2(bild, max){
+  const f = Math.min(1, max / Math.max(bild.width, bild.height));
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(bild.width * f)); c.height = Math.max(1, Math.round(bild.height * f));
+  const g = c.getContext("2d", {willReadFrequently: true});
+  g.drawImage(bild, 0, 0, c.width, c.height);
+  return [c, g];
+}
+function gra(bild){
+  // Gråskala, och ljus text på mörk lapp görs om till mörk text på ljus.
+  const [c, g] = rita2(bild, 2000);
+  const px = g.getImageData(0, 0, c.width, c.height), d = px.data;
+  let sum = 0;
+  for (let i = 0; i < d.length; i += 4) sum += d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+  const mork = sum / (d.length / 4) < 110;
+  for (let i = 0; i < d.length; i += 4) {
+    let l = d[i] * 0.299 + d[i + 1] * 0.587 + d[i + 2] * 0.114;
+    if (mork) l = 255 - l;
+    d[i] = d[i + 1] = d[i + 2] = l;
+  }
+  g.putImageData(px, 0, 0);
+  return c;
+}
+function plaggfarg(bild){
+  // Mitten av bilden (bålen), utan pixlar som liknar bakgrunden runt kanten.
+  const [c, g] = rita2(bild, 96), w = c.width, h = c.height, d = g.getImageData(0, 0, w, h).data;
+  const kant = [];
+  for (let x = 0; x < w; x++) for (const y of [0, h - 1]) kant.push(4 * (y * w + x));
+  for (let y = 0; y < h; y++) for (const x of [0, w - 1]) kant.push(4 * (y * w + x));
+  const med = k => { const v = kant.map(i => d[i + k]).sort((a, b) => a - b); return v[v.length >> 1]; };
+  const bg = [med(0), med(1), med(2)];
+  const hinkar = new Map();
+  for (let y = Math.floor(h * 0.3); y < h * 0.72; y++) for (let x = Math.floor(w * 0.28); x < w * 0.72; x++) {
+    const i = 4 * (y * w + x), r = d[i], gg = d[i + 1], b = d[i + 2];
+    if (Math.hypot(r - bg[0], gg - bg[1], b - bg[2]) < 45) continue;
+    const k = (r >> 5) * 64 + (gg >> 5) * 8 + (b >> 5), e = hinkar.get(k) || [0, 0, 0, 0];
+    e[0]++; e[1] += r; e[2] += gg; e[3] += b; hinkar.set(k, e);
+  }
+  const bast = [...hinkar.values()].sort((a, b) => b[0] - a[0])[0];
+  if (!bast || bast[0] < 20) return "";
+  return fargnamn(bast[1] / bast[0], bast[2] / bast[0], bast[3] / bast[0]);
+}
+const lista = v => v.length > 1 ? v.slice(0, -1).join(", ") + " och " + v[v.length - 1] : v.join("");
+async function franBilder(filer){
+  filer = [...filer].filter(f => /^image\//.test(f.type)).slice(0, 4);
+  if (!filer.length) return;
+  const zon = $("abzon"), rubrik = zon.querySelector("b"), notis = $("abnotis"), text = rubrik.textContent;
+  const visa = t => { rubrik.textContent = t; };
+  zon.classList.add("laser"); notis.hidden = true;
+  try {
+    visa("Läser bilderna …");
+    await laddaTesseract();
+    const worker = await Tesseract.createWorker(["swe", "eng"], 1);
+    const lasta = [];
+    for (let n = 0; n < filer.length; n++) {
+      visa(filer.length > 1 ? `Läser bild ${n + 1} av ${filer.length} …` : "Läser bilden …");
+      const bild = await createImageBitmap(filer[n]);
+      const {data} = await worker.recognize(gra(bild));
+      const ord = (data.words || []).filter(w => w.confidence > 60 && /[a-zåäö]{2}|\d+\s*%/i.test(w.text)).length;
+      lasta.push({bild, text: data.text || "", ord});
+    }
+    await worker.terminate();
+    const marken = window.BokforMarken ? window.BokforMarken() : [];
+    const t = tolka(lasta.map(l => l.text).join("\n"), marken);
+    // Bilden med minst text är bilden på själva plagget.
+    const plagg = [...lasta].sort((a, b) => a.ord - b.ord)[0];
+    const farg = lasta.length > 1 || plagg.ord < 4 ? plaggfarg(plagg.bild) : "";
+    const fyllt = [];
+    const satt = (id, v, namn) => { if (v) { $(id).value = v; fyllt.push(namn); } };
+    satt("abmarke", t.marke, "märke"); satt("abstorlek", t.storlek, "storlek");
+    satt("abmaterial", t.material, "material"); satt("abfarg", farg, "färg");
+    rita();
+    const saknas = [!t.marke && "märke", !t.storlek && "storlek", !t.material && "material"].filter(Boolean);
+    notis.innerHTML = fyllt.length
+      ? `Jag fyllde i ${lista(fyllt)}. Kolla att det stämmer och skriv vad det är för plagg${saknas.length ? `, och ${lista(saknas)} om du vet` : ""}.`
+      : "Jag kunde inte läsa något från bilderna. Prova en skarp bild på lappen, rakt framifrån och i bra ljus, eller fyll i själv.";
+    notis.hidden = false;
+    if (!$("abplagg").value) $("abplagg").focus();
+  } catch (e) {
+    console.error(e);
+    notis.textContent = "Det gick inte att läsa bilderna just nu. Fyll i uppgifterna själv i stället.";
+    notis.hidden = false;
+  } finally {
+    visa(text); zon.classList.remove("laser"); $("abfil").value = "";
+  }
+}
 function init(){
   if (!$("abform")) return;
   $("abskick").innerHTML = Object.keys(SKICK).map(s => `<button type="button" class="chip" data-s="${s}">${s}</button>`).join("");
@@ -56,8 +207,13 @@ function init(){
   $("abform").addEventListener("change", rita);
   $("abskick").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (!b) return; skick = b.dataset.s; rita(); });
   $("abkopiera").addEventListener("click", kopiera);
-  $("abrensa").addEventListener("click", () => { $("abform").reset(); skick = "Mycket bra"; rita(); });
+  $("abrensa").addEventListener("click", () => { $("abform").reset(); skick = "Mycket bra"; $("abnotis").hidden = true; rita(); });
+  $("abfil").addEventListener("change", e => franBilder(e.target.files));
+  const zon = $("abzon");
+  zon.addEventListener("dragover", e => { e.preventDefault(); zon.classList.add("over"); });
+  zon.addEventListener("dragleave", () => zon.classList.remove("over"));
+  zon.addEventListener("drop", e => { e.preventDefault(); zon.classList.remove("over"); franBilder(e.dataTransfer.files); });
   rita();
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
-})();
+})(typeof window !== "undefined" ? window : globalThis);
