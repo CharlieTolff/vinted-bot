@@ -11,9 +11,13 @@ const MODELLER = {
 };
 const MAX_SIDA = 2400;  // större bilder krymps, Vinted och Tradera visar ändå inte mer
 
-// Utseende (samma värden som vit_bakgrund.py)
-const VIT_MITT = 250, VIT_KANT = 224, SIDLJUS = 0.04, BG_TON = [1.0, 0.96, 0.91];
-const SKUGGSTYRKA = 0.85, VITBALANS = 0.6, SKUGGLYFT = 0.85, KONTRAST = 0.05, KASTSKUGGA = 0.07;
+// Utseende. Grunden kommer från vit_bakgrund.py, men här står motivet en bit
+// framför en papprulle i en studio: väggens gamla skuggor tonas ner och
+// ersätts av en mjuk kastskugga snett bakom, ljuset från motivets kanter
+// sprids lite (som i en riktig bild) och bakgrunden får samma brus som bilden.
+const VIT_MITT = 250, VIT_KANT = 222, SIDLJUS = 0.05, BG_TON = [1.0, 0.96, 0.91];
+const SKUGGSTYRKA = 0.3, VITBALANS = 0.6, SKUGGLYFT = 0.85, KONTRAST = 0.05;
+const KASTSKUGGA = 0.2, KAST_X = 0.03, KAST_Y = 0.02, KAST_MJUK = 1 / 20, NARSKUGGA = 0.06, LJUSKANT = 0.35;
 const LUM = [0.299, 0.587, 0.114];
 
 const $ = id => document.getElementById(id);
@@ -195,11 +199,23 @@ async function gorVit(bild, w, h, steg){
     const lok = tackning[i] > 0.05 ? ljusLok[i] : ljusStor[i], t = klipp((tackning[i] - 0.1) / 0.4, 0, 1);
     kvot[i] = klipp((t * lok + (1 - t) * ljusStor[i]) / Math.max(ljusStor[i], 1), 0.8, 1);
   }
-  const skugga = gauss(kvot, w, h, sm / 100), nara = gauss(alfa, w, h, sm / 40);
-  // Svag mjuk kastskugga, som när man står en bit framför en papprulle.
-  const dx = Math.trunc(sm * 0.006), dy = Math.trunc(sm * 0.008), forskj = new Float32Array(N);
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) forskj[y * w + x] = alfa[((y - dy + h) % h) * w + (x - dx + w) % w];
-  const kast = gauss(forskj, w, h, sm / 70);
+  const skugga = gauss(kvot, w, h, sm / 50), nara = gauss(alfa, w, h, sm / 40);
+  // Kastskugga: ljuset kommer snett ovanifrån från vänster och motivet står
+  // en bit från väggen, så skuggan hamnar till höger och nedåt och blir mjuk.
+  // Utanför bilden fortsätter motivet rakt ut (armar och ben som skärs av).
+  // Ett plagg som ligger eller hänger är nära underlaget, så skuggan blir kortare och skarpare.
+  const nar = lage === "person" ? 1 : 0.3;
+  const dx = Math.round(sm * KAST_X * nar), dy = Math.round(sm * KAST_Y * nar), forskj = new Float32Array(N);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) forskj[y * w + x] = alfa[klipp(y - dy, 0, h - 1) * w + klipp(x - dx, 0, w - 1)];
+  const kast = gauss(forskj, w, h, sm * KAST_MJUK * nar), narKast = gauss(alfa, w, h, sm / 90);
+  // Ljuskant: bakgrundens ljus sprids in en liten bit över motivets kant.
+  const kant = gauss(alfa.map(a => 1 - a), w, h, Math.max(1.5, sm / 350));
+  // Brus: bakgrunden får samma korn som resten av bilden, annars ser den
+  // för slät och redigerad ut.
+  const hp = gauss(lum, w, h, 1.2), avv = [];
+  for (let i = 0; i < N; i += 7) if (alfa[i] > 0.97) avv.push(Math.abs(lum[i] - hp[i]));
+  avv.sort((p, q) => p - q);
+  const brus = klipp(avv.length > 200 ? 1.4826 * avv[avv.length >> 1] * 1.6 : 1.5, 0.8, 5);
   await vila();
 
   // Studioljus: mjuk radiell avtoning från strax ovanför mitten.
@@ -208,7 +224,7 @@ async function gorVit(bild, w, h, steg){
     const i = y * w + x;
     const r = Math.hypot((x - w / 2) / (w * 0.75), (y - h * 0.42) / (h * 0.85));
     const studio = (VIT_MITT - (VIT_MITT - VIT_KANT) * Math.pow(klipp(r, 0, 1), 1.6)) * (1 + SIDLJUS / 2 - SIDLJUS * x / w);
-    const sk = (1 - SKUGGSTYRKA * klipp(nara[i] * 6, 0, 1) * (1 - skugga[i])) * (1 - KASTSKUGGA * kast[i]);
+    const sk = (1 - SKUGGSTYRKA * klipp(nara[i] * 6, 0, 1) * (1 - skugga[i])) * (1 - KASTSKUGGA * kast[i]) * (1 - NARSKUGGA * narKast[i]);
     ljus[i] = studio * sk;  // sparas så att bakgrundsfärgen kan bytas utan att räkna om allt
     for (let k = 0; k < 3; k++) bg[k][i] = studio * sk * BG_TON[k];
   }
@@ -240,13 +256,14 @@ async function gorVit(bild, w, h, steg){
   }
 
   // Lyft skuggorna lite och ge en svag kontrastkurva, lägg ihop med bakgrunden.
-  const ut = [new Float32Array(N), new Float32Array(N), new Float32Array(N)];
+  const ut = [new Float32Array(N), new Float32Array(N), new Float32Array(N)], bak = new Float32Array(N);
   for (let i = 0; i < N; i++) {
     const f = [0, 1, 2].map(k => klipp(fg[k][i] * forst[k], 0, 255));
     const fl = Math.max(f[0] * LUM[0] + f[1] * LUM[1] + f[2] * LUM[2], 0.5) / 255;
     let nl = Math.pow(fl, SKUGGLYFT); nl += KONTRAST * nl * (1 - nl) * (nl - 0.5) * 4;
-    const a = alfa[i], korn = slump() * 1.2 * (1 - a);
-    for (let k = 0; k < 3; k++) ut[k][i] = klipp(Math.round(klipp(f[k] * nl / fl, 0, 255) * a + bg[k][i] * (1 - a) + korn), 0, 255);
+    const a = alfa[i], lk = a * LJUSKANT * kant[i], korn = slump() * brus * (1 - a);
+    bak[i] = 1 - a + lk;
+    for (let k = 0; k < 3; k++) ut[k][i] = klipp(Math.round(klipp(f[k] * nl / fl, 0, 255) * (a - lk) + bg[k][i] * (1 - a + lk) + korn), 0, 255);
   }
   await vila();
 
@@ -259,7 +276,7 @@ async function gorVit(bild, w, h, steg){
     }
   }
   for (let i = 0; i < N; i++) { px.data[i * 4] = ut[0][i]; px.data[i * 4 + 1] = ut[1][i]; px.data[i * 4 + 2] = ut[2][i]; px.data[i * 4 + 3] = 255; }
-  return {px, alfa, ljus, w, h};
+  return {px, alfa, bak, ljus, w, h};
 }
 // ---------- Bakgrundsfärg ----------
 // Färgen anges som den ljusaste punkten på bakgrunden; skuggor och studioljus
@@ -275,9 +292,9 @@ const FARGER = [
 ];
 const hex = c => "#" + c.map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
 function farga(r, farg){
-  const {px, alfa, ljus, w, h, bas} = r, d = px.data, c0 = FARGER[0][1];
+  const {px, bak, ljus, w, h, bas} = r, d = px.data, c0 = FARGER[0][1];
   for (let i = 0, n = w * h; i < n; i++) {
-    const t = (1 - alfa[i]) * ljus[i] / VIT_MITT;
+    const t = bak[i] * ljus[i] / VIT_MITT;
     for (let k = 0; k < 3; k++) d[i * 4 + k] = bas[i * 4 + k] + t * (farg[k] - c0[k]);
   }
   const c = new OffscreenCanvas(w, h);
