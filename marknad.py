@@ -966,7 +966,13 @@ def gamla_vyer(bors, alarm):
         for v in salda.values():
             v.sort()
         uh = hist.get(kat["id"]) or []
-        ute = {p[0]: p for p in uh}
+        uh_dagar = [p[0] for p in uh]
+
+        def ute_for(d):
+            """Genomgången av aktiva annonser den dagen, eller den senaste de två dagarna innan (en ny dag
+            börjar innan dagens genomgång är klar)."""
+            i = bisect.bisect_right(uh_dagar, d) - 1
+            return uh[i] if i >= 0 and uh_dagar[i] >= dagstr(tid(d) - 2 * 86400) else None
         ute_nu = Counter(uh[-1][3]) if uh else Counter()
         # Märkena med egna diagram: de som sålt mest, de som har flest annonser ute och alla alarm-märken.
         topp = [m for m in sorted(salda, key=lambda m: -len(salda[m])) if m != M.UTAN and len(salda[m]) >= 3][:GAMLA_TOPP]
@@ -1022,7 +1028,7 @@ def gamla_vyer(bors, alarm):
                 b = bisect.bisect_right(slut, d)
                 vecka = b - bisect.bisect_left(slut, dagstr(tid(d) - 6 * 86400))
                 priser = [p for _, p in v[a:b]]
-                u = ute.get(d)
+                u = ute_for(d)
                 n_ute = round(u[3].get(m, 0) * u[1] / u[2]) if u and u[2] else None
                 pts.append([d, b - a, median(priser), kvantil(priser, 0.25), 0, vecka, n_ute])
             nya_m[m] = gles([p for p in gamla.get(m) or [] if forsta <= p[0] < dagar[0]] + pts)
