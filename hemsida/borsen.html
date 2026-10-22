@@ -231,7 +231,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
   <div class="inre">
     <div>
       <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
-      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen går igenom <span id="antaltext">tusentals</span> annonser på Vinted och Tradera, flera gånger om dagen. Du ser vad märken säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
+      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märken säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
         <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
@@ -241,7 +241,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
       <div class="fortroende" id="fortroende"><span><span class="puls"></span>Mäts flera gånger om dagen</span></div>
     </div>
     <div class="lista" id="hjaltelista">
-      <div class="huvud"><h3 id="hjalterubrik">Ökar mest just nu</h3><span id="hjalteperiod">Mot 30 dagarna innan</span></div>
+      <div class="huvud"><h3>Ökar mest just nu</h3><span id="hjalteperiod">Senaste månaden</span></div>
       <div id="vinnare"><div class="rad"><span class="n">Laddar marknaden…</span></div></div>
       <div class="fot"><span id="hjaltefot">Uppdateras löpande</span><a class="lank" href="app.html">Se alla märken →</a></div>
     </div>
@@ -293,11 +293,11 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
     </div>
     <div class="tva">
       <div class="lista">
-        <div class="huvud"><h3>Mest sålda</h3><span id="saldainfo">Antal sålda och vanligt pris, senaste 30 dagarna</span></div>
+        <div class="huvud"><h3>Mest sålda</h3><span id="saldainfo">Antal sålda och vanligt pris, senaste veckan</span></div>
         <div id="salda"></div>
       </div>
       <div class="lista">
-        <div class="huvud"><h3 id="forlorarerubrik">Minskar mest</h3><span id="forlorareinfo">Mot 30 dagarna innan</span></div>
+        <div class="huvud"><h3>Minskar mest</h3><span>Senaste månaden</span></div>
         <div id="forlorare"></div>
       </div>
     </div>
@@ -312,19 +312,20 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
       <p>Allt i börsen kommer från annonser som ligger ute, eller har sålts, på riktigt. Så här mycket mättes senast, och så här räknas det.</p>
     </div>
     <div class="oppet">
-      <div class="stat"><b class="tal" id="statannonser">–</b><span>sålda och osålda annonser på Tradera senaste 30 dagarna</span></div>
-      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda plagg i historiken, med märke och slutpris</span></div>
+      <div class="stat"><b class="tal" id="statannonser">–</b><span>annonser i senaste mätningen av kategorierna</span></div>
+      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser på Tradera i historiken, alla räknade</span></div>
       <div class="stat"><b class="tal" id="statmarken">–</b><span>märken som följs i <span id="statkat">–</span> kategorier</span></div>
     </div>
     <div class="metod">
       <div><h3>Så räknas det</h3><ul>
-        <li>Allt som säljs, och inte säljs, i herrkategorierna på Tradera hämtas flera gånger om dagen, annons för annons.</li>
-        <li>Märket är det säljaren valt. Varianter som Polo Ralph Lauren och Ralph Lauren räknas ihop, och damplagg räknas inte.</li>
-        <li>Slutpriserna är vad saker faktiskt sålts för, inte vad folk begär. Från Vinted hämtas vad det kostar att köpa.</li>
+        <li>På Tradera räknas varje såld annons i kategorin, med slutpris och märke. Inga stickprov.</li>
+        <li>Alla annonser som ligger ute på Tradera räknas en gång per dygn, så att det syns vad som säljer mer eller mindre än det finns ute.</li>
+        <li>Samma märke räknas ihop även när det stavas olika, till exempel Polo Ralph Lauren och Ralph Lauren.</li>
+        <li>På Vinted räknas de nyaste annonserna i varje kategori, och vanliga märken för sig.</li>
       </ul></div>
       <div><h3>Det här kan vi inte se</h3><ul>
-        <li>Vinted visar inte vad som sålts, så försäljningen räknas på Tradera. Från Vinted används bara priserna.</li>
-        <li>Tradera visar inte allt bakåt i tiden, så börsen bygger upp historiken själv från och med att den började mäta.</li>
+        <li>Vinted visar inte vad som sålts. En annons som försvinner räknas som såld, men en del är bara borttagna.</li>
+        <li>Vinted räknar bara upp till 960 annonser per sökning, så hur stora kategorierna är uppskattas.</li>
         <li>Skick och storlek varierar, så alla köp blir inte lika bra som snittet. Siffrorna är vägledning, inte en garanti.</li>
       </ul></div>
     </div>
@@ -369,7 +370,7 @@ footer{padding:30px 0 44px;color:var(--svag);font-size:13.5px;text-align:center}
   <div class="inre">
     <div class="rubrik mitt"><h2>Vanliga frågor</h2></div>
     <div class="fragor">
-      <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna som ligger ute på Vinted, Tradera och Plick. Varje dag räknas de nyaste annonserna och de senast sålda i varje kategori, och varje märke räknas dessutom för sig. På Tradera används det som faktiskt sålts och slutpriset.</p></details>
+      <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna på Vinted, Tradera och Plick. På Tradera räknas allt som sålts i varje kategori, med slutpriset, och allt som ligger ute. På Vinted och Plick räknas de nyaste annonserna och vanliga märken för sig.</p></details>
       <details><summary>Hur räknas vinsten?</summary><p>Vinsten är vad märket brukar säljas för på Tradera, minus vad du betalar. "Brukar säljas för" är mittenpriset bland de plagg som sålts, så att några få dyra eller billiga inte drar iväg siffran. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
       <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som stickat, skjortor, dunjackor, jeans och skor.</p></details>
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
@@ -407,6 +408,7 @@ const pct = (v, d = 1) => v.toLocaleString("sv-SE", {minimumFractionDigits: d, m
 const pe = v => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " %";
 const kr = v => Math.round(v).toLocaleString("sv-SE") + " kr";
 const dag = s => new Date(s + "T12:00:00Z").getTime();
+const INTE = ["övriga", "vintage", "okänt", "no brand", "handgjord", "diverse"];
 
 $("prisbelopp").textContent = PRIS;
 $("ctapris").textContent = BETALLANK ? `${PRIS} i månaden · ingen bindningstid` : `Gratis under lanseringen · sedan ${PRIS} i månaden`;
@@ -422,15 +424,37 @@ function spark(pts, upp){
   const X = i => 2 + (w - 4) * i / (pts.length - 1), Y = y => h - 3 - (h - 6) * (y - y0) / ((y1 - y0) || 1);
   return `<svg class="spark" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${upp ? "var(--gron)" : "var(--rod)"}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="${pts.map((p, i) => X(i).toFixed(1) + "," + Y(p).toFixed(1)).join(" ")}"/></svg>`;
 }
-function veckor(B, kat, m){
-  // Sålda per hel vecka, för de små kurvorna.
-  const v = (B.veckor || {})[kat];
-  if (!v || !v.m[m]) return [];
-  return v.v.map((d, i) => [dag(d), v.m[m][i]]).filter(([t, x]) => x && t + 6.5 * 864e5 <= Date.now()).map(([, x]) => x[0]);
+function rad(x){
+  const upp = x.d >= 0;
+  return `<div class="rad tre"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${pct(x.nu)} av ${x.kalla === "tradera" ? "det sålda" : "annonserna"}</small></span><span class="spark">${spark(x.serie, upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
 }
-const andring = x => x.sf >= 10 ? pe(100 * (x.s - x.sf) / x.sf) : (x.s >= x.sf ? "+" : "−") + Math.abs(x.s - x.sf) + " st";
-function rad(x, B, varde, upp){
-  return `<div class="rad tre"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${x.s} sålda senaste 30 dagarna</small></span><span class="spark">${spark(veckor(B, x.kat.id, x.m), upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${varde}</span></div>`;
+
+function andelsPunkter(B, kalla, kat){
+  if (kalla === "tradera") {
+    const v = ((B.tradera_veckor || {})[kat] || []).filter(p => p[1] >= 5);
+    return v.length > 1 && dag(v.at(-1)[0]) + 7 * 864e5 > Date.now() ? v.slice(0, -1) : v;
+  }
+  return ((B.andel || {})[kalla] || {})[kat] || [];
+}
+function forandringar(B){
+  // Andelsändring senaste månaden för varje märke i varje kategori (Vinted och Tradera).
+  const ut = [];
+  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
+    const pts = andelsPunkter(B, kalla, kat.id);
+    if (pts.length < 2) continue;
+    const slut = dag(pts.at(-1)[0]), inom = pts.filter(p => dag(p[0]) >= slut - 30 * 864e5);
+    if (inom.length < 2) continue;
+    for (const m of Object.keys(inom.at(-1)[2])) {
+      if (INTE.includes(m.toLowerCase())) continue;
+      const serie = inom.map(p => p[2][m] ? 100 * p[2][m][0] / p[1] : null).filter(v => v != null);
+      if (serie.length < 2) continue;
+      const nu = serie.at(-1), d = nu - serie[0];
+      // Märken som bara sålt ett par stycken förra veckan hoppar för mycket för att räknas som trend.
+      if (nu < 1 || Math.abs(d) < 0.2 || inom.at(-1)[2][m][0] < 3) continue;
+      ut.push({m, kat, kalla, nu, d, serie});
+    }
+  }
+  return ut;
 }
 function unika(lista, n){
   const sett = new Set(), ut = [];
@@ -442,75 +466,73 @@ async function start(){
   let B;
   try { B = await fetch("../bors.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
   if (!B || !B.kategorier) return;
-  const kats = B.kategorier, M = (B.marknad || {}).kategorier || {};
-  // Alla märken i alla kategorier: sålda och slutpris på Tradera de senaste 30 dagarna.
-  const alla = [];
-  for (const k of kats) for (const r of (M[k.id] || {}).marken || []) alla.push({...r, kat: k});
+  const kats = B.kategorier;
 
   // Förtroende: hur mycket som mäts
-  let affarer = 0, saldaTotalt = 0;
-  for (const k of Object.values(M)) affarer += k.s + (k.o || 0);
-  for (const v of Object.values(B.veckor || {})) for (const x of (v.m || {})["*"] || []) saldaTotalt += x[0];
-  const marken = new Set(alla.map(r => r.m)).size;
-  const t = B.marknad && B.marknad.uppdaterad ? new Date(B.marknad.uppdaterad) : B.uppdaterad ? new Date(B.uppdaterad) : null;
+  const marken = new Set();
+  let annonser = 0;
+  for (const kalla of Object.keys(B.andel || {})) for (const k of kats) {
+    const p = ((B.andel[kalla] || {})[k.id] || []).at(-1);
+    if (!p) continue;
+    annonser += p[1];
+    Object.keys(p[2]).forEach(m => marken.add(m));
+  }
+  const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
   $("fortroende").innerHTML = (t ? `<span><span class="puls"></span>Uppdaterad <b>${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</b></span>` : "") +
-    `<span><b>${affarer.toLocaleString("sv-SE")}</b> affärer senaste 30 dagarna</span><span><b>${marken.toLocaleString("sv-SE")}</b> märken</span>`;
-  $("antaltext").textContent = affarer > 1000 ? affarer.toLocaleString("sv-SE") : "tusentals";
-  $("statannonser").textContent = affarer.toLocaleString("sv-SE");
-  $("statmarken").textContent = marken.toLocaleString("sv-SE");
+    `<span><b>${annonser.toLocaleString("sv-SE")}</b> annonser</span><span><b>${marken.size.toLocaleString("sv-SE")}</b> märken</span>`;
+  $("antaltext").textContent = annonser > 1000 ? annonser.toLocaleString("sv-SE") : "tusentals";
+  $("statannonser").textContent = annonser.toLocaleString("sv-SE");
+  $("statmarken").textContent = marken.size.toLocaleString("sv-SE");
   $("statkat").textContent = kats.length;
+  let saldaTotalt = 0;
+  for (const v of Object.values(B.tradera_veckor || {})) for (const p of v) saldaTotalt += p[1];
   $("statsalda").textContent = saldaTotalt ? saldaTotalt.toLocaleString("sv-SE") : "–";
   $("katlista").textContent = "Herr: " + kats.map(k => k.namn.toLowerCase()).join(", ") + ". Fler kategorier läggs till löpande.";
 
-  // Ökar och minskar mest: sålda de senaste 30 dagarna mot de 30 dagarna innan. Innan det finns
-  // 60 dagars historik visas de mest sålda och de bästa köplägena i stället.
-  const jamfor = alla.filter(x => x.sf != null && x.s + x.sf >= 8);
-  const vinnare = unika(jamfor.filter(x => x.s > x.sf).sort((a, b) => (b.s - b.sf) - (a.s - a.sf)), 5);
-  const forlorare = unika(jamfor.filter(x => x.s < x.sf).sort((a, b) => (a.s - a.sf) - (b.s - b.sf)), 5);
-  if (vinnare.length >= 3) {
-    $("vinnare").innerHTML = vinnare.map(x => rad(x, B, andring(x), true)).join("");
-    $("hjaltefot").textContent = `${vinnare[0].m} säljer mer i ${vinnare[0].kat.namn.toLowerCase()}`;
-  } else {
-    const mest = unika([...alla].sort((a, b) => b.s - a.s), 5);
-    $("hjalterubrik").textContent = "Säljer mest just nu";
-    $("hjalteperiod").textContent = "Senaste 30 dagarna";
-    $("vinnare").innerHTML = mest.length ? mest.map(x => rad(x, B, x.p ? kr(x.p) : "", true)).join("") : `<div class="rad"><span class="n">Visas när marknaden mätts.</span></div>`;
-  }
-  if (forlorare.length >= 3) {
-    $("forlorare").innerHTML = forlorare.map(x => rad(x, B, andring(x), false)).join("");
-  } else {
-    const lagen = unika(alla.filter(x => x.s >= 5 && x.p && x.v && x.v.l && x.p - x.v.l > 0).sort((a, b) => (b.p - b.v.l) - (a.p - a.v.l)), 5);
-    $("forlorarerubrik").textContent = "Bästa köplägena";
-    $("forlorareinfo").textContent = "Köp på Vinted, sälj på Tradera";
-    $("forlorare").innerHTML = lagen.length ? lagen.map(x => `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · köp under ${kr(x.v.l)}, säljs för ${kr(x.p)}</small></span><span class="spark"></span><span class="v tal"></span><span class="f tal upp">+${kr(x.p - x.v.l)}</span></div>`).join("")
-      : `<div class="rad"><span class="n">Visas när marknaden mätts några dagar till.</span></div>`;
-  }
+  // Vinnare och förlorare
+  const f = forandringar(B);
+  const vinnare = unika([...f].filter(x => x.d > 0).sort((a, b) => b.d - a.d), 5);
+  const forlorare = unika([...f].filter(x => x.d < 0).sort((a, b) => a.d - b.d), 5);
+  $("vinnare").innerHTML = vinnare.length ? vinnare.map(rad).join("") : `<div class="rad"><span class="n">Vinnarna visas när marknaden mätts några dagar till.</span></div>`;
+  $("forlorare").innerHTML = forlorare.length ? forlorare.map(rad).join("") : `<div class="rad"><span class="n">Visas när marknaden mätts några dagar till.</span></div>`;
+  if (vinnare.length) $("hjaltefot").textContent = `${vinnare[0].m} har ökat mest i ${vinnare[0].kat.namn.toLowerCase()}`;
 
-  // Löpande band med de mest sålda märkena och vad de går för
-  const band = unika([...alla].filter(x => x.p && x.s >= 5).sort((a, b) => b.s - a.s), 16);
+  // Löpande band
+  const band = unika([...f].sort((a, b) => Math.abs(b.d) - Math.abs(a.d)), 16);
   if (band.length >= 4) {
-    const html = band.map(x => `<span><b>${esc(x.m)}</b><span class="tal">${kr(x.p)}</span>${x.sf != null && x.s + x.sf >= 8 && x.s !== x.sf ? `<span class="${x.s > x.sf ? "upp" : "ned"} tal">${x.s > x.sf ? "▲" : "▼"} ${andring(x)}</span>` : ""}</span>`).join("");
+    const html = band.map(x => `<span><b>${esc(x.m)}</b><span class="${x.d > 0 ? "upp" : "ned"} tal">${x.d > 0 ? "▲" : "▼"} ${pe(x.d)}</span></span>`).join("");
     $("spar").innerHTML = html + html;
     $("band").hidden = false;
   }
 
-  // Mest sålda på Tradera de senaste 30 dagarna, i alla kategorier
-  $("salda").innerHTML = unika([...alla].sort((a, b) => b.s - a.s), 5).map(x =>
-    `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark"></span><span class="v tal">${x.s} st</span><span class="f tal upp">${x.p ? kr(x.p) : ""}</span></div>`).join("") ||
+  // Mest sålda på Tradera senaste veckan, i alla kategorier
+  const salda = [];
+  for (const k of kats) {
+    const v = ((B.tradera_veckor || {})[k.id] || []).filter(p => p[1] >= 5);
+    const p = v.length > 1 ? v.at(-2) : v.at(-1);
+    if (!p) continue;
+    for (const [m, [n, median]] of Object.entries(p[2])) if (!INTE.includes(m.toLowerCase())) salda.push({m, kat: k, n, median, andel: 100 * n / p[1]});
+  }
+  $("salda").innerHTML = unika(salda.sort((a, b) => b.n - a.n), 5).map(x =>
+    `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark"></span><span class="v tal">${x.n} st</span><span class="f tal upp">${x.median ? kr(x.median) : pct(x.andel)}</span></div>`).join("") ||
     `<div class="rad"><span class="n">Inga sålda mätta än.</span></div>`;
 
   // Vinstexemplet: en stickad tröja för 199 kr från en leverantör, med ett märke som sålts många gånger.
-  const INKOP = 199;
-  const kandidater = alla.filter(x => x.p && x.s >= 10 && x.p - INKOP >= 80 && x.p - INKOP < 2000);
-  const ex = kandidater.filter(x => x.kat.id === "stickat").sort((a, b) => b.s - a.s)[0] || kandidater.sort((a, b) => b.s - a.s)[0];
+  const INKOP = 199, mt = (B.marke || {}).tradera || {};
+  const kandidater = [];
+  for (const k of kats) for (const [m, pts] of Object.entries(mt[k.id] || {})) {
+    const p = pts.at(-1);
+    if (p && p[2] && p[1] >= 10 && p[2] - INKOP >= 80 && p[2] - INKOP < 2000 && !INTE.includes(m.toLowerCase())) kandidater.push({k, m, d: p[0], n: p[1], median: p[2]});
+  }
+  const ex = kandidater.filter(x => x.k.id === "stickat").sort((a, b) => b.n - a.n)[0] || kandidater.sort((a, b) => b.n - a.n)[0];
   if (!ex) { $("knot").textContent = "Exemplet fylls i när börsen har mätt slutpriser för några märken."; return; }
-  const plagg = ex.kat.id === "stickat" ? "stickad tröja" : ex.kat.namn.toLowerCase();
+  const vinst = ex.median - INKOP, plagg = ex.k.id === "stickat" ? "stickad tröja" : ex.k.namn.toLowerCase();
   $("kexempel").innerHTML = `Exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>`;
-  $("ksalj").textContent = kr(ex.p);
-  $("ksaljinfo").textContent = `vanligt pris för ${ex.s} sålda på Tradera senaste 30 dagarna`;
-  $("kvinst").textContent = "+" + kr(ex.p - INKOP);
+  $("ksalj").textContent = kr(ex.median);
+  $("ksaljinfo").textContent = `mittenpriset för ${ex.n} sålda på Tradera senaste 30 dagarna`;
+  $("kvinst").textContent = "+" + kr(vinst);
   $("kvinstinfo").textContent = "före frakt och avgifter";
-  $("knot").textContent = `Riktigt slutpris ur börsen${t ? ", uppdaterat " + t.toLocaleDateString("sv-SE", {day: "numeric", month: "long"}) : ""}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
+  $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
 }
 start();
 </script>
