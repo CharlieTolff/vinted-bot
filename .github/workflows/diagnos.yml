@@ -18,6 +18,8 @@ jobs:
           path: |
             bors.json
             tradera_salda.json
+            spaning.json
+            spaning_minne.json
           key: bors-${{ github.run_id }}
           restore-keys: bors-
       - name: Diagnos
