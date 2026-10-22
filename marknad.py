@@ -1,15 +1,19 @@
-"""Märkesbörsen: mäter hur märkena i dina alarm går på andrahandsmarknaden.
+"""Märkesbörsen: mäter vilka märken som säljer på andrahandsmarknaden, för vad och hur snabbt.
 
-Körs efter varje botrunda (var 5:e minut) och hinner några mätningar per gång, så att varje mätning
-görs ungefär en gång per dygn utan att Vinted, Tradera eller Plick får för många frågor på en gång.
+Körs efter varje botrunda och hinner några mätningar per gång, så att varje mätning görs ungefär en gång
+per dygn utan att Vinted, Tradera eller Plick får för många frågor på en gång.
 
-Två sorters mätningar per källa och kategori:
-- andel: ett stickprov av hela kategorin (t.ex. de 960 nyaste koftorna på Vinted, eller de 400 senast
-  sålda på Tradera) och hur stor del av dem som är av varje märke. Det är "procent av marknaden".
-- märke: en sökning på bara ett märke i kategorin, med antal annonser och pris (medianpris och billigaste
-  fjärdedelen). På Tradera är det sålda annonser och slutpriser, alltså riktig efterfrågan.
+Källorna:
+- Tradera: alla sålda och osålda annonser i herrkategorierna (t.ex. Herrkläder > Skjortor), med slutpris,
+  märke (som säljaren valt), när den lades upp och när den såldes. Det är riktiga affärer i Sverige och
+  grunden för det mesta börsen visar: vad märket säljs för, hur många som säljs, hur snabbt och hur stor
+  chansen är att det säljs.
+- Vinted: de ~960 senast upplagda annonserna per kategori (vad som läggs ut och vad det kostar att köpa),
+  och för märkena i dina alarm alla deras annonser i kategorin.
+- Plick: de senaste annonserna per kategori, som jämförelse.
 
-Allt sparas i bors.json, som hemsidans börssida (hemsida/bors.html) visar.
+Märkesnamnen slås ihop (marken.py), så att t.ex. "Polo Ralph Lauren" och "RALPH Ralph Lauren" räknas som
+Ralph Lauren. Allt sammanställs i bors.json under "marknad", som hemsidans börssida (hemsida/bors.html) visar.
 """
 import argparse
 import calendar
@@ -23,35 +27,51 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from collections import Counter
 
+import marken as M
 import vinted_bot as vb
 
 MAPP = os.path.dirname(os.path.abspath(__file__))
 BORS_FIL = os.path.join(MAPP, "bors.json")
-SALDA_FIL = os.path.join(MAPP, "tradera_salda.json")  # sålda Tradera-annonser vi sett (för veckohistorik)
+AFFAR_FIL = os.path.join(MAPP, "tradera_affarer.json")  # alla sålda och osålda Tradera-annonser vi sett
 EGNA_FIL = os.path.join(MAPP, "borskategorier.json")  # kategorier som lagts till från hemsidan
+VERSION = 2
 
-TIDSGRANS_SEK = 240       # så länge mätningarna får hålla på per runda (GitHub kör bara ungefär var halvtimme)
+TIDSGRANS_SEK = 240       # så länge mätningarna får hålla på per runda
 MATT_IGEN_TIMMAR = 20     # en mätning görs om när den är så här gammal
-FORSTA_SALDA_TIMMAR = 3   # ett Vinted-märke som bara mätts en gång mäts om så här snart, så att sålda 24 h syns direkt
+OSALDA_IGEN_TIMMAR = 44   # osålda Tradera-annonser behövs inte lika ofta
+FORSTA_SALDA_TIMMAR = 3   # ett Vinted-märke som bara mätts en gång mäts om så här snart, så att sålda syns direkt
 TOM_IGEN_DAGAR = 5        # märken som inte har något i en kategori mäts bara om så här ofta
-SPARA_DAGAR = 400         # så lång historik sparas
+SPARA_DAGAR = 400         # så lång historik sparas i bors.json
 DAGLIGT_DAGAR = 60        # så länge sparas en punkt per dag, sedan en per vecka
-ANDEL_TOPP = 30           # så många märken sparas per stickprov (plus alla alarm-märken)
+ANDEL_TOPP = 30           # så många märken sparas per Vinted- och Plick-stickprov (plus alla alarm-märken)
 VINTED_SIDOR = 10         # Vinted visar högst 10 sidor à 96 annonser
 VINTED_PER_RUNDA = 40     # högst så många frågor till Vinted per runda, så att alarmen aldrig blir blockerade
-TRADERA_SIDOR = 5         # 80 sålda annonser per sida
+VINTED_KOLLA = 3          # så många försvunna annonser per märke som kollas om de verkligen sålts
 PLICK_SIDOR = 4           # 24 annonser per sida
+FONSTER = 30              # börsen visar de senaste 30 dagarna och jämför med 30 dagar innan
+TRADERA_STARTAD = 35      # varje dag hämtas alla annonser som lagts upp de senaste 35 dagarna
+TRADERA_BAKAT = 120       # första gången hämtas så här långt bak, några sidor per runda
+TRADERA_BAKAT_SIDOR = 20  # så många sidor bakåt per runda
+TRADERA_MAX_SIDOR = 125   # Tradera visar högst 125 sidor à 80 annonser
+AFFAR_DAGAR = 200         # så länge Tradera-affärerna sparas
+TITEL_DAGAR = 130         # så länge titlarna sparas (för att hitta märket igen om märkeslistan blir bättre)
+TRADERA_HERR = {302074, 340304}  # Traderas Herrkläder och Herrskor
 
-# Kategorierna som mäts. vinted = Vinteds kategorinamn under Herr > Kläder (slås upp automatiskt),
-# annars söks det på ordet. tradera/plick = sökord.
+# Kategorierna som mäts. vinted = Vinteds kategorinamn under Herr (slås upp automatiskt), annars söks det på
+# ordet. tradera_id = Traderas kategorier under Herrkläder. tradera = sökord, för att hitta kategorin för
+# egna kategorier. ord = sökord på Plick.
 BAS_KATEGORIER = [
-    {"id": "koftor", "namn": "Koftor & cardigans", "vinted": ["Koftor", "Cardigans"], "ord": "cardigan", "tradera": ["cardigan", "kofta"]},
-    {"id": "stickat", "namn": "Stickade tröjor", "vinted": ["Stickade tröjor", "Tröjor med rund hals"], "ord": "stickad tröja", "tradera": ["stickad tröja"]},
-    {"id": "skjortor", "namn": "Skjortor", "vinted": ["Skjortor"], "ord": "skjorta", "tradera": ["skjorta"]},
-    {"id": "overshirts", "namn": "Overshirts", "vinted": [], "ord": "overshirt", "tradera": ["overshirt", "skjortjacka"]},
-    {"id": "dun", "namn": "Dunjackor & västar", "vinted": ["Dunjackor"], "ord": "dunjacka", "tradera": ["dunjacka", "dunväst"]},
-    {"id": "jeans", "namn": "Jeans", "vinted": ["Jeans"], "ord": "jeans", "tradera": ["jeans"]},
+    {"id": "koftor", "namn": "Koftor & cardigans", "vinted": ["Koftor", "Cardigans"], "ord": "cardigan",
+     "tradera": ["cardigan"], "tradera_id": [343837]},
+    {"id": "stickat", "namn": "Stickade tröjor", "vinted": ["Stickade tröjor", "Tröjor med rund hals"], "ord": "stickad tröja",
+     "tradera": ["stickad tröja"], "tradera_id": [1000656]},
+    {"id": "skjortor", "namn": "Skjortor", "vinted": ["Skjortor"], "ord": "skjorta", "tradera": ["skjorta"], "tradera_id": [1639]},
+    {"id": "overshirts", "namn": "Overshirts", "vinted": [], "ord": "overshirt", "tradera": ["overshirt"], "tradera_id": [1000696]},
+    {"id": "dun", "namn": "Dunjackor & västar", "vinted": ["Dunjackor"], "ord": "dunjacka", "tradera": ["dunjacka"],
+     "tradera_id": [1000695, 344184]},
+    {"id": "jeans", "namn": "Jeans", "vinted": ["Jeans"], "ord": "jeans", "tradera": ["jeans"], "tradera_id": [340327]},
 ]
 KATEGORIER = list(BAS_KATEGORIER)  # plus de egna, när börsen körs
 KALLOR = ["vinted", "tradera", "plick"]
@@ -60,7 +80,7 @@ VINTED_HERR = 5  # Herr på Vinted (kläder, skor, accessoarer)
 
 def egna_kategorier():
     """Kategorier som lagts till från börsen. Bara namnet behövs: Vinted-kategorin letas upp på namnet
-    under Herr, och sökordet blir namnet om inget annat anges. De mäts från och med att de läggs till."""
+    under Herr, Tradera-kategorin på sökordet, och sökordet blir namnet om inget annat anges."""
     ut, sett = [], {k["id"] for k in BAS_KATEGORIER}
     for k in vb.las_json(EGNA_FIL, []):
         namn = (k.get("namn") or "").strip()
@@ -71,7 +91,8 @@ def egna_kategorier():
         ord_ = (k.get("ord") or namn).strip().lower()
         ut.append({"id": kid, "namn": namn, "egen": True, "ord": ord_,
                    "vinted": vb.lista(k.get("vinted")) or [namn],
-                   "tradera": vb.lista(k.get("tradera")) or [ord_]})
+                   "tradera": vb.lista(k.get("tradera")) or [ord_],
+                   "tradera_id": [int(x) for x in vb.lista(k.get("tradera_id")) if str(x).isdigit()]})
     return ut
 
 
@@ -99,24 +120,35 @@ def median(tal):
 
 
 def normalisera(text):
-    """'J.Lindeberg grå Cardigan' -> ' j lindeberg grå cardigan ' (för att hitta märken i titlar)."""
+    """'J.Lindeberg grå Cardigan' -> ' j lindeberg grå cardigan '."""
     return " " + re.sub(r"[^0-9a-zåäöøæéèü]+", " ", text.lower()).strip() + " "
 
 
-def hitta_marke(titel, marken_norm):
-    t = normalisera(titel)
-    for norm, namn in marken_norm:  # längsta först, så "Polo Ralph Lauren" går före "Ralph Lauren"
-        if norm in t:
-            return namn
-    return None
+def dagstr(t):
+    return time.strftime("%Y-%m-%d", time.gmtime(t))
 
 
-def marken_norm(namn):
-    par = {(normalisera(m), m) for m in namn if m and len(normalisera(m).strip()) >= 2}
-    return sorted(par, key=lambda p: -len(p[0]))
+def tid(dag):
+    return calendar.timegm(time.strptime(dag, "%Y-%m-%d"))
 
 
 # ---------- Vinted ----------
+
+def vinted_status(v, id_):
+    """'såld', 'borta' (borttagen eller dold) eller 'finns' för en Vinted-annons."""
+    try:
+        text = vb.sidans_data(v.hamta(vb.VINTED + "/items/%s" % id_))
+    except urllib.error.HTTPError as e:
+        if e.code in (404, 410):
+            return "borta"
+        raise
+    if re.search(r'"item_id":"%s"[^{}]*"title":"Såld"' % id_, text) or '"is_closed":true' in text:
+        return "såld"
+    m = re.search(r'"can_buy":(true|false)[^{}]*?"is_hidden":(true|false)', text)
+    if m and m.group(2) == "true":
+        return "borta"
+    return "finns"
+
 
 class VintedKalla:
     def __init__(self, bors):
@@ -156,15 +188,15 @@ class VintedKalla:
         sparade[kat["id"]] = None
         return None
 
-    def url(self, kat, marke_id=None, sida=1):
+    def url(self, kat, marke_ids=None, sida=1):
         par = [("order", "newest_first"), ("currency", "SEK")]
         kid = self.katalog_id(kat)
         if kid:
             par.append(("catalog_ids[]", kid))
         else:
             par += [("search_text", kat["ord"]), ("catalog_ids[]", VINTED_HERR if kat.get("egen") else 2050)]
-        if marke_id:
-            par.append(("brand_ids[]", marke_id))
+        for mid in marke_ids or []:
+            par.append(("brand_ids[]", mid))
         if sida > 1:
             par.append(("page", sida))
         return vb.VINTED + "/catalog?" + urllib.parse.urlencode(par)
@@ -178,13 +210,26 @@ class VintedKalla:
         pag = json.loads(m.group(1)) if m else {}
         return vb.annonser_fran_sida(sida), pag.get("total_entries")
 
-    def marke_id(self, namn):
-        ids = self.bors.setdefault("vinted_marken", {})
+    def marke_ids(self, namn):
+        """Alla Vinted-märken som är samma märke, t.ex. Ralph Lauren = Ralph Lauren, Polo Ralph Lauren, RALPH Ralph Lauren."""
+        ids = self.bors.setdefault("vinted_marke_ids", {})
         if namn not in ids:
-            ids[namn] = self.v.marke_id(namn)
+            hittade = []
+            for ord_ in [namn] + M.MARKEN.get(namn, [])[:2]:
+                try:
+                    svar = self.v.api("/api/v2/brands?" + urllib.parse.urlencode({"keyword": ord_})).get("brands") or []
+                except Exception as e:
+                    logg("kunde inte slå upp märket %s på Vinted: %s" % (ord_, e))
+                    return []  # försök igen nästa gång
+                for b in svar:
+                    if M.kanon(b.get("title", "")) == namn and b.get("id") not in hittade:
+                        hittade.append(b["id"])
+                time.sleep(random.uniform(0.8, 1.5))
+            ids[namn] = hittade[:12]
+            logg("Vinted-märken för %s: %s" % (namn, hittade[:12]))
         return ids[namn]
 
-    def andel(self, kat, alarm_marken):
+    def andel(self, kat):
         annonser = {}
         for s in range(1, VINTED_SIDOR + 1):
             nya, _ = self.sida(self.url(kat, sida=s))
@@ -195,34 +240,34 @@ class VintedKalla:
             time.sleep(random.uniform(1.2, 2.2))
         per = {}
         for a in annonser.values():
-            if a["marke"]:
-                per.setdefault(a["marke"], []).append(a["pris"])
-        return len(annonser), per
+            m = M.kanon(a["marke"]) or M.UTAN
+            if M.ar_dam(m):
+                continue
+            per.setdefault(m, []).append(a["pris"])
+        return sum(len(p) for p in per.values()), per
 
     def marke(self, kat, namn):
-        mid = self.marke_id(namn)
-        if not mid:
+        mids = self.marke_ids(namn)
+        if not mids:
             return None
         # Alla sidor med märket i kategorin (högst 10 à 96), så att sålda räknas över hela Vinted och inte bara de nyaste.
-        annonser, totalt = self.sida(self.url(kat, mid))
+        annonser, totalt = self.sida(self.url(kat, mids))
         for s in range(2, min(VINTED_SIDOR, -(-(totalt or 0) // 96)) + 1):
             time.sleep(random.uniform(1.2, 2.2))
-            nya, _ = self.sida(self.url(kat, mid, sida=s))
+            nya, _ = self.sida(self.url(kat, mids, sida=s))
             if not nya:
                 break
             annonser += nya
-        forsta = annonser[:96]
-        priser = [a["pris"] for a in forsta]
-        gillas = [a["gillas"] for a in forsta]
+        priser = [a["pris"] for a in annonser]
+        gillas = [a["gillas"] for a in annonser[:96]]
         return {"antal": totalt or 0, "tak": (totalt or 0) >= 960, "median": median(priser), "p25": kvantil(priser, 0.25),
                 "gillas": round(sum(gillas) / len(gillas), 1) if gillas else None,
-                "dygn": self.forsvunna(kat["id"], namn, annonser, totalt)}
+                "dygn": self.salda(kat["id"], namn, annonser, totalt)}
 
-    def forsvunna(self, kat_id, namn, annonser, totalt):
-        """Sålda senaste dygnet på hela Vinted: Vinted visar inte sålda, så alla märkets annonser i kategorin sparas,
-        och de som fanns vid förra mätningen (ungefär ett dygn sedan) men saknas nu har sålts (eller tagits bort).
-        Antalet räknas om till ett dygn. Har märket fler än 960 annonser syns bara de nyaste, och då räknas bara
-        de som är nyare än den äldsta som syns nu."""
+    def salda(self, kat_id, namn, annonser, totalt):
+        """Sålda per dygn på Vinted. Vinted visar inte sålda, så märkets annonser sparas, och de som fanns vid
+        förra mätningen men saknas nu är kandidater. Många av dem finns kvar (Vinted visar inte alltid samma
+        annonser) eller har tagits bort, så några av dem kollas, och bara andelen som verkligen är sålda räknas."""
         ids = sorted({int(a["id"]) for a in annonser if str(a.get("id", "")).isdigit()})
         sett = self.bors.setdefault("vinted_sett", {}).setdefault(kat_id, {})
         forra = sett.get(namn)
@@ -237,20 +282,42 @@ class VintedKalla:
             return None
         grans = 0 if (totalt or 0) <= len(ids) else ids[0]
         finns = set(ids)
-        borta = sum(1 for i in gamla if i >= grans and i not in finns)
-        return round(borta / dagar, 1)
+        borta = [i for i in gamla if i >= grans and i not in finns]
+        if not borta:
+            return 0.0
+        utfall = Counter()
+        for i in random.sample(borta, min(VINTED_KOLLA, len(borta))):
+            time.sleep(random.uniform(1.0, 1.8))
+            try:
+                utfall[vinted_status(self.v, i)] += 1
+            except Exception:
+                pass
+        kollade = sum(utfall.values())
+        if not kollade:
+            return None
+        return round(len(borta) * utfall["såld"] / kollade / dagar, 1)
 
 
-# ---------- Tradera (sålda annonser och slutpriser) ----------
+# ---------- Tradera (sålda och osålda annonser) ----------
+
+def belopp(v):
+    if isinstance(v, dict):
+        v = v.get("amount") or v.get("value")
+    try:
+        return round(float(v))
+    except (TypeError, ValueError):
+        return 0
+
 
 class TraderaKalla:
-    def __init__(self):
-        self.salda = []
+    def __init__(self, bors, deadline=None):
+        self.bors = bors
+        self.deadline = deadline or time.time() + TIDSGRANS_SEK
 
-    def sok(self, q, sida=1, salda=True):
-        par = [("q", q)] + ([("itemStatus", "Sold")] if salda else [])
-        if sida > 1:
-            par.append(("paging", sida))
+    def sok(self, par):
+        """par = sökparametrar, eller bara sökord (då söks sålda annonser)."""
+        if isinstance(par, str):
+            par = [("q", par), ("itemStatus", "Sold")]
         text = vb.sidans_data(hamta("https://www.tradera.com/search?" + urllib.parse.urlencode(par)))
         i = text.find('"discover/receiveSearchResults"')
         if i < 0:
@@ -259,61 +326,90 @@ class TraderaKalla:
         res, _ = json.JSONDecoder().raw_decode(text, j + len('"result":'))
         return res
 
-    def ute(self, q):
-        """Antal aktiva annonser (allt som ligger ute nu) för en sökning, och om Tradera slutat räkna (tak)."""
-        res = self.sok(q, salda=False)
-        tak = "AboveCap" in str((res.get("itemsMatched") or {}).get("translationKey", ""))
-        time.sleep(random.uniform(1, 2))
-        return res.get("totalItemCount") or 0, tak
+    def filter(self, kat):
+        """Traderas kategorier för en av börsens kategorier. Egna kategorier letas upp på sökordet: de
+        vanligaste kategorierna bland sålda annonser som ligger under Herrkläder eller Herrskor."""
+        if kat.get("tradera_id"):
+            return [("categoryId", c) for c in kat["tradera_id"]]
+        sparade = self.bors.setdefault("tradera_kategorier", {})
+        if kat["id"] not in sparade:
+            res = self.sok([("q", kat["tradera"][0]), ("itemStatus", "Sold")])
+            antal = Counter(it.get("categoryId") for it in res.get("items") or [] if it.get("categoryId"))
+            ids = []
+            for cid, n in antal.most_common(4):
+                if n < 5:
+                    break
+                time.sleep(random.uniform(1, 2))
+                vag = self.sok([("categoryId", cid), ("itemStatus", "Sold")]).get("categoryPath") or []
+                if any(p.get("id") in TRADERA_HERR for p in vag):
+                    ids.append(cid)
+            sparade[kat["id"]] = ids
+            logg("Tradera-kategorier för %s: %s" % (kat["id"], ids))
+        return [("categoryId", c) for c in sparade[kat["id"]]] or [("q", q) for q in kat["tradera"]]
 
-    def andel(self, kat, marken):
-        # Hela kategorins aktiva annonser, så att märkenas andel av allt som ligger ute kan räknas.
-        self.ute_kat = [0, False]
-        for q in kat["tradera"]:
-            n, tak = self.ute(q)
-            self.ute_kat = [self.ute_kat[0] + n, self.ute_kat[1] or tak]
-        sett, per = set(), {}
-        mn = marken_norm(marken)
-        for q in kat["tradera"]:
-            for s in range(1, TRADERA_SIDOR + 1):
-                res = self.sok(q, s)
+    def ute(self, kat):
+        """Antal aktiva annonser i kategorin just nu."""
+        n = 0
+        for f in self.filter(kat):
+            n += self.sok([f]).get("totalItemCount") or 0
+            time.sleep(random.uniform(1, 2))
+        return n
+
+    @staticmethod
+    def post(it, salt):
+        """[slutdag, startdag, pris, säljare, företag, såld, märket säljaren valt, titel]"""
+        attr = {a.get("name"): a.get("values") or [] for a in it.get("attributes") or [] if isinstance(a, dict)}
+        pris = (belopp(it.get("soldPrice")) if salt else 0) or belopp(it.get("price"))
+        return [(it.get("endDate") or "")[:10], (it.get("startDate") or "")[:10], pris,
+                it.get("sellerMemberId"), 1 if it.get("sellerIsCompany") else 0, 1 if salt else 0,
+                str((attr.get("brand") or [""])[0] or ""), (it.get("shortDescription") or "")[:90]]
+
+    def affarer(self, kat, status):
+        """Alla annonser i kategorin som avslutats (status Sold eller Unsold) och lades upp de senaste 35 dagarna,
+        nyaste först. Första gången fortsätter den bakåt (TRADERA_BAKAT dagar), några sidor per runda.
+        Returnerar {annons-id: post}."""
+        nu = time.time()
+        grans, bak_grans = dagstr(nu - TRADERA_STARTAD * 86400), dagstr(nu - TRADERA_BAKAT * 86400)
+        bakat = self.bors.setdefault("tradera_bakat", {})
+        ut = {}
+        for f in self.filter(kat):
+            nyckel = "%s|%s|%s" % (kat["id"], status, f[1])
+            # Osålda behövs bara för de senaste 30 dagarna, så de hämtas aldrig längre bak.
+            bak = bakat.get(nyckel, 1 if status == "Sold" else 0)
+
+            def sida(s):
+                res = self.sok([f, ("itemStatus", status), ("sortBy", "AddedOn")] + ([("paging", s)] if s > 1 else []))
                 items = res.get("items") or []
                 for it in items:
-                    if it.get("itemId") in sett:
-                        continue
-                    sett.add(it.get("itemId"))
-                    m = hitta_marke(it.get("shortDescription", ""), mn) or "Övriga"
-                    per.setdefault(m, []).append(it.get("price"))
-                    if it.get("endDate") and it.get("price"):
-                        self.salda.append((str(it.get("itemId")), it["endDate"][:10], m, it["price"]))
-                pc = (res.get("pagination") or {}).get("pageCount") or 1
-                time.sleep(random.uniform(1, 2))
-                if s >= pc or not items:
-                    break
-        return len(sett), per
+                    if it.get("itemId") and it.get("endDate"):
+                        ut[str(it["itemId"])] = self.post(it, status == "Sold")
+                starter = [(it.get("startDate") or "")[:10] for it in items if it.get("startDate")]
+                time.sleep(random.uniform(0.8, 1.6))
+                return items, (res.get("pagination") or {}).get("pageCount") or 1, max(starter) if starter else ""
 
-    def marke(self, kat, namn):
-        antal, priser, tak, fart = 0, [], False, 0.0
-        nn = normalisera(namn)
-        idag = time.time()
-        for q in kat["tradera"]:
-            res = self.sok('"%s" %s' % (namn, q))
-            n = res.get("totalItemCount") or 0
-            info = res.get("itemsMatched") or {}
-            if "AboveCap" in str(info.get("translationKey", "")):
-                tak = True
-            antal += n
-            items = res.get("items") or []
-            priser += [it.get("price") for it in items if nn in normalisera(it.get("shortDescription", ""))]
-            # Sålda per vecka: Tradera visar bara det som sålts den senaste tiden, så antalet delas med hur
-            # långt bak det äldsta slutdatumet i svaret ligger (minst en vecka, så att få affärer inte blåses upp).
-            datum = [calendar.timegm(time.strptime(it["endDate"][:10], "%Y-%m-%d")) for it in items if it.get("endDate")]
-            if n and datum:
-                dagar = max(7.0, (idag - min(datum)) / 86400 + 1)
-                fart += n / dagar * 7
-            time.sleep(random.uniform(1, 2))
-        ute = sum(self.ute('"%s" %s' % (namn, q))[0] for q in kat["tradera"])
-        return {"antal": antal, "tak": tak, "median": median(priser), "p25": kvantil(priser, 0.25), "fart": round(fart, 1), "ute": ute}
+            s = 1
+            while s <= TRADERA_MAX_SIDOR:
+                items, sidor, nyast = sida(s)
+                if not items or s >= sidor:
+                    bak = 0  # hela kategorin hämtad
+                    break
+                if nyast < grans:
+                    break
+                s += 1
+            if bak:
+                s, n = max(bak, s + 1), 0
+                while time.time() < self.deadline and n < TRADERA_BAKAT_SIDOR:
+                    items, sidor, nyast = sida(s)
+                    n += 1
+                    if not items or s >= min(sidor, TRADERA_MAX_SIDOR) or nyast < bak_grans:
+                        s = 0
+                        break
+                    s += 1
+                bak = s
+                if not bak:
+                    logg("Tradera %s: hela historiken bakåt hämtad" % nyckel)
+            bakat[nyckel] = bak
+        return ut
 
 
 # ---------- Plick ----------
@@ -337,14 +433,16 @@ def plick_kort(sida):
 
 
 class PlickKalla:
+    def __init__(self, extra):
+        self.extra = extra  # fler märken att leta efter i texten
+
     def sok(self, q, sida=1):
         par = [("query", q)] + ([("page", sida)] if sida > 1 else [])
         b = hamta("https://plick.se/produkter?" + urllib.parse.urlencode(par))
         return plick_kort(b), 'rel="next"' in b
 
-    def andel(self, kat, marken):
+    def andel(self, kat):
         sett, per = set(), {}
-        mn = marken_norm(marken)
         for s in range(1, PLICK_SIDOR + 1):
             kort, mer = self.sok(kat["ord"], s)
             for k in kort:
@@ -352,20 +450,16 @@ class PlickKalla:
                 if nyckel in sett:
                     continue
                 sett.add(nyckel)
-                # Plick skriver märket på olika sätt (J.LINDEBERG, j.lindeberg), så samma namn som på Vinted om det går.
-                m = hitta_marke(k["marke"], mn) or k["marke"] or hitta_marke(k["text"], mn) or "Övriga"
+                m = M.kanon(k["marke"])
+                if not m or m == M.UTAN:
+                    m = M.i_titel(k["text"], self.extra) or m or M.UTAN
+                if M.ar_dam(m):
+                    continue
                 per.setdefault(m, []).append(k["pris"])
             time.sleep(random.uniform(1, 2))
             if not mer or not kort:
                 break
-        return len(sett), per
-
-    def marke(self, kat, namn):
-        kort, mer = self.sok("%s %s" % (namn, kat["ord"]))
-        nn = normalisera(namn)
-        egna = [k for k in kort if nn in normalisera(k["marke"] or k["text"])]
-        priser = [k["pris"] for k in egna]
-        return {"antal": len(egna), "tak": mer and len(egna) == len(kort), "median": median(priser), "p25": kvantil(priser, 0.25)}
+        return sum(len(p) for p in per.values()), per
 
 
 # ---------- Sparat ----------
@@ -385,7 +479,51 @@ def las_bors():
     bors = bors or {}
     for k in ("andel", "marke", "senast"):
         bors.setdefault(k, {})
+    if bors.get("version", 1) < VERSION:
+        migrera(bors)
     return bors
+
+
+def sla_ihop_punkt(p):
+    """En andelspunkt [dag, n, {märke: [antal, median, (p25)]}, övriga] med märkena ihopslagna."""
+    d, n, marken, ovr = p[:4]
+    ny = {}
+    for m, v in marken.items():
+        k = M.kanon(m) or M.UTAN
+        if k == M.UTAN or M.ar_dam(k):
+            ovr += v[0]
+            continue
+        if k in ny:
+            a = ny[k]
+            tot = a[0] + v[0]
+            ny[k] = [tot, round(((a[1] or 0) * a[0] + (v[1] or 0) * v[0]) / tot) if tot else None]
+        else:
+            ny[k] = list(v[:2])
+    return [d, n, ny, ovr]
+
+
+def migrera(bors):
+    """Från version 1: märkena slås ihop, och Traderas gamla mätningar (sökord i stället för herrkategorier,
+    så att dam- och barnkläder kom med) tas bort. Tradera mäts om från grunden med rätt kategorier."""
+    logg("Uppgraderar börsen: slår ihop märken och mäter om Tradera med herrkategorierna.")
+    for kalla in ("vinted", "plick"):
+        for kat, pts in (bors["andel"].get(kalla) or {}).items():
+            bors["andel"][kalla][kat] = [sla_ihop_punkt(p) for p in pts]
+    bors["andel"].pop("tradera", None)
+    for kalla in ("tradera", "plick"):
+        bors["marke"].pop(kalla, None)
+    nya = {}
+    for kat, mm in (bors["marke"].get("vinted") or {}).items():
+        # Den serie som redan heter som det gemensamma namnet går först, annars den längsta.
+        for m, pts in sorted(mm.items(), key=lambda x: (M.kanon(x[0]) != x[0], -len(x[1]))):
+            k = M.kanon(m)
+            if k and k != M.UTAN:
+                nya.setdefault(kat, {}).setdefault(k, pts)
+    bors["marke"]["vinted"] = nya
+    for k in ("tradera_veckor", "tradera_ute", "vinted_marken", "vinted_sett"):
+        bors.pop(k, None)
+    bors["senast"] = {k: v for k, v in bors["senast"].items() if k.startswith("andel|vinted|") or k.startswith("andel|plick|")}
+    bors["version"] = VERSION
 
 
 def spara_kompakt(fil, data):
@@ -397,12 +535,16 @@ def spara_kompakt(fil, data):
 
 
 def alarm_marken(sokningar):
+    """{märke: [alarm]} med märkena under sina gemensamma namn ("morris" och "Morris" blir samma)."""
     marken = {}
     for s in sokningar:
         for m in vb.lista(s.get("marke")):
-            marken.setdefault(m, [])
-            if vb.alarm_namn(s) not in marken[m]:
-                marken[m].append(vb.alarm_namn(s))
+            k = M.kanon(m)
+            if not k or k == M.UTAN:
+                continue
+            marken.setdefault(k, [])
+            if vb.alarm_namn(s) not in marken[k]:
+                marken[k].append(vb.alarm_namn(s))
     return marken
 
 
@@ -413,8 +555,8 @@ def satt_punkt(lista_, punkt):
         lista_[-1] = punkt
     else:
         lista_.append(punkt)
-    grans = time.strftime("%Y-%m-%d", time.gmtime(time.time() - SPARA_DAGAR * 86400))
-    dagligt = time.strftime("%Y-%m-%d", time.gmtime(time.time() - DAGLIGT_DAGAR * 86400))
+    grans = dagstr(time.time() - SPARA_DAGAR * 86400)
+    dagligt = dagstr(time.time() - DAGLIGT_DAGAR * 86400)
     behall, veckor = [], set()
     for p in lista_:
         if p[0] < grans:
@@ -428,58 +570,43 @@ def satt_punkt(lista_, punkt):
     lista_[:] = behall
 
 
-def spara_salda(bors, kat_id, nya, alarm):
-    """Lägger till sålda Tradera-annonser i en egen fil och räknar andel och pris per vecka (måndag)."""
-    alla = vb.las_json(SALDA_FIL, {})
+def spara_affarer(kat_id, nya):
+    alla = vb.las_json(AFFAR_FIL, {})
     kat = alla.setdefault(kat_id, {})
-    for id_, datum, marke, pris in nya:
-        kat[id_] = [datum, marke, pris]
-    grans = time.strftime("%Y-%m-%d", time.gmtime(time.time() - SPARA_DAGAR * 86400))
+    kat.update(nya)
+    grans, titelgrans = dagstr(time.time() - AFFAR_DAGAR * 86400), dagstr(time.time() - TITEL_DAGAR * 86400)
     for id_ in [i for i, v in kat.items() if v[0] < grans]:
         del kat[id_]
-    spara_kompakt(SALDA_FIL, alla)
-    veckor = {}
-    for datum, marke, pris in kat.values():
-        d = time.strptime(datum, "%Y-%m-%d")
-        mandag = time.strftime("%Y-%m-%d", time.gmtime(calendar.timegm(d) - d.tm_wday * 86400))
-        veckor.setdefault(mandag, {}).setdefault(marke, []).append(pris)
-    ut = []
-    for v in sorted(veckor):
-        per = veckor[v]
-        n = sum(len(p) for p in per.values())
-        topp = [m for m in sorted(per, key=lambda m: -len(per[m])) if m != "Övriga"][:ANDEL_TOPP]
-        marken = {m: [len(per[m]), median(per[m])] for m in dict.fromkeys(topp + [m for m in alarm if m in per])}
-        ut.append([v, n, marken, n - sum(x[0] for x in marken.values())])
-    bors.setdefault("tradera_veckor", {})[kat_id] = ut
+    for v in kat.values():
+        if v[0] < titelgrans:
+            v[7] = ""
+    spara_kompakt(AFFAR_FIL, alla)
 
 
 def uppgifter(bors, marken):
     """Alla mätningar som behöver göras, äldst först och källorna omväxlande."""
     nu = time.time()
     per_kalla = {k: [] for k in KALLOR}
-    for kalla in KALLOR:
-        for kat in KATEGORIER:
-            nyckel = "andel|%s|%s" % (kalla, kat["id"])
+    for kat in KATEGORIER:
+        for typ, kalla, timmar in (("andel", "vinted", MATT_IGEN_TIMMAR), ("andel", "plick", MATT_IGEN_TIMMAR),
+                                   ("salda", "tradera", MATT_IGEN_TIMMAR), ("osalda", "tradera", OSALDA_IGEN_TIMMAR)):
+            nyckel = "%s|%s|%s" % (typ, kalla, kat["id"])
             senast = bors["senast"].get(nyckel, 0)
-            saknar_ute = kalla == "tradera" and kat["id"] not in bors.get("tradera_ute", {})
-            if nu - senast >= MATT_IGEN_TIMMAR * 3600 or saknar_ute:
-                per_kalla[kalla].append((senast, nyckel, kalla, kat, None))
-            for m in marken:
-                nyckel = "marke|%s|%s|%s" % (kalla, kat["id"], m)
-                senast = bors["senast"].get(nyckel, 0)
-                pts = bors["marke"].get(kalla, {}).get(kat["id"], {}).get(m) or []
-                tom = len(pts) >= 2 and not pts[-1][1] and not pts[-2][1]
-                vanta = TOM_IGEN_DAGAR * 86400 if tom else MATT_IGEN_TIMMAR * 3600
-                if kalla == "vinted" and not tom and pts and (len(pts[-1]) < 7 or pts[-1][6] is None) \
-                        and m in bors.get("vinted_sett", {}).get(kat["id"], {}):
-                    vanta = FORSTA_SALDA_TIMMAR * 3600
-                if kalla == "tradera" and not tom and pts and len(pts[-1]) < 7:
-                    vanta = 0  # mättes innan antalet annonser ute fanns med
-                if nu - senast >= vanta:
-                    per_kalla[kalla].append((senast, nyckel, kalla, kat, m))
+            if nu - senast >= timmar * 3600:
+                per_kalla[kalla].append((senast, nyckel, kalla, kat, typ, None))
+        for m in marken:
+            nyckel = "marke|vinted|%s|%s" % (kat["id"], m)
+            senast = bors["senast"].get(nyckel, 0)
+            pts = bors["marke"].get("vinted", {}).get(kat["id"], {}).get(m) or []
+            tom = len(pts) >= 2 and not pts[-1][1] and not pts[-2][1]
+            vanta = TOM_IGEN_DAGAR * 86400 if tom else MATT_IGEN_TIMMAR * 3600
+            if not tom and pts and (len(pts[-1]) < 7 or pts[-1][6] is None) and m in bors.get("vinted_sett", {}).get(kat["id"], {}):
+                vanta = FORSTA_SALDA_TIMMAR * 3600
+            if nu - senast >= vanta:
+                per_kalla["vinted"].append((senast, nyckel, "vinted", kat, "marke", m))
     for k in per_kalla:
-        # Kategoristickproven först (de behövs för att hitta märken i titlar), sedan äldst först.
-        per_kalla[k].sort(key=lambda u: (u[4] is not None, u[0]))
+        # Kategorimätningarna först (de behövs för att hitta märken i titlar), sedan äldst först.
+        per_kalla[k].sort(key=lambda u: (u[5] is not None, u[0]))
     ut = []
     while any(per_kalla.values()):
         for k in KALLOR:
@@ -488,68 +615,211 @@ def uppgifter(bors, marken):
     return ut
 
 
-def kanda_marken(bors, kat_id, alarm):
-    """Märken att leta efter i titlar: dina alarm-märken och de vanligaste märkena på Vinted i kategorin."""
-    namn = list(alarm)
-    pts = bors["andel"].get("vinted", {}).get(kat_id) or []
-    if pts:
-        namn += list(pts[-1][2].keys())
-    return namn
+def kanda_marken(bors, alarm):
+    """Fler märken att leta efter i titlar: dina alarm-märken och de största märkena på Vinted."""
+    namn = set(alarm)
+    for kat in (bors["andel"].get("vinted") or {}).values():
+        if kat:
+            namn.update(kat[-1][2].keys())
+    return sorted(namn)
 
 
-def mat(kalla_obj, kalla, kat, marke, bors, alarm, idag):
-    if marke is None:
-        n, per = kalla_obj.andel(kat, kanda_marken(bors, kat["id"], alarm))
+def spara_andel(bors, kalla, kat, n, per, alarm, idag):
+    topp = sorted((m for m in per if m != M.UTAN), key=lambda m: -len(per[m]))
+    spara = topp[:ANDEL_TOPP] + [m for m in alarm if m in per]
+    marken = {m: [len(per[m]), median(per[m]), kvantil(per[m], 0.25)] for m in dict.fromkeys(spara)}
+    ovr = n - sum(v[0] for v in marken.values())
+    satt_punkt(bors["andel"].setdefault(kalla, {}).setdefault(kat["id"], []), [idag, n, marken, ovr])
+    return "%d annonser, störst %s" % (n, ", ".join(topp[:3]))
+
+
+def mat(k, kalla, typ, kat, marke, bors, alarm, idag):
+    if typ == "andel":
+        n, per = k.andel(kat)
         if not n:
             raise ValueError("tomt stickprov")
-        topp = sorted(per, key=lambda m: -len(per[m]))
-        spara = [m for m in topp if m != "Övriga"][:ANDEL_TOPP] + [m for m in alarm if m in per]
-        marken = {m: [len(per[m]), median(per[m])] for m in dict.fromkeys(spara)}
-        ovr = n - sum(v[0] for v in marken.values())
-        satt_punkt(bors["andel"].setdefault(kalla, {}).setdefault(kat["id"], []), [idag, n, marken, ovr])
-        if kalla == "tradera":
-            n_ute, tak_ute = kalla_obj.ute_kat
-            # Alla aktiva i kategorin, en punkt per dag (äldre filer har bara en punkt).
-            ute = bors.setdefault("tradera_ute", {}).get(kat["id"]) or []
-            if ute and isinstance(ute[0], str):
-                ute = [ute]
-            satt_punkt(ute, [idag, n_ute, 1 if tak_ute else 0])
-            bors["tradera_ute"][kat["id"]] = ute
-            spara_salda(bors, kat["id"], kalla_obj.salda, alarm)
-            kalla_obj.salda = []
-        return "%d annonser, störst %s" % (n, ", ".join(topp[:3]))
-    r = kalla_obj.marke(kat, marke)
+        return spara_andel(bors, kalla, kat, n, per, alarm, idag)
+    if typ in ("salda", "osalda"):
+        nya = k.affarer(kat, "Sold" if typ == "salda" else "Unsold")
+        if not nya:
+            raise ValueError("inga annonser")
+        spara_affarer(kat["id"], nya)
+        if typ == "salda":
+            satt_punkt(bors.setdefault("tradera_aktiva", {}).setdefault(kat["id"], []), [idag, k.ute(kat)])
+        return "%d %s annonser" % (len(nya), "sålda" if typ == "salda" else "osålda")
+    r = k.marke(kat, marke)
     if r is None:
         return "märket finns inte hos källan"
-    punkt = [idag, r["antal"], r["median"], r["p25"], 1 if r.get("tak") else 0]
-    if kalla == "vinted":
-        punkt += [r.get("gillas"), r.get("dygn")]  # gillas i snitt, sålda senaste dygnet
-    elif kalla == "tradera":
-        punkt += [r.get("fart"), r.get("ute")]  # sålda per vecka, aktiva annonser ute nu
-    satt_punkt(bors["marke"].setdefault(kalla, {}).setdefault(kat["id"], {}).setdefault(marke, []), punkt)
-    return "%s st, median %s kr" % (r["antal"], r["median"])
+    punkt = [idag, r["antal"], r["median"], r["p25"], 1 if r.get("tak") else 0, r.get("gillas"), r.get("dygn")]
+    satt_punkt(bors["marke"].setdefault("vinted", {}).setdefault(kat["id"], {}).setdefault(marke, []), punkt)
+    return "%s st, median %s kr, sålda per dygn %s" % (r["antal"], r["median"], r.get("dygn"))
+
+
+# ---------- Sammanställning till hemsidan ----------
+
+def marke_for(post, extra, minne):
+    """Märket för en Tradera-annons: det säljaren valt, annars det som står i titeln."""
+    attr, titel = post[6], post[7]
+    nyckel = (attr, titel)
+    if nyckel not in minne:
+        m = M.kanon(attr) if attr else None
+        if not m or m == M.UTAN:
+            m = M.i_titel(titel, extra) or m or M.UTAN
+        minne[nyckel] = m
+    return minne[nyckel]
+
+
+def mandag(dag):
+    d = time.strptime(dag, "%Y-%m-%d")
+    return dagstr(calendar.timegm(d) - d.tm_wday * 86400)
+
+
+def stat(poster):
+    """Antal, median, nedre och övre kvartil, dagar till försäljning, antal säljare och största säljarens andel."""
+    if not poster:
+        return None
+    priser = [p[2] for p in poster if p[2]]
+    dagar = [max(0, (tid(p[0]) - tid(p[1])) // 86400) for p in poster if p[1]]
+    saljare = Counter(p[3] for p in poster)
+    return {"n": len(poster), "p": median(priser), "l": kvantil(priser, 0.25), "h": kvantil(priser, 0.75),
+            "d": round(statistics.median(dagar)) if dagar else None, "sa": len(saljare),
+            "ts": round(100 * saljare.most_common(1)[0][1] / len(poster))}
+
+
+def tackning(bors, kat_id, status):
+    """Från vilket datum Tradera-affärerna i kategorin är kompletta (None om inte mätt än)."""
+    nyckel = "%s|%s" % (kat_id, status)
+    t = (bors.get("tradera_forsta") or {}).get(nyckel)
+    if t is None:
+        return None
+    bak = [v for k, v in (bors.get("tradera_bakat") or {}).items() if k.startswith(nyckel + "|")]
+    if status == "Sold" and bak and not any(bak):
+        return dagstr(t - (TRADERA_BAKAT - TRADERA_STARTAD - 5) * 86400)
+    return dagstr(t - (FONSTER - 2) * 86400)
+
+
+def sammanstall(bors, alarm):
+    """bors["marknad"]: för varje kategori och märke vad som sålts på Tradera de senaste 30 dagarna (antal,
+    pris, hur snabbt, chans att sälja) jämfört med 30 dagar innan, och vad det kostar att köpa på Vinted.
+    bors["veckor"]: sålda och medianpris per vecka, för diagrammen."""
+    alla = vb.las_json(AFFAR_FIL, {})
+    extra = kanda_marken(bors, alarm)
+    minne = {}
+    nu = time.time()
+    idag = dagstr(nu)
+    f0, f1 = dagstr(nu - FONSTER * 86400), dagstr(nu - 2 * FONSTER * 86400)
+    ut, veckor_ut = {}, {}
+    for kat in KATEGORIER:
+        poster = alla.get(kat["id"]) or {}
+        fran_s, fran_o = tackning(bors, kat["id"], "Sold"), tackning(bors, kat["id"], "Unsold")
+        if not poster or not fran_s:
+            continue
+        per = {}
+        for p in poster.values():
+            if not p[0] or p[0] > idag:
+                continue
+            m = marke_for(p, extra, minne)
+            if M.ar_dam(m):
+                continue
+            fonster = "nu" if p[0] > f0 else "fore" if p[0] > f1 else None
+            d = per.setdefault(m, {"nu": [], "fore": [], "osalda": [], "alla": []})
+            if p[5]:
+                d["alla"].append(p)
+                if fonster:
+                    d[fonster].append(p)
+            elif fonster == "nu":
+                d["osalda"].append(p)
+        jamfor = fran_s <= f1
+        vin_pts = (bors["andel"].get("vinted") or {}).get(kat["id"]) or []
+        vin = vin_pts[-1] if vin_pts else None
+        vin_m = (bors["marke"].get("vinted") or {}).get(kat["id"]) or {}
+        rader = []
+        for m, d in per.items():
+            if m == M.UTAN:
+                continue
+            s = stat(d["nu"])
+            nf = len(d["fore"]) if jamfor else None
+            if (s["n"] if s else 0) + (nf or 0) < 3 and m not in alarm:
+                continue
+            r = {"m": m, "s": s["n"] if s else 0}
+            if s:
+                r.update({k: s[k] for k in ("p", "l", "h", "d", "sa", "ts")})
+            if jamfor:
+                r["sf"] = nf
+                r["pf"] = median([p[2] for p in d["fore"]])
+            if fran_o:
+                r["o"] = len(d["osalda"])
+            v = {}
+            if vin and m in vin[2]:
+                x = vin[2][m]
+                v.update({"n": x[0], "a": round(100 * x[0] / vin[1], 2), "p": x[1]})
+                if len(x) > 2 and x[0] >= 5:
+                    v["l"] = x[2]
+            mp = (vin_m.get(m) or [None])[-1]
+            if mp and mp[1]:
+                v.update({"t": mp[1], "tak": mp[4], "p": mp[2] or v.get("p"), "l": mp[3] or v.get("l")})
+                if len(mp) > 6 and mp[6] is not None:
+                    v["dy"] = mp[6]
+            if v:
+                r["v"] = v
+            rader.append(r)
+        rader.sort(key=lambda r: (-r["s"], -(r.get("sf") or 0)))
+        alla_nu = [p for d in per.values() for p in d["nu"]]
+        s_alla = stat(alla_nu)
+        aktiva = (bors.get("tradera_aktiva") or {}).get(kat["id"]) or []
+        ut[kat["id"]] = {
+            "s": len(alla_nu), "u": len(per.get(M.UTAN, {"nu": []})["nu"]),
+            "p": s_alla["p"] if s_alla else None, "d": s_alla["d"] if s_alla else None,
+            "sf": sum(len(d["fore"]) for d in per.values()) if jamfor else None,
+            "o": sum(len(d["osalda"]) for d in per.values()) if fran_o else None,
+            "ute": aktiva[-1][1] if aktiva else None, "fran": fran_s, "fran_o": fran_o,
+            "vn": vin[1] if vin else None, "vd": vin[0] if vin else None,
+            "marken": rader[:200],
+        }
+        # Veckor: sålda och medianpris per vecka för de största märkena, för diagrammen. Bara hela veckor
+        # som börsen har mätt, och den som pågår.
+        start = mandag(max(fran_s, dagstr(nu - 26 * 7 * 86400)))
+        if start < fran_s:
+            start = dagstr(tid(start) + 7 * 86400)
+        v_lista, t = [], tid(start)
+        while dagstr(t) <= idag:
+            v_lista.append(dagstr(t))
+            t += 7 * 86400
+        if v_lista:
+            index = {v: i for i, v in enumerate(v_lista)}
+            # Priset är medianen för fyra veckor bakåt, så att ett märke som säljer ett par i veckan inte hoppar
+            # upp och ner på enstaka plagg.
+            serie = {}
+            for m in dict.fromkeys([r["m"] for r in rader[:40]] + [m for m in alarm if m in per] + ["*"]):
+                priser = [[] for _ in v_lista]
+                for p in (per[m]["alla"] if m != "*" else [p for d in per.values() for p in d["alla"]]):
+                    i = index.get(mandag(p[0]))
+                    if i is not None:
+                        priser[i].append(p[2])
+                serie[m] = [[len(x), median([q for y in priser[max(0, i - 3):i + 1] for q in y])] for i, x in enumerate(priser)]
+            veckor_ut[kat["id"]] = {"v": v_lista, "m": serie}
+    bors["marknad"] = {"uppdaterad": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "fonster": FONSTER,
+                       "kategorier": ut}
+    bors["veckor"] = veckor_ut
 
 
 def sammanfatta(bors):
-    """Skriver de största märkena per kategori i loggen (antal och medianpris), så börsen går att läsa utan hemsidan."""
-    for kat in KATEGORIER:
-        for kalla in ("tradera", "vinted"):
-            pts = bors["andel"].get(kalla, {}).get(kat["id"]) or []
-            if not pts:
-                continue
-            _, n, marken, _ = pts[-1]
-            topp = sorted(marken.items(), key=lambda x: -x[1][0])[:15]
-            logg("topp %s %s (%d st): %s" % (kalla, kat["id"], n, ", ".join("%s %d/%s" % (m, v[0], v[1]) for m, v in topp)))
+    """Skriver de mest sålda märkena per kategori i loggen, så börsen går att läsa utan hemsidan."""
+    for kat_id, k in (bors.get("marknad") or {}).get("kategorier", {}).items():
+        logg("%s: %s sålda på Tradera senaste %d dagarna (median %s kr, %s utan märke, komplett från %s). Mest sålda: %s" % (
+            kat_id, k["s"], FONSTER, k["p"], k["u"], k["fran"],
+            ", ".join("%s %d st/%s kr" % (r["m"], r["s"], r.get("p")) for r in k["marken"][:12])))
 
 
-def vinted_sidor(bors, kat, marke):
-    """Hur många sidor en Vinted-mätning hämtar: tio för ett kategoristickprov, för ett märke så många som behövs
-    för alla dess annonser enligt förra mätningen."""
-    if marke is None:
+def vinted_kostnad(bors, kat, typ, marke):
+    """Hur många frågor en Vinted-mätning gör: tio sidor för ett kategoristickprov, för ett märke så många som
+    behövs för alla dess annonser enligt förra mätningen, plus kollen av försvunna annonser."""
+    if typ == "andel":
         return VINTED_SIDOR
     pts = bors["marke"].get("vinted", {}).get(kat["id"], {}).get(marke) or []
     antal = pts[-1][1] if pts else 96
-    return max(1, min(VINTED_SIDOR, -(-(antal or 0) // 96)))
+    slaupp = 0 if marke in bors.get("vinted_marke_ids", {}) else 3
+    return max(1, min(VINTED_SIDOR, -(-(antal or 0) // 96))) + VINTED_KOLLA + slaupp
 
 
 def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
@@ -563,23 +833,28 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
     lista_ = uppgifter(bors, alarm)
     if bara:
         lista_ = [u for u in lista_ if u[2] == bara]
-    idag = time.strftime("%Y-%m-%d", time.gmtime())
+    idag = dagstr(time.time())
     gjorda, fel, vinted_fragor = 0, {}, 0
-    for senast, nyckel, kalla, kat, marke in lista_:
+    for senast, nyckel, kalla, kat, typ, marke in lista_:
         if time.time() - start > tidsgrans or (max_antal and gjorda >= max_antal):
             break
         if fel.get(kalla, 0) >= 2:  # källan krånglar just nu, försök igen nästa runda
             continue
-        kostar = vinted_sidor(bors, kat, marke) if kalla == "vinted" else 0
+        kostar = vinted_kostnad(bors, kat, typ, marke) if kalla == "vinted" else 0
         if kalla == "vinted" and vinted_fragor + kostar > VINTED_PER_RUNDA:
             continue
         if kalla not in kallor:
-            kallor[kalla] = {"vinted": lambda: VintedKalla(bors), "tradera": TraderaKalla, "plick": PlickKalla}[kalla]()
+            kallor[kalla] = {"vinted": lambda: VintedKalla(bors),
+                             "tradera": lambda: TraderaKalla(bors, start + tidsgrans),
+                             "plick": lambda: PlickKalla(kanda_marken(bors, alarm))}[kalla]()
         try:
             if kalla == "vinted":
                 vinted_fragor += kostar
-            svar = mat(kallor[kalla], kalla, kat, marke, bors, alarm, idag)
+            svar = mat(kallor[kalla], kalla, typ, kat, marke, bors, alarm, idag)
             bors["senast"][nyckel] = time.time()
+            if typ in ("salda", "osalda"):
+                bors.setdefault("tradera_forsta", {}).setdefault(
+                    "%s|%s" % (kat["id"], "Sold" if typ == "salda" else "Unsold"), round(time.time()))
             gjorda += 1
             logg("%s: %s" % (nyckel, svar))
         except Exception as e:
@@ -588,19 +863,25 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
             if isinstance(e, urllib.error.HTTPError) and e.code in (401, 403, 429) and kalla == "vinted":
                 fel[kalla] = 99
         time.sleep(random.uniform(0.5, 1.5))
-    sammanfatta(bors)
     # Släng mätningar av märken som inte längre finns i något alarm.
-    for kalla in bors["marke"].values():
-        for kat in kalla.values():
-            for m in list(kat):
-                if m not in alarm:
-                    del kat[m]
+    for kat in bors["marke"].get("vinted", {}).values():
+        for m in list(kat):
+            if m not in alarm:
+                del kat[m]
     for kat in bors.get("vinted_sett", {}).values():
         for m in list(kat):
             if m not in alarm:
                 del kat[m]
     bors["senast"] = {k: v for k, v in bors["senast"].items() if not k.startswith("marke|") or k.split("|", 3)[3] in alarm}
-    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"], **({"egen": True, "ord": k["ord"]} if k.get("egen") else {})} for k in KATEGORIER]
+    try:
+        sammanstall(bors, alarm)
+        sammanfatta(bors)
+    except Exception as e:
+        logg("kunde inte sammanställa marknaden: %r" % e)
+    # tr: Traderas kategorier, så att hemsidan kan länka till det som sålts
+    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"],
+                           "tr": k.get("tradera_id") or (bors.get("tradera_kategorier") or {}).get(k["id"]) or [],
+                           **({"egen": True, "ord": k["ord"]} if k.get("egen") else {})} for k in KATEGORIER]
     bors["alarm"] = alarm
     bors["uppdaterad"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     kvar = len(lista_) - gjorda
