@@ -146,7 +146,8 @@ class Analys:
     def mat_vinted(self, sp, mm):
         if self.vinted is None:
             self.vinted = mk.VintedKalla(self.bors)
-        marke_ids = [i for i in (self.vinted.marke_id(m) for m in vb.lista(sp.get("marke"))) if i]
+        # Alla Vinted-märken som är samma märke (t.ex. Ralph Lauren och Polo Ralph Lauren).
+        marke_ids = [i for m in vb.lista(sp.get("marke")) for i in self.vinted.marke_ids(mk.M.kanon(m) or m)]
         if vb.lista(sp.get("marke")) and not marke_ids:
             return "hittade inga av märkena på Vinted"
         nu = time.time()
@@ -193,8 +194,7 @@ class Analys:
 
     def mat_tradera(self, sp, mm, marken):
         if self.tradera is None:
-            self.tradera = mk.TraderaKalla()
-        mn = mk.marken_norm(marken)
+            self.tradera = mk.TraderaKalla(self.bors)
         nya, utan_bild = 0, 0
         for q in vb.lista(sp.get("sokord")) or vb.lista(sp.get("marke")):
             for m in (vb.lista(sp.get("marke")) or [None]):
@@ -220,7 +220,7 @@ class Analys:
                         s = calendar.timegm(time.strptime(it["endDate"][:10], "%Y-%m-%d"))
                     except Exception:
                         s = round(time.time())
-                    mm["traffar"][id_] = {"k": "tradera", "m": m or mk.hitta_marke(titel, mn) or "", "p": it["price"], "g": 0,
+                    mm["traffar"][id_] = {"k": "tradera", "m": m or mk.M.i_titel(titel, marken) or "", "p": it["price"], "g": 0,
                                           "b": bild, "l": tradera_lank(it),
                                           "ti": titel[:80], "lik": round(lik, 2), "f": s, "s": s, "u": 0}
                     nya += 1
@@ -243,7 +243,8 @@ def kor():
     spaningar = vb.las_json(SPANINGAR_FIL, [])
     minne = vb.las_json(MINNE_FIL, {})
     bors = mk.las_bors()
-    bors.setdefault("vinted_marken", {}).update(minne.get("_marken") or {})
+    # Vinteds nummer för märkena (listor, ett märke kan ha flera nummer; äldre minnen har bara ett och hoppas över).
+    bors.setdefault("vinted_marke_ids", {}).update({k: v for k, v in (minne.get("_marken") or {}).items() if isinstance(v, list)})
     sokningar = vb.las_json(vb.SOKNINGAR_FIL, [])
     an = Analys(minne, bors)
     marken = kanda_marken(bors, sokningar)
@@ -274,7 +275,7 @@ def kor():
                                     "traffar": [dict(v, id=k) for k, v in mm["traffar"].items() if not v.get("u")]})
     for namn in [n for n in minne if n not in aktiva and n != "_marken"]:
         del minne[namn]
-    minne["_marken"] = bors.get("vinted_marken", {})  # Vinteds nummer för märkena
+    minne["_marken"] = bors.get("vinted_marke_ids", {})  # Vinteds nummer för märkena
     mk.spara_kompakt(MINNE_FIL, minne)
     mk.spara_kompakt(VISNING_FIL, visning)
     logg("%d analyser, %d bilder granskade." % (len(visning["analyser"]), sum(BILDER_PER_RUNDA.values()) - sum(an.bilder_kvar.values())))
