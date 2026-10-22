@@ -209,9 +209,63 @@ def tradera_djup():
             time.sleep(random.uniform(1, 2))
 
 
+def tradera_sortering():
+    """Vilken sortering som ger de senast sålda först, hur långt bak Tradera visar sålda och hur ofta märket finns i annonsen."""
+    rubrik("TRADERA SORTERING")
+    import urllib.parse as up
+
+    def hamta_res(par):
+        text = vb.sidans_data(mk.hamta("https://www.tradera.com/search?" + up.urlencode(par)))
+        i = text.find('"discover/receiveSearchResults"')
+        j = text.find('"result":', i)
+        r, _ = json.JSONDecoder().raw_decode(text, j + len('"result":'))
+        return r
+    for cid in ["343837", "1639", "340327", "1000695"]:
+        for sort in [None, "AddedOn", "TimeLeft"]:
+            for status in ["Sold", "Unsold"]:
+                par = [("categoryId", cid), ("itemStatus", status)] + ([("sortBy", sort)] if sort else [])
+                try:
+                    r = hamta_res(par)
+                    items = r.get("items") or []
+                    slut = sorted(it.get("endDate", "")[:10] for it in items if it.get("endDate"))
+                    marke = sum(1 for it in items if any(a.get("name") == "brand" for a in it.get("attributes") or []))
+                    print("%s sort=%s %s: totalt=%s sidor=%s, slut %s..%s, märke i %d/%d, företag %d" % (
+                        cid, sort, status, r.get("totalItemCount"), (r.get("pagination") or {}).get("pageCount"),
+                        slut[0] if slut else "", slut[-1] if slut else "", marke, len(items), sum(1 for it in items if it.get("sellerIsCompany"))))
+                except Exception as e:
+                    print(cid, sort, status, "fel", e)
+                time.sleep(random.uniform(1, 2))
+        # Hur långt bak: sida 10 och 25 med senast sålda först
+        for sida in (10, 25, 60):
+            try:
+                r = hamta_res([("categoryId", cid), ("itemStatus", "Sold"), ("sortBy", "AddedOn"), ("paging", sida)])
+                slut = sorted(it.get("endDate", "")[:10] for it in r.get("items") or [] if it.get("endDate"))
+                print("   sida %d: %d annonser, slut %s..%s" % (sida, len(r.get("items") or []), slut[0] if slut else "", slut[-1] if slut else ""))
+            except Exception as e:
+                print("   sida", sida, "fel", e)
+            time.sleep(random.uniform(1, 2))
+    # Fler herrkategorier som kan behövas
+    for cid in ["302074", "1622", "340274", "1000738"]:
+        try:
+            r = hamta_res([("categoryId", cid), ("itemStatus", "Sold")])
+            f = (r.get("filters") or {}).get("categoryFilter") or {}
+            def ga(n, d=0):
+                for c in n.get("children") or []:
+                    print("   " * d, c.get("id"), c.get("name"), c.get("count"))
+                    ga(c, d + 1)
+            print("underkategorier till", cid, "totalt", r.get("totalItemCount"))
+            ga(f.get("categoryTree") or {})
+        except Exception as e:
+            print(cid, "fel", e)
+        time.sleep(random.uniform(1, 2))
+
+
 def main():
     bors = sparat()
     if "--bara-sparat" in sys.argv:
+        return
+    tradera_sortering()
+    if "--allt" not in sys.argv:
         return
     tradera_djup()
     vinted_falt(mk.VintedKalla(bors))
