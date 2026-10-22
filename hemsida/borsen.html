@@ -426,7 +426,7 @@ function spark(pts, upp){
 }
 function rad(x){
   const upp = x.d >= 0;
-  return `<div class="rad tre"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${pct(x.nu)} av annonserna</small></span><span class="spark">${spark(x.serie, upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
+  return `<div class="rad tre"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${pct(x.nu)} av ${x.kalla === "tradera" ? "det sålda" : "annonserna"}</small></span><span class="spark">${spark(x.serie, upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
 }
 
 function andelsPunkter(B, kalla, kat){
@@ -449,7 +449,8 @@ function forandringar(B){
       const serie = inom.map(p => p[2][m] ? 100 * p[2][m][0] / p[1] : null).filter(v => v != null);
       if (serie.length < 2) continue;
       const nu = serie.at(-1), d = nu - serie[0];
-      if (nu < 1 || Math.abs(d) < 0.2) continue;
+      // Märken som bara sålt ett par stycken förra veckan hoppar för mycket för att räknas som trend.
+      if (nu < 1 || Math.abs(d) < 0.2 || inom.at(-1)[2][m][0] < 3) continue;
       ut.push({m, kat, kalla, nu, d, serie});
     }
   }
@@ -528,7 +529,7 @@ async function start(){
   const vinst = ex.median - INKOP, plagg = ex.k.id === "stickat" ? "stickad tröja" : ex.k.namn.toLowerCase();
   $("kexempel").innerHTML = `Exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>`;
   $("ksalj").textContent = kr(ex.median);
-  $("ksaljinfo").textContent = `vanligt pris för ${ex.n} sålda på Tradera`;
+  $("ksaljinfo").textContent = `mittenpriset för ${ex.n} sålda på Tradera senaste 30 dagarna`;
   $("kvinst").textContent = "+" + kr(vinst);
   $("kvinstinfo").textContent = "före frakt och avgifter";
   $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;

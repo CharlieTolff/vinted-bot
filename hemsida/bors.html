@@ -65,10 +65,10 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .utestaplar .tal{text-align:right}
 .segment button.tunn{opacity:.5}
 /* "Så läser du det": ett exempel ur de riktiga siffrorna, under rubriken */
-.exempel{margin:0 16px 12px;padding:10px 14px 10px 40px;border-radius:12px;background:color-mix(in srgb,var(--guldljus) 18%,var(--kort2));border:1px solid color-mix(in srgb,var(--guld) 30%,transparent);font-size:13.5px;line-height:1.55;position:relative}
-.exempel::before{content:"i";position:absolute;left:12px;top:10px;width:18px;height:18px;border-radius:50%;background:var(--guld);color:#fff;font:700 12px/18px Georgia,serif;text-align:center}
-.exempel:empty{display:none}
-.exempel b{font-weight:700}
+.lasruta{margin:0 16px 12px;padding:10px 14px 10px 40px;border-radius:12px;background:color-mix(in srgb,var(--guldljus) 18%,var(--kort2));border:1px solid color-mix(in srgb,var(--guld) 30%,transparent);font-size:13.5px;line-height:1.55;position:relative}
+.lasruta::before{content:"i";position:absolute;left:12px;top:10px;width:18px;height:18px;border-radius:50%;background:var(--guld);color:#fff;font:700 12px/18px Georgia,serif;text-align:center}
+.lasruta:empty{display:none}
+.lasruta b{font-weight:700}
 .exakt{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:999px;background:var(--plus);color:#fff;vertical-align:1px;margin-left:4px}
 th[title]{cursor:help}
 .periodnot{font-size:12.5px;color:var(--svag);align-self:center;max-width:420px}
@@ -469,7 +469,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <span class="svag" id="listinfo"></span>
       <div class="segment" id="urval"><button data-v="mina" class="vald">Mina märken</button><button data-v="alla">Alla märken</button></div>
     </div>
-    <p class="exempel" id="listexempel"></p>
+    <p class="lasruta" id="listexempel"></p>
     <div class="tabellram"><table id="tabell"></table></div>
   </section>
 
@@ -501,7 +501,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <h2>Marknadsandelar</h2>
       <span class="svag" id="uteinfo"></span>
     </div>
-    <p class="exempel" id="uteexempel"></p>
+    <p class="lasruta" id="uteexempel"></p>
     <div id="utestaplar" class="utestaplar"></div>
   </section>
   <section class="kort">
@@ -1155,7 +1155,8 @@ function trender(){
     for (const m of new Set([...Object.keys(sista[2]), ...alarmMarken()])) {
       if (INTE_MARKEN.includes(m.toLowerCase())) continue;
       const d = forandring(pts, p => andelI(p, m), false), nu = andelI(sista, m);
-      if (d == null || nu == null || Math.abs(d) < 0.1) continue;
+      // Ett märke som bara sålt ett par stycken hoppar för mycket för att räknas som trend.
+      if (d == null || nu == null || Math.abs(d) < 0.1 || (sista[2][m] || [0])[0] < 3) continue;
       ut.push({m, kat, kalla, d, nu});
     }
   }
@@ -1321,7 +1322,9 @@ function ritaVinst(){
   if (!kats.length) { $("vnot").textContent = "Kalkylen fylls i när börsen har mätt priser för några märken."; return; }
   const kat = kats.some(k => k.id === kSel.value) ? kSel.value : kats.some(k => k.id === st.kat) ? st.kat : kats[0].id;
   kSel.innerHTML = kats.map(k => `<option value="${k.id}"${k.id === kat ? " selected" : ""}>${esc(k.namn)}</option>`).join("");
-  const lista = vinstMarken(kat), valt = lista.some(x => x.m === mSel.value) ? mSel.value : lista.reduce((a, b) => b.n > a.n ? b : a).m;
+  const lista = vinstMarken(kat), valt = lista.some(x => x.m === mSel.value) ? mSel.value
+    // Från början: märket med flest sålda på Tradera (riktiga slutpriser), annars flest annonser på Vinted.
+    : lista.reduce((a, b) => ((b.kalla === "tradera") - (a.kalla === "tradera") || b.n - a.n) > 0 ? b : a).m;
   mSel.innerHTML = lista.map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
   raknaVinst();
 }

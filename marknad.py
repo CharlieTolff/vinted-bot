@@ -60,9 +60,10 @@ TRADERA_BAKAT = 120       # första gången hämtas så här långt bak, några 
 TRADERA_BAKAT_SIDOR = 20  # så många sidor bakåt per runda
 TRADERA_MAX_SIDOR = 125   # Tradera visar högst 125 sidor à 80 annonser
 TRADERA_SIDTAK = 10000    # alltså högst så många annonser per sökning
-TRADERA_UTE_SIDOR = 40    # så många sidor aktiva annonser per runda (alla gås igenom en gång per dygn)
-GAMLA_TOPP = 60           # så många märken per kategori får egna diagram (de som sålt mest), plus de med flest ute
-UTE_TOPP = 30
+TRADERA_UTE_SIDOR = 30    # så många sidor aktiva annonser per runda (alla gås igenom en gång per dygn)
+GAMLA_TOPP = 50           # så många märken per kategori får egna diagram (de som sålt mest), plus de med flest ute
+UTE_TOPP = 20
+MARKE_DAGLIGT = 35        # märkenas diagram: en punkt per dag så här långt bak, sedan en per vecka (så filen inte blir för stor)
 AFFAR_DAGAR = 200         # så länge Tradera-affärerna sparas
 TITEL_DAGAR = 130         # så länge titlarna sparas (för att hitta märket igen om märkeslistan blir bättre)
 TRADERA_HERR = {302074, 340304}  # Traderas Herrkläder och Herrskor
@@ -819,14 +820,14 @@ def tackning(bors, kat_id, status):
 def sammanstall(bors, alarm):
     """bors["marknad"]: för varje kategori och märke vad som sålts på Tradera de senaste 30 dagarna (antal,
     pris, hur snabbt, chans att sälja) jämfört med 30 dagar innan, och vad det kostar att köpa på Vinted.
-    bors["veckor"]: sålda och medianpris per vecka, för diagrammen."""
+    Används i loggen och diagnosen (hemsidans diagram räknas i gamla_vyer)."""
     alla = vb.las_json(AFFAR_FIL, {})
     extra = kanda_marken(bors, alarm)
     minne = {}
     nu = time.time()
     idag = dagstr(nu)
     f0, f1 = dagstr(nu - FONSTER * 86400), dagstr(nu - 2 * FONSTER * 86400)
-    ut, veckor_ut = {}, {}
+    ut = {}
     for kat in KATEGORIER:
         poster = alla.get(kat["id"]) or {}
         fran_s, fran_o = tackning(bors, kat["id"], "Sold"), tackning(bors, kat["id"], "Unsold")
@@ -894,36 +895,14 @@ def sammanstall(bors, alarm):
             "vn": vin[1] if vin else None, "vd": vin[0] if vin else None,
             "marken": rader[:200],
         }
-        # Veckor: sålda och medianpris per vecka för de största märkena, för diagrammen. Bara hela veckor
-        # som börsen har mätt, och den som pågår.
-        start = mandag(max(fran_s, dagstr(nu - 26 * 7 * 86400)))
-        if start < fran_s:
-            start = dagstr(tid(start) + 7 * 86400)
-        v_lista, t = [], tid(start)
-        while dagstr(t) <= idag:
-            v_lista.append(dagstr(t))
-            t += 7 * 86400
-        if v_lista:
-            index = {v: i for i, v in enumerate(v_lista)}
-            # Priset är medianen för fyra veckor bakåt, så att ett märke som säljer ett par i veckan inte hoppar
-            # upp och ner på enstaka plagg.
-            serie = {}
-            for m in dict.fromkeys([r["m"] for r in rader[:40]] + [m for m in alarm if m in per] + ["*"]):
-                priser = [[] for _ in v_lista]
-                for p in (per[m]["alla"] if m != "*" else [p for d in per.values() for p in d["alla"]]):
-                    i = index.get(mandag(p[0]))
-                    if i is not None:
-                        priser[i].append(p[2])
-                serie[m] = [[len(x), median([q for y in priser[max(0, i - 3):i + 1] for q in y])] for i, x in enumerate(priser)]
-            veckor_ut[kat["id"]] = {"v": v_lista, "m": serie}
     bors["marknad"] = {"uppdaterad": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "fonster": FONSTER,
                        "kategorier": ut}
-    bors["veckor"] = veckor_ut
+    bors.pop("veckor", None)
 
 
-def gles(punkter):
-    """Som satt_punkt: en punkt per dag de senaste DAGLIGT_DAGAR dagarna, äldre en per vecka."""
-    grans, dagligt = dagstr(time.time() - SPARA_DAGAR * 86400), dagstr(time.time() - DAGLIGT_DAGAR * 86400)
+def gles(punkter, dagligt_dagar=DAGLIGT_DAGAR):
+    """Som satt_punkt: en punkt per dag de senaste dagligt_dagar dagarna, äldre en per vecka."""
+    grans, dagligt = dagstr(time.time() - SPARA_DAGAR * 86400), dagstr(time.time() - dagligt_dagar * 86400)
     ut, veckor = [], set()
     for p in punkter:
         if p[0] < grans:
@@ -1031,7 +1010,7 @@ def gamla_vyer(bors, alarm):
                 u = ute_for(d)
                 n_ute = round(u[3].get(m, 0) * u[1] / u[2]) if u and u[2] else None
                 pts.append([d, b - a, median(priser), kvantil(priser, 0.25), 0, vecka, n_ute])
-            nya_m[m] = gles([p for p in gamla.get(m) or [] if forsta <= p[0] < dagar[0]] + pts)
+            nya_m[m] = gles([p for p in gamla.get(m) or [] if forsta <= p[0] < dagar[0]] + pts, MARKE_DAGLIGT)
         mt[kat["id"]] = nya_m
 
         # De senaste 30 dagarna i en punkt, med alla märken som sålt minst två (för nya märken att bevaka).
