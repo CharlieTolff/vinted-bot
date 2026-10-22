@@ -148,9 +148,68 @@ def tradera_stickprov(bors):
         time.sleep(random.uniform(1.5, 2.5))
 
 
+def vinted_falt(kalla):
+    """Vilka fält Vinted skickar med för varje annons i sökningen (finns säljarens land?)."""
+    rubrik("VINTED FÄLT")
+    text = vb.sidans_data(kalla.v.hamta(kalla.url(mk.BAS_KATEGORIER[2])))
+    m = re.search(r'"productItem":', text)
+    a, _ = json.JSONDecoder().raw_decode(text, m.end())
+    print(json.dumps(a, ensure_ascii=False)[:3000])
+    for nyckel in ("country", "Country", "locale", "iso_code", "countryCode"):
+        print(nyckel, text.count(nyckel))
+
+
+def tradera_djup():
+    """Traderas kategorier (namn och föräldrar), märkesfältet i annonserna och om sökningen kan begränsas till en kategori."""
+    rubrik("TRADERA KATEGORIER OCH MÄRKEN")
+    tk = mk.TraderaKalla()
+    res = tk.sok("cardigan")
+    f = res.get("filters") or {}
+    for typ, lista_ in f.items():
+        for x in lista_ or []:
+            print("filter %s %s: %s" % (typ, x.get("parameter"), json.dumps(x.get("options") or x, ensure_ascii=False)[:1200]))
+    for it in (res.get("items") or [])[:8]:
+        print("attr:", it.get("shortDescription"), json.dumps(it.get("attributes"), ensure_ascii=False)[:600], it.get("sellerCountryCodeIso2"), it.get("sellerIsCompany"))
+    for cid in ["343837", "1000656", "1000678", "1000675", "1000696", "1000695", "1000733", "1000734", "1000398", "1000397", "340326", "340327", "340304", "1000392"]:
+        for url in ["https://www.tradera.com/category/%s?itemStatus=Sold" % cid]:
+            try:
+                text = vb.sidans_data(mk.hamta(url))
+                i = text.find('"discover/receiveSearchResults"')
+                r = {}
+                if i >= 0:
+                    j = text.find('"result":', i)
+                    r, _ = json.JSONDecoder().raw_decode(text, j + len('"result":'))
+                titel = re.search(r"<title>([^<]*)</title>", text)
+                print("kategori %s: titel=%s, väg=%s, sålda=%s, först: %s" % (
+                    cid, titel.group(1) if titel else None, json.dumps(r.get("categoryPath"), ensure_ascii=False)[:500],
+                    r.get("totalItemCount"), " | ".join(x.get("shortDescription", "")[:30] for x in (r.get("items") or [])[:6])))
+            except Exception as e:
+                print("kategori", cid, "fel", e)
+            time.sleep(random.uniform(1, 2))
+    for q, cid in [("cardigan", "343837"), ("jeans", "340326"), ("jeans", "340327"), ("skjorta", "1000678")]:
+        for par in ("categoryId", "category"):
+            try:
+                url = "https://www.tradera.com/search?" + __import__("urllib.parse").parse.urlencode([("q", q), (par, cid), ("itemStatus", "Sold")])
+                text = vb.sidans_data(mk.hamta(url))
+                i = text.find('"discover/receiveSearchResults"')
+                j = text.find('"result":', i)
+                r, _ = json.JSONDecoder().raw_decode(text, j + len('"result":'))
+                kats = {}
+                for it in r.get("items") or []:
+                    kats[str(it.get("categoryId"))] = kats.get(str(it.get("categoryId")), 0) + 1
+                print("sök %s %s=%s: totalt=%s väg=%s kategorier=%s" % (q, par, cid, r.get("totalItemCount"), json.dumps(r.get("categoryPath"), ensure_ascii=False)[:300], kats))
+            except Exception as e:
+                print("sök", q, par, cid, "fel", e)
+            time.sleep(random.uniform(1, 2))
+
+
 def main():
     bors = sparat()
     if "--bara-sparat" in sys.argv:
+        return
+    tradera_djup()
+    vinted_falt(mk.VintedKalla(bors))
+    if "--allt" not in sys.argv:
         return
     kalla = vinted_stickprov(bors)
     vinted_varianter(kalla.v, ["Ralph Lauren", "Hugo Boss", "Levi", "Tommy Hilfiger", "Stone Island", "Moncler", "Lacoste", "C.P. Company", "Arc'teryx", "Nudie", "Morris", "Peak Performance"])
