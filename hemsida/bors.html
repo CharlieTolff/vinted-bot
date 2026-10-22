@@ -353,6 +353,32 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
 .knapp.primar{box-shadow:0 2px 4px rgba(25,35,20,.16),0 10px 20px -8px rgba(120,85,20,.55),inset 0 1px 0 rgba(255,255,255,.45)}
 .knapp.primar:not(:disabled):hover{box-shadow:0 4px 8px rgba(25,35,20,.18),0 14px 26px -10px rgba(120,85,20,.6),inset 0 1px 0 rgba(255,255,255,.45)}
 .sidopanel .grupp.aktiv{box-shadow:var(--skugga-liten)}
+/* Sidomeny i mörkt, med ikon och text på varje rad */
+.sidopanel{background:var(--meny);border:1px solid var(--menylinje);border-radius:18px;padding:12px 10px;gap:2px;box-shadow:var(--skugga);color:var(--menytext)}
+.sidopanel .rubrik{color:var(--menysvag);padding:4px 12px 8px;font-size:11px}
+.sidopanel button{color:var(--menytext)}
+.sidopanel button small{color:var(--menysvag)}
+.sidopanel button:hover{background:var(--menyval)}
+.sidopanel .grupp{flex-direction:row;align-items:center;gap:12px;font-weight:600;font-size:15px;padding:11px 32px 11px 12px;border-radius:12px}
+.sidopanel .grupp .gtext{display:flex;flex-direction:column;gap:1px;line-height:1.3}
+.sidopanel .grupp small{display:none}
+.sidopanel .grupp::after{color:var(--menysvag)}
+.sidopanel .grupp.aktiv{background:var(--menyval);box-shadow:none}
+.sidopanel .grupp.aktiv .ik{color:var(--guldljus)}
+.sidopanel .ik{flex:none;width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;opacity:.95}
+.sidopanel .undermeny{margin:2px 0 8px 22px;padding-left:12px;border-left:1.5px solid var(--menylinje)}
+.sidopanel .undermeny button{color:var(--menysvag);font-size:14px;padding:8px 12px;border-radius:10px}
+.sidopanel .undermeny button small{display:none}
+.sidopanel .undermeny button:hover{color:var(--menytext)}
+.sidopanel .undermeny button.vald{background:rgba(236,239,230,.1);color:var(--guldljus);font-weight:600;box-shadow:none}
+@media (min-width:901px){ .layout{grid-template-columns:240px minmax(0,1fr)} .sidopanel{min-height:calc(100vh - 120px)} }
+@media (max-width:900px){
+  .sidopanel{padding:6px;border-radius:16px}
+  .sidopanel .grupp{flex-direction:column;gap:4px;padding:8px 4px;font-size:12px;font-weight:600;white-space:normal;line-height:1.2}
+  .sidopanel .grupp .gtext{align-items:center;text-align:center}
+  .sidopanel .undermeny{margin:4px 0 0;padding:6px 0 0;border-left:0;border-top:1px solid var(--menylinje)}
+  .sidopanel .undermeny button{font-size:13px;padding:7px 12px}
+}
 @media (prefers-reduced-motion:reduce){ .ruta,.fbkort,.knapp{transition:none} .ruta:hover,.fbkort:hover,.knapp:hover{transform:none} }
 </style>
 </head>
@@ -371,8 +397,8 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
 
   <div class="layout">
   <nav class="sidopanel" id="vyer" aria-label="Välj vy">
-    <div class="rubrik">Visa</div>
-    <button class="grupp" data-grupp="marknad" aria-expanded="false">Marknaden<small>Vad ska jag köpa in?</small></button>
+    <div class="rubrik">Meny</div>
+    <button class="grupp" data-grupp="marknad" aria-expanded="false" title="Vad ska jag köpa in?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="gtext">Marknaden<small>Vad ska jag köpa in?</small></span></button>
     <div class="undermeny" data-grupp="marknad">
       <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
       <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
@@ -381,15 +407,15 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
       <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
     </div>
-    <button class="grupp" data-grupp="vinst" aria-expanded="false">Räkna din vinst<small>Vad kan jag tjäna på det?</small></button>
+    <button class="grupp" data-grupp="vinst" aria-expanded="false" title="Vad kan jag tjäna på det?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg><span class="gtext">Räkna din vinst<small>Vad kan jag tjäna på det?</small></span></button>
     <div class="undermeny" data-grupp="vinst">
       <button data-vy="vinst">Vinstkalkyl<small>Inköpspris, säljpris och marginal</small></button>
     </div>
-    <button class="grupp" data-grupp="bokforing" aria-expanded="false">Bokföring<small>Håll koll på vinsten</small></button>
+    <button class="grupp" data-grupp="bokforing" aria-expanded="false" title="Håll koll på vinsten"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3"/><path d="M9 8h6M9 11.5h4"/></svg><span class="gtext">Bokföring<small>Håll koll på vinsten</small></span></button>
     <div class="undermeny" data-grupp="bokforing">
       <button data-vy="bokforing">Mina affärer<small>Köpt, sålt och vinst</small></button>
     </div>
-    <button class="grupp" data-grupp="bilder" aria-expanded="false">Fixa annonsen<small>Bilder och text som säljer</small></button>
+    <button class="grupp" data-grupp="bilder" aria-expanded="false" title="Bilder och text som säljer"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span class="gtext">Fixa annonsen<small>Bilder och text som säljer</small></span></button>
     <div class="undermeny" data-grupp="bilder">
       <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
       <button data-vy="beskrivning">Skriv beskrivning<small>Färdig text att kopiera</small></button>
