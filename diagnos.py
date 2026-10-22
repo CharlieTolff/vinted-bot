@@ -5,11 +5,13 @@ aldrig sparar något tillbaka.
 
   python3 diagnos.py           sammanfattning av det sparade
   python3 diagnos.py --dump    dessutom bors.json packad i loggen (för att prova hemsidan med riktiga data)
+  python3 diagnos.py --tradera hur Traderas aktiva annonser delas upp och hur länge sålda legat ute
 """
 import base64
 import gzip
 import json
 import sys
+from collections import Counter
 
 import marknad as mk
 import vinted_bot as vb
@@ -36,11 +38,20 @@ def sparat():
             print("   ", json.dumps(r, ensure_ascii=False))
     affarer = vb.las_json(mk.AFFAR_FIL, {})
     for kat, poster in affarer.items():
+        if kat.startswith("_"):
+            continue
         salda = [p for p in poster.values() if p[5]]
         med_attr = sum(1 for p in salda if p[6])
         print("affärer %s: %d sålda (%d med märke), %d osålda, %s..%s" % (
             kat, len(salda), med_attr, len(poster) - len(salda),
             min((p[0] for p in poster.values()), default=""), max((p[0] for p in poster.values()), default="")))
+    for kat, pts in (affarer.get("_ute_hist") or {}).items():
+        for d, tot, sett, per in pts[-3:]:
+            print("aktiva %s %s: %d i kategorin, %d genomgångna, största: %s" % (kat, d, tot, sett, Counter(per).most_common(12)))
+    for kat, till in (affarer.get("_ute") or {}).items():
+        print("aktiva pågår %s: sökning %s av %d, %d annonser" % (kat, till.get("i"), len(till.get("delar") or []), len(till.get("ids") or {})))
+    for kat, mm in ((bors.get("marke") or {}).get("tradera") or {}).items():
+        print("märken tradera %s: %d, t.ex. %s" % (kat, len(mm), [(m, pts[-1]) for m, pts in list(mm.items())[:5]]))
     return bors
 
 
