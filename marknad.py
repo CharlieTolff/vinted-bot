@@ -787,6 +787,8 @@ def sammanstall(bors, alarm):
             t += 7 * 86400
         if v_lista:
             index = {v: i for i, v in enumerate(v_lista)}
+            # Priset är medianen för fyra veckor bakåt, så att ett märke som säljer ett par i veckan inte hoppar
+            # upp och ner på enstaka plagg.
             serie = {}
             for m in dict.fromkeys([r["m"] for r in rader[:40]] + [m for m in alarm if m in per] + ["*"]):
                 priser = [[] for _ in v_lista]
@@ -794,7 +796,7 @@ def sammanstall(bors, alarm):
                     i = index.get(mandag(p[0]))
                     if i is not None:
                         priser[i].append(p[2])
-                serie[m] = [[len(x), median(x)] for x in priser]
+                serie[m] = [[len(x), median([q for y in priser[max(0, i - 3):i + 1] for q in y])] for i, x in enumerate(priser)]
             veckor_ut[kat["id"]] = {"v": v_lista, "m": serie}
     bors["marknad"] = {"uppdaterad": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "fonster": FONSTER,
                        "kategorier": ut}
@@ -876,7 +878,10 @@ def kor(tidsgrans=TIDSGRANS_SEK, max_antal=None, bara=None):
         sammanfatta(bors)
     except Exception as e:
         logg("kunde inte sammanställa marknaden: %r" % e)
-    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"], **({"egen": True, "ord": k["ord"]} if k.get("egen") else {})} for k in KATEGORIER]
+    # tr: Traderas kategorier, så att hemsidan kan länka till det som sålts
+    bors["kategorier"] = [{"id": k["id"], "namn": k["namn"],
+                           "tr": k.get("tradera_id") or (bors.get("tradera_kategorier") or {}).get(k["id"]) or [],
+                           **({"egen": True, "ord": k["ord"]} if k.get("egen") else {})} for k in KATEGORIER]
     bors["alarm"] = alarm
     bors["uppdaterad"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     kvar = len(lista_) - gjorda

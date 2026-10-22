@@ -82,6 +82,7 @@ function rita(){
 function marken(){
   const s = new Set(VANLIGA_MARKEN);
   try { for (const kalla of Object.values(B?.marke || {})) for (const kat of Object.values(kalla || {})) for (const m of Object.keys(kat || {})) s.add(m); } catch {}
+  try { for (const k of Object.values(B?.marknad?.kategorier || {})) for (const r of k.marken || []) s.add(r.m); } catch {}
   for (const p of poster) if (p.marke) s.add(p.marke);
   return [...s].sort((a, b) => a.localeCompare(b, "sv"));
 }

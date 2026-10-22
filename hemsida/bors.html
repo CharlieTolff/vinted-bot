@@ -53,20 +53,8 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .egnakat div{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--kort2);border-radius:10px;padding:8px 12px;font-size:14px}
 .egnakat button{border:0;background:none;color:var(--minus);font:inherit;font-size:13px;cursor:pointer}
 .publik [data-vy="analyser"],.publik a.skapa[href*="nytt="]{display:none!important}
-.utestaplar{padding:12px 16px 14px;display:grid;gap:7px}
-.utestaplar .rad{display:grid;grid-template-columns:150px minmax(0,1fr) 64px 72px;gap:10px;align-items:center;font-size:13.5px;cursor:pointer;border-radius:8px;padding:2px 4px}
-.utestaplar .rad:hover{background:var(--kort2)}
-.utestaplar .rad.ovr{cursor:default;color:var(--svag)}
-.utestaplar .rad.ovr:hover{background:none}
-.utestaplar .namn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.utestaplar .stang{height:14px;border-radius:4px;background:color-mix(in srgb,var(--linje) 45%,transparent);overflow:hidden}
-.utestaplar .stang i{display:block;height:100%;border-radius:4px;background:var(--guld)}
-.utestaplar .rad.vald .namn{font-weight:700}
-.utestaplar .tal{text-align:right}
 .segment button.tunn{opacity:.5}
 .periodnot{font-size:12.5px;color:var(--svag);align-self:center;max-width:420px}
-.utetom{padding:18px 16px;color:var(--svag);font-size:14px}
-@media (max-width:760px){ .utestaplar .rad{grid-template-columns:84px minmax(0,1fr) 48px 58px;gap:6px;font-size:12.5px} }
 h1{font-family:"Playfair Display",Georgia,serif;font-size:28px;margin:0}
 h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .svag{color:var(--svag);font-size:13px}
@@ -92,6 +80,20 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .ruta .etikett{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--svag)}
 .ruta .namn{font-weight:700;font-size:18px;margin:4px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ruta .varde{font-size:14px;color:var(--svag)}
+.rutor{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ruta.stat,.ruta.stat:hover{cursor:default;border-color:var(--linje);transform:none}
+.ruta.stat .namn{font-size:26px;letter-spacing:-.02em}
+.ruta.stat .varde{font-size:13px}
+td small.spann{display:block;font-size:11.5px;color:var(--svag);font-weight:400;margin-top:1px}
+tr.fa td,tr.fa td b{color:var(--svag);font-weight:400}
+.chans{font-weight:600}.chans.hog{color:var(--plus)}.chans.lag{color:var(--minus)}
+.sok{font:inherit;font-size:14px;padding:6px 13px;border-radius:999px;border:1px solid var(--linje);background:var(--kort2);color:var(--text);width:170px;min-width:0}
+.tabellfot{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:12px 16px 14px;font-size:12.5px;color:var(--svag)}
+.tabellfot:empty{display:none}
+.omdome{margin:12px 0 0;font-size:15px;line-height:1.55;max-width:760px}
+.detaljtal{padding:6px 18px 6px}
+.detaljtal div{min-width:120px}
+.varning{margin:10px 18px 4px;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--guld) 16%,var(--kort));font-size:13.5px}
 
 /* Kort och tabell */
 /* Räkna din vinst */
@@ -227,7 +229,7 @@ tbody tr.vald{background:color-mix(in srgb,var(--guld) 14%,var(--kort))}
 .upp{color:var(--plus);font-weight:600}
 .ned{color:var(--minus);font-weight:600}
 .noll{color:var(--svag)}
-.tomt{padding:36px 16px;text-align:center;color:var(--svag)}
+.tomt{padding:36px 16px;text-align:center;color:var(--svag);white-space:normal}
 svg.spark{display:block;margin-left:auto}
 
 /* Detalj */
@@ -281,7 +283,9 @@ svg.spark{display:block;margin-left:auto}
 @media (max-width:760px){
   main{padding:16px 16px 48px}
   h1{font-size:23px}
-  .rutor{grid-template-columns:1fr;gap:10px}
+  .rutor{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ruta.stat .namn{font-size:21px}
+  .sok{width:100%;order:3}
   .ruta{padding:11px 14px}
   .ruta .namn{font-size:16px}
   .dolj-mobil{display:none}
@@ -289,6 +293,10 @@ svg.spark{display:block;margin-left:auto}
   .stapel{width:40px}
   .namncell{max-width:128px}
   .rank{display:none}
+  th{white-space:normal;line-height:1.25;vertical-align:bottom}
+  td small.spann{display:none}
+  td,th{padding:8px 5px}
+  .namncell{max-width:104px}
   table{font-size:13.5px}
   .detaljtopp{padding:16px 14px 4px}
   .diagramval,.forklaring,.dragtips{padding-left:14px;padding-right:14px}
@@ -408,12 +416,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <div class="rubrik">Meny</div>
     <button class="grupp" data-grupp="marknad" aria-expanded="false" title="Vad ska jag köpa in?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="gtext">Marknaden<small>Vad ska jag köpa in?</small></span></button>
     <div class="undermeny" data-grupp="marknad">
-      <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
-      <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
-      <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
+      <button data-vy="marknad">Vad säljer<small>Märken per kategori</small></button>
       <button data-vy="lagen">Bästa köplägen<small>Köp på Vinted, sälj på Tradera</small></button>
       <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
-      <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
+      <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
     </div>
     <button class="grupp" data-grupp="vinst" aria-expanded="false" title="Vad kan jag tjäna på det?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2.5"/><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg><span class="gtext">Räkna din vinst<small>Vad kan jag tjäna på det?</small></span></button>
     <div class="undermeny" data-grupp="vinst">
@@ -441,28 +447,24 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
   </div>
 
-  <div class="vy" data-vy="andel">
-  <div class="rubrikrad" style="margin-top:8px;margin-bottom:12px"><div><h2>Märken per kategori</h2>
-    <p class="forklara"><b>Andel nya</b> är hur stor del av de senast upplagda annonserna (ungefär 900 per kategori) som är av märket, alltså hur mycket som läggs ut just nu. <b>Annonser totalt</b> är alla märkets annonser i kategorin, även gamla som inte sålts. <b>Andel av allt ute</b> är hur stor del av alla annonser som ligger ute i kategorin just nu som är av märket, och listan rankas efter den. På Tradera är den exakt, på Vinted en uppskattning (≈) eftersom Vinted slutar räkna vid 960. Många totalt men låg andel nya betyder att annonserna blir liggande. På Tradera räknas andelen på det som sålts, så där betyder stigande andel att märket säljer bättre. Ändringen visas som skillnaden i andel, till exempel från 4 % till 6 % = +2 %. Tryck på ett märke för att se mer.</p></div></div>
+  <div class="vy" data-vy="marknad">
+  <div class="rubrikrad" style="margin-top:8px;margin-bottom:12px"><div><h2>Vad säljer?</h2>
+    <p class="forklara">Allt som sålts i kategorin på Tradera de senaste 30 dagarna, märke för märke: hur många som sålts, vad de gick för, hur stor chansen är att det säljer och vad det kostar att köpa på Vinted. Tryck på ett märke för att se mer.</p></div></div>
   <div class="kontroller">
     <div class="chips" id="kategorier" role="tablist" aria-label="Kategori"></div>
-  </div>
-  <div class="kontroller">
-    <div class="segment" id="kallor" aria-label="Källa"></div>
-    <div class="segment" id="perioder" aria-label="Period"></div>
-    <span class="periodnot" id="periodernot"></span>
   </div>
 
   <div class="rutor" id="rutor"></div>
 
-
   <section class="kort">
     <div class="korthuvud">
-      <h2 id="listrubrik">Andel av marknaden</h2>
+      <h2 id="listrubrik">Märken som säljer</h2>
       <span class="svag" id="listinfo"></span>
-      <div class="segment" id="urval"><button data-v="mina" class="vald">Mina märken</button><button data-v="alla">Alla märken</button></div>
+      <input type="search" id="marksok" class="sok" placeholder="Sök märke" autocomplete="off" aria-label="Sök märke">
+      <div class="segment" id="urval"><button data-v="alla">Alla märken</button><button data-v="mina">Mina märken</button></div>
     </div>
     <div class="tabellram"><table id="tabell"></table></div>
+    <div class="tabellfot" id="tabellfot"></div>
   </section>
 
   <section class="kort" id="detalj" hidden></section>
@@ -472,39 +474,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <section class="kort">
     <div class="korthuvud">
       <h2 id="lagerubrik">Bästa köplägena</h2>
-      <div class="segment" id="lageval"><button data-v="kop" class="vald">I dina märken</button><button data-v="nya">Nya märken att bevaka</button></div>
+      <div class="segment" id="lageval"></div>
       <p class="forklara" id="lageinfo"></p>
     </div>
     <div class="tabellram"><table id="lagetabell"></table></div>
-  </section>
-  </div>
-
-  <div class="vy" data-vy="ute">
-  <div class="kontroller">
-    <div class="chips" id="utekategorier" role="tablist" aria-label="Kategori"></div>
-  </div>
-  <div class="kontroller">
-    <div class="segment" id="utekallor" aria-label="Källa"></div>
-    <div class="segment" id="uteperioder" aria-label="Period"></div>
-    <span class="periodnot" id="uteperiodernot"></span>
-  </div>
-  <section class="kort">
-    <div class="korthuvud">
-      <h2>Marknadsandelar</h2>
-      <span class="svag" id="uteinfo"></span>
-    </div>
-    <div id="utestaplar" class="utestaplar"></div>
-  </section>
-  <section class="kort">
-    <div class="korthuvud">
-      <h2>Utveckling</h2>
-      <span class="svag">Andel av allt ute över tid. Tryck på märken i staplarna eller tabellen för att lägga till eller ta bort dem.</span>
-    </div>
-    <div class="diagram" id="utediagram"></div>
-    <div class="forklaring" id="uteforklaring"></div>
-  </section>
-  <section class="kort">
-    <div class="tabellram"><table id="utetabell"></table></div>
   </section>
   </div>
 
@@ -512,8 +485,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <section class="kort">
     <div class="korthuvud">
       <h2>Trender</h2>
-      <span class="svag">Märkena vars andel ökat eller minskat mest under perioden, i alla kategorier. På Vinted är det andelen av nya annonser, på Tradera andelen av det som sålts.</span>
-      <div class="segment" id="trendperioder" aria-label="Period"></div>
+      <span class="svag" id="trendinfo"></span>
       <div class="segment" id="trendriktning"><button data-v="upp">Ökar</button><button data-v="ned">Minskar</button></div>
     </div>
     <div class="tabellram"><table id="trendtabell"></table></div>
@@ -662,16 +634,6 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
   </div>
 
-  <div class="vy" data-vy="fart">
-  <section class="kort">
-    <div class="korthuvud">
-      <h2>Säljer snabbast</h2>
-      <span class="svag" id="fartinfo">Dina märken i alla kategorier, efter hur många som sålts senaste dygnet på Vinted och Tradera tillsammans.</span>
-    </div>
-    <div class="tabellram"><table id="farttabell"></table></div>
-  </section>
-  </div>
-
   <section class="kort">
     <div class="info" id="omdata"></div>
   </section>
@@ -763,19 +725,9 @@ const PUBLIK = location.pathname.includes("/borsen/");
 document.documentElement.classList.toggle("publik", PUBLIK);
 if (PUBLIK) {
   document.querySelector(".headin").innerHTML = `<a class="logga" href="index.html">Märkesbörsen</a><nav class="flikar"><a href="index.html">Start</a><a href="app.html" class="vald">Börsen</a></nav>`;
-  for (const [id, text] of [["urval", ["Mätta märken", "Alla märken"]], ["lageval", ["Mätta märken", "Fler märken som säljer"]]])
-    document.querySelectorAll(`#${id} button`).forEach((b, i) => b.textContent = text[i]);
 }
 const DINA = PUBLIK ? "de mätta" : "dina";
-const KALLOR = {
-  vinted: {namn: "Vinted", vad: "utbud", farg: "var(--vinted)", hex: "#1268a8",
-           andel: "Andel av nya annonser", kort: "Andel nya", pris: "Begärt pris", antal: "Annonser totalt"},
-  tradera: {namn: "Tradera", vad: "sålda", farg: "var(--tradera)", hex: "#9a6412",
-            andel: "Andel av det som säljs", kort: "Andel sålda", pris: "Slutpris", antal: "Sålda totalt"},
-  plick: {namn: "Plick", vad: "utbud", farg: "var(--plick)", hex: "#b8336a",
-          andel: "Andel av nya annonser", kort: "Andel nya", pris: "Begärt pris", antal: "Annonser"},
-};
-const PERIODER = {"1v": ["1 v", 7], "1m": ["1 mån", 30], "3m": ["3 mån", 91], "1a": ["1 år", 365], "max": ["Max", 99999]};
+const PERIODER = {"3m": ["3 mån", 91], "6m": ["6 mån", 182], "max": ["Max", 99999]};
 const $ = id => document.getElementById(id);
 const las = (k, std) => { try { return JSON.parse(localStorage.getItem("bors-" + k)) ?? std } catch { return std } };
 const skriv = (k, v) => { try { localStorage.setItem("bors-" + k, JSON.stringify(v)) } catch {} };
@@ -783,594 +735,228 @@ const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt
 const dag = s => new Date(s + "T12:00:00Z").getTime();
 const DAG = 86400000;
 const kr = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE") + " kr";
+const tal = v => v == null ? "–" : Math.round(v).toLocaleString("sv-SE");
 const pct = (v, d = 1) => v == null ? "–" : v.toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d}) + " %";
 const datum = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short"});
 const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short", year: "numeric"});
+const datumHel = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "long"});
 
 let B = null;
-let st = {kat: las("kat", null), kalla: las("kalla", "vinted"), period: las("period", "1m"), urval: las("urval", "mina"),
-          sort: las("sort3", {}), jamfor: las("jamfor", {}), marke: null, matt: las("matt", "andel"), lage: las("lage", "kop"),
-          vy: las("vy", "andel"), trend: las("trend", "upp"), utekalla: las("utekalla", "vinted"), uteValda: null};
+let st = {kat: las("kat", null), period: las("period2", "6m"), urval: PUBLIK ? "alla" : las("urval2", "alla"), sort: las("sort4", {}),
+          jamfor: las("jamfor2", {}), marke: null, matt: las("matt2", "salda"), lage: las("lage", "kop"),
+          vy: las("vy", "marknad"), trend: las("trend", "upp"), sok: "", visaAlla: false};
+if (!PERIODER[st.period]) st.period = "6m";
+// Vyer som fanns förut och nu ingår i Vad säljer
+const GAMLA_VYER = {andel: "marknad", ute: "marknad", fart: "marknad"};
 // Sökord per kategori när ett alarm skapas härifrån (samma som i marknad.py). Jeans söks bara på märket.
 const ORD = {koftor: ["cardigan", "kofta"], stickat: ["stickad tröja"], skjortor: ["skjorta"], overshirts: ["overshirt", "skjortjacka"],
              dun: ["dunjacka", "dunväst"], jeans: []};
 const LANDER = ["SE", "DK", "FI", "PL"];
+const FA = 5;  // färre sålda än så: siffrorna är osäkra och visas svagare
+const VISA = 30;  // så många märken visas innan "Visa alla"
 
 // ---------- Data ----------
-let mattaMarken = null;
-function alarmMarken(){
-  // Publikt: alla märken som mäts var för sig, i stället för dina alarm-märken.
-  if (!PUBLIK) return Object.keys(B.alarm || {});
-  if (!mattaMarken) mattaMarken = [...new Set(Object.values(B.marke).flatMap(k => Object.values(k).flatMap(Object.keys)))];
-  return mattaMarken;
+// B.marknad.kategorier[kat]: sålda och osålda på Tradera de senaste 30 dagarna, per märke, med vad det kostar på Vinted.
+const katData = kat => (((B.marknad || {}).kategorier) || {})[kat] || null;
+const katInfo = kat => (B.kategorier || []).find(k => k.id === kat);
+const alarmMarken = () => PUBLIK ? [] : Object.keys(B.alarm || {});
+const arAlarm = m => !PUBLIK && !!(B.alarm || {})[m];
+// Säljchans: hur många av annonserna som tog slut som blev sålda.
+const chans = r => r && r.o != null && r.s + r.o >= 5 ? 100 * r.s / (r.s + r.o) : null;
+// Vinst per plagg: vad det säljs för på Tradera minus billigaste fjärdedelen på Vinted.
+const vinst = r => r && r.p != null && r.v && r.v.l != null && r.s >= 3 ? r.p - r.v.l : null;
+// Ändring i antal sålda mot de 30 dagarna innan, i procent.
+const trendPct = r => r && r.sf != null && r.s + r.sf >= 8 ? 100 * (r.s - r.sf) / Math.max(r.sf, 1) : null;
+const berika = (r, kat) => ({...r, kat, chans: chans(r), vinst: vinst(r), trend: trendPct(r), kop: r.v && r.v.l != null ? r.v.l : null, oms: (r.s || 0) * (r.p || 0)});
+const marke = (kat, m) => { const k = katData(kat); const r = k && k.marken.find(x => x.m === m); return r ? berika(r, katInfo(kat)) : null; };
+function rader(kat){
+  const k = katData(kat);
+  if (!k) return [];
+  let lista = k.marken.map(r => berika(r, katInfo(kat)));
+  if (st.urval === "mina") { const mina = new Set(alarmMarken()); lista = lista.filter(r => mina.has(r.m)); }
+  if (st.sok) { const q = st.sok.toLowerCase(); lista = lista.filter(r => r.m.toLowerCase().includes(q)); }
+  return lista;
 }
-function arAlarm(m){ return !PUBLIK && !!(B.alarm || {})[m] }
-
-function andelsPunkter(kalla, kat, medPagaende){
-  // Tradera: veckor räknade på sålda annonser (har historik direkt). Annars en punkt per mätdag.
-  if (kalla === "tradera" && B.tradera_veckor && (B.tradera_veckor[kat] || []).length) {
-    // Veckor med bara en liten del av försäljningen är inte hela (den första veckan har bara
-    // de sista dagarna med, eftersom Tradera bara visar det som sålts nyligen) och hoppas över.
-    const alla = B.tradera_veckor[kat], storst = Math.max(0, ...alla.map(p => p[1]));
-    const v = alla.filter(p => p[1] >= 5 && p[1] >= 0.4 * storst);
-    // Veckan som pågår är inte klar och hoppas över, utom när den är den enda.
-    return !medPagaende && v.length > 1 && dag(v.at(-1)[0]) + 7 * DAG > Date.now() ? v.slice(0, -1) : v;
-  }
-  return (B.andel[kalla] || {})[kat] || [];
-}
-function andelI(p, m){
-  // Andel i procent i en punkt. null = märket fanns inte bland de sparade (för andra än alarm-märken).
-  const v = p[2][m];
-  if (v) return 100 * v[0] / p[1];
-  return arAlarm(m) ? 0 : null;
-}
-function markePunkter(kalla, kat, m){ return (((B.marke[kalla] || {})[kat] || {})[m]) || [] }
-
-function fore(pts, d){
-  // Senaste punkten på eller före dagen d (alla punkter om d saknas).
-  if (d == null) return pts.at(-1);
-  for (let i = pts.length - 1; i >= 0; i--) if (pts[i][0] <= d) return pts[i];
-  return null;
-}
-function traderaUte(kat){
-  // Tradera: aktiva annonser i hela kategorin, en punkt per mätning. Äldre filer har bara en punkt.
-  const u = (B.tradera_ute || {})[kat];
-  return !u || !u.length ? [] : typeof u[0] === "string" ? [u] : u;
-}
-let uteMinne = new Map();
-function kategoriUte(kalla, kat, d){
-  // Alla annonser som ligger ute i kategorin (den dagen). Tradera räknar dem exakt. Vinted slutar räkna vid 960,
-  // så där uppskattas det: ett märke med N annonser som är andelen a av de nya annonserna ger ungefär N / a
-  // annonser i hela kategorin, och medianen över märkena (under 960 och minst 3 i stickprovet) används.
-  const nyckel = kalla + "|" + kat + "|" + d;
-  if (uteMinne.has(nyckel)) return uteMinne.get(nyckel);
-  let ut = null;
-  if (kalla === "tradera") {
-    const u = fore(traderaUte(kat), d);
-    if (u && u[1]) ut = {n: u[1], tak: !!u[2], ungefar: false};
-  } else if (kalla === "vinted") {
-    const sista = fore((B.andel.vinted || {})[kat] || [], d);
-    const est = [];
-    if (sista) for (const [m, v] of Object.entries(sista[2])) {
-      const ms = fore(markePunkter("vinted", kat, m), d);
-      if (v[0] >= 3 && ms && ms[1] && !ms[4]) est.push(ms[1] / (v[0] / sista[1]));
-    }
-    if (est.length >= 3) { est.sort((a, b) => a - b); ut = {n: est[Math.floor(est.length / 2)], tak: false, ungefar: true}; }
-  }
-  uteMinne.set(nyckel, ut);
+function allaRader(){
+  const ut = [];
+  for (const kat of B.kategorier || []) for (const r of (katData(kat.id) || {}).marken || []) ut.push(berika(r, kat));
   return ut;
 }
-function uteAndel(kalla, kat, m, sista, d){
-  // Märkets andel av allt som ligger ute i kategorin, i procent (den dagen, om d finns).
-  const c = kategoriUte(kalla, kat, d);
-  if (!c) return null;
-  const ms = fore(markePunkter(kalla, kat, m), d);
-  if (kalla === "tradera") return ms && ms[6] != null ? Math.min(100, 100 * ms[6] / c.n) : null;
-  if (ms && ms[1] && !ms[4]) return Math.min(100, 100 * ms[1] / c.n);
-  // Vinted: märken med fler än 960 annonser går inte att räkna. Där används andelen av de nya,
-  // men aldrig mindre än vad 960 annonser skulle ge.
-  const nya = sista ? andelI(sista, m) : null;
-  if (ms && ms[4]) return Math.min(100, Math.max(100 * 960 / c.n, nya || 0));
-  return nya;
-}
 
-function fartDelar(kat, m){
-  // Sålda senaste dygnet. Vinted: annonser av märket som försvunnit sedan förra mätningen, räknat om till ett dygn.
-  // Tradera: sålda per vecka på märkets sökning delat med sju. null = inte mätt än.
-  const sist = (kalla, i) => { const v = markePunkter(kalla, kat, m).map(p => p[i]).filter(x => x != null); return v.length ? v.at(-1) : null; };
-  const tr = sist("tradera", 5);
-  return {vinted: sist("vinted", 6), tradera: tr == null ? null : tr / 7};
-}
-function fart(kat, m){
-  const d = fartDelar(kat, m);
-  return d.vinted == null && d.tradera == null ? null : (d.vinted || 0) + (d.tradera || 0);
-}
-function fartText(kat, m){
-  const d = fartDelar(kat, m), t = x => x == null ? "mäts snart" : x.toLocaleString("sv-SE", {maximumFractionDigits: 1});
-  return `Sålda senaste dygnet: hela Vinted ${t(d.vinted)}, Tradera ${t(d.tradera)}`;
-}
 function avrunda(v){ return Math.max(10, Math.floor(v / 10) * 10) }
 function alarmLank(m, katId, maxpris){
   // Öppnar alarm-sidan med ett nytt alarm förifyllt med märket, kategorin och ett maxpris.
-  const kat = (B.kategorier || []).find(k => k.id === katId);
+  const kat = katInfo(katId);
   const mall = {namn: `${m} ${kat ? kat.namn.toLowerCase() : ""}`.trim(), sokord: ORD[katId] || (kat && kat.ord ? [kat.ord] : []), marke: m, kon: "herr", kategorier: kat && kat.egen ? [] : ["klader"],
                 lander: LANDER, skick: ["Ny med prislapp", "Ny utan prislapp", "Mycket bra", "Bra"],
                 uteslut: ["fake", "replica", "inspired", "defekt", "trasig", "fläck", "barn", "dam"], min_betyg: 4};
   if (maxpris) { mall.maxpris = avrunda(maxpris); mall.kappris = avrunda(maxpris * 0.75); }
   return "index.html#nytt=" + encodeURIComponent(JSON.stringify(mall));
 }
-
-function periodKnappar(id, tider){
-  // Periodknapparna. Perioder som är längre än historiken visas svagare, och en rad säger
-  // hur länge börsen har mätt, så att det syns varför de visar samma sak.
-  const forsta = tider.length ? Math.min(...tider) : null, sista = tider.length ? Math.max(...tider) : null;
-  const span = forsta == null ? 0 : Math.round((sista - forsta) / DAG);
-  $(id).innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""} ${k !== "max" && forsta != null && v[1] > span + 1 ? "tunn" : ""}">${v[0]}</button>`).join("");
-  const dagar = PERIODER[st.period][1];
-  $(id + "not").textContent = forsta == null || dagar <= span + 1 ? "" : span < 1
-    ? "Börsen har bara mätt här en gång än, så ändringar syns från nästa mätning."
-    : `Börsen har mätt här i ${span} ${span === 1 ? "dag" : "dagar"} (sedan ${datum(forsta)}), så ${PERIODER[st.period][0]} visar allt som finns hittills.`;
+function vintedLank(m, kat){
+  const ids = (B.vinted_marke_ids || {})[m], kid = (B.vinted_kategorier || {})[kat];
+  const p = new URLSearchParams();
+  if (Array.isArray(ids) && ids.length) ids.forEach(id => p.append("brand_ids[]", id)); else p.append("search_text", m);
+  if (kid) p.append("catalog_ids[]", kid);
+  p.append("order", "price_low_to_high");
+  return "https://www.vinted.se/catalog?" + p;
 }
-function inomPeriod(pts){
-  if (!pts.length) return pts;
-  const slut = dag(pts.at(-1)[0]), dagar = PERIODER[st.period][1];
-  return pts.filter(p => dag(p[0]) >= slut - dagar * DAG);
-}
-function forandring(pts, varde, relativ){
-  // Jämför senaste värdet med värdet i början av perioden.
-  const inom = inomPeriod(pts).filter(p => varde(p) != null);
-  if (inom.length < 2) return null;
-  const a = varde(inom[0]), b = varde(inom.at(-1));
-  if (relativ) return a ? 100 * (b - a) / a : null;
-  return b - a;
+function traderaLank(m, kat){
+  const k = katInfo(kat), p = new URLSearchParams([["q", m], ["itemStatus", "Sold"], ["sortBy", "AddedOn"]]);
+  if (k && k.tr && k.tr.length) p.append("categoryId", k.tr[0]);
+  return "https://www.tradera.com/search?" + p;
 }
 
-function rader(){
-  const kat = st.kat, kalla = st.kalla;
-  const pts = andelsPunkter(kalla, kat);
-  const sista = pts.at(-1);
-  const namn = new Set(st.urval === "mina" ? alarmMarken() : [...Object.keys(sista ? sista[2] : {}), ...alarmMarken()]);
-  return [...namn].map(m => {
-    const mp = markePunkter(kalla, kat, m);
-    const ms = mp.at(-1);
-    const andel = sista ? andelI(sista, m) : null;
-    // Pris: märkets egen sökning om den finns, annars medianen i kategoristickprovet.
-    const pris = ms && ms[2] != null ? ms[2] : (sista && sista[2][m] ? sista[2][m][1] : null);
-    const prisUtv = mp.length > 1 ? forandring(mp, p => p[2], true) : forandring(pts, p => p[2][m] ? p[2][m][1] : null, true);
-    return {
-      m, andel, pris, prisUtv, ute: uteAndel(kalla, kat, m, sista),
-      andelUtv: forandring(pts, p => andelI(p, m), false),
-      antal: ms ? ms[1] : (sista && sista[2][m] ? sista[2][m][0] : null),
-      tak: ms ? ms[4] : 0,
-      fart: fart(kat, m),
-      p25: ms ? ms[3] : null,
-      spark: inomPeriod(pts).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
-    };
-  });
-}
-
-// ---------- Rita ----------
-function katChips(kats){
-  // Kategorierna som knappar, och längst till höger ett plus för att lägga till en egen.
-  // På den publika börsen syns plusset bara i en webbläsare där GitHub-nyckeln finns, alltså för ägaren.
-  return kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}${k.vantar ? ` <span class="liten">· mäts snart</span>` : ""}</button>`).join("") +
-    (PUBLIK && !nyckel() ? "" : `<button class="chip nykat" data-ny="1" title="Lägg till ett eget filter" aria-label="Lägg till ett eget filter">+</button>`);
-}
-function ritaVal(){
-  const kats = B.kategorier || [];
-  if (!kats.some(k => k.id === st.kat)) st.kat = kats[0]?.id;
-  $("kategorier").innerHTML = katChips(kats);
-  $("kallor").innerHTML = Object.entries(KALLOR).map(([k, v]) => `<button data-k="${k}" class="${k === st.kalla ? "vald" : ""}"><span class="prick" style="background:${v.farg}"></span>${v.namn} <span class="dolj-mobil">· ${v.vad}</span></button>`).join("");
-  periodKnappar("perioder", andelsPunkter(st.kalla, st.kat).map(p => dag(p[0])));
-  $("urval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.urval));
-}
-
+// ---------- Hjälp för tabellerna ----------
 function utv(v, enhet, d = 1){
   if (v == null) return `<span class="noll">–</span>`;
-  const r = Math.abs(v) < 0.05 ? 0 : v;
+  const r = Math.abs(v) < (d ? 0.05 : 0.5) ? 0 : v;
   const kl = r > 0 ? "upp" : r < 0 ? "ned" : "noll";
   const tecken = r > 0 ? "+" : r < 0 ? "−" : "±";
   return `<span class="${kl}">${tecken}${Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d})}${enhet}</span>`;
 }
-
-function spark(pts){
-  const w = 84, h = 26;
-  if (pts.length < 2) return `<svg class="spark" width="${w}" height="${h}"></svg>`;
-  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
-  const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-  const X = x => 2 + (w - 4) * (x - x0) / ((x1 - x0) || 1), Y = y => h - 3 - (h - 6) * (y - y0) / ((y1 - y0) || 1);
-  const farg = ys.at(-1) > ys[0] ? "var(--plus)" : ys.at(-1) < ys[0] ? "var(--minus)" : "var(--svag)";
-  return `<svg class="spark" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${farg}" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ")}"/></svg>`;
-}
-
-function antalText(r){
-  if (r.antal == null) return "–";
-  return r.antal.toLocaleString("sv-SE") + (r.tak ? "+" : "");
-}
-
-function ritaTabell(){
-  const K = KALLOR[st.kalla], kat = (B.kategorier || []).find(k => k.id === st.kat);
-  const pts = andelsPunkter(st.kalla, st.kat);
-  const sista = pts.at(-1);
-  $("listrubrik").textContent = `${K.andel}`;
-  $("listinfo").textContent = sista
-    ? `${kat ? kat.namn : ""} på ${K.namn} · ${st.kalla === "tradera" && B.tradera_veckor?.[st.kat]?.length ? "vecka från " + datum(dag(sista[0])) : "mätt " + datum(dag(sista[0]))} · ${sista[1].toLocaleString("sv-SE")} ${st.kalla === "tradera" ? "sålda" : "annonser"} i stickprovet`
-    : `Ingen mätning av ${kat ? kat.namn.toLowerCase() : "kategorin"} på ${K.namn} än. Den görs inom ett dygn.`;
-  const ute = kategoriUte(st.kalla, st.kat);
-  if (ute) $("listinfo").textContent += ` · ${ute.ungefar ? "ungefär " : ""}${(ute.ungefar ? Math.round(ute.n / 100) * 100 : ute.n).toLocaleString("sv-SE")}${ute.tak ? "+" : ""} annonser ute i kategorin`;
-  const visaUte = st.kalla !== "plick", uteRubrik = st.kalla === "vinted" ? "Andel av allt ute ≈" : "Andel av allt ute";
-  // Alarm-märken som inte har något alls i kategorin visas inte (t.ex. jeansmärken bland dunjackor).
-  const alla = rader();
-  let lista = alla.filter(r => r.andel || r.pris != null || r.antal);
-  const tomma = alla.length - lista.length;
-  // Tradera visar det som sålts, så där rankas listan efter andelen av det sålda.
-  const [nyckel, riktning] = st.sort[st.kalla] || (st.kalla === "vinted" ? ["ute", -1] : ["andel", -1]);
-  lista.sort((a, b) => {
-    if (nyckel === "m") return riktning * a.m.localeCompare(b.m, "sv");
-    const x = a[nyckel] ?? -Infinity, y = b[nyckel] ?? -Infinity;
-    return riktning * (x - y) || (b.andel ?? -1) - (a.andel ?? -1);
+// Ändringen i procent när det är många sålda, annars i antal (från 2 till 7 sålda är +5 st, inte +250 %).
+const trendCell = r => r.trend == null ? `<span class="noll">–</span>` : r.sf >= 10 ? utv(r.trend, " %", 0) : utv(r.s - r.sf, " st", 0);
+const chansCell = c => c == null ? `<span class="noll">–</span>` : `<span class="chans ${c >= 60 ? "hog" : c < 35 ? "lag" : ""}">${pct(c, 0)}</span>`;
+const stjarna = m => arAlarm(m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : "";
+const prisCell = r => `<b>${kr(r.p)}</b>${r.s >= FA && r.l != null && r.h != null && r.h > r.l ? `<small class="spann">oftast ${tal(r.l)}–${tal(r.h)}</small>` : ""}`;
+// Förklaringar som syns när man håller över en kolumnrubrik
+const TITLAR = {
+  s: "Sålda på Tradera de senaste 30 dagarna", trend: "Sålda de senaste 30 dagarna jämfört med de 30 dagarna innan",
+  p: "Medianpriset för de sålda: hälften såldes dyrare. Under står spannet där de flesta hamnade.",
+  chans: "Av annonserna som tog slut de senaste 30 dagarna, hur många som blev sålda",
+  kop: "Billigaste fjärdedelen av annonserna på Vinted, ett pris du ofta hittar om du letar lite",
+  vinst: "Säljs för minus Köp på Vinted, före frakt och avgifter", sf: "Sålda dagarna 31–60 bakåt",
+  pris: "Slutpriset nu jämfört med de 30 dagarna innan",
+};
+function sortera(lista, id, std){
+  const [n, r] = st.sort[id] || std;
+  return lista.sort((a, b) => {
+    if (n === "m") return r * a.m.localeCompare(b.m, "sv");
+    const x = a[n], y = b[n];
+    if (x == null || y == null) return x == null && y == null ? b.s - a.s : x == null ? 1 : -1;  // tomma sist
+    return r * (x - y) || b.s - a.s;
   });
-  const maxAndel = Math.max(1, ...lista.map(r => r.andel || 0));
-  const per = PERIODER[st.period][0];
-  const kol = [["m", "Märke"], ...(visaUte ? [["ute", uteRubrik]] : []), ["andel", K.kort], ["andelUtv", `Ändring ${per}`], ["spark", "Trend", "dolj-mobil"], ["pris", K.pris], ["prisUtv", `Prisändring ${per}`, "dolj-mobil"], ["antal", K.antal, "dolj-mobil"], ["fart", "Sålda 24 h", "dolj-mobil"]];
-  const huvud = `<thead><tr>${kol.map(([k, t, kl]) => `<th data-k="${k}" class="${kl || ""} ${k === nyckel ? "sort" + (riktning > 0 ? " upp" : "") : ""}" ${k === "spark" ? 'data-ingen="1"' : ""}>${esc(t)}</th>`).join("")}</tr></thead>`;
-  if (!lista.length) { $("tabell").innerHTML = huvud + `<tbody><tr><td colspan="${kol.length}" class="tomt">Inga märken att visa än.</td></tr></tbody>`; return; }
-  $("tabell").innerHTML = huvud + "<tbody>" + lista.map((r, i) => `
-    <tr data-m="${esc(r.m)}" class="${r.m === st.marke ? "vald" : ""}">
-      <td><div class="namncell"><span class="rank">${i + 1}</span><span class="n">${esc(r.m)}</span>${arAlarm(r.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}</div></td>
-      ${visaUte ? `<td class="tal" title="${esc(uteTitel(r))}">${pct(r.ute)}</td>` : ""}
-      <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i style="width:${(100 * (r.andel || 0) / maxAndel).toFixed(1)}%"></i></div>${pct(r.andel)}</div></td>
-      <td class="tal">${utv(r.andelUtv, " %")}</td>
-      <td class="dolj-mobil">${spark(r.spark)}</td>
-      <td class="tal">${kr(r.pris)}</td>
-      <td class="tal dolj-mobil">${utv(r.prisUtv, " %")}</td>
-      <td class="tal dolj-mobil">${antalText(r)}</td>
-      <td class="tal dolj-mobil" title="${esc(fartText(st.kat, r.m))}">${r.fart == null ? "–" : r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
-    </tr>`).join("") + (tomma ? `<tr><td colspan="${kol.length}" class="svag" style="text-align:left;cursor:default">${tomma} av ${DINA} märkena har inget i den här kategorin än.</td></tr>` : "") + "</tbody>";
 }
+function thead(kol, id, std){
+  const [n, r] = st.sort[id] || std;
+  return `<thead><tr>${kol.map(([k, t, kl]) => `<th data-k="${k}" class="${kl || ""} ${k === n ? "sort" + (r > 0 ? " upp" : "") : ""}" ${TITLAR[k] ? `title="${esc(TITLAR[k])}"` : ""} ${k === "" ? 'data-ingen="1"' : ""}>${esc(t)}</th>`).join("")}</tr></thead>`;
+}
+function bytSort(id, k, std){
+  const [n0, r0] = st.sort[id] || std;
+  st.sort[id] = [k, n0 === k ? -r0 : (k === "m" ? 1 : -1)]; skriv("sort4", st.sort);
+}
+const namnCell = (r, i, medKat) => `<div class="namncell">${i != null ? `<span class="rank">${i + 1}</span>` : ""}<span class="n">${esc(r.m)}</span>${stjarna(r.m)}${medKat ? `<span class="liten">${esc(r.kat.namn)}</span>` : ""}</div>`;
 
-function uteTitel(r){
-  if (r.ute == null) return "Mäts snart";
-  if (st.kalla === "tradera") return "Märkets aktiva annonser delat med alla aktiva i kategorin på Tradera";
-  return r.tak ? "Över 960 annonser, så andelen av de nya används som uppskattning" : "Märkets annonser delat med ungefär hur många som ligger ute i kategorin";
+// ---------- Vad säljer ----------
+function katChips(kats){
+  // Kategorierna som knappar, och längst till höger ett plus för att lägga till en egen.
+  // På den publika börsen syns plusset bara i en webbläsare där GitHub-nyckeln finns, alltså för ägaren.
+  return kats.map(k => `<button class="chip ${k.id === st.kat ? "vald" : ""}" data-k="${k.id}" role="tab">${esc(k.namn)}${k.vantar || !katData(k.id) ? ` <span class="liten">· mäts snart</span>` : ""}</button>`).join("") +
+    (PUBLIK && !nyckel() ? "" : `<button class="chip nykat" data-ny="1" title="Lägg till ett eget filter" aria-label="Lägg till ett eget filter">+</button>`);
 }
-
-function ritaRutor(){
-  const lista = rader().filter(r => r.andel != null);
-  const per = PERIODER[st.period][0];
-  const storst = [...lista].sort((a, b) => b.andel - a.andel)[0];
-  const med = lista.filter(r => r.andelUtv != null);
-  const upp = [...med].sort((a, b) => b.andelUtv - a.andelUtv)[0];
-  const ned = [...med].sort((a, b) => a.andelUtv - b.andelUtv)[0];
-  const ruta = (etikett, r, text) => r
-    ? `<div class="ruta" data-m="${esc(r.m)}"><div class="etikett">${etikett}</div><div class="namn">${esc(r.m)}</div><div class="varde">${text}</div></div>`
-    : `<div class="ruta"><div class="etikett">${etikett}</div><div class="namn">–</div><div class="varde">Behöver minst två mätningar</div></div>`;
-  $("rutor").innerHTML =
-    ruta("Störst andel", storst, storst ? `${pct(storst.andel)} av ${st.kalla === "tradera" ? "det sålda" : "de nya annonserna"}` : "") +
-    ruta(`Ökar mest, ${per}`, upp && upp.andelUtv > 0 ? upp : null, upp ? `${utv(upp.andelUtv, " %")} till ${pct(upp.andel)}` : "") +
-    ruta(`Minskar mest, ${per}`, ned && ned.andelUtv < 0 ? ned : null, ned ? `${utv(ned.andelUtv, " %")} till ${pct(ned.andel)}` : "");
-}
-
-// ---------- Köplägen ----------
-function koplagen(){
-  // Dina alarm-märken i alla kategorier: slutpris på Tradera minus billigaste fjärdedelen på Vinted.
-  const ut = [];
-  for (const kat of B.kategorier || []) for (const m of alarmMarken()) {
-    const tr = markePunkter("tradera", kat.id, m).at(-1), vi = markePunkter("vinted", kat.id, m).at(-1);
-    if (!tr || !vi || !tr[2] || !vi[3] || tr[1] < 5) continue;
-    ut.push({m, kat, salj: tr[2], kop: vi[3], marg: tr[2] - vi[3], salda: tr[1], fart: fart(kat.id, m)});
-  }
-  return ut.sort((a, b) => b.marg - a.marg).slice(0, 10);
-}
-const INTE_MARKEN = ["vintage", "cardigan", "övriga", "okänt", "handgjord", "no brand"];
-function nyaMarken(){
-  // Märken som säljer mycket på Tradera, till ett bra slutpris, men inte finns i något alarm.
-  const mina = new Set(alarmMarken().map(m => m.toLowerCase()));
-  const ut = [];
-  for (const kat of B.kategorier || []) {
-    const p = ((B.andel.tradera || {})[kat.id] || []).at(-1);
-    if (!p) continue;
-    for (const [m, [antal, median]] of Object.entries(p[2])) {
-      if (mina.has(m.toLowerCase()) || INTE_MARKEN.includes(m.toLowerCase()) || antal < 4 || !median || median < 200) continue;
-      ut.push({m, kat, salda: antal, andel: 100 * antal / p[1], salj: median, fart: fart(kat.id, m)});
-    }
-  }
-  return ut.sort((a, b) => b.salda * b.salj - a.salda * a.salj).slice(0, 12);
-}
-function ritaLagen(){
-  $("lageval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.lage));
-  if (st.lage === "kop") {
-    const l = koplagen();
-    $("lagerubrik").textContent = "Bästa köplägena";
-    $("lageinfo").textContent = "Köp billigt på Vinted och sälj på Tradera. Köpläget är ungefär vad du tjänar per plagg, före frakt och avgifter.";
-    $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Köp under</th><th>Säljs för</th><th>Köpläge</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
-      l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
-        <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
-        <td class="tal" title="Billigaste fjärdedelen på Vinted">${kr(x.kop)}</td>
-        <td class="tal" title="Medianslutpris på Tradera, ${x.salda} sålda">${kr(x.salj)}</td>
-        <td class="tal">${utv(x.marg, " kr", 0)}</td>
-        <td class="tal dolj-mobil">${x.fart == null ? "–" : x.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
-        <td><a class="skapa" href="${alarmLank(x.m, x.kat.id, x.kop)}" title="Nytt alarm med maxpris ${kr(avrunda(x.kop))}">+ Alarm</a></td></tr>`).join("") + "</tbody>"
-      : `<tbody><tr><td class="tomt">Köplägena räknas när ${DINA} märkena mätts på både Vinted och Tradera. Det görs inom ett dygn.</td></tr></tbody>`;
-  } else {
-    const l = nyaMarken();
-    $("lagerubrik").textContent = "Nya märken att bevaka";
-    $("lageinfo").textContent = PUBLIK ? "Märken som säljer ofta på Tradera för minst 200 kr, utöver de som mäts var för sig." : "Märken som säljer ofta på Tradera för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
-    $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Sålda</th><th>Andel</th><th>Slutpris</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
-      l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
-        <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
-        <td class="tal">${x.salda}</td><td class="tal">${pct(x.andel)}</td><td class="tal">${kr(x.salj)}</td>
-        <td class="tal dolj-mobil">${x.fart == null ? "–" : x.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
-        <td><a class="skapa" href="${alarmLank(x.m, x.kat.id, x.salj * 0.5)}" title="Nytt alarm med maxpris ${kr(avrunda(x.salj * 0.5))}, halva slutpriset">+ Alarm</a></td></tr>`).join("") + "</tbody>"
-      : `<tbody><tr><td class="tomt">Inga sålda Tradera-annonser mätta än.</td></tr></tbody>`;
-  }
-}
-
-// ---------- Trender och snabbast sålda ----------
-function trender(){
-  // Andelsändring under perioden för varje märke, kategori och källa (Vinted och Tradera).
-  const ut = [];
-  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
-    const pts = andelsPunkter(kalla, kat.id), sista = pts.at(-1);
-    if (!sista) continue;
-    for (const m of new Set([...Object.keys(sista[2]), ...alarmMarken()])) {
-      if (INTE_MARKEN.includes(m.toLowerCase())) continue;
-      const d = forandring(pts, p => andelI(p, m), false), nu = andelI(sista, m);
-      if (d == null || nu == null || Math.abs(d) < 0.1) continue;
-      ut.push({m, kat, kalla, d, nu});
-    }
-  }
-  return ut.sort((a, b) => st.trend === "upp" ? b.d - a.d : a.d - b.d).filter(x => st.trend === "upp" ? x.d > 0 : x.d < 0).slice(0, 25);
-}
-function ritaTrender(){
-  $("trendperioder").innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""}">${v[0]}</button>`).join("");
-  $("trendriktning").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.trend));
-  const l = trender(), per = PERIODER[st.period][0];
-  $("trendtabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Källa</th><th>Ändring ${per}</th><th>Andel nu</th></tr></thead><tbody>` +
-    l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}" data-kalla="${x.kalla}">
-      <td><div class="namncell"><span class="n">${esc(x.m)}</span>${arAlarm(x.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}<span class="liten">${esc(x.kat.namn)}</span></div></td>
-      <td><span class="prick" style="background:${KALLOR[x.kalla].farg}"></span> ${KALLOR[x.kalla].namn}</td>
-      <td class="tal">${utv(x.d, " %")}</td>
-      <td class="tal">${pct(x.nu)}</td></tr>`).join("") + "</tbody>"
-    : `<tbody><tr><td class="tomt">Trenderna syns när kategorierna mätts minst två gånger under perioden.</td></tr></tbody>`;
-}
-function ritaFart(){
-  const ut = [];
-  for (const kat of B.kategorier || []) for (const m of alarmMarken()) {
-    const d = fartDelar(kat.id, m), f = fart(kat.id, m);
-    if (f == null || f <= 0) continue;
-    const tr = markePunkter("tradera", kat.id, m).at(-1), vi = markePunkter("vinted", kat.id, m).at(-1);
-    ut.push({m, kat, f, d, salj: tr ? tr[2] : null, beg: vi ? vi[2] : null});
-  }
-  ut.sort((a, b) => b.f - a.f);
-  const tal = x => x == null ? "–" : x.toLocaleString("sv-SE", {maximumFractionDigits: 1});
-  $("farttabell").innerHTML = ut.length ? `<thead><tr><th>Märke</th><th>Sålda 24 h</th><th class="dolj-mobil">Vinted</th><th class="dolj-mobil">Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Begärt Vinted</th></tr></thead><tbody>` +
-    ut.slice(0, 30).map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
-      <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
-      <td class="tal"><b>${tal(x.f)}</b></td>
-      <td class="tal dolj-mobil">${tal(x.d.vinted)}</td>
-      <td class="tal dolj-mobil">${tal(x.d.tradera)}</td>
-      <td class="tal">${kr(x.salj)}</td>
-      <td class="tal dolj-mobil">${kr(x.beg)}</td></tr>`).join("") + "</tbody>"
-    : `<tbody><tr><td class="tomt">Sålda räknas när ${DINA} märkena mätts två gånger. Det görs inom ett dygn.</td></tr></tbody>`;
-}
-// ---------- Andel av allt ute ----------
-const UTE_FARGER = ["#1268a8", "#b23b27", "#1d7a50", "#9a6412", "#6b4fa0", "#b8336a", "#2f3b2c", "#0f7d86"];
-function uteRader(){
-  // Märken med eget antal annonser i kategorin, störst andel först.
-  const kalla = st.utekalla, kat = st.kat;
-  const sista = andelsPunkter(kalla, kat).at(-1);
-  const namn = new Set([...Object.keys(((B.marke[kalla] || {})[kat]) || {}), ...(sista ? Object.keys(sista[2]) : [])]);
-  const ut = [];
-  for (const m of namn) {
-    const mp = markePunkter(kalla, kat, m), ms = mp.at(-1);
-    if (!ms || (kalla === "tradera" && ms[6] == null) || (kalla === "vinted" && !ms[1])) continue;
-    const andel = uteAndel(kalla, kat, m, sista);
-    if (andel == null) continue;
-    const serie = uteSerie(m);
-    const slut = serie.length ? serie.at(-1)[0] : 0, inom = serie.filter(p => p[0] >= slut - PERIODER[st.period][1] * DAG);
-    ut.push({m, andel, antal: kalla === "tradera" ? ms[6] : ms[1], tak: kalla === "vinted" && !!ms[4],
-             utv: inom.length >= 2 ? inom.at(-1)[1] - inom[0][1] : null, nya: sista ? andelI(sista, m) : null, serie: inom, helaSerien: serie});
-  }
-  return ut.sort((a, b) => b.andel - a.andel);
-}
-function uteSerie(m){
-  // Märkets andel av allt ute vid varje mätning av märket.
-  const kalla = st.utekalla, kat = st.kat, pts = (B.andel[kalla] || {})[kat] || [];
-  return markePunkter(kalla, kat, m).map(p => [dag(p[0]), uteAndel(kalla, kat, m, fore(pts, p[0]), p[0])]).filter(p => p[1] != null);
-}
-function ritaUte(){
+function ritaVal(){
   const kats = B.kategorier || [];
-  $("utekategorier").innerHTML = katChips(kats);
-  $("utekallor").innerHTML = ["vinted", "tradera"].map(k => `<button data-k="${k}" class="${k === st.utekalla ? "vald" : ""}"><span class="prick" style="background:${KALLOR[k].farg}"></span>${KALLOR[k].namn}${k === "vinted" ? " ≈" : ""}</button>`).join("");
-  const kat = kats.find(k => k.id === st.kat), c = kategoriUte(st.utekalla, st.kat), lista = uteRader();
-  periodKnappar("uteperioder", lista.flatMap(r => r.helaSerien.map(p => p[0])));
-  $("uteinfo").textContent = c
-    ? `${kat ? kat.namn : ""} på ${KALLOR[st.utekalla].namn}: ${c.ungefar ? "ungefär " : ""}${(c.ungefar ? Math.round(c.n / 100) * 100 : c.n).toLocaleString("sv-SE")}${c.tak ? "+" : ""} annonser ute. ${st.utekalla === "vinted" ? "Uppskattat, eftersom Vinted slutar räkna vid 960." : "Exakt antal från Tradera."}`
-    : `Andelen av allt ute räknas när ${kat ? kat.namn.toLowerCase() : "kategorin"} mätts på ${KALLOR[st.utekalla].namn}. Det görs inom ett dygn.`;
-  if (!st.uteValda || !st.uteValda.some(m => lista.some(r => r.m === m))) st.uteValda = lista.slice(0, 5).map(r => r.m);
-  const farg = m => UTE_FARGER[st.uteValda.indexOf(m) % UTE_FARGER.length];
-  // Staplar
-  if (!c || !lista.length) {
-    $("utestaplar").innerHTML = `<div class="utetom">Inga märken med räknade annonser här än.</div>`;
-  } else {
-    const topp = lista.slice(0, 12), max = Math.max(...topp.map(r => r.andel), 1);
-    const ovr = Math.max(0, 100 - lista.reduce((s, r) => s + r.andel, 0));
-    $("utestaplar").innerHTML = topp.map(r => `<div class="rad ${st.uteValda.includes(r.m) ? "vald" : ""}" data-m="${esc(r.m)}">
-        <span class="namn">${esc(r.m)}${arAlarm(r.m) ? ` <span class="stjarna">★</span>` : ""}</span>
-        <span class="stang"><i style="width:${(100 * r.andel / max).toFixed(1)}%;${st.uteValda.includes(r.m) ? `background:${farg(r.m)}` : ""}"></i></span>
-        <span class="tal">${pct(r.andel)}${r.tak ? "+" : ""}</span><span class="tal">${utv(r.utv, " %")}</span></div>`).join("") +
-      `<div class="rad ovr"><span class="namn">Övriga märken</span><span class="stang"><i style="width:0"></i></span><span class="tal">${pct(ovr)}</span><span></span></div>`;
+  if (!kats.some(k => k.id === st.kat)) st.kat = (kats.find(k => katData(k.id)) || kats[0] || {}).id;
+  $("kategorier").innerHTML = katChips(kats);
+  $("urval").hidden = PUBLIK;
+  $("urval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.urval));
+}
+function ritaRutor(){
+  const k = katData(st.kat);
+  if (!k) { $("rutor").innerHTML = ""; return; }
+  const ch = k.o != null && k.s + k.o ? 100 * k.s / (k.s + k.o) : null;
+  const tr = k.sf ? 100 * (k.s - k.sf) / k.sf : null;
+  const ruta = (etikett, varde, text) => `<div class="ruta stat"><div class="etikett">${etikett}</div><div class="namn tal">${varde}</div><div class="varde">${text}</div></div>`;
+  $("rutor").innerHTML =
+    ruta("Sålda senaste 30 dagarna", tal(k.s), tr == null ? "på Tradera" : `${utv(tr, " %", 0)} mot 30 dagarna innan`) +
+    ruta("Vanligt slutpris", kr(k.p), "hälften såldes dyrare") +
+    ruta("Säljchans", ch == null ? "–" : pct(ch, 0), "av annonserna som tog slut blev sålda") +
+    ruta("Till salu nu", k.ute == null ? "–" : tal(k.ute), "annonser på Tradera i kategorin");
+}
+const KOL = [["m", "Märke"], ["s", "Sålda 30 d"], ["trend", "Ändring", "dolj-mobil"], ["p", "Säljs för"], ["chans", "Säljchans"], ["kop", "Köp på Vinted", "dolj-mobil"], ["vinst", "Vinst per plagg"]];
+function ritaTabell(){
+  const kat = katInfo(st.kat), k = katData(st.kat);
+  const namn = kat ? kat.namn.toLowerCase() : "kategorin";
+  $("listrubrik").textContent = kat ? `Märken som säljer: ${kat.namn.toLowerCase()}` : "Märken som säljer";
+  if (!k) {
+    $("listinfo").textContent = "";
+    $("tabell").innerHTML = `<tbody><tr><td class="tomt">${kat && kat.vantar ? `Börsen börjar mäta ${esc(namn)} vid nästa körning.` : `Börsen hämtar just nu allt som sålts i ${esc(namn)} på Tradera. Det syns här inom några timmar.`}</td></tr></tbody>`;
+    $("tabellfot").innerHTML = "";
+    return;
   }
-  ritaUteDiagram(lista, farg);
-  // Tabell
-  const per = PERIODER[st.period][0];
-  $("utetabell").innerHTML = lista.length ? `<thead><tr><th>Märke</th><th>Andel av allt ute</th><th>Ändring ${per}</th><th class="dolj-mobil">Trend</th><th class="dolj-mobil">Annonser ute</th><th class="dolj-mobil">${KALLOR[st.utekalla].kort}</th><th></th></tr></thead><tbody>` +
-    lista.map((r, i) => `<tr data-m="${esc(r.m)}" class="${st.uteValda.includes(r.m) ? "vald" : ""}">
-      <td><div class="namncell"><span class="rank">${i + 1}</span>${st.uteValda.includes(r.m) ? `<span class="prick" style="background:${farg(r.m)}"></span>` : ""}<span class="n">${esc(r.m)}</span>${arAlarm(r.m) ? `<span class="stjarna" title="Finns i dina alarm">★</span>` : ""}</div></td>
-      <td class="tal"><b>${pct(r.andel)}${r.tak ? "+" : ""}</b></td>
-      <td class="tal">${utv(r.utv, " %")}</td>
-      <td class="dolj-mobil">${spark(r.serie)}</td>
-      <td class="tal dolj-mobil">${r.antal.toLocaleString("sv-SE")}${r.tak ? "+" : ""}</td>
-      <td class="tal dolj-mobil">${pct(r.nya)}</td>
-      <td><a class="skapa" href="#" data-mer="${esc(r.m)}">Mer</a></td></tr>`).join("") + "</tbody>"
-    : `<tbody><tr><td class="tomt">Märken visas här när de räknats i kategorin.</td></tr></tbody>`;
-}
-function ritaUteDiagram(lista, farg){
-  const el = $("utediagram");
-  const serier = st.uteValda.map(m => ({m, pts: (lista.find(r => r.m === m) || {}).serie || []})).filter(s => s.pts.length);
-  $("uteforklaring").innerHTML = serier.map(s => `<span><span class="prick" style="background:${farg(s.m)}"></span>${esc(s.m)}</span>`).join("");
-  const alla = serier.flatMap(s => s.pts);
-  if (!alla.length) { el.innerHTML = `<div class="utetom">Inget att visa än.</div>`; return; }
-  const W = Math.max(300, el.clientWidth || 800), H = W < 500 ? 200 : 260, v = 44, h = 12, o = 12, u = 26;
-  const xs = alla.map(p => p[0]), x0 = Math.min(...xs), x1 = Math.max(...xs);
-  const ymax = Math.max(1, ...alla.map(p => p[1])) * 1.15;
-  const X = x => v + (W - v - h) * (x1 === x0 ? 0.5 : (x - x0) / (x1 - x0)), Y = y => o + (H - o - u) * (1 - y / ymax);
-  let svg = "";
-  for (let i = 0; i <= 4; i++) {
-    const y = ymax * i / 4;
-    svg += `<line x1="${v}" x2="${W - h}" y1="${Y(y).toFixed(1)}" y2="${Y(y).toFixed(1)}" stroke="var(--linje)" stroke-width="1" ${i ? 'stroke-dasharray="3 4"' : ""}/>` +
-           `<text x="${v - 6}" y="${(Y(y) + 4).toFixed(1)}" text-anchor="end">${y.toLocaleString("sv-SE", {maximumFractionDigits: ymax < 5 ? 1 : 0})} %</text>`;
-  }
-  const dagar = [...new Set(xs)].sort((a, b) => a - b);
-  const etiketter = dagar.length <= 3 ? dagar : [dagar[0], dagar[Math.floor(dagar.length / 2)], dagar.at(-1)];
-  for (const d of etiketter) svg += `<text x="${X(d).toFixed(1)}" y="${H - 6}" text-anchor="${etiketter.length > 1 && d === dagar.at(-1) ? "end" : etiketter.length > 1 && d === dagar[0] ? "start" : "middle"}">${datum(d)}</text>`;
-  for (const s of serier) {
-    const f = farg(s.m);
-    if (s.pts.length > 1) svg += `<polyline fill="none" stroke="${f}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" points="${s.pts.map(p => X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ")}"/>`;
-    svg += s.pts.map(p => `<circle cx="${X(p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="${s.pts.length > 1 ? 2.6 : 4}" fill="${f}"><title>${esc(s.m)}, ${datum(p[0])}: ${pct(p[1])}</title></circle>`).join("");
-  }
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="Andel av allt ute över tid">${svg}</svg>` +
-    (dagar.length < 2 ? `<div class="dragtips">Linjerna fylls på för varje ny mätning.</div>` : "");
-}
-function valjUteMarke(m){
-  const i = st.uteValda.indexOf(m);
-  if (i >= 0) st.uteValda.splice(i, 1); else st.uteValda.push(m);
-  if (!st.uteValda.length) st.uteValda = null;
-  ritaUte();
-}
-
-// ---------- Räkna din vinst ----------
-function vinstMarken(kat){
-  // Märken med slutpriser på Tradera (minst 5 sålda), annars begärt pris på Vinted.
-  const ut = new Map();
-  for (const [m, pts] of Object.entries(((B.marke.tradera || {})[kat]) || {})) {
-    const p = pts.at(-1);
-    if (p && p[2] && p[1] >= 5) ut.set(m, {m, kalla: "tradera", d: p[0], n: p[1], median: p[2], p25: p[3]});
-  }
-  for (const [m, pts] of Object.entries(((B.marke.vinted || {})[kat]) || {})) {
-    const p = pts.at(-1);
-    if (!p || !p[2]) continue;
-    if (ut.has(m)) ut.get(m).begart = p[2];
-    else if (p[1] >= 5) ut.set(m, {m, kalla: "vinted", d: p[0], n: p[1], median: p[2], p25: p[3], begart: p[2]});
-  }
-  return [...ut.values()].filter(x => !["övriga", "okänt"].includes(x.m.toLowerCase())).sort((a, b) => a.m.localeCompare(b.m, "sv"));
-}
-function ritaVinst(){
-  const kSel = $("vkat"), mSel = $("vmarke");
-  const kats = (B.kategorier || []).filter(k => !k.vantar && vinstMarken(k.id).length);
-  if (!kats.length) { $("vnot").textContent = "Kalkylen fylls i när börsen har mätt priser för några märken."; return; }
-  const kat = kats.some(k => k.id === kSel.value) ? kSel.value : kats.some(k => k.id === st.kat) ? st.kat : kats[0].id;
-  kSel.innerHTML = kats.map(k => `<option value="${k.id}"${k.id === kat ? " selected" : ""}>${esc(k.namn)}</option>`).join("");
-  const lista = vinstMarken(kat), valt = lista.some(x => x.m === mSel.value) ? mSel.value : lista.reduce((a, b) => b.n > a.n ? b : a).m;
-  mSel.innerHTML = lista.map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
-  raknaVinst();
-}
-function raknaVinst(){
-  const x = vinstMarken($("vkat").value).find(x => x.m === $("vmarke").value);
-  if (!x) return;
-  const pris = parseFloat($("vpris").value), kost = parseFloat($("vkost").value) || 0, antal = Math.max(1, parseInt($("vantal").value) || 1);
-  const tr = x.kalla === "tradera";
-  $("vsalj").textContent = kr(x.median);
-  $("vsaljinfo").textContent = tr ? `medianpris för ${x.n} sålda på Tradera` : `begärt pris på Vinted (${x.n} annonser), inget slutpris än`;
-  $("vlag").textContent = x.p25 ? kr(x.p25) : "–";
-  $("vlaginfo").textContent = tr ? "billigaste fjärdedelen av de sålda" : "billigaste fjärdedelen av annonserna";
-  const v = $("vvinst"), m = $("vmarg");
-  $("vvinstrubrik").textContent = antal > 1 ? `Din vinst på ${antal} plagg` : "Din vinst per plagg";
-  if (isNaN(pris)) {
-    v.textContent = m.textContent = "–"; v.className = m.className = "tal";
-    $("vvinstinfo").textContent = "skriv in ditt inköpspris";
-  } else {
-    const per = x.median - pris - kost, lag = x.p25 ? x.p25 - pris - kost : null, tot = per * antal;
-    const tecken = n => (n > 0 ? "+" : n < 0 ? "−" : "") + kr(Math.abs(n));
-    v.textContent = tecken(tot); v.className = "tal " + (tot > 0 ? "plus" : tot < 0 ? "minus" : "");
-    m.textContent = pct(100 * per / x.median); m.className = "tal " + (per > 0 ? "plus" : per < 0 ? "minus" : "");
-    $("vvinstinfo").textContent = (antal > 1 ? `${tecken(per)} per plagg` : "") +
-      (lag == null ? "" : `${antal > 1 ? ", " : ""}${tecken(lag * antal)} om det säljs i underkant`);
-  }
-  $("vnot").textContent = `Priserna är från ${datumLang(dag(x.d))}.` +
-    (tr && x.begart ? ` På Vinted begärs ${x.m} normalt ${kr(x.begart)}.` : "") +
-    (isNaN(pris) ? "" : ` För att gå jämnt upp behöver du sälja för minst ${kr(pris + kost)}.`) +
-    " Skick och storlek påverkar priset, så räkna med lite marginal.";
-}
-$("vkat").addEventListener("change", () => { $("vmarke").value = ""; ritaVinst(); });
-$("vmarke").addEventListener("change", raknaVinst);
-for (const id of ["vpris", "vkost", "vantal"]) $(id).addEventListener("input", raknaVinst);
-
-// Vänsterpanelen: två grupper, och den grupp man är i (eller öppnat) fälls ut med sina vyer.
-let oppenGrupp = "";  // ihopfällt från början: bara de två grupperna syns
-const gruppFor = vy => document.querySelector(`#vyer .undermeny [data-vy="${vy}"]`)?.closest(".undermeny").dataset.grupp;
-function ritaVy(){
-  const aktiv = gruppFor(st.vy), oppen = oppenGrupp ?? aktiv;
-  $("vyer").querySelectorAll("[data-vy]").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
-  $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
-  $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
-  document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
-  $("omdata").hidden = ["bilder", "bokforing", "beskrivning"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
-}
-function visaVy(vy){
-  st.vy = vy; skriv("vy", vy); oppenGrupp = null;
-  const g = gruppFor(vy); if (g) skriv("vy-" + g, vy);
-  ritaVy();
-  if (B && B.kategorier) rita();
-}
-function oppnaMarke(m, kat, kalla){
-  // Från köplägen, trender och snabbast sålda: visa märket i andelsvyn.
-  st.kat = kat; skriv("kat", kat);
-  if (kalla) { st.kalla = kalla; skriv("kalla", kalla); }
-  if (!arAlarm(m)) { st.urval = "alla"; skriv("urval", st.urval); }
-  st.marke = m; history.replaceState(null, "", "#" + encodeURIComponent(m));
-  visaVy("andel"); $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
+  const fran = dag(k.fran), kort = fran > Date.now() - 30 * DAG;
+  $("listinfo").textContent = `Allt som sålts och inte sålts på Tradera de senaste 30 dagarna: ${tal(k.s)} sålda, ${k.o != null ? tal(k.o) + " osålda" : "osålda räknas snart"}.` +
+    (kort ? ` Börsen har hela försäljningen från ${datumHel(fran)}.` : "");
+  const std = ["s", -1], alla = sortera(rader(st.kat), "lista", std);
+  const kol = k.sf == null ? KOL.filter(c => c[0] !== "trend") : KOL;
+  const lista = st.visaAlla || st.sok ? alla : alla.slice(0, VISA);
+  const maxS = Math.max(1, ...alla.map(r => r.s));
+  const huvud = thead(kol, "lista", std);
+  $("tabell").innerHTML = huvud + "<tbody>" + (lista.length ? lista.map((r, i) => `
+    <tr data-m="${esc(r.m)}" class="${r.m === st.marke ? "vald" : ""} ${r.s < FA ? "fa" : ""}">
+      <td>${namnCell(r, i)}</td>
+      <td><div class="andelcell tal"><div class="stapel dolj-mobil"><i style="width:${(100 * r.s / maxS).toFixed(1)}%"></i></div>${tal(r.s)}</div></td>
+      ${k.sf == null ? "" : `<td class="tal dolj-mobil">${trendCell(r)}</td>`}
+      <td class="tal">${prisCell(r)}</td>
+      <td class="tal">${chansCell(r.chans)}</td>
+      <td class="tal dolj-mobil">${kr(r.kop)}</td>
+      <td class="tal">${r.vinst == null ? `<span class="noll">–</span>` : utv(r.vinst, " kr", 0)}</td>
+    </tr>`).join("") : `<tr><td colspan="${kol.length}" class="tomt">${st.sok ? `Inget märke som heter så har sålts i ${esc(namn)}.` : `Inga av ${DINA} märken har sålts i ${esc(namn)} än.`}</td></tr>`) + "</tbody>";
+  const utan = k.s ? Math.round(100 * k.u / k.s) : 0;
+  $("tabellfot").innerHTML = (alla.length > lista.length ? `<button class="knapp" id="visaalla">Visa alla ${alla.length} märken</button>` : "") +
+    `<span>Svagare rader har färre än ${FA} sålda, så där är siffrorna osäkra.${utan ? ` ${utan} % av de sålda hade inget märke angivet och finns inte i listan.` : ""}</span>`;
 }
 
 // ---------- Märkessidan ----------
-function vintedLank(m){
-  const id = (B.vinted_marken || {})[m], kid = (B.vinted_kategorier || {})[st.kat];
-  if (!id) return "";
-  const p = new URLSearchParams([["brand_ids[]", id], ["order", "newest_first"]]);
-  if (kid) p.append("catalog_ids[]", kid);
-  return "https://www.vinted.se/catalog?" + p;
+function omdome(r){
+  // Några meningar om märket i vanlig svenska, så att siffrorna går att förstå direkt.
+  const d = [], n = r.s, kat = r.kat ? r.kat.namn.toLowerCase() : "kategorin";
+  if (n >= 30) d.push(`${r.m} säljer mycket: ${n} sålda ${kat} på Tradera de senaste 30 dagarna.`);
+  else if (n >= 10) d.push(`${r.m} säljer jämnt: ${n} sålda ${kat} på Tradera de senaste 30 dagarna.`);
+  else if (n >= 1) d.push(`${r.m} säljer ibland: ${n} ${n === 1 ? "såld" : "sålda"} ${kat} på Tradera de senaste 30 dagarna.`);
+  else d.push(`${r.m} har inte sålts i ${kat} på Tradera de senaste 30 dagarna.`);
+  if (r.trend != null && Math.abs(r.trend) >= 15) d.push(`Det är ${r.trend > 0 ? "fler" : "färre"} än de 30 dagarna innan, då ${r.sf} såldes.`);
+  if (r.chans != null) d.push(r.chans >= 60 ? "De flesta annonser blir sålda." : r.chans >= 35 ? "Ungefär hälften av annonserna blir sålda." : "Många annonser blir inte sålda, så priset behöver vara bra.");
+  if (r.vinst != null) d.push(r.vinst > 0
+    ? `Köper du för under ${kr(r.v.l)} på Vinted och säljer för runt ${kr(r.p)} blir det ungefär ${kr(r.vinst)} över per plagg, före frakt och avgifter.`
+    : `Det som ligger billigt på Vinted kostar ungefär lika mycket som det säljs för på Tradera, så det är svårt att tjäna på att köpa där.`);
+  if (n > 0 && n < FA) d.push("Det är få affärer än, så siffrorna är osäkra.");
+  return d.join(" ");
 }
-
 function ritaDetalj(){
   const m = st.marke, el = $("detalj");
-  if (!m) { el.hidden = true; return; }
+  if (!m || !B.kategorier) { el.hidden = true; return; }
   el.hidden = false;
-  const K = KALLOR[st.kalla], kat = (B.kategorier || []).find(k => k.id === st.kat);
-  const r = rader().find(x => x.m === m) || {};
+  const kat = katInfo(st.kat), r = marke(st.kat, m);
   const alarm = (B.alarm || {})[m] || [];
-  const vl = vintedLank(m);
-  const tr = markePunkter("tradera", st.kat, m).at(-1), vi = markePunkter("vinted", st.kat, m).at(-1);
-  const marginal = tr && vi && tr[2] && vi[3] ? tr[2] - vi[3] : null;
+  const v = (r && r.v) || {};
+  const taggar = `<div class="taggar">${PUBLIK ? "" : alarm.map(a => `<a class="tagg" href="index.html#${encodeURIComponent(a)}">★ ${esc(a)}</a>`).join("")}
+      <a class="lank" href="${esc(vintedLank(m, st.kat))}" target="_blank" rel="noopener">Köp på Vinted ↗</a>
+      <a class="lank" href="${esc(traderaLank(m, st.kat))}" target="_blank" rel="noopener">Se sålda på Tradera ↗</a>
+      ${PUBLIK ? "" : `<a class="skapa" href="${alarmLank(m, st.kat, r && r.kop ? r.kop : r && r.p ? r.p * 0.5 : null)}">+ Skapa alarm</a>`}</div>`;
+  const ruta = (etikett, varde, text) => `<div><span class="svag">${etikett}</span><b>${varde}</b><small class="svag">${text}</small></div>`;
   el.innerHTML = `
     <div class="detaljtopp">
-      <div style="flex:1 1 260px;min-width:0">
-        <div class="svag">${esc(kat ? kat.namn : "")} · ${K.namn}</div>
+      <div style="flex:1 1 320px;min-width:0">
+        <div class="svag">${esc(kat ? kat.namn : "")}</div>
         <h2>${esc(m)}</h2>
-        <div class="taggar">${alarm.map(a => `<a class="tagg" href="index.html#${encodeURIComponent(a)}">★ ${esc(a)}</a>`).join("")}${vl ? `<a class="lank" href="${vl}" target="_blank" rel="noopener">Se på Vinted ↗</a>` : ""}<a class="skapa" href="${alarmLank(m, st.kat, vi && vi[3] ? vi[3] : tr && tr[2] ? tr[2] * 0.5 : null)}">+ Skapa alarm</a></div>
-      </div>
-      <div class="nyckeltal">
-        <div><span class="svag">${K.andel}</span><b>${pct(r.andel)}</b><small>${utv(r.andelUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
-        <div><span class="svag">${K.pris}</span><b>${kr(r.pris)}</b><small>${utv(r.prisUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
-        ${r.fart != null ? `<div><span class="svag">Sålda 24 h</span><b>${r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</b><small class="svag">${esc(fartText(st.kat, m).replace(/^Sålda senaste dygnet: /, ""))}</small></div>` : ""}
-        ${marginal != null ? `<div><span class="svag" title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</span><b class="${marginal > 0 ? "upp" : "ned"}">${marginal > 0 ? "+" : "−"}${kr(Math.abs(marginal))}</b><small class="svag">sålt på Tradera mot billiga på Vinted</small></div>` : ""}
+        ${taggar}
+        <p class="omdome">${esc(r ? omdome(r) : `${m} har inte sålts i ${kat ? kat.namn.toLowerCase() : "kategorin"} på Tradera de senaste 30 dagarna.`)}</p>
       </div>
     </div>
+    ${r ? `<div class="nyckeltal detaljtal">
+      ${ruta("Sålda 30 dagar", tal(r.s), r.sf != null ? `${r.trend != null ? trendCell(r) + " · " : ""}${r.sf} st 30 dagarna innan` : r.sa ? `från ${r.sa} olika säljare` : "")}
+      ${ruta("Säljs för", kr(r.p), r.l != null && r.h > r.l ? `oftast ${tal(r.l)}–${tal(r.h)} kr` : "medianpris")}
+      ${ruta("Säljchans", r.chans == null ? "–" : pct(r.chans, 0), r.o != null ? `${r.s} av ${r.s + r.o} annonser` : "räknas snart")}
+      ${ruta("Köp på Vinted", kr(v.l), v.p != null ? `billigaste fjärdedelen · median ${kr(v.p)}` : "mäts för märken i dina alarm")}
+      ${ruta("Vinst per plagg", r.vinst == null ? "–" : utv(r.vinst, " kr", 0), "före frakt och avgifter")}
+    </div>
+    ${r.ts > 40 && r.s >= 8 ? `<p class="varning">En och samma säljare står för ${r.ts} % av de sålda. Siffrorna kan spegla en butik mer än hela marknaden.</p>` : ""}` : ""}
     <div class="diagramval">
       <div class="segment" id="mattval">
-        <button data-k="andel" class="${st.matt === "andel" ? "vald" : ""}">Andel</button>
-        <button data-k="pris" class="${st.matt === "pris" ? "vald" : ""}">Pris</button>
-        <button data-k="antal" class="${st.matt === "antal" ? "vald" : ""}">Antal</button>
+        <button data-k="salda" class="${st.matt === "salda" ? "vald" : ""}">Sålda per vecka</button>
+        <button data-k="pris" class="${st.matt === "pris" ? "vald" : ""}">Slutpris</button>
       </div>
       <div class="segment" id="diagperioder" aria-label="Period"></div>
     </div>
@@ -1378,43 +964,189 @@ function ritaDetalj(){
     <div class="diagramsum" id="diagramsum"></div>
     <div class="diagram" id="diagram"></div>
     <div class="forklaring" id="forklaring"></div>
-    <div class="dragtips">Dra över grafen för att se värdet en viss dag. Håll nere och dra för att se hur mycket det ändrats mellan två dagar. Tryck på en källa ovanför för att jämföra.</div>
+    <div class="dragtips">Dra över grafen för att se en viss vecka. Håll nere och dra för att se hur mycket det ändrats mellan två veckor.</div>
+    <div class="underrubrik">${esc(m)} i alla kategorier</div>
     <div class="tabellram"><table id="katabell"></table></div>`;
   ritaDiagram();
   ritaKategoritabell();
 }
 
+function veckoSerie(kat, m, i){
+  // Sålda (i = 0) eller medianpris (i = 1) per vecka. Veckan som pågår är inte klar och tas inte med.
+  const v = (B.veckor || {})[kat];
+  if (!v || !v.m[m]) return [];
+  return v.v.map((d, j) => [dag(d), v.m[m][j]]).filter(([t, x]) => t + 6.5 * DAG <= Date.now() && x && (i === 0 || x[1] != null)).map(([t, x]) => [t, x[i]]);
+}
 function serier(){
   const m = st.marke, kat = st.kat;
-  if (st.matt === "andel") {
-    return Object.keys(KALLOR).map(k => ({
-      k, namn: KALLOR[k].namn + (k === "tradera" ? " (sålda)" : ""), farg: KALLOR[k].hex, huvud: k === st.kalla,
-      // Grafen tar med veckan som pågår, så att kurvan når fram till idag.
-      pts: andelsPunkter(k, kat, true).map(p => [dag(p[0]), andelI(p, m)]).filter(p => p[1] != null),
-    })).filter(s => s.pts.length);
-  }
-  const i = st.matt === "pris" ? 2 : 1;
-  return Object.keys(KALLOR).map(k => {
-    let pts = markePunkter(k, kat, m).map(p => [dag(p[0]), p[i]]).filter(p => p[1] != null);
-    if (!pts.length && k === "tradera") {  // veckorna från sålda annonser
-      pts = andelsPunkter(k, kat, true).filter(p => p[2][m]).map(p => [dag(p[0]), p[2][m][i === 2 ? 1 : 0]]);
-    }
-    return {k, namn: KALLOR[k].namn + (k === "tradera" ? (i === 2 ? " slutpris" : " sålda") : (i === 2 ? " begärt" : " annonser")),
-            farg: KALLOR[k].hex, huvud: k === st.kalla, pts};
-  }).filter(s => s.pts.length);
+  if (st.matt === "salda") return [{k: "marke", namn: `${m}, sålda per vecka`, farg: "#9a6412", huvud: true, pts: veckoSerie(kat, m, 0)}].filter(s => s.pts.length);
+  const vin = ((((B.marke || {}).vinted || {})[kat] || {})[m] || []).filter(p => p[2] != null).map(p => [dag(p[0]), p[2]]);
+  return [
+    {k: "marke", namn: `${m}, slutpris`, farg: "#9a6412", huvud: true, pts: veckoSerie(kat, m, 1)},
+    {k: "kat", namn: "Hela kategorin", farg: "#55604e", pts: veckoSerie(kat, "*", 1)},
+    {k: "vinted", namn: "Begärt pris på Vinted", farg: "#1268a8", pts: vin},
+  ].filter(s => s.pts.length);
 }
-
 function format(v){
   if (v == null) return "–";
-  if (st.matt === "andel") return pct(v);
-  if (st.matt === "pris") return kr(v);
-  return Math.round(v).toLocaleString("sv-SE");
+  return st.matt === "pris" ? kr(v) : tal(v) + " st";
+}
+function periodKnappar(id, tider){
+  // Periodknapparna. Perioder som är längre än historiken visas svagare, och en rad säger hur långt bak den räcker.
+  const forsta = tider.length ? Math.min(...tider) : null, sista = tider.length ? Math.max(...tider) : null;
+  const span = forsta == null ? 0 : Math.round((sista - forsta) / DAG);
+  $(id).innerHTML = Object.entries(PERIODER).map(([k, v]) => `<button data-k="${k}" class="${k === st.period ? "vald" : ""} ${k !== "max" && forsta != null && v[1] > span + 7 ? "tunn" : ""}">${v[0]}</button>`).join("");
+  $(id + "not").textContent = forsta == null || PERIODER[st.period][1] <= span + 7 ? "" : `Historiken räcker tillbaka till ${datumHel(forsta)}, så ${PERIODER[st.period][0]} visar allt som finns hittills.`;
+}
+
+function ritaKategoritabell(){
+  const m = st.marke;
+  const rad = kat => {
+    const r = marke(kat.id, m);
+    return `<tr data-k="${kat.id}" class="${kat.id === st.kat ? "vald" : ""}">
+      <td><b>${esc(kat.namn)}</b></td>
+      <td class="tal">${r ? tal(r.s) : "–"}</td>
+      <td class="tal">${r ? prisCell(r) : "–"}</td>
+      <td class="tal">${r ? chansCell(r.chans) : "–"}</td>
+      <td class="tal dolj-mobil">${r ? kr(r.kop) : "–"}</td>
+      <td class="tal">${r && r.vinst != null ? utv(r.vinst, " kr", 0) : "–"}</td>
+    </tr>`;
+  };
+  $("katabell").innerHTML = `<thead><tr><th>Kategori</th><th title="${esc(TITLAR.s)}">Sålda 30 d</th><th title="${esc(TITLAR.p)}">Säljs för</th><th title="${esc(TITLAR.chans)}">Säljchans</th><th class="dolj-mobil" title="${esc(TITLAR.kop)}">Köp på Vinted</th><th title="${esc(TITLAR.vinst)}">Vinst per plagg</th></tr></thead>
+    <tbody>${(B.kategorier || []).filter(k => !k.vantar).map(rad).join("")}</tbody>`;
+}
+
+// ---------- Bästa köplägen ----------
+function ritaLagen(){
+  const kop = st.lage === "kop";
+  $("lageval").innerHTML = `<button data-v="kop" class="${kop ? "vald" : ""}">Köp på Vinted, sälj på Tradera</button><button data-v="nya" class="${kop ? "" : "vald"}">${PUBLIK ? "Säljer mest" : "Nya märken att bevaka"}</button>`;
+  const alla = allaRader();
+  if (kop) {
+    $("lagerubrik").textContent = "Bästa köplägena";
+    $("lageinfo").textContent = `Märken där det billiga på Vinted säljs för mer på Tradera. Bara märken med minst ${FA} sålda de senaste 30 dagarna, och där en stor del av annonserna blir sålda. Vinsten är före frakt och avgifter.`;
+    const std = ["vinst", -1], kol = [["m", "Märke"], ["kop", "Köp under"], ["p", "Säljs för"], ["vinst", "Vinst per plagg"], ["s", "Sålda 30 d", "dolj-mobil"], ["chans", "Säljchans", "dolj-mobil"], ["", ""]];
+    const l = sortera(alla.filter(x => x.vinst != null && x.vinst > 0 && x.s >= FA && (x.chans == null || x.chans >= 35)), "lage-kop", std).slice(0, 30);
+    $("lagetabell").innerHTML = l.length ? thead(kol, "lage-kop", std) + "<tbody>" + l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
+        <td>${namnCell(x, null, true)}</td>
+        <td class="tal">${kr(x.kop)}</td>
+        <td class="tal">${prisCell(x)}</td>
+        <td class="tal"><b>${utv(x.vinst, " kr", 0)}</b></td>
+        <td class="tal dolj-mobil">${tal(x.s)}</td>
+        <td class="tal dolj-mobil">${chansCell(x.chans)}</td>
+        <td>${PUBLIK ? "" : `<a class="skapa" href="${alarmLank(x.m, x.kat.id, x.kop)}" title="Nytt alarm med maxpris ${kr(avrunda(x.kop))}">+ Alarm</a>`}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="tomt">Köplägena räknas när märkena mätts på både Vinted och Tradera. Det görs inom ett dygn.</td></tr></tbody>`;
+  } else {
+    $("lagerubrik").textContent = PUBLIK ? "Säljer mest" : "Nya märken att bevaka";
+    $("lageinfo").textContent = PUBLIK ? "Märkena som säljer mest på Tradera räknat i kronor, de senaste 30 dagarna." : "Märken som säljer mycket på Tradera men som du inte bevakar än, efter hur mycket de säljs för totalt. Tryck + Alarm för att börja.";
+    const std = ["oms", -1], kol = [["m", "Märke"], ["s", "Sålda 30 d"], ["p", "Säljs för"], ["chans", "Säljchans"], ["kop", "Köp på Vinted", "dolj-mobil"], ["", ""]];
+    const l = sortera(alla.filter(x => !arAlarm(x.m) && x.s >= 8 && x.p >= 150), "lage-nya", std).slice(0, 30);
+    $("lagetabell").innerHTML = l.length ? thead(kol, "lage-nya", std) + "<tbody>" + l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
+        <td>${namnCell(x, null, true)}</td>
+        <td class="tal">${tal(x.s)}</td>
+        <td class="tal">${prisCell(x)}</td>
+        <td class="tal">${chansCell(x.chans)}</td>
+        <td class="tal dolj-mobil">${kr(x.kop)}</td>
+        <td>${PUBLIK ? "" : `<a class="skapa" href="${alarmLank(x.m, x.kat.id, x.kop || x.p * 0.5)}" title="Nytt alarm med maxpris ${kr(avrunda(x.kop || x.p * 0.5))}">+ Alarm</a>`}</td></tr>`).join("") + "</tbody>"
+      : `<tbody><tr><td class="tomt">Inga sålda Tradera-annonser mätta än.</td></tr></tbody>`;
+  }
+}
+
+// ---------- Trender ----------
+function ritaTrender(){
+  $("trendriktning").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.trend));
+  const upp = st.trend === "upp";
+  const l = allaRader().filter(x => x.sf != null && x.s + x.sf >= 8)
+    .map(x => ({...x, diff: x.s - x.sf, pris: x.pf && x.p && x.s >= FA && x.sf >= FA ? 100 * (x.p - x.pf) / x.pf : null}))
+    .filter(x => upp ? x.diff > 0 : x.diff < 0).sort((a, b) => upp ? b.diff - a.diff : a.diff - b.diff).slice(0, 25);
+  const klara = (B.kategorier || []).filter(k => (katData(k.id) || {}).sf != null).map(k => k.namn.toLowerCase());
+  $("trendinfo").textContent = "Märkena vars försäljning på Tradera ökat eller minskat mest: de senaste 30 dagarna jämfört med de 30 dagarna innan." +
+    (klara.length && klara.length < (B.kategorier || []).length ? ` Än så länge finns det för ${klara.join(", ")}. Övriga kategorier kommer när börsen hämtat 60 dagar bakåt.` : "");
+  $("trendtabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th title="${esc(TITLAR.s)}">Sålda 30 d</th><th title="${esc(TITLAR.sf)}">30 dagarna innan</th><th>Ändring</th><th class="dolj-mobil" title="${esc(TITLAR.pris)}">Slutpris</th></tr></thead><tbody>` +
+    l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
+      <td>${namnCell(x, null, true)}</td>
+      <td class="tal"><b>${tal(x.s)}</b></td>
+      <td class="tal">${tal(x.sf)}</td>
+      <td class="tal">${utv(x.diff, " st", 0)}${x.sf >= 10 ? ` <span class="liten">(${utv(x.trend, " %", 0)})</span>` : ""}</td>
+      <td class="tal dolj-mobil">${x.pris == null ? `<span class="noll">–</span>` : `${kr(x.p)} <span class="liten">(${utv(x.pris, " %", 0)})</span>`}</td></tr>`).join("") + "</tbody>"
+    : `<tbody><tr><td class="tomt">${klara.length ? `Inget märke har ${upp ? "ökat" : "minskat"} tydligt än.` : "Trenderna jämför de senaste 30 dagarna med de 30 dagarna innan. De syns när börsen hämtat 60 dagars försäljning bakåt från Tradera, vilket görs automatiskt."}</td></tr></tbody>`;
+}
+
+// ---------- Räkna din vinst ----------
+function vinstMarken(kat){
+  // Märken med minst tre sålda på Tradera de senaste 30 dagarna.
+  return ((katData(kat) || {}).marken || []).filter(r => r.s >= 3 && r.p).map(r => berika(r, katInfo(kat))).sort((a, b) => a.m.localeCompare(b.m, "sv"));
+}
+function ritaVinst(){
+  const kSel = $("vkat"), mSel = $("vmarke");
+  const kats = (B.kategorier || []).filter(k => vinstMarken(k.id).length);
+  if (!kats.length) { $("vnot").textContent = "Kalkylen fylls i när börsen har mätt slutpriser för några märken."; return; }
+  const kat = kats.some(k => k.id === kSel.value) ? kSel.value : kats.some(k => k.id === st.kat) ? st.kat : kats[0].id;
+  kSel.innerHTML = kats.map(k => `<option value="${k.id}"${k.id === kat ? " selected" : ""}>${esc(k.namn)}</option>`).join("");
+  const lista = vinstMarken(kat), valt = lista.some(x => x.m === mSel.value) ? mSel.value : lista.reduce((a, b) => b.s > a.s ? b : a).m;
+  mSel.innerHTML = lista.map(x => `<option${x.m === valt ? " selected" : ""}>${esc(x.m)}</option>`).join("");
+  raknaVinst();
+}
+function raknaVinst(){
+  const x = vinstMarken($("vkat").value).find(x => x.m === $("vmarke").value);
+  if (!x) return;
+  const pris = parseFloat($("vpris").value), kost = parseFloat($("vkost").value) || 0, antal = Math.max(1, parseInt($("vantal").value) || 1);
+  $("vsalj").textContent = kr(x.p);
+  $("vsaljinfo").textContent = `medianpris för ${x.s} sålda på Tradera senaste 30 dagarna`;
+  $("vlag").textContent = x.l != null ? kr(x.l) : "–";
+  $("vlaginfo").textContent = "billigaste fjärdedelen av de sålda";
+  const v = $("vvinst"), m = $("vmarg");
+  $("vvinstrubrik").textContent = antal > 1 ? `Din vinst på ${antal} plagg` : "Din vinst per plagg";
+  if (isNaN(pris)) {
+    v.textContent = m.textContent = "–"; v.className = m.className = "tal";
+    $("vvinstinfo").textContent = "skriv in ditt inköpspris";
+  } else {
+    const per = x.p - pris - kost, lag = x.l != null ? x.l - pris - kost : null, tot = per * antal;
+    const tecken = n => (n > 0 ? "+" : n < 0 ? "−" : "") + kr(Math.abs(n));
+    v.textContent = tecken(tot); v.className = "tal " + (tot > 0 ? "plus" : tot < 0 ? "minus" : "");
+    m.textContent = pct(100 * per / x.p); m.className = "tal " + (per > 0 ? "plus" : per < 0 ? "minus" : "");
+    $("vvinstinfo").textContent = (antal > 1 ? `${tecken(per)} per plagg` : "") +
+      (lag == null ? "" : `${antal > 1 ? ", " : ""}${tecken(lag * antal)} om det säljs i underkant`);
+  }
+  const vi = x.v || {};
+  $("vnot").textContent = `Priserna gäller det som sålts de senaste 30 dagarna.` +
+    (vi.l != null ? ` På Vinted kostar den billigaste fjärdedelen av ${x.m} under ${kr(vi.l)}.` : "") +
+    (isNaN(pris) ? "" : ` För att gå jämnt upp behöver du sälja för minst ${kr(pris + kost)}.`) +
+    (x.chans != null ? ` ${pct(x.chans, 0)} av annonserna blir sålda.` : "") +
+    " Skick och storlek påverkar priset, så räkna med lite marginal.";
+}
+$("vkat").addEventListener("change", () => { $("vmarke").value = ""; ritaVinst(); });
+$("vmarke").addEventListener("change", raknaVinst);
+for (const id of ["vpris", "vkost", "vantal"]) $(id).addEventListener("input", raknaVinst);
+
+// Vänsterpanelen: grupperna, och den grupp man är i (eller öppnat) fälls ut med sina vyer.
+let oppenGrupp = "";  // ihopfällt från början: bara grupperna syns
+const gruppFor = vy => document.querySelector(`#vyer .undermeny [data-vy="${vy}"]`)?.closest(".undermeny").dataset.grupp;
+function ritaVy(){
+  const aktiv = gruppFor(st.vy), oppen = oppenGrupp ?? aktiv;
+  $("vyer").querySelectorAll("[data-vy]").forEach(b => b.classList.toggle("vald", b.dataset.vy === st.vy));
+  $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
+  $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
+  document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
+  $("omdata").hidden = !["marknad", "lagen", "trender", "vinst"].includes(st.vy);  // förklaringen gäller siffrorna
+}
+function visaVy(vy){
+  st.vy = GAMLA_VYER[vy] || vy; skriv("vy", st.vy); oppenGrupp = null;
+  const g = gruppFor(st.vy); if (g) skriv("vy-" + g, st.vy);
+  ritaVy();
+  if (B && B.kategorier) rita();
+}
+function oppnaMarke(m, kat){
+  // Från köplägen och trender: visa märket i Vad säljer.
+  st.kat = kat; skriv("kat", kat);
+  if (st.urval === "mina" && !arAlarm(m)) { st.urval = "alla"; skriv("urval2", st.urval); }
+  st.marke = m; history.replaceState(null, "", "#" + encodeURIComponent(m));
+  visaVy("marknad"); $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
 }
 
 const klippV = (x, a, b) => x < a ? a : x > b ? b : x;
 function ritaDiagram(){
-  // Som en aktiegraf: vald källa som yta, period att välja, dra över för att se värdet en dag
-  // och hur mycket det ändrats. Andra källor kan läggas till som tunna linjer.
+  // Som en aktiegraf: märket som yta, period att välja, dra över för att se värdet en vecka och hur mycket
+  // det ändrats. Hela kategorin och priset på Vinted kan läggas till som tunna linjer.
   const el = $("diagram");
   const alla = serier();
   const dagar = PERIODER[st.period][1];
@@ -1423,18 +1155,17 @@ function ritaDiagram(){
   periodKnappar("diagperioder", allaTider);
   const synlig = s => s.huvud || st.jamfor[s.k];
   const iPeriod = alla.map(s => ({...s, pts: s.pts.filter(p => p[0] >= slut - dagar * DAG)})).filter(s => s.pts.length);
-  if (!iPeriod.some(s => s.huvud) && iPeriod.length) iPeriod[0].huvud = true;
   const lista = iPeriod.filter(synlig).sort((a, b) => a.huvud - b.huvud);
   $("forklaring").innerHTML = iPeriod.map(s => `<button class="kallchip ${synlig(s) ? "pa" : ""}" data-k="${s.k}" ${s.huvud ? "disabled" : ""}><span class="prick" style="background:${s.farg}"></span>${esc(s.namn)}${s.huvud ? "" : synlig(s) ? " ✕" : " +"}</button>`).join("");
   const sum = $("diagramsum");
-  if (!lista.length) { sum.innerHTML = ""; el.innerHTML = `<div class="tomt">Inga mätningar av ${esc(st.marke)} här än.</div>`; return; }
   const huvud = lista.find(s => s.huvud);
+  if (!huvud) { sum.innerHTML = ""; el.innerHTML = `<div class="tomt">Ingen hel vecka med ${esc(st.marke)} här än.</div>`; return; }
   const forst = huvud.pts[0];
-  const skillnad = (a, b) => a == null || b == null ? null : st.matt === "andel" ? b - a : a ? 100 * (b - a) / a : null;
+  const skillnad = (a, b) => a == null || b == null || !a ? null : 100 * (b - a) / a;
   const visaSum = (p, ar) => {
     const d = skillnad(forst[1], p[1]);
-    sum.innerHTML = `<b>${format(p[1])}</b><span class="${d > 0 ? "upp" : d < 0 ? "ned" : "svag"}">${d == null || p === forst ? "" : (d > 0 ? "▲ +" : d < 0 ? "▼ −" : "± ") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " %-enheter" : " %")}</span>
-      <span class="svag">${esc(huvud.namn)} · ${ar ? datumLang(p[0]) : `sedan ${datum(forst[0])}`}</span>`;
+    sum.innerHTML = `<b>${format(p[1])}</b><span class="${d > 0 ? "upp" : d < 0 ? "ned" : "svag"}">${d == null || p === forst ? "" : (d > 0 ? "▲ +" : d < 0 ? "▼ −" : "± ") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 0}) + " %"}</span>
+      <span class="svag">${esc(huvud.namn)} · ${ar ? "veckan från " + datum(p[0]) : `jämfört med veckan från ${datum(forst[0])}`}</span>`;
   };
   visaSum(huvud.pts.at(-1), false);
 
@@ -1446,6 +1177,7 @@ function ritaDiagram(){
   let y0 = Math.min(...ys), y1 = Math.max(...ys);
   const luft = (y1 - y0) * 0.15 || Math.max(1, y1 * 0.1);
   y0 = Math.max(0, y0 - luft); y1 = y1 + luft;
+  if (st.matt === "salda") y0 = 0;
   const X = x => pad.l + (W - pad.l - pad.r) * (x - x0) / (x1 - x0);
   const Y = y => Hh - pad.b - (Hh - pad.t - pad.b) * (y - y0) / ((y1 - y0) || 1);
   const rutor = [];
@@ -1454,11 +1186,14 @@ function ritaDiagram(){
     rutor.push(`<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--linje)" stroke-opacity=".55" ${i ? 'stroke-dasharray="2 4"' : ""}/>
       <text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${format(v)}</text>`);
   }
-  const antalX = Math.min(6, Math.max(2, Math.floor((W - pad.l) / 90)));
-  for (let i = 0; i < antalX; i++) {
-    const t = x0 + (x1 - x0) * i / (antalX - 1);
-    rutor.push(`<text x="${X(t)}" y="${Hh - 9}" text-anchor="${i === 0 ? "start" : i === antalX - 1 ? "end" : "middle"}">${datum(t)}</text>`);
-  }
+  // Datum under veckorna, så många som får plats
+  const veckor = [...new Set(huvud.pts.map(p => p[0]))].sort((a, b) => a - b);
+  const plats = Math.max(2, Math.floor((W - pad.l) / 80)), steg = Math.max(1, Math.ceil(veckor.length / plats));
+  veckor.forEach((t, i) => {
+    if (i % steg && i !== veckor.length - 1) return;
+    if (i !== veckor.length - 1 && veckor.length - 1 - i < steg) return;  // inte för nära den sista
+    rutor.push(`<text x="${X(t)}" y="${Hh - 9}" text-anchor="${veckor.length > 1 && i === 0 ? "start" : veckor.length > 1 && i === veckor.length - 1 ? "end" : "middle"}">${datum(t)}</text>`);
+  });
   // Mjuk kurva genom punkterna (utan att svänga över eller under dem).
   const kurva = pts => {
     const P = pts.map(p => [X(p[0]), Y(p[1])]);
@@ -1475,11 +1210,10 @@ function ritaDiagram(){
   };
   const linjer = lista.map(s => {
     const d = kurva(s.pts);
-    const prickar = s.pts.length < 16 ? s.pts.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.huvud ? 2.8 : 2}" fill="${s.farg}" stroke="var(--kort)" stroke-width="1.4"/>`).join("") : "";
+    const prickar = s.pts.length < 30 ? s.pts.map(p => `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.huvud ? 2.8 : 2}" fill="${s.farg}" stroke="var(--kort)" stroke-width="1.4"/>`).join("") : "";
     const yta = s.huvud && s.pts.length > 1 ? `<path d="${d}L${X(s.pts.at(-1)[0])} ${Hh - pad.b}L${X(s.pts[0][0])} ${Hh - pad.b}Z" fill="url(#ytfarg)"/>` : "";
     return `${yta}<path d="${d}" fill="none" stroke="${s.farg}" stroke-width="${s.huvud ? 2.6 : 1.6}" stroke-opacity="${s.huvud ? 1 : .8}" stroke-linejoin="round" stroke-linecap="round"/>${prickar}`;
   }).join("");
-  const kort = Math.round((Math.max(...allaTider) - Math.min(...allaTider)) / DAG);
   el.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" height="${Hh}" role="img" aria-label="Diagram över ${esc(st.marke)}">
       <defs><linearGradient id="ytfarg" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${huvud.farg}" stop-opacity=".32"/><stop offset="1" stop-color="${huvud.farg}" stop-opacity="0"/></linearGradient></defs>
       ${rutor.join("")}
@@ -1496,15 +1230,15 @@ function ritaDiagram(){
       </g>
       <rect id="fanga" x="${pad.l}" y="0" width="${W - pad.l - pad.r}" height="${Hh}" fill="transparent" style="cursor:crosshair"/>
     </svg>
-    ${kort < 2 ? `<div class="matt" style="background:var(--kort2);color:var(--svag);font-weight:500">Första mätningen. Kurvan växer för varje dag.</div>` : ""}
+    ${huvud.pts.length < 2 ? `<div class="matt" style="background:var(--kort2);color:var(--svag);font-weight:500">Första hela veckan. Kurvan växer för varje vecka.</div>` : ""}
     <div class="tips" id="tips" hidden></div><div class="matt" id="mattlapp" hidden></div>`;
 
   const svg = el.querySelector("svg"), fanga = el.querySelector("#fanga"), sikte = el.querySelector("#sikte"),
         tips = el.querySelector("#tips"), yta = el.querySelector("#mattyta"), lapp = el.querySelector("#mattlapp");
   const satt = (id, a) => { const n = el.querySelector("#" + id); for (const k in a) n.setAttribute(k, a[k]); return n; };
-  const tider = [...new Set(xs)].sort((a, b) => a - b);
+  const tider = [...new Set(huvud.pts.map(p => p[0]))].sort((a, b) => a - b);
   const narmast = t => tider.reduce((b, x) => Math.abs(x - t) < Math.abs(b - t) ? x : b, tider[0]);
-  // Värdet en dag: punkten den dagen, annars rakt mellan grannarna (så att linjen går att följa).
+  // Värdet en vecka: punkten den veckan, annars rakt mellan grannarna (så att linjen går att följa).
   const varde = (s, t) => {
     const p = s.pts.find(q => q[0] === t); if (p) return p[1];
     const i = s.pts.findIndex(q => q[0] > t); if (i <= 0) return null;
@@ -1539,7 +1273,7 @@ function ritaDiagram(){
       yta.setAttribute("x", X(a)); yta.setAttribute("width", Math.max(1, X(b) - X(a))); yta.setAttribute("visibility", "visible");
       const d = skillnad(varde(huvud, a), varde(huvud, b));
       if (d != null && a !== b) {
-        lapp.innerHTML = `${(d > 0 ? "▲ +" : d < 0 ? "▼ −" : "") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 1, minimumFractionDigits: 1}) + (st.matt === "andel" ? " %-enheter" : " %")} <span style="opacity:.75;font-weight:500">${datum(a)} → ${datum(b)}</span>`;
+        lapp.innerHTML = `${(d > 0 ? "▲ +" : d < 0 ? "▼ −" : "") + Math.abs(d).toLocaleString("sv-SE", {maximumFractionDigits: 0}) + " %"} <span style="opacity:.75;font-weight:500">${datum(a)} → ${datum(b)}</span>`;
         lapp.style.background = d > 0 ? "var(--plus)" : d < 0 ? "var(--minus)" : "#141414";
         lapp.hidden = false;
       }
@@ -1562,73 +1296,44 @@ function ritaDiagram(){
   fanga.addEventListener("pointerleave", () => { if (!drag) gom(); });
 }
 
-function ritaKategoritabell(){
-  const m = st.marke;
-  const rad = kat => {
-    const va = andelsPunkter("vinted", kat.id).at(-1), ta = andelsPunkter("tradera", kat.id).at(-1);
-    const vi = markePunkter("vinted", kat.id, m).at(-1), tr = markePunkter("tradera", kat.id, m).at(-1), pl = markePunkter("plick", kat.id, m).at(-1);
-    const marg = tr && vi && tr[2] && vi[3] ? tr[2] - vi[3] : null;
-    return `<tr data-k="${kat.id}" class="${kat.id === st.kat ? "vald" : ""}">
-      <td><b>${esc(kat.namn)}</b></td>
-      <td class="tal">${va ? pct(andelI(va, m)) : "–"}</td>
-      <td class="tal">${vi ? kr(vi[2]) : "–"}</td>
-      <td class="tal dolj-mobil">${vi ? vi[1].toLocaleString("sv-SE") + (vi[4] ? "+" : "") : "–"}</td>
-      <td class="tal">${ta ? pct(andelI(ta, m)) : "–"}</td>
-      <td class="tal">${tr ? kr(tr[2]) : "–"}</td>
-      <td class="tal dolj-mobil">${tr ? tr[1].toLocaleString("sv-SE") + (tr[4] ? "+" : "") : "–"}</td>
-      <td class="tal dolj-mobil">${pl ? kr(pl[2]) : "–"}</td>
-      <td class="tal">${marg == null ? "–" : utv(marg, " kr", 0)}</td>
-    </tr>`;
-  };
-  $("katabell").innerHTML = `<thead><tr><th>Kategori</th><th>Andel Vinted</th><th>Begärt Vinted</th><th class="dolj-mobil">Annonser</th><th>Andel sålda Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Sålda</th><th class="dolj-mobil">Begärt Plick</th><th title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</th></tr></thead>
-    <tbody>${(B.kategorier || []).map(rad).join("")}</tbody>`;
-}
-
 function ritaOm(){
   const ko = B.ko || 0;
-  $("omdata").innerHTML = `<b>Så räknas det.</b> Varje dygn tas ett stickprov per kategori: de upp till 960 nyaste annonserna på Vinted, de senast sålda på Tradera och de första sidorna på Plick.
-    <b>Andel nya</b> är hur stor del av stickprovet (de senast upplagda annonserna) som är av märket, medan <b>Annonser totalt</b> räknar alla märkets annonser i kategorin. <b>Andel av allt ute</b> är märkets annonser delat med alla annonser som ligger ute i kategorin: på Tradera räknas båda exakt, på Vinted uppskattas kategorins storlek från märken under 960 annonser (deras antal delat med deras andel av de nya), och märken med över 960 får andelen av de nya. Ändringen i % är skillnaden i andel, till exempel från 4 % till 6 % = +2 %. På Tradera räknas andelen på det som faktiskt sålts, vecka för vecka, så där syns efterfrågan.
-    <b>Pris</b> är medianpriset när man söker på bara det märket i kategorin (begärt pris på Vinted och Plick, slutpris på Tradera).
-    <b>Köpläge</b> är vad märket brukar säljas för på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda 24 h</b> är hur många av märket som sålts senaste dygnet i kategorin. På Vinted gås alla märkets annonser igenom (upp till 960) ungefär en gång per dygn, och de som fanns förra gången men är borta nu räknas som sålda (några kan vara borttagna). Tradera visar sålda direkt, där räknas snittet per dygn senaste veckan. Plick visar inte sålda och räknas inte. "–" betyder att märket inte hunnit mätas två gånger än.
-    ${PUBLIK ? "" : `<b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
-    Märkena hämtas från dina alarm, så nya alarm-märken kommer med automatiskt.`}${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
+  $("omdata").innerHTML = `<b>Var siffrorna kommer ifrån.</b> Sålda och slutpriser kommer från Tradera, som visar alla avslutade affärer. Börsen hämtar varje såld och osåld annons i herrkategorierna och läser märket som säljaren valt (eller i titeln om det saknas). Varianter av samma märke räknas ihop, till exempel Polo Ralph Lauren och Ralph Lauren, och damplagg räknas inte.
+    Vinted visar inte vad som säljs, så därifrån hämtas vad det kostar att köpa.<br>
+    <b>Säljs för</b> är medianpriset: hälften såldes dyrare, hälften billigare. Under står spannet där de flesta hamnade (den mittersta hälften).
+    <b>Säljchans</b> är hur många av annonserna som tog slut de senaste 30 dagarna som blev sålda. Grönt är 60 % eller mer, rött under 35 %.
+    <b>Köp på Vinted</b> är priset på den billigaste fjärdedelen av märkets annonser, alltså vad du ofta hittar om du letar lite.
+    <b>Vinst per plagg</b> är Säljs för minus Köp på Vinted, före frakt och avgifter.
+    Färre än ${FA} sålda visas svagare, eftersom ett enda plagg då kan ändra mycket. Skick och storlek påverkar priset, så se siffrorna som vägledning.
+    ${PUBLIK ? "" : `<b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt, som du kan ändra innan du sparar.`}${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
 }
 
 function rita(){
-  uteMinne = new Map();
-  ritaVy(); ritaUte(); ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm(); ritaTrender(); ritaFart(); ritaVinst();
+  ritaVy(); ritaVal(); ritaRutor(); ritaTabell(); ritaDetalj(); ritaLagen(); ritaTrender(); ritaVinst(); ritaOm();
 }
 
 // ---------- Händelser ----------
-$("kategorier").addEventListener("click", e => { if (e.target.closest("[data-ny]")) return oppnaKatdialog(); const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); rita(); });
-$("kallor").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.kalla = b.dataset.k; skriv("kalla", st.kalla); rita(); });
-$("perioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
-$("urval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.urval = b.dataset.v; skriv("urval", st.urval); rita(); });
+$("kategorier").addEventListener("click", e => {
+  if (e.target.closest("[data-ny]")) return oppnaKatdialog();
+  const b = e.target.closest("[data-k]"); if (!b) return;
+  st.kat = b.dataset.k; skriv("kat", st.kat); st.visaAlla = false; rita();
+});
+$("urval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.urval = b.dataset.v; skriv("urval2", st.urval); rita(); });
+$("marksok").addEventListener("input", e => { st.sok = e.target.value.trim(); ritaTabell(); });
 $("tabell").addEventListener("click", e => {
   const th = e.target.closest("th");
-  if (th) {
-    if (th.dataset.ingen) return;
-    const k = th.dataset.k;
-    const [n0, r0] = st.sort[st.kalla] || (st.kalla === "vinted" ? ["ute", -1] : ["andel", -1]);
-    st.sort[st.kalla] = [k, n0 === k ? -r0 : (k === "m" ? 1 : -1)]; skriv("sort3", st.sort); ritaTabell(); return;
-  }
+  if (th) { bytSort("lista", th.dataset.k, ["s", -1]); ritaTabell(); return; }
   const tr = e.target.closest("tr[data-m]");
   if (tr) valjMarke(tr.dataset.m);
 });
+$("tabellfot").addEventListener("click", e => { if (e.target.closest("#visaalla")) { st.visaAlla = true; ritaTabell(); } });
 $("lageval").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.lage = b.dataset.v; skriv("lage", st.lage); ritaLagen(); });
-for (const id of ["lagetabell", "trendtabell", "farttabell"]) $(id).addEventListener("click", e => {
+for (const id of ["lagetabell", "trendtabell"]) $(id).addEventListener("click", e => {
   if (e.target.closest("a")) return;
+  const th = e.target.closest("th");
+  if (th) { if (id === "lagetabell" && !th.dataset.ingen) { bytSort("lage-" + st.lage, th.dataset.k, st.lage === "kop" ? ["vinst", -1] : ["oms", -1]); ritaLagen(); } return; }
   const tr = e.target.closest("tr[data-m]"); if (!tr) return;
-  oppnaMarke(tr.dataset.m, tr.dataset.k, tr.dataset.kalla);
-});
-$("utekategorier").addEventListener("click", e => { if (e.target.closest("[data-ny]")) return oppnaKatdialog(); const b = e.target.closest("[data-k]"); if (!b) return; st.kat = b.dataset.k; skriv("kat", st.kat); st.uteValda = null; rita(); });
-$("utekallor").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.utekalla = b.dataset.k; skriv("utekalla", st.utekalla); st.uteValda = null; ritaUte(); });
-$("uteperioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
-$("utestaplar").addEventListener("click", e => { const r = e.target.closest(".rad[data-m]"); if (r) valjUteMarke(r.dataset.m); });
-$("utetabell").addEventListener("click", e => {
-  const mer = e.target.closest("[data-mer]");
-  if (mer) { e.preventDefault(); oppnaMarke(mer.dataset.mer, st.kat, st.utekalla); return; }
-  const tr = e.target.closest("tr[data-m]"); if (tr) valjUteMarke(tr.dataset.m);
+  oppnaMarke(tr.dataset.m, tr.dataset.k);
 });
 $("vyer").addEventListener("click", e => {
   const g = e.target.closest(".grupp");
@@ -1637,22 +1342,22 @@ $("vyer").addEventListener("click", e => {
     if (oppen === grupp) { oppenGrupp = ""; ritaVy(); return; }  // tryck igen för att fälla ihop
     oppenGrupp = null;
     // Byt till gruppens senast använda vy, eller den första
-    if (gruppFor(st.vy) !== grupp) visaVy(las("vy-" + grupp, g.nextElementSibling.querySelector("[data-vy]:not([hidden])").dataset.vy));
-    else ritaVy();
+    if (gruppFor(st.vy) !== grupp) {
+      const forsta = g.nextElementSibling.querySelector("[data-vy]").dataset.vy, sparad = las("vy-" + grupp, forsta);
+      visaVy(gruppFor(GAMLA_VYER[sparad] || sparad) === grupp ? sparad : forsta);
+    } else ritaVy();
     return;
   }
   const b = e.target.closest("[data-vy]"); if (b) visaVy(b.dataset.vy);
 });
-$("trendperioder").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.period = b.dataset.k; skriv("period", st.period); rita(); });
 $("trendriktning").addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return; st.trend = b.dataset.v; skriv("trend", st.trend); ritaTrender(); });
-$("rutor").addEventListener("click", e => { const r = e.target.closest("[data-m]"); if (r) valjMarke(r.dataset.m); });
 $("detalj").addEventListener("click", e => {
   const b = e.target.closest("#mattval [data-k]");
-  if (b) { st.matt = b.dataset.k; skriv("matt", st.matt); ritaDetalj(); return; }
+  if (b) { st.matt = b.dataset.k; skriv("matt2", st.matt); ritaDetalj(); return; }
   const p = e.target.closest("#diagperioder [data-k]");
-  if (p) { st.period = p.dataset.k; skriv("period", st.period); rita(); return; }
+  if (p) { st.period = p.dataset.k; skriv("period2", st.period); ritaDiagram(); return; }
   const kc = e.target.closest(".kallchip[data-k]");
-  if (kc && !kc.disabled) { st.jamfor[kc.dataset.k] = !st.jamfor[kc.dataset.k]; skriv("jamfor", st.jamfor); ritaDiagram(); return; }
+  if (kc && !kc.disabled) { st.jamfor[kc.dataset.k] = !st.jamfor[kc.dataset.k]; skriv("jamfor2", st.jamfor); ritaDiagram(); return; }
   const tr = e.target.closest("#katabell tr[data-k]");
   if (tr) { st.kat = tr.dataset.k; skriv("kat", st.kat); rita(); }
 });
@@ -1662,7 +1367,7 @@ function valjMarke(m){
   $("detalj").scrollIntoView({behavior: "smooth", block: "start"});
 }
 let storlek = 0;
-addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => { if (st.marke) ritaDiagram(); if (B && B.kategorier && st.vy === "ute") ritaUte(); }, 150); });
+addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => { if (st.marke && B && B.kategorier) ritaDiagram(); }, 150); });
 
 async function start(){
   try {
@@ -1670,22 +1375,32 @@ async function start(){
   } catch {
     B = null;
   }
+  st.vy = GAMLA_VYER[st.vy] || st.vy;
+  if (!document.querySelector(`.vy[data-vy="${CSS.escape(st.vy)}"]`)) st.vy = "marknad";
+  const vyParam = new URLSearchParams(location.search).get("vy");
+  const vy = GAMLA_VYER[vyParam] || vyParam;
+  if (vy && document.querySelector(`.vy[data-vy="${CSS.escape(vy)}"]`)) st.vy = vy;
   if (!B || !B.kategorier) {
-    $("rutor").innerHTML = "";
+    ritaVy();
     $("tabell").innerHTML = `<tbody><tr><td class="tomt">Märkesbörsen har inte gjort sin första mätning än. Den kör med botten, så titta igen om några minuter.</td></tr></tbody>`;
     return;
   }
-  for (const k of ["andel", "marke", "alarm"]) B[k] = B[k] || {};
+  for (const k of ["marke", "alarm"]) B[k] = B[k] || {};
   if (!PUBLIK || nyckel()) {
     try { egnaKat = await fetch((PUBLIK ? "../" : "") + EGNA_FIL, {cache: "no-store"}).then(r => r.ok ? r.json() : []); } catch { egnaKat = []; }
     lagTillVantande();
   }
-  const vyParam = new URLSearchParams(location.search).get("vy");
-  if (vyParam && document.querySelector(`.vy[data-vy="${CSS.escape(vyParam)}"]`)) st.vy = vyParam;
   const h = decodeURIComponent(location.hash.slice(1));
-  if (h) { st.marke = h; st.vy = "andel"; }
-  const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
-  $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
+  if (h && !h.startsWith("nytt=")) {
+    // Ett märke i adressen: visa det i den kategori där det säljer mest, om det inte finns i den valda.
+    st.marke = h; st.vy = "marknad";
+    if (!marke(st.kat, h)) {
+      const bast = allaRader().filter(r => r.m === h).sort((a, b) => b.s - a.s)[0];
+      if (bast) st.kat = bast.kat.id;
+    }
+  }
+  const t = (B.marknad && B.marknad.uppdaterad) || B.uppdaterad;
+  $("uppdaterad").textContent = t ? "Senast mätt " + new Date(t).toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
 }
 // ---------- Egna kategorier ----------
@@ -1942,8 +1657,7 @@ async function sparaAnalyser(ny){
   }
 }
 if (PUBLIK) {
-  if (st.vy === "analyser") st.vy = "ute";
-  $("fartinfo").textContent = $("fartinfo").textContent.replace("Dina märken", "De mätta märkena");
+  if (st.vy === "analyser") st.vy = "marknad";
 } else startAnalyser();
 ritaVy();
 
