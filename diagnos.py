@@ -45,35 +45,50 @@ def sparat():
 
 
 def tradera_aktiva():
-    """Hur Traderas aktiva annonser kan hämtas: fält, sortering, hur långt sidorna räcker och underkategorier."""
+    """Hur Traderas aktiva annonser kan delas upp under 10 000 (sidtaket), om det finns märkesfilter, och hur
+    länge sålda annonser legat ute (för att se om 35 dagar bakåt räcker)."""
     import random, time
-    rubrik("TRADERA AKTIVA")
+    from collections import Counter
+    rubrik("TRADERA AKTIVA 2")
     t = mk.TraderaKalla({})
-    def visa(namn, par):
+    def tot(namn, par):
         try:
             res = t.sok(par)
         except Exception as e:
             print(namn, "fel", e); return None
-        it = res.get("items") or []
-        print("%s: total=%s n=%d forsta=%s" % (namn, res.get("totalItemCount"), len(it),
-              [(x.get("startDate", "")[:10], x.get("endDate", "")[:10], x.get("price"), x.get("itemType")) for x in it[:3]]))
+        print("%s: total=%s" % (namn, res.get("totalItemCount")), flush=True)
         time.sleep(random.uniform(1, 2))
         return res
-    res = visa("1639 utan status", [("categoryId", 1639)])
+    res = tot("1639", [("categoryId", 1639)])
     if res:
-        print("nycklar:", sorted(res.keys()))
-        for k, v in res.items():
-            if isinstance(v, (list, dict)) and k != "items":
-                print("  %s: %s" % (k, json.dumps(v, ensure_ascii=False)[:1500]))
-        if res.get("items"):
-            print("annons:", json.dumps(res["items"][0], ensure_ascii=False)[:1500])
-    visa("1639 Active", [("categoryId", 1639), ("itemStatus", "Active")])
-    for sort in ["AddedOn", "AddedOnAsc", "AddedOnDesc", "AddedOnAscending", "EndDate", "EndDateAscending", "PriceAscending", "PriceDescending", "Relevance"]:
-        visa("343837 sortBy=" + sort, [("categoryId", 343837), ("sortBy", sort)])
-    for sida in (100, 125, 126, 140):
-        visa("1639 sida %d" % sida, [("categoryId", 1639), ("sortBy", "AddedOn"), ("paging", sida)])
-    for cid in (1000678, 1000675, 1000696, 1000695, 344184, 340327, 340304, 1000656, 343837):
-        visa("kategori %d" % cid, [("categoryId", cid)])
+        f = res.get("filters") or {}
+        for grupp, lista in f.items():
+            if not isinstance(lista, list):
+                print("filter", grupp, json.dumps(lista, ensure_ascii=False)[:300]); continue
+            for x in lista:
+                if isinstance(x, dict):
+                    print("filter %s %s typ=%s: %s" % (grupp, x.get("parameter"), x.get("type"),
+                          json.dumps(x.get("options") or x, ensure_ascii=False)[:700]))
+    for cid in (1639, 340327):
+        for s in ("Private", "Company"):
+            tot("%d %s" % (cid, s), [("categoryId", cid), ("sellerType", s)])
+            for it in ("Auction", "FixedPrice", "ContactOnly"):
+                tot("%d %s %s" % (cid, s, it), [("categoryId", cid), ("sellerType", s), ("itemType", it)])
+    for par in ([("brand", "Hugo Boss")], [("brands", "Hugo Boss")], [("attr_brand", "Hugo Boss")], [("q", "boss")]):
+        tot("1639 %s" % par, [("categoryId", 1639)] + par)
+    rubrik("SÅLDA: DAGAR UTE")
+    affarer = vb.las_json(mk.AFFAR_FIL, {})
+    grans = mk.dagstr(time.time() - 30 * 86400)
+    for kat, poster in affarer.items():
+        d = [(mk.tid(p[0]) - mk.tid(p[1])) // 86400 for p in poster.values() if p[5] and p[1] and p[0] > grans]
+        if not d:
+            continue
+        d.sort()
+        n = len(d)
+        print("%s: %d sålda senaste 30 d, median %d dagar ute, >14: %.1f%%, >35: %.1f%%, >60: %.1f%%, max %d" % (
+            kat, n, d[n // 2], 100 * sum(x > 14 for x in d) / n, 100 * sum(x > 35 for x in d) / n,
+            100 * sum(x > 60 for x in d) / n, d[-1]))
+        print("   start", min(p[1] for p in poster.values() if p[1]), "slut", min(p[0] for p in poster.values()))
 
 
 def dump():
