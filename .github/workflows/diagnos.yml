@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       steg:
-        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte)"
+        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte), tradera = hur aktiva annonser hämtas"
         default: diagnos
         type: choice
-        options: [diagnos, provkor]
+        options: [diagnos, provkor, tradera]
 
 permissions:
   contents: read
@@ -37,5 +37,9 @@ jobs:
       - name: Mät en runda (sparas inte)
         if: inputs.steg == 'provkor'
         run: python3 marknad.py --sekunder 420
+      - name: Traderas aktiva annonser
+        if: inputs.steg == 'tradera'
+        run: python3 diagnos.py --tradera
       - name: Diagnos
+        if: inputs.steg != 'tradera'
         run: python3 diagnos.py --dump

@@ -44,6 +44,38 @@ def sparat():
     return bors
 
 
+def tradera_aktiva():
+    """Hur Traderas aktiva annonser kan hämtas: fält, sortering, hur långt sidorna räcker och underkategorier."""
+    import random, time
+    rubrik("TRADERA AKTIVA")
+    t = mk.TraderaKalla({})
+    def visa(namn, par):
+        try:
+            res = t.sok(par)
+        except Exception as e:
+            print(namn, "fel", e); return None
+        it = res.get("items") or []
+        print("%s: total=%s n=%d forsta=%s" % (namn, res.get("totalItemCount"), len(it),
+              [(x.get("startDate", "")[:10], x.get("endDate", "")[:10], x.get("price"), x.get("itemType")) for x in it[:3]]))
+        time.sleep(random.uniform(1, 2))
+        return res
+    res = visa("1639 utan status", [("categoryId", 1639)])
+    if res:
+        print("nycklar:", sorted(res.keys()))
+        for k, v in res.items():
+            if isinstance(v, (list, dict)) and k != "items":
+                print("  %s: %s" % (k, json.dumps(v, ensure_ascii=False)[:1500]))
+        if res.get("items"):
+            print("annons:", json.dumps(res["items"][0], ensure_ascii=False)[:1500])
+    visa("1639 Active", [("categoryId", 1639), ("itemStatus", "Active")])
+    for sort in ["AddedOn", "AddedOnAsc", "AddedOnDesc", "AddedOnAscending", "EndDate", "EndDateAscending", "PriceAscending", "PriceDescending", "Relevance"]:
+        visa("343837 sortBy=" + sort, [("categoryId", 343837), ("sortBy", sort)])
+    for sida in (100, 125, 126, 140):
+        visa("1639 sida %d" % sida, [("categoryId", 1639), ("sortBy", "AddedOn"), ("paging", sida)])
+    for cid in (1000678, 1000675, 1000696, 1000695, 344184, 340327, 340304, 1000656, 343837):
+        visa("kategori %d" % cid, [("categoryId", cid)])
+
+
 def dump():
     """bors.json gzippad och base64 i loggen, i rader om 2000 tecken."""
     rubrik("DUMP")
@@ -55,6 +87,9 @@ def dump():
 
 
 def main():
+    if "--tradera" in sys.argv:
+        tradera_aktiva()
+        return
     sparat()
     if "--dump" in sys.argv:
         dump()
