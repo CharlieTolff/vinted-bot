@@ -166,7 +166,13 @@ def tradera_djup():
     res = tk.sok("cardigan")
     f = res.get("filters") or {}
     for typ, lista_ in f.items():
-        for x in lista_ or []:
+        if not isinstance(lista_, list):
+            print("filter %s = %s" % (typ, json.dumps(lista_, ensure_ascii=False)[:1500]))
+            continue
+        for x in lista_:
+            if not isinstance(x, dict):
+                print("filter %s: %s" % (typ, json.dumps(x, ensure_ascii=False)[:600]))
+                continue
             print("filter %s %s: %s" % (typ, x.get("parameter"), json.dumps(x.get("options") or x, ensure_ascii=False)[:1200]))
     for it in (res.get("items") or [])[:8]:
         print("attr:", it.get("shortDescription"), json.dumps(it.get("attributes"), ensure_ascii=False)[:600], it.get("sellerCountryCodeIso2"), it.get("sellerIsCompany"))
