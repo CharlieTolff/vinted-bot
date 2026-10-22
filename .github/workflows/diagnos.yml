@@ -1,0 +1,24 @@
+name: Diagnos av börsen
+
+# Startas för hand. Skriver ut hur börsens mätningar ser ut i loggen, ändrar inget.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: |
+            bors.json
+            tradera_salda.json
+          key: bors-${{ github.run_id }}
+          restore-keys: bors-
+      - name: Diagnos
+        run: python3 diagnos.py
