@@ -271,6 +271,13 @@ svg.spark{display:block;margin-left:auto}
 .skapa:hover{filter:brightness(1.05)}
 .liten{font-size:12px;color:var(--svag);font-weight:400}
 .info b{color:var(--text)}
+.om summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;font-size:14px;font-weight:600;color:var(--text);user-select:none}
+.om summary::-webkit-details-marker{display:none}
+.om summary .svag{font-weight:400;font-size:13px;color:var(--svag)}
+.om summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--svag);border-bottom:2px solid var(--svag);transform:rotate(45deg);transition:transform .2s}
+.om[open] summary::after{transform:rotate(-135deg)}
+.om summary:hover{background:var(--kort2)}
+.om .info{padding-top:0}
 
 @media (max-width:900px){
   .layout{grid-template-columns:minmax(0,1fr);gap:14px}
@@ -681,8 +688,8 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
   </div>
 
-  <section class="kort">
-    <div class="info" id="omdata"></div>
+  <section class="kort" id="omkort">
+    <details class="om"><summary>Så räknas det <span class="svag">Tryck för att se hur siffrorna räknas ut</span></summary><div class="info" id="omdata"></div></details>
   </section>
   </div>
   </div>
@@ -1368,7 +1375,7 @@ function ritaVy(){
   $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
   $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
-  $("omdata").hidden = ["bilder", "bokforing", "beskrivning"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
+  $("omkort").hidden = ["bilder", "bokforing", "beskrivning"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
 }
 const finnsVy = vy => !!vy && !!document.querySelector(`.vy[data-vy="${CSS.escape(vy)}"]`);
 function visaVy(vy){
@@ -1640,7 +1647,7 @@ function ritaKategoritabell(){
 
 function ritaOm(){
   const ko = B.ko || 0;
-  $("omdata").innerHTML = `<b>Så räknas det.</b> <b>Tradera</b> räknas helt, inte med stickprov: varje såld annons i kategorin, med slutpris och märke, och varje annons som ligger ute, en gång per dygn. Märket är det säljaren valt, annars det som står i titeln, och olika stavningar räknas som samma märke (Polo Ralph Lauren och Ralph Lauren blir Ralph Lauren). <b>Vinted</b> och <b>Plick</b> visar inte vad som sålts, så där räknas de nyaste annonserna (upp till 960 på Vinted) och varje märke för sig.
+  $("omdata").innerHTML = `<b>Tradera</b> räknas helt, inte med stickprov: varje såld annons i kategorin, med slutpris och märke, och varje annons som ligger ute, en gång per dygn. Märket är det säljaren valt, annars det som står i titeln, och olika stavningar räknas som samma märke (Polo Ralph Lauren och Ralph Lauren blir Ralph Lauren). <b>Vinted</b> och <b>Plick</b> visar inte vad som sålts, så där räknas de nyaste annonserna (upp till 960 på Vinted) och varje märke för sig.
     <b>Andel sålda</b> är märkets del av allt som såldes i kategorin en vecka: 5 % betyder 5 av 100 sålda plagg. <b>Andel nya</b> är märkets del av de senast upplagda annonserna. <b>Andel av allt ute</b> är märkets del av alla annonser som ligger till salu just nu (exakt på Tradera, uppskattad på Vinted eftersom Vinted slutar räkna vid 960). Ändringen är skillnaden i andel, till exempel från 4 % till 6 % = +2 %.
     <b>Slutpris</b> är mittenpriset bland märkets sålda de senaste 30 dagarna, så att några få dyra eller billiga inte drar iväg siffran. <b>Begärt pris</b> är mittenpriset bland annonserna.
     <b>Köpläge</b> är slutpriset på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda 24 h</b> är sålda per dygn: på Tradera snittet för den senaste veckan, på Vinted märkets annonser som fanns förra mätningen men är borta nu (några kan vara borttagna i stället för sålda). "–" betyder att det inte mätts än.
