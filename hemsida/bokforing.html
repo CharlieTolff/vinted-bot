@@ -135,6 +135,13 @@ tbody tr:last-child td{border-bottom:0}
 .mal label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--svag)}
 .fastnat{display:inline-block;font-size:11.5px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px;background:color-mix(in srgb,var(--minus) 14%,transparent);color:var(--minus)}
 .info b{color:var(--text)}
+.om summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:14px 16px;font-size:14px;font-weight:600;color:var(--text);user-select:none}
+.om summary::-webkit-details-marker{display:none}
+.om summary .svag{font-weight:400;font-size:13px;color:var(--svag)}
+.om summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--svag);border-bottom:2px solid var(--svag);transform:rotate(45deg);transition:transform .2s}
+.om[open] summary::after{transform:rotate(-135deg)}
+.om summary:hover{background:var(--kort2)}
+.om .info{padding-top:0}
 
 @media (max-width:900px){
   .rutor{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -257,7 +264,7 @@ tbody tr:last-child td{border-bottom:0}
       <div class="tabellram"><table id="lagertabell"></table></div>
     </section>
 
-    <section class="kort"><div class="info" id="omdata"></div></section>
+    <section class="kort"><details class="om"><summary>Så räknas det <span class="svag">Tryck för att se hur siffrorna räknas ut</span></summary><div class="info" id="omdata"></div></details></section>
   </div>
 </main>
 
@@ -724,7 +731,7 @@ function ritaMal(){
 
 function ritaOm(){
   const utan = salda.filter(v => !v.t_sald);
-  $("omdata").innerHTML = `<b>Så räknas det.</b> Allt hämtas från Lager-fliken i arket. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
+  $("omdata").innerHTML = `Allt hämtas från Lager-fliken i arket. <b>Vinst</b> är säljpris minus totalkostnad (inköp, ZenMarket-avgift, frakt och tull) och säljavgifter.
     <b>ROI</b> är vinsten delat med totalkostnaden, och <b>marginal</b> är vinsten delat med omsättningen. En vara räknas till den period den såldes, och <b>Inköpt</b> till den period den köptes.
     En vara har <b>fastnat</b> när den legat i lagret eller varit upplagd i minst ${FAST_DAGAR} dagar. Prisförslaget är märkets vanliga pris på Vinted enligt börsen om det är lägre än målpriset, annars 10 % under målpriset.
     <b>Alarm</b> är alarmet varan troligen kom från: kolumnen Alarm i arket om du fyllt i den, annars det alarm som bevakar märket.
