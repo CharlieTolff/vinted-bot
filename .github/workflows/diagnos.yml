@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       steg:
-        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte), tradera = hur aktiva annonser hämtas"
+        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte), tradera = hur aktiva annonser hämtas, brevo = väntelistans formulär hos Brevo"
         default: diagnos
         type: choice
-        options: [diagnos, provkor, tradera]
+        options: [diagnos, provkor, tradera, brevo]
 
 permissions:
   contents: read
@@ -40,6 +40,13 @@ jobs:
       - name: Traderas aktiva annonser
         if: inputs.steg == 'tradera'
         run: python3 diagnos.py --tradera
+      - name: Väntelistans formulär hos Brevo
+        if: inputs.steg == 'brevo'
+        run: |
+          url=$(grep -o 'const BREVO_FORM = "[^"]*"' hemsida/vantelista.html | cut -d'"' -f2)
+          curl -sS -m 30 "$url" -o brevo.html -w "HTTP %{http_code}\n"
+          grep -oE '<form[^>]*>' brevo.html || true
+          grep -oE '<(input|select)[^>]*>' brevo.html | sed -E 's/ (class|style|placeholder|data-[a-z-]+)="[^"]*"//g' || true
       - name: Diagnos
-        if: inputs.steg != 'tradera'
+        if: inputs.steg != 'tradera' && inputs.steg != 'brevo'
         run: python3 diagnos.py --dump
