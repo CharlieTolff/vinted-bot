@@ -160,6 +160,9 @@ jobs:
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
           cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js _site/borsen/
+          # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
+          mkdir -p _site/vantelista
+          cp hemsida/vantelista.html _site/vantelista/index.html
 
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Märkesbörsen · Väntelista</title>
+<meta name="description" content="Märkesbörsen visar vad märkeskläder säljs för på Vinted och Tradera, vad du tjänar och vad som är populärt just nu. Skriv upp dig på väntelistan.">
+<meta property="og:title" content="Märkesbörsen · Väntelista">
+<meta property="og:description" content="Vet vad det säljs för. Innan du köper. Skriv upp dig så får du veta först när Märkesbörsen öppnar.">
+<meta name="theme-color" content="#2f3b2c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  /* Samma färger som Märkesbörsen: mörkgrönt och guld på en ljus, varm botten */
+  --bg:#f3f2ea;--kort:#fffffb;--yta:#e7eade;--text:#1b2219;--svag:#55604e;--linje:#d5d9cb;
+  --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;
+  --gron:#1d7a50;--gronljus:#c3dcc6;--rod:#b23b27;--rodljus:#e6cbc3;
+  --skugga:0 1px 2px rgba(25,35,20,.10),0 6px 14px -4px rgba(25,35,20,.14),0 20px 44px -18px rgba(25,35,20,.34);
+  --skugga-liten:0 1px 2px rgba(25,35,20,.10),0 4px 10px -3px rgba(25,35,20,.16);
+  --kant-ljus:inset 0 1px 0 rgba(255,255,255,.65);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.005em}
+a{color:inherit}
+.tal{font-variant-numeric:tabular-nums}
+.inre{max-width:1120px;margin:0 auto;padding:0 24px}
+h1,h2,h3{margin:0;letter-spacing:-.03em}
+
+.meny{background:var(--meny);color:var(--menytext);border-bottom:1px solid var(--menylinje)}
+.meny .inre{display:flex;align-items:center;gap:16px;height:64px}
+.logga{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.08em;color:var(--guldljus)}
+.logga i{width:26px;height:26px;border-radius:8px;background:var(--guld);display:inline-flex;align-items:flex-end;justify-content:center;gap:2px;padding:6px 5px}
+.logga i b{display:block;width:3px;background:#141414;border-radius:1px}
+.meny .snart{margin-left:auto;font-size:13.5px;font-weight:600;color:var(--menytext);display:flex;align-items:center}
+.puls{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5fcf93;margin-right:8px;box-shadow:0 0 0 0 #5fcf9366;animation:puls 2s infinite}
+@keyframes puls{70%{box-shadow:0 0 0 8px #5fcf9300}100%{box-shadow:0 0 0 0 #5fcf9300}}
+
+.hjalte{padding:64px 0 56px;background:linear-gradient(180deg,#e3e7d9,var(--bg) 80%)}
+.hjalte .inre{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:56px;align-items:center}
+.etikett{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--guldtext);background:#f0e6cf;border:1px solid #e2d2ab;border-radius:999px;padding:6px 14px;margin-bottom:20px}
+.hjalte h1{font-size:56px;line-height:1.04;font-weight:800;margin-bottom:20px}
+.hjalte h1 em{font-style:normal;color:var(--guldtext)}
+.hjalte p.ingress{font-size:19px;color:var(--svag);margin:0 0 26px;max-width:32em}
+.punkter{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.punkter li{display:flex;gap:12px;align-items:flex-start;font-size:16px}
+.punkter li b{display:block}
+.punkter li span{color:var(--svag);font-size:15px}
+.punkter .bock{flex:none;width:26px;height:26px;border-radius:50%;background:var(--gronljus);color:var(--gron);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;margin-top:1px}
+
+/* Formuläret */
+.lista{background:var(--kort);border:1px solid var(--linje);border-radius:24px;box-shadow:var(--skugga),var(--kant-ljus);overflow:hidden}
+.anmal{padding:28px}
+.anmal .over{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--guldtext);margin-bottom:8px}
+.anmal h2{font-size:30px;line-height:1.1;font-weight:800;margin-bottom:8px}
+.anmal p{color:var(--svag);margin:0 0 20px;font-size:15.5px}
+.falt{display:grid;gap:6px;margin-bottom:14px;font-size:14px;font-weight:600;color:var(--svag)}
+.falt small{font-weight:400}
+.falt input{font:inherit;font-size:17px;color:var(--text);background:var(--bg);border:1px solid var(--linje);border-radius:14px;padding:13px 14px;width:100%;min-width:0}
+.falt input:focus{outline:2px solid var(--guld);outline-offset:1px}
+.kryss{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--svag);margin:4px 0 18px;cursor:pointer}
+.kryss input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--gron);flex:none}
+.knapp{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;font:inherit;font-size:17px;font-weight:700;border-radius:999px;padding:15px 26px;background:var(--guld);color:#141414;border:0;cursor:pointer;box-shadow:0 2px 4px rgba(25,35,20,.16),0 10px 22px -8px rgba(120,85,20,.55),inset 0 1px 0 rgba(255,255,255,.45);transition:transform .15s ease,background .15s}
+.knapp:hover{background:var(--guldljus);transform:translateY(-1px)}
+.tillform{display:none;text-decoration:none;margin:0 0 26px}
+.knapp:disabled{opacity:.7;cursor:default;transform:none}
+.fel{color:var(--rod);font-size:14.5px;font-weight:600;margin:12px 0 0;min-height:0}
+.integritet{font-size:12.5px;color:var(--svag);margin:14px 0 0;line-height:1.5}
+.klar{padding:40px 28px;text-align:center}
+.klar .stor{width:64px;height:64px;border-radius:50%;background:var(--gronljus);color:var(--gron);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;margin:0 auto 16px}
+.klar h2{font-size:34px;font-weight:800;margin-bottom:8px}
+.klar p{color:var(--svag);margin:0}
+
+/* Smakprov ur börsen */
+section{padding:72px 0}
+.rubrik{max-width:700px;margin:0 auto 34px;text-align:center}
+.rubrik .over{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--guldtext);margin-bottom:10px}
+.rubrik h2{font-size:38px;line-height:1.1;font-weight:800}
+.rubrik p{font-size:17px;color:var(--svag);margin:12px 0 0}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:22px}
+.stat{background:var(--kort);border:1px solid var(--linje);border-radius:20px;padding:22px;text-align:center;box-shadow:var(--skugga-liten),var(--kant-ljus)}
+.stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-.03em}
+.stat span{color:var(--svag);font-size:14.5px}
+.prov{max-width:640px;margin:0 auto}
+.prov .huvud{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:18px 20px 12px}
+.prov h3{font-size:17px}
+.prov .huvud span{font-size:13px;color:var(--svag)}
+.rad{display:grid;grid-template-columns:minmax(0,1fr) 80px 82px;gap:12px;align-items:center;padding:11px 20px;border-top:1px solid var(--linje);font-size:15px}
+.rad .n{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rad .n small{display:block;font-weight:400;font-size:12.5px;color:var(--svag);white-space:normal}
+.rad .f{justify-self:end;font-weight:600;font-size:14px;padding:4px 9px;border-radius:8px;min-width:72px;text-align:center;box-shadow:var(--skugga-liten)}
+.rad .f.upp{background:var(--gronljus);color:var(--gron)}.rad .f.ned{background:var(--rodljus);color:var(--rod)}
+.rad svg{display:block}
+.last{position:relative}
+.last .rad{filter:blur(5px);user-select:none}
+.last .lag{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;background:linear-gradient(180deg,#fffffb00,#fffffbcc 40%)}
+.prov .fot{padding:14px 20px;border-top:1px solid var(--linje);font-size:13px;color:var(--svag)}
+
+footer{border-top:1px solid var(--linje);padding:28px 0 40px;font-size:13px;color:var(--svag)}
+footer .inre{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+@media (max-width:920px){
+  .hjalte .inre{grid-template-columns:minmax(0,1fr);gap:34px}
+  .hjalte h1{font-size:44px}
+}
+@media (max-width:600px){
+  .inre{padding:0 16px}
+  .hjalte{padding:36px 0 40px}
+  .hjalte h1{font-size:36px}
+  .hjalte p.ingress{font-size:17px}
+  .tillform{display:flex}
+  .anmal{padding:22px}
+  .anmal h2{font-size:26px}
+  .stats{grid-template-columns:minmax(0,1fr);gap:10px}
+  .stat{padding:16px}
+  .stat b{font-size:28px}
+  .rubrik h2{font-size:30px}
+  section{padding:52px 0}
+}
+@media (prefers-reduced-motion:reduce){ .puls{animation:none} }
+</style>
+</head>
+<body>
+<div class="meny">
+  <div class="inre">
+    <span class="logga"><i><b style="height:6px"></b><b style="height:11px"></b><b style="height:15px"></b></i>Märkesbörsen</span>
+    <span class="snart"><span class="puls"></span>Öppnar snart</span>
+  </div>
+</div>
+
+<div class="hjalte">
+  <div class="inre">
+    <div>
+      <div class="etikett">Just nu: väntelista</div>
+      <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
+      <p class="ingress">Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märkeskläder faktiskt säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
+      <a class="knapp tillform" href="#ruta">Skriv upp dig på väntelistan ↓</a>
+      <ul class="punkter">
+        <li><span class="bock">✓</span><div><b>Se vad det säljs för</b><span>Slutpriser från det som faktiskt sålts, inte bara vad folk begär.</span></div></li>
+        <li><span class="bock">✓</span><div><b>Räkna ut vinsten</b><span>Skriv in vad du betalar och se direkt vad du får över.</span></div></li>
+        <li><span class="bock">✓</span><div><b>Hitta vad du ska köpa in</b><span>Se vilka märken som blir populärare just nu.</span></div></li>
+      </ul>
+    </div>
+
+    <div class="lista" id="ruta">
+      <form class="anmal" id="anmal" novalidate>
+        <div class="over">Dörrarna öppnar snart</div>
+        <h2>Skriv upp dig på väntelistan</h2>
+        <p>Du får ett mejl, och ett sms om du vill, samma dag som Märkesbörsen öppnar.</p>
+        <label class="falt">Mejl
+          <input type="email" id="mejl" name="mejl" autocomplete="email" inputmode="email" placeholder="namn@exempel.se" required>
+        </label>
+        <label class="falt"><span>Mobilnummer <small>(frivilligt, för sms)</small></span>
+          <input type="tel" id="tel" name="tel" autocomplete="tel" inputmode="tel" placeholder="070 123 45 67">
+        </label>
+        <label class="kryss"><input type="checkbox" id="ok" required><span>Ja, meddela mig när Märkesbörsen öppnar. Jag kan avregistrera mig när jag vill.</span></label>
+        <button class="knapp" id="skicka" type="submit">Skriv upp mig</button>
+        <div class="fel" id="fel" role="alert"></div>
+        <p class="integritet">Vi använder din mejl och ditt nummer bara för att berätta när Märkesbörsen öppnar. De säljs eller delas inte med någon annan, och du kan avregistrera dig via länken i mejlet.</p>
+      </form>
+      <div class="klar" id="klar" hidden>
+        <div class="stor">✓</div>
+        <h2>Du är med!</h2>
+        <p>Vi hör av oss så fort dörrarna öppnar.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="prov" hidden>
+  <div class="inre">
+    <div class="rubrik">
+      <div class="over">Ett smakprov</div>
+      <h2>Det här mäts redan</h2>
+      <p>Börsen är igång och räknar. När du kommer in ser du alla märken, alla kategorier och diagram över tid.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b class="tal" id="statannonser">–</b><span>annonser i senaste mätningen</span></div>
+      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser på Tradera räknade</span></div>
+      <div class="stat"><b class="tal" id="statmarken">–</b><span>märken som följs</span></div>
+    </div>
+    <div class="lista prov" id="provlista" hidden>
+      <div class="huvud"><h3>Ökar mest just nu</h3><span>Senaste månaden</span></div>
+      <div id="vinnare"></div>
+      <div class="last"><div id="dolda"></div><div class="lag">Resten ser du när vi öppnar</div></div>
+      <div class="fot" id="provfot"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="inre"><span>© Märkesbörsen</span><span>Siffrorna är vägledning, inte en garanti.</span></div>
+</footer>
+
+<script>
+// Formulärets adress hos Brevo (action-adressen i Brevos inbäddningskod). Tom = väntelistan tar inte emot anmälningar än.
+const BREVO_FORM = "";
+
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const las = (k, std) => { try { return JSON.parse(localStorage.getItem(k)) ?? std } catch { return std } };
+const spara = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)) } catch {} };
+
+function visaKlar(){ $("anmal").hidden = true; $("klar").hidden = false; }
+if (las("vantelista", false)) visaKlar();
+
+// Svenska nummer skrivs ofta 070-123 45 67; Brevo vill ha landskod och numret utan nolla.
+function telefon(t){
+  let s = t.replace(/[\s\-().]/g, "");
+  if (!s) return null;
+  if (s.startsWith("00")) s = "+" + s.slice(2);
+  if (s.startsWith("0")) s = "+46" + s.slice(1);
+  if (!/^\+\d{8,14}$/.test(s)) return false;
+  const m = s.match(/^\+(46)(\d+)$/) || s.match(/^\+(\d{1,3})(\d{7,12})$/);
+  return {kod: "+" + m[1], nummer: m[2]};
+}
+
+$("anmal").addEventListener("submit", async e => {
+  e.preventDefault();
+  const fel = msg => { $("fel").textContent = msg; };
+  fel("");
+  const mejl = $("mejl").value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mejl)) { fel("Skriv in en mejladress, till exempel namn@exempel.se."); $("mejl").focus(); return; }
+  const tel = telefon($("tel").value);
+  if (tel === false) { fel("Kolla mobilnumret, till exempel 070 123 45 67. Du kan också lämna det tomt."); $("tel").focus(); return; }
+  if (!$("ok").checked) { fel("Kryssa i rutan så att vi får meddela dig."); return; }
+  if (!BREVO_FORM) { fel("Väntelistan öppnar om en liten stund. Försök igen lite senare."); return; }
+  $("skicka").disabled = true; $("skicka").textContent = "Skickar…";
+  const fd = new FormData();
+  fd.append("EMAIL", mejl);
+  if (tel) { fd.append("SMS", tel.nummer); fd.append("SMS__COUNTRY_CODE", tel.kod); }
+  fd.append("OPT_IN", "1");
+  fd.append("email_address_check", "");
+  fd.append("locale", "sv");
+  try {
+    // Brevo svarar inte till andra webbplatser, så svaret kan inte läsas; ett nätverksfel syns ändå.
+    await fetch(BREVO_FORM, {method: "POST", body: fd, mode: "no-cors"});
+    spara("vantelista", true);
+    visaKlar();
+  } catch {
+    fel("Det gick inte att skicka. Kolla att du är uppkopplad och försök igen.");
+    $("skicka").disabled = false; $("skicka").textContent = "Skriv upp mig";
+  }
+});
+
+// Smakprov: riktiga siffror ur börsen, och de tre märken som ökar mest.
+const pct = (v, d = 1) => v.toLocaleString("sv-SE", {minimumFractionDigits: d, maximumFractionDigits: d}) + " %";
+const pe = v => (v > 0 ? "+" : v < 0 ? "−" : "±") + Math.abs(v).toLocaleString("sv-SE", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " %";
+const dag = s => new Date(s + "T12:00:00Z").getTime();
+const INTE = ["övriga", "vintage", "okänt", "no brand", "handgjord", "diverse"];
+function spark(pts, upp){
+  const w = 70, h = 24;
+  if (pts.length < 2) return `<svg width="${w}" height="${h}"></svg>`;
+  const y0 = Math.min(...pts), y1 = Math.max(...pts);
+  const X = i => 2 + (w - 4) * i / (pts.length - 1), Y = y => h - 3 - (h - 6) * (y - y0) / ((y1 - y0) || 1);
+  return `<svg width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${upp ? "var(--gron)" : "var(--rod)"}" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" points="${pts.map((p, i) => X(i).toFixed(1) + "," + Y(p).toFixed(1)).join(" ")}"/></svg>`;
+}
+function rad(x){
+  const upp = x.d >= 0;
+  return `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)} · ${pct(x.nu)} av ${x.kalla === "tradera" ? "det sålda" : "annonserna"}</small></span><span>${spark(x.serie, upp)}</span><span class="f tal ${upp ? "upp" : "ned"}">${pe(x.d)}</span></div>`;
+}
+function andelsPunkter(B, kalla, kat){
+  if (kalla === "tradera") {
+    const v = ((B.tradera_veckor || {})[kat] || []).filter(p => p[1] >= 5);
+    return v.length > 1 && dag(v.at(-1)[0]) + 7 * 864e5 > Date.now() ? v.slice(0, -1) : v;
+  }
+  return ((B.andel || {})[kalla] || {})[kat] || [];
+}
+function forandringar(B){
+  const ut = [];
+  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
+    const pts = andelsPunkter(B, kalla, kat.id);
+    if (pts.length < 2) continue;
+    const slut = dag(pts.at(-1)[0]), inom = pts.filter(p => dag(p[0]) >= slut - 30 * 864e5);
+    if (inom.length < 2) continue;
+    for (const m of Object.keys(inom.at(-1)[2])) {
+      if (INTE.includes(m.toLowerCase())) continue;
+      const serie = inom.map(p => p[2][m] ? 100 * p[2][m][0] / p[1] : null).filter(v => v != null);
+      if (serie.length < 2) continue;
+      const nu = serie.at(-1), d = nu - serie[0];
+      if (nu < 1 || Math.abs(d) < 0.2 || inom.at(-1)[2][m][0] < 3) continue;
+      ut.push({m, kat, kalla, nu, d, serie});
+    }
+  }
+  return ut;
+}
+
+(async () => {
+  let B;
+  try { B = await fetch("../bors.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
+  if (!B || !B.kategorier) return;
+  const marken = new Set();
+  let annonser = 0;
+  for (const kalla of Object.keys(B.andel || {})) for (const k of B.kategorier) {
+    const p = ((B.andel[kalla] || {})[k.id] || []).at(-1);
+    if (!p) continue;
+    annonser += p[1];
+    Object.keys(p[2]).forEach(m => marken.add(m));
+  }
+  let salda = 0;
+  for (const v of Object.values(B.tradera_veckor || {})) for (const p of v) salda += p[1];
+  if (!annonser) return;
+  $("antaltext").textContent = annonser > 1000 ? annonser.toLocaleString("sv-SE") : "tusentals";
+  $("statannonser").textContent = annonser.toLocaleString("sv-SE");
+  $("statsalda").textContent = salda ? salda.toLocaleString("sv-SE") : "–";
+  $("statmarken").textContent = marken.size.toLocaleString("sv-SE");
+  $("prov").hidden = false;
+
+  const sett = new Set(), topp = [];
+  for (const x of forandringar(B).filter(x => x.d > 0).sort((a, b) => b.d - a.d)) {
+    if (sett.has(x.m)) continue;
+    sett.add(x.m); topp.push(x);
+    if (topp.length >= 6) break;
+  }
+  if (topp.length < 3) return;
+  $("vinnare").innerHTML = topp.slice(0, 3).map(rad).join("");
+  $("dolda").innerHTML = topp.slice(3).map(rad).join("") || topp.slice(0, 2).map(rad).join("");
+  const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
+  $("provfot").textContent = (t ? `Uppdaterad ${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}. ` : "") + "Procenten är märkets del av det som säljs eller ligger ute i kategorin.";
+  $("provlista").hidden = false;
+})();
+</script>
+</body>
+</html>
