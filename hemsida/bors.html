@@ -1809,8 +1809,9 @@ async function sparaEgnaKat(ny){
 }
 
 // ---------- Egna analyser ----------
-const AGO = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
-const REPO = AGO + "/" + (location.pathname.split("/")[1] || "vinted-bot");
+const PA_GITHUB = location.hostname.endsWith("github.io");
+const AGO = PA_GITHUB ? location.hostname.split(".")[0] : "charlietolff";
+const REPO = PA_GITHUB ? AGO + "/" + (location.pathname.split("/")[1] || "vinted-bot") : "charlietolff/vinted-bot";
 const ANALYS_FIL = "spaningar.json";
 let analyser = [], analysData = {}, valdAnalys = las("analys", null), analysRedigerar = -1, analysBilder = [];
 const bildSrc = {};
