@@ -1,6 +1,10 @@
 <!doctype html>
 <html lang="sv">
 <head>
+<script>
+// På märkesbörsen.se hamnar besökare på den publika börsen. Alarmsidan visas bara för den som har sparat sin GitHub-nyckel här, eller öppnar ?alarm.
+(function(){try{if(location.hostname.endsWith("github.io")||location.hostname==="localhost"||/[?&]alarm/.test(location.search))return;if(JSON.parse(localStorage.getItem("nyckel")||"\"\""))return;}catch(e){}location.replace("borsen/")})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Vinted-alarm</title>
@@ -271,8 +275,10 @@ const FORSLAG = {
 };
 const FARGER = {Svart:"#000000","Grå":"#919191",Vit:"#ffffff","Crèmefärgad":"#f8f8e1",Beige:"#f4e0c8",Aprikos:"#ffcc98",Orange:"#ffa500",Korall:"#fe7f5d","Röd":"#cc3300","Vinröd":"#ae2e3d",Rosa:"#ff0080",Ros:"#ffccca",Lila:"#800080",Syrenlila:"#d297d2","Ljusblå":"#89cff0","Blå":"#007bc4","Marinblå":"#35358d",Turkos:"#b7dee8",Mint:"#a2ffbc","Grön":"#369a3d","Mörkgrön":"#356639",Khaki:"#86814a",Brun:"#663300",Senapsgul:"#e5b539",Gul:"#fff200",Silver:"#dddddd",Guld:"#be9927","Flerfärgad":"conic-gradient(#e53935,#fdd835,#43a047,#1e88e5,#8e24aa,#e53935)",Genomskinlig:"repeating-conic-gradient(#ddd 0 25%,#fff 0 50%) 0 0/7px 7px"};
 const SKICK = ["Ny med prislapp","Ny utan prislapp","Mycket bra","Bra","Tillfredsställande"];
-const ago = location.hostname.endsWith("github.io") ? location.hostname.split(".")[0] : "";
-const REPO = ago + "/" + (location.pathname.split("/")[1] || "vinted-bot");
+// På egen domän (märkesbörsen.se) finns inget användarnamn i adressen, så då gäller det vanliga repot.
+const PA_GITHUB = location.hostname.endsWith("github.io");
+const ago = PA_GITHUB ? location.hostname.split(".")[0] : "charlietolff";
+const REPO = PA_GITHUB ? ago + "/" + (location.pathname.split("/")[1] || "vinted-bot") : "charlietolff/vinted-bot";
 const FIL = "sokningar.json";
 const $ = id => document.getElementById(id);
 const las = (k, std) => { try { return JSON.parse(localStorage.getItem(k)) ?? std } catch { return std } };
