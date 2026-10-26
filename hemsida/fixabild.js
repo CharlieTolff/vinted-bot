@@ -167,13 +167,60 @@ async function maskFor(bild, w, h){
   return alfa;
 }
 
+// Modellerna räknar ofta glipor (golv mellan benen, vägg mellan arm och kropp)
+// som en del av personen. Varje band av bilden (uppifrån och ner) får en liten
+// palett med bakgrundens vanligaste färger där. Sammanhängande fläckar i
+// motivet (nedre delen av bilden) som har de färgerna tas bort. Mörka bakgrundsfärger räknas
+// inte, så ett svart plagg framför en mörk dörr ligger kvar.
+function tappaGlipor(alfa, I, w, h){
+  const N = w * h, sm = Math.max(w, h), BAND = Math.max(8, Math.round(h / 20)), nb = Math.ceil(h / BAND), Q = 8;
+  const lum = i => LUM[0] * I[0][i] + LUM[1] * I[1][i] + LUM[2] * I[2][i];
+  const lik = new Float32Array(N);
+  const palett = [];
+  for (let b = 0; b < nb; b++) {
+    const y0 = Math.max(0, (b - 1) * BAND), y1 = Math.min(h, (b + 2) * BAND), hist = new Map();
+    let n = 0;
+    for (let y = y0; y < y1; y += 2) for (let x = 0; x < w; x += 2) {
+      const i = y * w + x;
+      if (alfa[i] >= 0.03 || lum(i) < 60) continue;
+      const k = ((I[0][i] / Q | 0) * 64 + (I[1][i] / Q | 0)) * 64 + (I[2][i] / Q | 0), e = hist.get(k) || [0, 0, 0, 0];
+      e[0]++; e[1] += I[0][i]; e[2] += I[1][i]; e[3] += I[2][i]; hist.set(k, e); n++;
+    }
+    palett.push(n > 200 ? [...hist.values()].filter(e => e[0] > n * 0.004).map(e => [e[1] / e[0], e[2] / e[0], e[3] / e[0]]) : []);
+  }
+  // Glipor finns mellan benen och mellan armar och kropp, inte uppe vid
+  // ansiktet och halsen, där vit tröja och hud lätt liknar väggen.
+  for (let y = Math.round(h * 0.45); y < h; y++) {
+    const p = palett[Math.floor(y / BAND)];
+    if (!p.length) continue;
+    for (let x = 0; x < w; x++) {
+      const i = y * w + x;
+      if (alfa[i] < 0.03) continue;
+      const r = I[0][i], g = I[1][i], bl = I[2][i], l = lum(i);
+      let bast = 1e9;
+      for (const c of p) {
+        const cl = LUM[0] * c[0] + LUM[1] * c[1] + LUM[2] * c[2];
+        // Färgtonen väger tyngre än ljusheten: golvet i skugga är fortfarande golv.
+        const dl = (l - cl) * 0.3, dr = (r - l) - (c[0] - cl), db = (bl - l) - (c[2] - cl);
+        const d = dl * dl + 4 * (dr * dr + db * db);
+        if (d < bast) bast = d;
+      }
+      lik[i] = klipp((34 - Math.sqrt(bast)) / 12, 0, 1);
+    }
+  }
+  // Bara sammanhängande fläckar räknas, inte enstaka pixlar.
+  const sl = gauss(lik, w, h, sm / 250);
+  for (let i = 0; i < N; i++) if (sl[i] > 0.45) alfa[i] *= 1 - klipp((sl[i] - 0.45) / 0.2, 0, 1);
+  return alfa;
+}
+
 async function gorVit(bild, w, h, steg){
   const c = new OffscreenCanvas(w, h), g = c.getContext("2d");
   g.drawImage(bild, 0, 0, w, h);
   const px = g.getImageData(0, 0, w, h);
   const N = w * h, I = [0, 1, 2].map(k => { const a = new Float32Array(N); for (let i = 0; i < N; i++) a[i] = px.data[i * 4 + k]; return a; });
   steg("Hittar plagget … det kan ta upp till en halv minut"); await vila();
-  const alfa = await maskFor(bild, w, h);
+  const alfa = tappaGlipor(await maskFor(bild, w, h), I, w, h);
   steg("Byter bakgrund …"); await vila();
   const lum = new Float32Array(N);
   for (let i = 0; i < N; i++) lum[i] = LUM[0] * I[0][i] + LUM[1] * I[1][i] + LUM[2] * I[2][i];
