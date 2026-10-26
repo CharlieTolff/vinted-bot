@@ -6,10 +6,10 @@ on:
   workflow_dispatch:
     inputs:
       steg:
-        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte), tradera = hur aktiva annonser hämtas, brevo = väntelistans formulär hos Brevo"
+        description: "diagnos = visa det sparade, provkor = mät en runda först (sparas inte), tradera = hur aktiva annonser hämtas, brevo = väntelistans formulär hos Brevo, doman = svarar märkesbörsen.se för besökare"
         default: diagnos
         type: choice
-        options: [diagnos, provkor, tradera, brevo]
+        options: [diagnos, provkor, tradera, brevo, doman]
 
 permissions:
   contents: read
@@ -47,6 +47,16 @@ jobs:
           curl -sS -m 30 "$url" -o brevo.html -w "HTTP %{http_code}\n"
           grep -oE '<form[^>]*>' brevo.html || true
           grep -oE '<(input|select)[^>]*>' brevo.html | sed -E 's/ (class|style|placeholder|data-[a-z-]+)="[^"]*"//g' || true
+      - name: Svarar märkesbörsen.se
+        if: inputs.steg == 'doman'
+        run: |
+          for namn in xn--mrkesbrsen-q5a5t.se www.xn--mrkesbrsen-q5a5t.se; do
+            echo "== DNS $namn"; dig +short A "$namn"; dig +short CNAME "$namn"
+          done
+          for url in http://xn--mrkesbrsen-q5a5t.se/ https://xn--mrkesbrsen-q5a5t.se/ https://www.xn--mrkesbrsen-q5a5t.se/ https://xn--mrkesbrsen-q5a5t.se/vantelista/ https://charlietolff.github.io/vinted-bot/; do
+            echo "== $url"; curl -sS -m 20 -o /dev/null -w "HTTP %{http_code} -> %{redirect_url}\n" "$url" || true
+          done
+          echo "== Certifikat"; echo | openssl s_client -connect xn--mrkesbrsen-q5a5t.se:443 -servername xn--mrkesbrsen-q5a5t.se 2>/dev/null | openssl x509 -noout -subject -issuer -dates || echo "inget certifikat"
       - name: Diagnos
-        if: inputs.steg != 'tradera' && inputs.steg != 'brevo'
+        if: inputs.steg != 'tradera' && inputs.steg != 'brevo' && inputs.steg != 'doman'
         run: python3 diagnos.py --dump
