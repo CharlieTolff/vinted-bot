@@ -161,6 +161,8 @@ jobs:
           cp hemsida/bors.html _site/borsen/app.html
           cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js _site/borsen/
           # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
+          # Ikonen i webbläsarfliken (och på hemskärmen på mobilen).
+          cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/favicon.ico _site/
           mkdir -p _site/vantelista
           cp hemsida/vantelista.html _site/vantelista/index.html
 
