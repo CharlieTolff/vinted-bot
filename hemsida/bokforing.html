@@ -161,9 +161,23 @@ tbody tr:last-child td{border-bottom:0}
 .varor{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px;padding:12px 16px 16px}
 .vara{background:#eef1ea;border:1px solid var(--linje);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:transform .15s,box-shadow .15s}
 .vara:hover{transform:translateY(-2px);box-shadow:var(--skugga2,0 6px 18px rgba(25,35,20,.16))}
-.vbild{position:relative;aspect-ratio:4/3;background:radial-gradient(120% 90% at 30% 15%,#3b4837 0%,var(--meny) 55%,#1f281d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:30px 12px 22px;text-align:center}
+.vbild{position:relative;aspect-ratio:1/1;overflow:hidden;background:radial-gradient(120% 90% at 30% 15%,#3b4837 0%,var(--meny) 55%,#1f281d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:30px 12px 22px;text-align:center}
 .vmarke{font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.08em;color:var(--guldljus);font-size:19px;line-height:1.15;text-transform:uppercase;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .vmarke.lang{font-size:14.5px;letter-spacing:.05em}
+.vbild img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#eef1ea}
+.vbild.harbild .vmarke,.vbild.harbild .vkat{display:none}
+.vbild.harbild .vdagar{background:rgba(20,20,20,.55);color:#f2f2ea;border-radius:999px;padding:1px 7px}
+.vbild > span{z-index:1}
+.bildknapp{position:absolute;bottom:8px;left:8px;z-index:1;border:0;border-radius:999px;padding:4px 10px 4px 8px;font:600 11.5px Inter,system-ui,sans-serif;background:rgba(236,239,230,.16);color:var(--menytext);cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(236,239,230,.25)}
+.bildknapp:hover{background:rgba(236,239,230,.28)}
+.vbild.harbild .bildknapp{background:rgba(20,20,20,.55);border-color:transparent;padding:5px 7px}
+.vbild.harbild .bildknapp .bt{display:none}
+.bildknapp svg{width:14px;height:14px}
+.vbild.laddar::after{content:"Sparar bilden…";position:absolute;inset:0;display:grid;place-items:center;background:rgba(20,20,20,.55);color:#f2f2ea;font-size:13px;font-weight:600;z-index:2}
+.varstatus{margin:8px 16px 0;padding:10px 12px;border-radius:12px;background:var(--kort2);border:1px solid var(--linje);font-size:13.5px}
+.varstatus.fel{border-color:var(--minus);color:var(--minus)}
+.varstatus input{font:inherit;font-size:14px;padding:7px 10px;border-radius:9px;border:1px solid var(--linje);background:#eef1ea;width:min(100%,320px);margin:6px 8px 0 0}
+.varstatus button{font:inherit;font-size:13px;font-weight:600;border:0;border-radius:999px;padding:7px 14px;background:#141414;color:var(--guldljus);cursor:pointer;margin-top:6px}
 .vkat{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--menysvag)}
 .vbadge{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;letter-spacing:.02em}
 .vbadge.sald{background:var(--guld);color:#141414}
@@ -210,6 +224,8 @@ tbody tr:last-child td{border-bottom:0}
   .varverktyg{padding:12px 12px 2px}
   .varor{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 12px 14px}
   .vbild{padding:28px 8px 20px}
+  .bildknapp .bt{display:none}
+  .bildknapp{padding:5px 7px}
   .vmarke{font-size:15px}
   .vmarke.lang{font-size:11.5px;letter-spacing:.04em}
   .vvinst b{font-size:15px}
@@ -277,7 +293,9 @@ tbody tr:last-child td{border-bottom:0}
         <label class="sok"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" id="varsok" placeholder="Sök produkt, märke eller kategori" autocomplete="off"></label>
         <div class="segment" id="varfilter"></div>
       </div>
+      <div class="varstatus" id="varstatus" hidden></div>
       <div class="varor" id="varor"></div>
+      <input type="file" id="varbildfil" accept="image/*" hidden>
       <div class="merrad" id="varmer"></div>
     </section>
 
@@ -343,7 +361,7 @@ const datum = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", mont
 const datumLang = t => new Date(t).toLocaleDateString("sv-SE", {day: "numeric", month: "short", year: "numeric"});
 const MAN = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt", "nov", "dec"];
 
-let D = null, alla = [], salda = [], lager = [], ALARM = [], B = null;
+let LOSEN = null, D = null, alla = [], salda = [], lager = [], ALARM = [], B = null;
 const FAST_DAGAR = 21;  // så länge en vara får ligga i lagret innan den räknas som fastnad
 let st = {ind: las("ind", "vecka"), utv: las("utv", "max"), matt: las("matt", "vinst"), grupp: las("grupp", "kategori"),
           sort: las("sort", ["sald", -1]), vald: null, vfilter: las("vfilter", "alla"), vsok: "", vvisa: 12};
@@ -364,7 +382,7 @@ async function dekryptera(losen){
 async function forsok(losen, spara){
   $("lasknapp").disabled = true; $("fel").textContent = ""; $("lasknapp").textContent = "Låser upp…";
   try {
-    D = await dekryptera(losen);
+    D = await dekryptera(losen); LOSEN = losen;
     if (spara) skriv("losen", losen);
     $("las").hidden = true; $("sida").hidden = false;
     // Alarmen (för vinst per alarm) och börsen (för prisförslag). Saknas de visas resten ändå.
@@ -372,7 +390,7 @@ async function forsok(losen, spara){
       fetch("sokningar.json", {cache: "no-store"}).then(r => r.ok ? r.json() : []).catch(() => []),
       fetch("bors.json", {cache: "no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
     ]);
-    forbered(); rita();
+    forbered(); rita(); laddaBilder();
   } catch (e) {
     skriv("losen", null);
     $("fel").textContent = e.message === "fel" ? "Fel lösenord." : e.message === "saknas" ? "Bokföringen är inte uppladdad än." : "Kunde inte läsa bokföringen.";
@@ -740,8 +758,11 @@ function varkort(v){
   const vinst = v.ar_sald ? v.v : (v.potvinst ?? (v.malpris != null ? v.malpris - v.k : null));
   const marg = vinst != null && pris ? 100 * vinst / pris : null;
   const under = [v.marke, v.ar_sald ? (v.t_sald ? "såld " + datum(v.t_sald) : "") : (v.t_kopt ? "köpt " + datum(v.t_kopt) : "")].filter(Boolean).join(" · ");
+  const id = bildId(v), src = BILDER.src[id];
   return `<article class="vara">
-    <div class="vbild">${badge}${tagg}<div class="vmarke${(v.marke || "").length > 13 ? " lang" : ""}">${esc(v.marke || "Okänt märke")}</div><div class="vkat">${esc(v.kategori || "")}</div>${dagar}</div>
+    <div class="vbild${src ? " harbild" : ""}${BILDER.laddar.has(id) ? " laddar" : ""}">${src ? `<img src="${src}" alt="${esc(v.produkt)}" loading="lazy">` : ""}${badge}${tagg}
+      <button class="bildknapp" data-bild="${id}" title="${src ? "Byt bild" : "Lägg till bild"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="bt">${src ? "Byt bild" : "Lägg till bild"}</span></button>
+      <div class="vmarke${(v.marke || "").length > 13 ? " lang" : ""}">${esc(v.marke || "Okänt märke")}</div><div class="vkat">${esc(v.kategori || "")}</div>${dagar}</div>
     <div class="vinfo">
       <div class="vnamn" title="${esc(v.produkt)}">${esc(v.produkt)}<small>${esc(under)}</small></div>
       <div class="vsiffror">
@@ -751,6 +772,89 @@ function varkort(v){
       </div>
     </div></article>`;
 }
+// ---------- Bilder på plaggen ----------
+// Bilderna sparas i repot (hemsida/bokbilder), krypterade med bokföringens lösenord, så att de
+// syns på alla dina enheter men inte för någon annan. Uppladdningen använder GitHub-nyckeln från alarm-sidan.
+const REPO = "CharlieTolff/vinted-bot", BILDMAPP = "hemsida/bokbilder";
+const BILDER = {lista: {}, src: {}, laddar: new Set()};
+let bildNyckel = null, valdBild = null;
+const ghNyckel = () => { try { return JSON.parse(localStorage.getItem("nyckel") || '""') } catch { return "" } };
+function bildId(v){
+  if (v.id) return "id-" + String(v.id).toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  let h = 0; for (const c of [v.produkt, v.marke, v.kopt].join("|")) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return "p-" + h.toString(36);
+}
+async function aesNyckel(){
+  if (bildNyckel) return bildNyckel;
+  const bas = await crypto.subtle.importKey("raw", new TextEncoder().encode(LOSEN), "PBKDF2", false, ["deriveKey"]);
+  return bildNyckel = await crypto.subtle.deriveKey({name: "PBKDF2", salt: new TextEncoder().encode("markesborsen-bokbilder-1"), iterations: 200000, hash: "SHA-256"},
+    bas, {name: "AES-GCM", length: 256}, false, ["encrypt", "decrypt"]);
+}
+const tillB64 = b => { let t = ""; for (let i = 0; i < b.length; i += 0x8000) t += String.fromCharCode(...b.subarray(i, i + 0x8000)); return btoa(t); };
+const franB64 = t => Uint8Array.from(atob(t.replace(/\n/g, "")), c => c.charCodeAt(0));
+async function gh(metod, vag, kropp){
+  const r = await fetch("https://api.github.com" + vag, {method: metod, cache: "no-store",
+    headers: {Authorization: "Bearer " + ghNyckel(), Accept: "application/vnd.github+json"}, body: kropp ? JSON.stringify(kropp) : undefined});
+  if (!r.ok) throw new Error(r.status);
+  return r.status === 204 ? null : r.json();
+}
+async function hamtaFil(vag){
+  // Först från sidan (snabbt), annars direkt från repot om den inte hunnit publiceras än.
+  const r = await fetch(vag.replace("hemsida/", "") + "?v=" + Date.now(), {cache: "no-store"}).catch(() => null);
+  if (r && r.ok) return new Uint8Array(await r.arrayBuffer());
+  if (!ghNyckel()) return null;
+  try { return franB64((await gh("GET", `/repos/${REPO}/contents/${vag}`)).content); } catch { return null; }
+}
+async function laddaBilder(){
+  const l = await hamtaFil(BILDMAPP + "/lista.json");
+  try { BILDER.lista = l ? JSON.parse(new TextDecoder().decode(l)) : {}; } catch { BILDER.lista = {}; }
+  const ids = new Set(alla.map(bildId));
+  const nyckel = Object.keys(BILDER.lista).length ? await aesNyckel() : null;
+  await Promise.all(Object.keys(BILDER.lista).filter(id => ids.has(id) && !BILDER.src[id]).map(async id => {
+    const b = await hamtaFil(`${BILDMAPP}/${id}.enc`);
+    if (!b) return;
+    try { BILDER.src[id] = URL.createObjectURL(new Blob([await crypto.subtle.decrypt({name: "AES-GCM", iv: b.slice(0, 12)}, nyckel, b.slice(12))], {type: "image/jpeg"})); } catch {}
+  }));
+  ritaVaror();
+}
+function varStatus(html, fel){ const el = $("varstatus"); el.hidden = !html; el.className = "varstatus" + (fel ? " fel" : ""); el.innerHTML = html || ""; }
+async function forminska(fil){
+  const bild = await createImageBitmap(fil, {imageOrientation: "from-image"}).catch(() => null);
+  if (!bild) throw new Error("Kunde inte läsa bilden.");
+  const max = 1000, f = Math.min(1, max / Math.max(bild.width, bild.height));
+  const c = document.createElement("canvas"); c.width = Math.round(bild.width * f); c.height = Math.round(bild.height * f);
+  c.getContext("2d").drawImage(bild, 0, 0, c.width, c.height);
+  return new Uint8Array(await (await new Promise(ok => c.toBlob(ok, "image/jpeg", 0.85))).arrayBuffer());
+}
+async function sparaBild(id, fil){
+  BILDER.laddar.add(id); ritaVaror();
+  try {
+    const jpg = await forminska(fil), iv = crypto.getRandomValues(new Uint8Array(12));
+    const krypt = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv}, await aesNyckel(), jpg));
+    const data = new Uint8Array(12 + krypt.length); data.set(iv); data.set(krypt, 12);
+    const vag = `${BILDMAPP}/${id}.enc`;
+    let sha; try { sha = (await gh("GET", `/repos/${REPO}/contents/${vag}`)).sha; } catch (e) { if (e.message !== "404") throw e; }
+    await gh("PUT", `/repos/${REPO}/contents/${vag}`, {message: "Bild till bokföringen", content: tillB64(data), ...(sha ? {sha} : {})});
+    // Listan över vilka plagg som har bild. Hämtas på nytt precis innan, ifall en annan enhet ändrat den.
+    let lista = {}, lsha;
+    try { const l = await gh("GET", `/repos/${REPO}/contents/${BILDMAPP}/lista.json`); lsha = l.sha; lista = JSON.parse(new TextDecoder().decode(franB64(l.content))); } catch (e) { if (e.message !== "404") throw e; }
+    lista[id] = new Date().toISOString();
+    await gh("PUT", `/repos/${REPO}/contents/${BILDMAPP}/lista.json`, {message: "Bild till bokföringen", content: tillB64(new TextEncoder().encode(JSON.stringify(lista, null, 1) + "\n")), ...(lsha ? {sha: lsha} : {})});
+    BILDER.lista = lista;
+    if (BILDER.src[id]) URL.revokeObjectURL(BILDER.src[id]);
+    BILDER.src[id] = URL.createObjectURL(new Blob([jpg], {type: "image/jpeg"}));
+    varStatus("");
+  } catch (e) {
+    const kod = e.message;
+    varStatus(kod === "401" || kod === "403" || kod === "404" ? "GitHub-nyckeln fungerar inte för att spara bilder. Kolla att den har rätt till repot vinted-bot (Contents: läsa och skriva)." : "Kunde inte spara bilden. Försök igen. (" + esc(kod) + ")", true);
+  }
+  BILDER.laddar.delete(id); ritaVaror();
+}
+function fragaNyckel(){
+  varStatus(`För att spara bilder behövs din GitHub-nyckel, samma som på alarm-sidan. Den sparas bara i den här webbläsaren.<br>
+    <input type="password" id="ghnyckel" placeholder="github_pat_..." autocomplete="off"><button id="ghspara">Spara nyckel</button>`);
+}
+
 function ritaVaror(){
   const ordning = {"i lager": 0, "upplagd": 1, "på väg": 2, "köpt": 3};
   const senast = v => v.t_sald ?? v.t_kopt ?? 0;
@@ -841,6 +945,19 @@ $("saldtabell").addEventListener("click", e => {
 });
 $("varfilter").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.vfilter = b.dataset.k; st.vvisa = 12; skriv("vfilter", st.vfilter); ritaVaror(); });
 $("varsok").addEventListener("input", e => { st.vsok = e.target.value; st.vvisa = 12; ritaVaror(); });
+$("varor").addEventListener("click", e => {
+  const b = e.target.closest("[data-bild]"); if (!b || BILDER.laddar.has(b.dataset.bild)) return;
+  if (!ghNyckel()) { fragaNyckel(); valdBild = b.dataset.bild; return; }
+  valdBild = b.dataset.bild; $("varbildfil").value = ""; $("varbildfil").click();
+});
+$("varbildfil").addEventListener("change", e => { const f = e.target.files[0]; if (f && valdBild) sparaBild(valdBild, f); });
+$("varstatus").addEventListener("click", e => {
+  if (!e.target.closest("#ghspara")) return;
+  const n = $("ghnyckel").value.trim(); if (!n) return;
+  try { localStorage.setItem("nyckel", JSON.stringify(n)); } catch {}
+  varStatus("Nyckeln är sparad. Tryck på kameran igen för att välja en bild.");
+  laddaBilder();
+});
 $("varmer").addEventListener("click", e => { if (e.target.closest("#visafler")) { st.vvisa += 12; ritaVaror(); } });
 let storlek = 0;
 addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => D && (ritaUtveckling(), ritaStaplar()), 150); });

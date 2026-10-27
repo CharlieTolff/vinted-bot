@@ -150,6 +150,8 @@ jobs:
           cp .fixabild/*.onnx .fixabild/*.json _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
           cp bokforing.enc _site/ 2>/dev/null || cp hemsida/bokforing.enc _site/
+          # Bilderna på plaggen i bokföringen (krypterade med samma lösenord).
+          cp -r hemsida/bokbilder _site/ 2>/dev/null || true
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
           cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
           cp spaning.json _site/ 2>/dev/null || echo "{}" > _site/spaning.json
