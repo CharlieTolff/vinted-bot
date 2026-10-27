@@ -72,6 +72,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .stort b{display:block;font-size:40px;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0 2px}
 .stort .under{font-size:14px}
 .nycklar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;margin-top:18px}
+.nyckel{background:#eef1ea;border:1px solid var(--linje);border-radius:12px;padding:10px 12px;min-width:0}
 .nyckel b{display:block;font-size:18px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
 .nyckel small{font-size:12.5px;color:var(--svag)}
 
@@ -150,6 +151,41 @@ tbody tr:last-child td{border-bottom:0}
 .om summary:hover{background:var(--kort2)}
 .om .info{padding-top:0}
 
+/* Varukorten */
+.varverktyg{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;padding:14px 16px 4px}
+.sok{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:#eef1ea;border:1px solid var(--linje);border-radius:12px;padding:0 12px;color:var(--svag)}
+.sok:focus-within{outline:2px solid var(--guld);outline-offset:1px}
+.sok svg{width:16px;height:16px;flex:none}
+.sok input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;padding:9px 0;color:var(--text);outline:none}
+.segment button .antal{font-weight:400;color:var(--svag);margin-left:5px;font-size:12px}
+.varor{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px;padding:12px 16px 16px}
+.vara{background:#eef1ea;border:1px solid var(--linje);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:transform .15s,box-shadow .15s}
+.vara:hover{transform:translateY(-2px);box-shadow:var(--skugga2,0 6px 18px rgba(25,35,20,.16))}
+.vbild{position:relative;aspect-ratio:4/3;background:radial-gradient(120% 90% at 30% 15%,#3b4837 0%,var(--meny) 55%,#1f281d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:30px 12px 22px;text-align:center}
+.vmarke{font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.08em;color:var(--guldljus);font-size:19px;line-height:1.15;text-transform:uppercase;max-width:100%;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vmarke.lang{font-size:14.5px;letter-spacing:.05em}
+.vkat{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--menysvag)}
+.vbadge{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px;letter-spacing:.02em}
+.vbadge.sald{background:var(--guld);color:#141414}
+.vbadge.lager{background:#ecefe6;color:var(--meny)}
+.vbadge.fast{background:var(--minus);color:#fff}
+.vtagg{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;background:rgba(236,239,230,.14);color:var(--menytext);border:1px solid rgba(236,239,230,.22)}
+.vdagar{position:absolute;bottom:9px;right:10px;font-size:11px;font-weight:600;color:var(--menysvag);font-variant-numeric:tabular-nums}
+.vinfo{padding:11px 13px 13px;display:flex;flex-direction:column;gap:9px;flex:1}
+.vnamn{font-weight:600;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vnamn small{display:block;font-weight:400;font-size:12px;color:var(--svag);overflow:hidden;text-overflow:ellipsis}
+.vsiffror{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-top:auto}
+.vsiffror small{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--svag)}
+.vsiffror b{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.vvinst{text-align:right}
+.vvinst b{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.vvinst small,.vvinst em{white-space:nowrap}
+.vvinst em{display:block;font-style:normal;font-size:11.5px;color:var(--svag);font-variant-numeric:tabular-nums}
+.merrad{display:flex;justify-content:center;padding:0 16px 18px}
+.merrad:empty{display:none}
+.merrad button{border:0;border-radius:999px;padding:10px 22px;background:#141414;color:var(--guldljus);font-weight:600;font-size:14px;cursor:pointer}
+.merrad button:hover{background:#000}
+
 @media (max-width:900px){
   .rutor{grid-template-columns:repeat(2,minmax(0,1fr))}
   .tva{grid-template-columns:1fr}
@@ -171,6 +207,17 @@ tbody tr:last-child td{border-bottom:0}
   .produkt{max-width:150px}
   table{font-size:13.5px}
   .forklaring{padding-left:14px;padding-right:14px}
+  .varverktyg{padding:12px 12px 2px}
+  .varor{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 12px 14px}
+  .vbild{padding:28px 8px 20px}
+  .vmarke{font-size:15px}
+  .vmarke.lang{font-size:11.5px;letter-spacing:.04em}
+  .vvinst b{font-size:15px}
+  .vinfo{padding:9px 10px 11px}
+  .vsiffror{grid-template-columns:1fr 1fr}
+  .vvinst{grid-column:1/-1;text-align:left;display:flex;align-items:baseline;gap:8px;border-top:1px solid color-mix(in srgb,var(--linje) 60%,transparent);padding-top:6px}
+  .vvinst small{margin-right:auto}
+  .vvinst em{display:inline}
 }
 </style>
 <link rel="stylesheet" href="stil.css">
@@ -223,6 +270,17 @@ tbody tr:last-child td{border-bottom:0}
     <!-- Månadsmål -->
     <section class="kort" id="malkort"></section>
 
+    <!-- Varorna som kort -->
+    <section class="kort">
+      <div class="korthuvud"><h2>Varor</h2><span class="svag" id="varinfo"></span></div>
+      <div class="varverktyg">
+        <label class="sok"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" id="varsok" placeholder="Sök produkt, märke eller kategori" autocomplete="off"></label>
+        <div class="segment" id="varfilter"></div>
+      </div>
+      <div class="varor" id="varor"></div>
+      <div class="merrad" id="varmer"></div>
+    </section>
+
     <!-- Perioder -->
     <div class="periodrad">
       <h2>Perioder</h2>
@@ -266,11 +324,6 @@ tbody tr:last-child td{border-bottom:0}
       <div class="tabellram"><table id="fasttabell"></table></div>
     </section>
 
-    <section class="kort">
-      <div class="korthuvud"><h2>Lager</h2><span class="svag" id="lagerinfo"></span></div>
-      <div class="tabellram"><table id="lagertabell"></table></div>
-    </section>
-
     <section class="kort"><details class="om"><summary>Så räknas det <span class="svag">Tryck för att se hur siffrorna räknas ut</span></summary><div class="info" id="omdata"></div></details></section>
   </div>
 </main>
@@ -293,7 +346,7 @@ const MAN = ["jan", "feb", "mar", "apr", "maj", "jun", "jul", "aug", "sep", "okt
 let D = null, alla = [], salda = [], lager = [], ALARM = [], B = null;
 const FAST_DAGAR = 21;  // så länge en vara får ligga i lagret innan den räknas som fastnad
 let st = {ind: las("ind", "vecka"), utv: las("utv", "max"), matt: las("matt", "vinst"), grupp: las("grupp", "kategori"),
-          sort: las("sort", ["sald", -1]), vald: null};
+          sort: las("sort", ["sald", -1]), vald: null, vfilter: las("vfilter", "alla"), vsok: "", vvisa: 12};
 
 // ---------- Låset ----------
 async function dekryptera(losen){
@@ -674,23 +727,49 @@ function ritaGrupper(s){
   $("grupptabell").innerHTML = grupptabell(gruppera(s, st.grupp), n);
 }
 
-// ---------- Lager ----------
-function ritaLager(){
+// ---------- Varorna som kort ----------
+const PLATTFORM = {vinted: "Vinted", tradera: "Tradera", sellpy: "Sellpy", blocket: "Blocket", plick: "Plick"};
+function varkort(v){
+  const status = (v.status || "").toLowerCase();
+  const badge = v.ar_sald ? `<span class="vbadge sald">Såld</span>` : arFast(v) ? `<span class="vbadge fast">Fastnat</span>`
+    : `<span class="vbadge lager">${esc(v.status ? v.status[0].toUpperCase() + v.status.slice(1) : "I lager")}</span>`;
+  const plats = v.ar_sald ? v.plattform : status === "upplagd" ? v.plattform : "";
+  const tagg = plats ? `<span class="vtagg">${esc(PLATTFORM[plats.toLowerCase()] || plats)}</span>` : "";
+  const dagar = v.dagar != null ? `<span class="vdagar" title="${v.ar_sald ? "Dagar från köp till försäljning" : "Dagar i lager"}">${v.dagar} d</span>` : "";
+  const pris = v.ar_sald ? v.salj : v.malpris;
+  const vinst = v.ar_sald ? v.v : (v.potvinst ?? (v.malpris != null ? v.malpris - v.k : null));
+  const marg = vinst != null && pris ? 100 * vinst / pris : null;
+  const under = [v.marke, v.ar_sald ? (v.t_sald ? "såld " + datum(v.t_sald) : "") : (v.t_kopt ? "köpt " + datum(v.t_kopt) : "")].filter(Boolean).join(" · ");
+  return `<article class="vara">
+    <div class="vbild">${badge}${tagg}<div class="vmarke${(v.marke || "").length > 13 ? " lang" : ""}">${esc(v.marke || "Okänt märke")}</div><div class="vkat">${esc(v.kategori || "")}</div>${dagar}</div>
+    <div class="vinfo">
+      <div class="vnamn" title="${esc(v.produkt)}">${esc(v.produkt)}<small>${esc(under)}</small></div>
+      <div class="vsiffror">
+        <div><small>Inköp</small><b>${v.k ? kr(v.k) : "–"}</b></div>
+        <div><small>${v.ar_sald ? "Sålt" : "Målpris"}</small><b>${kr(pris)}</b></div>
+        <div class="vvinst"><small>${v.ar_sald ? "Vinst" : `Möjlig<span class="dolj-mobil"> vinst</span>`}</small><b class="${klass(vinst)}">${krTecken(vinst)}</b><em>${marg == null ? "" : pct(marg, 0)}</em></div>
+      </div>
+    </div></article>`;
+}
+function ritaVaror(){
   const ordning = {"i lager": 0, "upplagd": 1, "på väg": 2, "köpt": 3};
-  const lista = [...lager].sort((a, b) => (ordning[(a.status || "").toLowerCase()] ?? 9) - (ordning[(b.status || "").toLowerCase()] ?? 9) || (b.dagar ?? 0) - (a.dagar ?? 0));
-  const bundet = lista.reduce((a, v) => a + v.k, 0), pot = lista.reduce((a, v) => a + (v.potvinst ?? 0), 0), mal = lista.reduce((a, v) => a + (v.malpris ?? 0), 0);
-  $("lagerinfo").textContent = lista.length ? `${lista.length} varor · ${kr(bundet)} bundet` : "";
-  if (!lista.length) { $("lagertabell").innerHTML = `<tbody><tr><td class="tomt">Lagret är tomt.</td></tr></tbody>`; return; }
-  $("lagertabell").innerHTML = `<thead><tr><th>Vara</th><th>Status</th><th class="dolj-mobil">Kostnad</th><th class="dolj-mobil">Målpris</th><th>Möjlig vinst</th><th class="dolj-mobil">ROI</th><th class="dolj-mobil">Dagar</th></tr></thead><tbody>` +
-    lista.map(v => `<tr>
-      <td><div class="produkt"><span class="n" title="${esc(v.produkt)}">${esc(v.produkt)}</span><span class="m">${esc(v.marke)} · ${v.t_kopt ? "köpt " + datum(v.t_kopt) + (v.kalla ? " på " + esc(v.kalla) : "") : esc((v.kalla || "").toLowerCase() || "inköp saknas")}</span></div></td>
-      <td><span class="status ${(v.status || "").toLowerCase() === "i lager" ? "lager" : ""}">${esc(v.status || "–")}</span>${arFast(v) ? `<span class="fastnat">fastnat</span>` : ""}</td>
-      <td class="tal dolj-mobil">${v.k ? kr(v.k) : "–"}</td>
-      <td class="tal dolj-mobil">${kr(v.malpris)}</td>
-      <td class="tal ${klass(v.potvinst)}">${krTecken(v.potvinst)}</td>
-      <td class="tal dolj-mobil">${pct(v.potroi)}</td>
-      <td class="tal dolj-mobil">${v.dagar ?? "–"}</td></tr>`).join("") +
-    `<tr class="summa"><td>Totalt</td><td></td><td class="tal dolj-mobil">${kr(bundet)}</td><td class="tal dolj-mobil">${kr(mal)}</td><td class="tal ${klass(pot)}">${krTecken(pot)}</td><td class="tal dolj-mobil">${pct(bundet ? 100 * pot / bundet : null)}</td><td class="dolj-mobil"></td></tr></tbody>`;
+  const senast = v => v.t_sald ?? v.t_kopt ?? 0;
+  const urval = {
+    alla: [...lager, ...salda].sort((a, b) => senast(b) - senast(a)),
+    lager: [...lager].sort((a, b) => (ordning[(a.status || "").toLowerCase()] ?? 9) - (ordning[(b.status || "").toLowerCase()] ?? 9) || (b.dagar ?? 0) - (a.dagar ?? 0)),
+    salda: [...salda].sort((a, b) => (b.t_sald ?? 0) - (a.t_sald ?? 0)),
+  };
+  if (!urval[st.vfilter]) st.vfilter = "alla";
+  $("varfilter").innerHTML = [["alla", "Alla"], ["lager", "I lager"], ["salda", "Sålda"]]
+    .map(([k, n]) => `<button data-k="${k}" class="${k === st.vfilter ? "vald" : ""}">${n}<span class="antal">${urval[k].length}</span></button>`).join("");
+  const ord = st.vsok.toLowerCase().split(/\s+/).filter(Boolean);
+  const lista = urval[st.vfilter].filter(v => { const t = [v.produkt, v.marke, v.kategori, v.plattform].join(" ").toLowerCase(); return ord.every(o => t.includes(o)); });
+  const bundet = lager.reduce((a, v) => a + v.k, 0);
+  $("varinfo").textContent = st.vfilter === "lager" ? `${lager.length} i lager · ${kr(bundet)} bundet` : st.vfilter === "salda" ? `${salda.length} sålda · ${krTecken(salda.reduce((a, v) => a + v.v, 0))} vinst` : `${alla.length} varor registrerade`;
+  $("varor").innerHTML = lista.length ? lista.slice(0, st.vvisa).map(varkort).join("")
+    : `<div class="tomt" style="grid-column:1/-1">${ord.length ? "Inga varor matchar sökningen." : st.vfilter === "lager" ? "Lagret är tomt." : "Inget sålt än."}</div>`;
+  const kvar = lista.length - st.vvisa;
+  $("varmer").innerHTML = kvar > 0 ? `<button id="visafler">Visa fler (${kvar} till)</button>` : "";
 }
 
 // ---------- Varor som fastnat ----------
@@ -745,7 +824,7 @@ function ritaOm(){
     Här visas bara kläderna från botten och det du säljer nu. De gamla Japan-köpen (golf, LV-plånböcker m.m.) och privata saker finns kvar i arket men räknas inte här. Varor från tidigare lager har inget inköpspris, så hela säljpriset räknas som vinst.${utan.length ? ` ${utan.length === 1 ? "En såld vara saknar" : utan.length + " sålda varor saknar"} säljdatum (${utan.map(v => esc(v.produkt)).join(", ")}) och syns därför bara under Allt.` : ""}`;
 }
 
-function rita(){ ritaTopp(); ritaMal(); ritaPerioder(); ritaFast(); ritaLager(); ritaOm(); }
+function rita(){ ritaTopp(); ritaMal(); ritaVaror(); ritaPerioder(); ritaFast(); ritaOm(); }
 
 // ---------- Händelser ----------
 $("utvperiod").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.utv = b.dataset.k; skriv("utv", st.utv); ritaTopp(); });
@@ -760,6 +839,9 @@ $("saldtabell").addEventListener("click", e => {
   const k = th.dataset.k;
   st.sort = [k, st.sort[0] === k ? -st.sort[1] : (k === "produkt" || k === "plattform" ? 1 : -1)]; skriv("sort", st.sort); ritaPerioder();
 });
+$("varfilter").addEventListener("click", e => { const b = e.target.closest("[data-k]"); if (!b) return; st.vfilter = b.dataset.k; st.vvisa = 12; skriv("vfilter", st.vfilter); ritaVaror(); });
+$("varsok").addEventListener("input", e => { st.vsok = e.target.value; st.vvisa = 12; ritaVaror(); });
+$("varmer").addEventListener("click", e => { if (e.target.closest("#visafler")) { st.vvisa += 12; ritaVaror(); } });
 let storlek = 0;
 addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => D && (ritaUtveckling(), ritaStaplar()), 150); });
 
