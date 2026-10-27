@@ -432,7 +432,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
       <button data-vy="ute">Andel av allt ute<small>Marknadsandelar med diagram</small></button>
       <button data-vy="analyser">Egna analyser<small>Dina filter och bilder</small></button>
-      <button data-vy="lagen">Bästa köplägen<small>Köp på Vinted, sälj på Tradera</small></button>
+      <button data-vy="lagen">Bästa marginalerna<small>Vad du ska köpa in och sälja för</small></button>
       <button data-vy="trender">Trender<small>Ökar och minskar mest</small></button>
       <button data-vy="fart">Säljer snabbast<small>Flest sålda senaste dygnet</small></button>
     </div>
@@ -493,7 +493,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <div class="vy" data-vy="lagen">
   <section class="kort">
     <div class="korthuvud">
-      <h2 id="lagerubrik">Bästa köplägena</h2>
+      <h2 id="lagerubrik">Bästa marginalerna</h2>
       <div class="segment" id="lageval"><button data-v="kop" class="vald">I dina märken</button><button data-v="nya">Nya märken att bevaka</button></div>
       <p class="forklara" id="lageinfo"></p>
     </div>
@@ -1104,7 +1104,7 @@ function ritaRutor(){
     ruta(`Minskar mest, ${per}`, ned && ned.andelUtv < 0 ? ned : null, ned ? `${utv(ned.andelUtv, " %")} till ${pct(ned.andel)}` : "");
 }
 
-// ---------- Köplägen ----------
+// ---------- Bästa marginalerna ----------
 function koplagen(){
   // Dina alarm-märken i alla kategorier: slutpris på Tradera minus billigaste fjärdedelen på Vinted.
   const ut = [];
@@ -1134,21 +1134,21 @@ function ritaLagen(){
   $("lageval").querySelectorAll("button").forEach(b => b.classList.toggle("vald", b.dataset.v === st.lage));
   if (st.lage === "kop") {
     const l = koplagen();
-    $("lagerubrik").textContent = "Bästa köplägena";
-    $("lageinfo").textContent = "Köp billigt på Vinted och sälj på Tradera. Köpläget är ungefär vad du tjänar per plagg, före frakt och avgifter. Exempel: köp under 250 kr och säljs för 450 kr ger ett köpläge på +200 kr.";
-    $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Köp under</th><th>Säljs för</th><th>Köpläge</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
+    $("lagerubrik").textContent = "Bästa marginalerna";
+    $("lageinfo").textContent = "Vad du bör betala som mest när du köper in märket, och vad det brukar säljas för. Marginalen är ungefär vad du tjänar per plagg, före frakt och avgifter. Exempel: köp in under 250 kr och sälj för 450 kr ger +200 kr.";
+    $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th>Köp in under</th><th>Säljs för</th><th>Marginal</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
       l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
         <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
-        <td class="tal" title="Billigaste fjärdedelen på Vinted">${kr(x.kop)}</td>
-        <td class="tal" title="Mittenpriset på Tradera, ${x.salda} sålda senaste 30 dagarna">${kr(x.salj)}</td>
+        <td class="tal" title="Vad den billigaste fjärdedelen av märkets annonser kostar">${kr(x.kop)}</td>
+        <td class="tal" title="Mittenpriset bland sålda, ${x.salda} sålda senaste 30 dagarna">${kr(x.salj)}</td>
         <td class="tal">${utv(x.marg, " kr", 0)}</td>
         <td class="tal dolj-mobil">${x.fart == null ? "–" : x.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</td>
         <td><a class="skapa" href="${alarmLank(x.m, x.kat.id, x.kop)}" title="Nytt alarm med maxpris ${kr(avrunda(x.kop))}">+ Alarm</a></td></tr>`).join("") + "</tbody>"
-      : `<tbody><tr><td class="tomt">Köplägena räknas när ${DINA} märkena mätts på både Vinted och Tradera. Det görs inom ett dygn.</td></tr></tbody>`;
+      : `<tbody><tr><td class="tomt">Marginalerna räknas när ${DINA} märken har mätts. Det görs inom ett dygn.</td></tr></tbody>`;
   } else {
     const l = nyaMarken();
     $("lagerubrik").textContent = "Nya märken att bevaka";
-    $("lageinfo").textContent = PUBLIK ? "Märken som sålts flest gånger på Tradera de senaste 30 dagarna för minst 200 kr, utöver de som visas i köplägena." : "Märken som sålts flest gånger på Tradera de senaste 30 dagarna för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
+    $("lageinfo").textContent = PUBLIK ? "Märken som sålts flest gånger på Tradera de senaste 30 dagarna för minst 200 kr, utöver de som visas i marginalerna." : "Märken som sålts flest gånger på Tradera de senaste 30 dagarna för minst 200 kr, men som du inte bevakar än. Tryck + Alarm för att börja.";
     $("lagetabell").innerHTML = l.length ? `<thead><tr><th>Märke</th><th title="Sålda på Tradera de senaste 30 dagarna">Sålda 30 d</th><th title="Andel av allt som sålts i kategorin de senaste 30 dagarna">Andel</th><th>Slutpris</th><th class="dolj-mobil">Sålda 24 h</th><th></th></tr></thead><tbody>` +
       l.map(x => `<tr data-m="${esc(x.m)}" data-k="${x.kat.id}">
         <td><div class="namncell"><span class="n">${esc(x.m)}</span><span class="liten">${esc(x.kat.namn)}</span></div></td>
@@ -1392,7 +1392,7 @@ function visaVy(vy){
   if (B && B.kategorier) rita();
 }
 function oppnaMarke(m, kat, kalla){
-  // Från köplägen, trender och snabbast sålda: visa märket i andelsvyn.
+  // Från marginalerna, trender och snabbast sålda: visa märket i andelsvyn.
   st.kat = kat; skriv("kat", kat);
   if (kalla) { st.kalla = kalla; skriv("kalla2", kalla); }
   if (!arAlarm(m)) { st.urval = "alla"; skriv("urval", st.urval); }
@@ -1431,7 +1431,7 @@ function ritaDetalj(){
         <div><span class="svag">${K.andel}</span><b>${pct(r.andel)}</b><small>${utv(r.andelUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
         <div><span class="svag">${K.pris}</span><b>${kr(r.pris)}</b><small>${utv(r.prisUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
         ${r.fart != null ? `<div><span class="svag">Sålda 24 h</span><b>${r.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})}</b><small class="svag">${esc(fartText(st.kat, m).replace(/^Sålda senaste dygnet: /, ""))}</small></div>` : ""}
-        ${marginal != null ? `<div><span class="svag" title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</span><b class="${marginal > 0 ? "upp" : "ned"}">${marginal > 0 ? "+" : "−"}${kr(Math.abs(marginal))}</b><small class="svag">sålt på Tradera mot billiga på Vinted</small></div>` : ""}
+        ${marginal != null ? `<div><span class="svag" title="Vad märket säljs för minus vad de billigaste annonserna kostar">Marginal</span><b class="${marginal > 0 ? "upp" : "ned"}">${marginal > 0 ? "+" : "−"}${kr(Math.abs(marginal))}</b><small class="svag">säljpris minus billigt inköp</small></div>` : ""}
       </div>
     </div>
     <div class="diagramval">
@@ -1648,7 +1648,7 @@ function ritaKategoritabell(){
       <td class="tal">${marg == null ? "–" : utv(marg, " kr", 0)}</td>
     </tr>`;
   };
-  $("katabell").innerHTML = `<thead><tr><th>Kategori</th><th>Andel Vinted</th><th>Begärt Vinted</th><th class="dolj-mobil">Annonser</th><th>Andel sålda Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Sålda 30 d</th><th class="dolj-mobil">Begärt Plick</th><th title="Slutpris på Tradera minus billigaste fjärdedelen på Vinted">Köpläge</th></tr></thead>
+  $("katabell").innerHTML = `<thead><tr><th>Kategori</th><th>Andel Vinted</th><th>Begärt Vinted</th><th class="dolj-mobil">Annonser</th><th>Andel sålda Tradera</th><th>Slutpris Tradera</th><th class="dolj-mobil">Sålda 30 d</th><th class="dolj-mobil">Begärt Plick</th><th title="Vad märket säljs för minus vad de billigaste annonserna kostar">Marginal</th></tr></thead>
     <tbody>${(B.kategorier || []).map(rad).join("")}</tbody>`;
 }
 
@@ -1657,7 +1657,7 @@ function ritaOm(){
   $("omdata").innerHTML = `<b>Tradera</b> räknas helt, inte med stickprov: varje såld annons i kategorin, med slutpris och märke, och varje annons som ligger ute, en gång per dygn. Märket är det säljaren valt, annars det som står i titeln, och olika stavningar räknas som samma märke (Polo Ralph Lauren och Ralph Lauren blir Ralph Lauren). <b>Vinted</b> och <b>Plick</b> visar inte vad som sålts, så där räknas de nyaste annonserna (upp till 960 på Vinted) och varje märke för sig.
     <b>Andel sålda</b> är märkets del av allt som såldes i kategorin en vecka: 5 % betyder 5 av 100 sålda plagg. <b>Andel nya</b> är märkets del av de senast upplagda annonserna. <b>Andel av allt ute</b> är märkets del av alla annonser som ligger till salu just nu (exakt på Tradera, uppskattad på Vinted eftersom Vinted slutar räkna vid 960). Ändringen är skillnaden i andel, till exempel från 4 % till 6 % = +2 %.
     <b>Slutpris</b> är mittenpriset bland märkets sålda de senaste 30 dagarna, så att några få dyra eller billiga inte drar iväg siffran. <b>Begärt pris</b> är mittenpriset bland annonserna.
-    <b>Köpläge</b> är slutpriset på Tradera minus vad den billigaste fjärdedelen kostar på Vinted. <b>Sålda 24 h</b> är sålda per dygn: på Tradera snittet för den senaste veckan, på Vinted märkets annonser som fanns förra mätningen men är borta nu (några kan vara borttagna i stället för sålda). "–" betyder att det inte mätts än.
+    <b>Marginal</b> är vad märket säljs för minus vad den billigaste fjärdedelen av annonserna kostar. Säljpriset kommer från Tradera, där slutpriserna syns, och inköpspriset från Vinted, där flest annonser ligger. Det betyder inte att du måste köpa eller sälja på en viss sida. <b>Sålda 24 h</b> är sålda per dygn: på Tradera snittet för den senaste veckan, på Vinted märkets annonser som fanns förra mätningen men är borta nu (några kan vara borttagna i stället för sålda). "–" betyder att det inte mätts än.
     ${PUBLIK ? "" : `<b>+ Alarm</b> öppnar ett nytt alarm med märket, kategorin och ett maxpris ifyllt (billigaste fjärdedelen på Vinted, eller halva Tradera-slutpriset för nya märken), som du kan ändra innan du sparar.
     Dina alarm-märken mäts dessutom för sig på Vinted och Plick, så nya alarm-märken kommer med automatiskt.`}${ko ? ` Just nu väntar ${ko} mätningar på sin tur.` : ""}`;
 }
