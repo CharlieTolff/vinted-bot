@@ -5,6 +5,10 @@
 // Före lanseringen ser besökare på märkesbörsen.se bara väntelistan. Den som öppnat sidan med ?alarm en gång (eller sparat sin GitHub-nyckel här) kommer in som vanligt.
 (function(){try{if(/[?&]alarm\b/.test(location.search))localStorage.setItem("agare","1");if(location.hostname.endsWith("github.io")||location.hostname==="localhost"||localStorage.getItem("agare")||JSON.parse(localStorage.getItem("nyckel")||"\"\""))return;}catch(e){}location.replace("/vantelista/")})();
 </script>
+<script>
+// Den publika börsen är mörk. Sätts direkt så att sidan inte blinkar ljus först.
+if (location.pathname.includes("/borsen/")) document.documentElement.classList.add("publik");
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Märkesbörsen</title>
@@ -124,15 +128,24 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .vsvar .resultat b.plus{color:#7fd6a4}.vsvar .resultat b.minus{color:#f0a493}
 @media (max-width:900px){ .vfalt{grid-template-columns:repeat(2,minmax(0,1fr))} .vsvar{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .vfalt,.vsvar{grid-template-columns:minmax(0,1fr)} }
-/* Bokföring: mörkgrönt och guld när den är öppen, så att siffrorna och bilderna lyser */
-html:has(.bfvy:not([hidden])){
+/* Den publika börsen är mörkgrön med guld, så att siffrorna och bilderna lyser (samma som bokföringen) */
+:root.publik,html:has(.bfvy:not([hidden])){
   color-scheme:dark;
   --bg:#121a11;--kort:#1b2419;--kort2:#222d20;--text:#eef1e6;--svag:#9ba890;--linje:#34412f;--falt:#10160f;
   --guld:#c9a24f;--guldljus:#e6c47c;--guldtext:#e6c47c;--plus:#52d394;--minus:#f07a62;
-  --skugga:0 1px 2px #0006,0 20px 44px -18px #000c;--skugga-liten:0 1px 2px #0005;--kant-ljus:inset 0 1px 0 #ffffff0d;
+  --vinted:#5aa9e6;--tradera:#e0a64a;--plick:#ec6fa0;
+  --skugga:0 1px 2px #0006,0 20px 44px -18px #000c;--skugga-liten:0 1px 2px #0005;--skugga-hojd:0 2px 4px #0006,0 30px 60px -20px #000;--kant-ljus:inset 0 1px 0 #ffffff0d;
 }
-html:has(.bfvy:not([hidden])) .sidopanel button.vald,html:has(.bfvy:not([hidden])) .chip.vald{background:var(--guldknapp);color:#1a1408;border-color:transparent}
-html:has(.bfvy:not([hidden])) .sidopanel button.vald small{color:#1a1408b0}
+:is(.publik,html:has(.bfvy:not([hidden]))) :is(.sidopanel button.vald,.chip.vald,.segment button.vald){background:var(--guldknapp);color:#1a1408;border-color:transparent;font-weight:700}
+:is(.publik,html:has(.bfvy:not([hidden]))) .sidopanel button.vald small{color:#1a1408b0}
+.publik .tagg{background:color-mix(in srgb,var(--guld) 22%,var(--kort2));color:var(--guldljus)}
+.publik .tips,.publik .matt{background:#0b0f0a;border:1px solid var(--linje)}
+.publik .knapp{box-shadow:0 1px 2px #0005}
+.publik .vsvar .resultat{background:linear-gradient(150deg,color-mix(in srgb,var(--guld) 26%,var(--kort2)),var(--kort2) 70%);border:1px solid color-mix(in srgb,var(--guld) 45%,transparent)}
+.publik .vsvar .resultat b.plus{color:var(--plus)}
+.publik .fbarmarbilder figure{background:var(--kort2);border-color:var(--linje)}
+.publik .fbarmar{background:color-mix(in srgb,var(--guld) 16%,var(--kort))}
+.publik .fbarmartext b{color:var(--guldljus)}.publik .fbarmartext p{color:var(--text)}
 :root{--guldknapp:linear-gradient(135deg,#f0d491,#c9a24f 55%,#a8823a)}
 .bfvy .segment{background:color-mix(in srgb,#000 30%,transparent);border-color:#ffffff14;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .bfvy .segment button.vald{background:var(--guldknapp);color:#1a1408;font-weight:700;box-shadow:0 4px 14px -4px color-mix(in srgb,var(--guld) 80%,transparent)}
