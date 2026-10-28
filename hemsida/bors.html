@@ -15,17 +15,16 @@ if (location.pathname.includes("/borsen/")) document.documentElement.classList.a
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="typsnitt/typsnitt.css" rel="stylesheet">
+<script src="tillganglig.js" defer></script>
 <style>
 /* Samma färger som alarm-sidan */
 :root{
   color-scheme:light;
-  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
+  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#3c4636;--linje:#9fa995;
   --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
-  --plus:#1d7a50;--minus:#b23b27;
-  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
+  --plus:#1d7a50;--minus:#9a3322;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#b8c2ae;--menylinje:#3e4b3a;--menyval:#3b4837;
   --vinted:#1268a8;--tradera:#9a6412;--plick:#b8336a;
   --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
 }
@@ -34,7 +33,8 @@ html.publik{
   --bg:#f3f2ea;--kort:#fffffb;--kort2:#e7eade;--svag:#55604e;--linje:#d5d9cb;
   --skugga:0 1px 2px rgba(25,35,20,.05),0 4px 14px rgba(25,35,20,.06);
 }
-html.publik .sidopanel button.vald,html.publik .chip.vald,html.publik .tagg{background:var(--meny);border-color:var(--meny)}
+html.publik .sidopanel button.vald,html.publik .chip.vald,html.sidojuridik{display:none}.publik .sidojuridik{display:flex;flex-wrap:wrap;gap:4px 14px;padding:18px 10px 6px;font-size:12.5px}.publik .sidojuridik a{color:var(--svag)}
+.publik .tagg{background:var(--meny);border-color:var(--meny)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:inherit}
@@ -81,6 +81,7 @@ main{max-width:1380px;margin:0 auto;padding:22px 24px 60px}
 .lasruta:empty{display:none}
 .lasruta b{font-weight:700}
 .exakt{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:1px 6px;border-radius:999px;background:var(--plus);color:#fff;vertical-align:1px;margin-left:4px}
+.publik .exakt{color:#0b1a10}
 th[title]{cursor:help}
 .periodnot{font-size:12.5px;color:var(--svag);align-self:center;max-width:420px}
 .utetom{padding:18px 16px;color:var(--svag);font-size:14px}
@@ -137,7 +138,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
   --skugga:0 1px 2px #0006,0 20px 44px -18px #000c;--skugga-liten:0 1px 2px #0005;--skugga-hojd:0 2px 4px #0006,0 30px 60px -20px #000;--kant-ljus:inset 0 1px 0 #ffffff0d;
 }
 :is(.publik,html:has(.bfvy:not([hidden]))) :is(.sidopanel button.vald,.chip.vald,.segment button.vald){background:var(--guldknapp);color:#1a1408;border-color:transparent;font-weight:700}
-:is(.publik,html:has(.bfvy:not([hidden]))) .sidopanel button.vald small{color:#1a1408b0}
+:is(.publik,html:has(.bfvy:not([hidden]))) .sidopanel button.vald small{color:#1a1408}
 .publik .tagg{background:color-mix(in srgb,var(--guld) 22%,var(--kort2));color:var(--guldljus)}
 .publik .tips,.publik .matt{background:#0b0f0a;border:1px solid var(--linje)}
 .publik .knapp{box-shadow:0 1px 2px #0005}
@@ -150,7 +151,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .bfvy .segment{background:color-mix(in srgb,#000 30%,transparent);border-color:#ffffff14;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .bfvy .segment button.vald{background:var(--guldknapp);color:#1a1408;font-weight:700;box-shadow:0 4px 14px -4px color-mix(in srgb,var(--guld) 80%,transparent)}
 .bfvy .segment button .antal{color:var(--svag);font-size:12px;font-weight:400}
-.bfvy .segment button.vald .antal{color:#1a1408b0}
+.bfvy .segment button.vald .antal{color:#1a1408}
 .bfh{position:relative;overflow:hidden;border-radius:24px;margin-bottom:20px;padding:24px 24px 12px;border:1px solid color-mix(in srgb,var(--guld) 28%,var(--linje));
   background:radial-gradient(700px 320px at 12% -10%,color-mix(in srgb,var(--guld) 30%,transparent),transparent 70%),
     radial-gradient(600px 300px at 100% 110%,color-mix(in srgb,var(--plus) 14%,transparent),transparent 70%),linear-gradient(160deg,#1d2a1b,#111810);
@@ -216,7 +217,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .bfkbadge.sald{background:var(--guldknapp);color:#1a1408}
 .bfkbadge.lager{background:#ecefe6;color:#2f3b2c}
 .bfkbadge.upplagd{background:color-mix(in srgb,var(--plus) 85%,#000);color:#0b1a10}
-.bfkbadge.fast{background:var(--minus);color:#fff}
+.bfkbadge.fast{background:var(--minus);color:#1a0b06}
 .bfktagg{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;background:rgba(236,239,230,.14);color:#ecefe6;border:1px solid rgba(236,239,230,.22)}
 .bfkdagar{position:absolute;bottom:9px;right:10px;font-size:11px;font-weight:600;color:#a2ad98;font-variant-numeric:tabular-nums}
 .bfkbild.harbild .bfktagg{background:rgba(20,20,20,.55);border-color:transparent}
@@ -327,6 +328,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .fbarmarbilder .ratt svg{fill:#2f6b3f}
 .fbarmarbilder figcaption{font-size:12.5px;font-weight:700}
 .fbarmarbilder .fel figcaption{color:#c0392b}.fbarmarbilder .ratt figcaption{color:#2f6b3f}
+.publik .fbarmarbilder .fel figcaption{color:#ff9a85}.publik .fbarmarbilder .ratt figcaption{color:#7fdc9f}
 .fbarmar[hidden]{display:none}
 .fbzon{display:grid;justify-items:center;gap:4px;padding:28px 16px;border:2px dashed var(--linje);border-radius:14px;background:var(--bg);cursor:pointer;text-align:center}
 .fbzon:hover,.fbzon.over{border-color:var(--guld)}
@@ -580,6 +582,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
       <button data-vy="beskrivning">Skriv beskrivning<small>Färdig text att kopiera</small></button>
     </div>
+    <div class="sidojuridik"><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a></div>
   </nav>
   <div>
   <div class="vy" data-vy="analyser">

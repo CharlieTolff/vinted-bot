@@ -145,7 +145,7 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js sokningar.json _site/
           mkdir -p _site/modeller
           cp .fixabild/*.onnx .fixabild/*.json _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
@@ -161,12 +161,17 @@ jobs:
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
-          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js _site/borsen/
+          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js _site/borsen/
           # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
           # Ikonen i webbläsarfliken (och på hemskärmen på mobilen).
           cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/favicon.ico _site/
           mkdir -p _site/vantelista
           cp hemsida/vantelista.html _site/vantelista/index.html
+          cp hemsida/tillganglig.js _site/vantelista/
+          # Integritetspolicy och villkor, öppna för alla (ingen väntelistespärr).
+          for sida in integritet villkor; do mkdir -p _site/$sida; cp hemsida/$sida.html _site/$sida/index.html; cp hemsida/tillganglig.js _site/$sida/; done
+          # Typsnitten ligger hos oss själva, så att besökarna inte skickas till Google.
+          for d in _site _site/borsen _site/vantelista _site/integritet _site/villkor; do cp -r hemsida/typsnitt "$d/"; done
 
       - uses: actions/upload-pages-artifact@v3
         with:

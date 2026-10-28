@@ -11,17 +11,16 @@
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="typsnitt/typsnitt.css" rel="stylesheet">
+<script src="tillganglig.js" defer></script>
 <style>
 /* Svart och guld */
 :root{
   color-scheme:light;
-  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#4d5946;--linje:#9fa995;
+  --bg:#b4bdab;--kort:#d4dacc;--kort2:#c9d0c0;--text:#1b2219;--svag:#3c4636;--linje:#9fa995;
   --guld:#a8823a;--guldljus:#d2ae62;--guldtext:#75591f;
-  --plus:#1d7a50;--minus:#b23b27;--kap:#b23b27;
-  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#a2ad98;--menylinje:#3e4b3a;--menyval:#3b4837;
+  --plus:#1d7a50;--minus:#9a3322;--kap:#b23b27;
+  --meny:#2f3b2c;--menytext:#ecefe6;--menysvag:#b8c2ae;--menylinje:#3e4b3a;--menyval:#3b4837;
   --skugga:0 1px 2px rgba(25,35,20,.08),0 4px 14px rgba(25,35,20,.08);
   --huvud:58px;
   --skugga2:0 2px 4px rgba(25,35,20,.10),0 12px 28px rgba(25,35,20,.16);
@@ -181,7 +180,7 @@ h3{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--guld
   <div class="menyfot">
     <div id="nyckelruta" hidden>
       <div class="svag" style="margin-bottom:6px">För att spara alarm härifrån behövs en GitHub-nyckel (en gång per dator).</div>
-      <input id="nyckel" type="password" placeholder="github_pat_...">
+      <input id="nyckel" type="password" placeholder="github_pat_..." aria-label="Din GitHub-nyckel" autocomplete="off">
       <button class="primar" id="sparaNyckel" style="margin-top:6px;width:100%">Spara nyckel</button>
     </div>
     <div id="status" class="svag"></div>
