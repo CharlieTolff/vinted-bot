@@ -124,31 +124,123 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .vsvar .resultat b.plus{color:#7fd6a4}.vsvar .resultat b.minus{color:#f0a493}
 @media (max-width:900px){ .vfalt{grid-template-columns:repeat(2,minmax(0,1fr))} .vsvar{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:480px){ .vfalt,.vsvar{grid-template-columns:minmax(0,1fr)} }
-/* Bokföring */
-.bfinnehall{padding:16px 16px 6px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
-.bfinnehall .vsvar{margin-top:0}
+/* Bokföring: mörkgrönt och guld när den är öppen, så att siffrorna och bilderna lyser */
+html:has(.bfvy:not([hidden])){
+  color-scheme:dark;
+  --bg:#121a11;--kort:#1b2419;--kort2:#222d20;--text:#eef1e6;--svag:#9ba890;--linje:#34412f;--falt:#10160f;
+  --guld:#c9a24f;--guldljus:#e6c47c;--guldtext:#e6c47c;--plus:#52d394;--minus:#f07a62;
+  --skugga:0 1px 2px #0006,0 20px 44px -18px #000c;--skugga-liten:0 1px 2px #0005;--kant-ljus:inset 0 1px 0 #ffffff0d;
+}
+html:has(.bfvy:not([hidden])) .sidopanel button.vald,html:has(.bfvy:not([hidden])) .chip.vald{background:var(--guldknapp);color:#1a1408;border-color:transparent}
+html:has(.bfvy:not([hidden])) .sidopanel button.vald small{color:#1a1408b0}
+:root{--guldknapp:linear-gradient(135deg,#f0d491,#c9a24f 55%,#a8823a)}
+.bfvy .segment{background:color-mix(in srgb,#000 30%,transparent);border-color:#ffffff14;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.bfvy .segment button.vald{background:var(--guldknapp);color:#1a1408;font-weight:700;box-shadow:0 4px 14px -4px color-mix(in srgb,var(--guld) 80%,transparent)}
+.bfvy .segment button .antal{color:var(--svag);font-size:12px;font-weight:400}
+.bfvy .segment button.vald .antal{color:#1a1408b0}
+.bfh{position:relative;overflow:hidden;border-radius:24px;margin-bottom:20px;padding:24px 24px 12px;border:1px solid color-mix(in srgb,var(--guld) 28%,var(--linje));
+  background:radial-gradient(700px 320px at 12% -10%,color-mix(in srgb,var(--guld) 30%,transparent),transparent 70%),
+    radial-gradient(600px 300px at 100% 110%,color-mix(in srgb,var(--plus) 14%,transparent),transparent 70%),linear-gradient(160deg,#1d2a1b,#111810);
+  box-shadow:0 30px 60px -30px #000,inset 0 1px 0 #ffffff10;animation:poppa .55s cubic-bezier(.2,.9,.25,1.25) backwards}
+.bfh::before{content:"";position:absolute;width:420px;height:420px;right:-120px;top:-180px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--guldljus) 22%,transparent),transparent);animation:bfsvava 9s ease-in-out infinite alternate;pointer-events:none}
+@keyframes bfsvava{to{transform:translate(-90px,60px) scale(1.15)}}
+.bfh > *{position:relative}
+.bfhtopp{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.bfogon{font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.2em;font-size:12px;color:var(--guldljus);text-transform:uppercase}
+.bfhrubrik{font-family:"Playfair Display",Georgia,serif!important;font-size:46px!important;font-weight:700!important;letter-spacing:-.02em!important;line-height:1.05;margin:10px 0 16px!important;color:var(--text)}
+.bfhrubrik em{font-style:italic;background:var(--guldknapp);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.06em}
+.bfhrutor{display:grid;grid-template-columns:1.25fr repeat(3,minmax(0,1fr));gap:14px;margin:16px 0}
+.bfhruta{background:color-mix(in srgb,#000 22%,transparent);border:1px solid #ffffff14;border-radius:18px;padding:16px 18px;min-width:0;
+  transition:transform .25s cubic-bezier(.2,.9,.25,1.3),border-color .25s;animation:poppa .55s cubic-bezier(.2,.9,.25,1.25) backwards}
+.bfhruta:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--guld) 50%,transparent)}
+.bfhruta:nth-child(2){animation-delay:.06s}.bfhruta:nth-child(3){animation-delay:.12s}.bfhruta:nth-child(4){animation-delay:.18s}
+.bfhruta .bfetikett{display:flex;align-items:center;gap:7px}
+.bfetikett{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--svag)}
+.bfhruta svg{width:15px;height:15px;color:var(--guldljus);flex:none}
+.bfhruta b{display:block;font-size:27px;font-weight:800;letter-spacing:-.035em;font-variant-numeric:tabular-nums;margin:6px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bfhruta small{font-size:12.5px;color:var(--svag)}
+.bfhruta .upp{color:var(--plus);font-weight:600}
+.bfhruta.stjarna{border-color:color-mix(in srgb,var(--guld) 55%,transparent);background:linear-gradient(150deg,color-mix(in srgb,var(--guld) 26%,transparent),color-mix(in srgb,#000 25%,transparent) 65%);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--guld) 20%,transparent),0 18px 40px -18px color-mix(in srgb,var(--guld) 80%,transparent)}
+.bfhruta.stjarna b{font-size:38px;background:var(--guldknapp);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bfhruta.stjarna b.ned{background:none;color:var(--minus)}
 .bfknapprad{display:flex;flex-wrap:wrap;gap:10px}
-.bfknapprad .knapp{font-size:14.5px;padding:10px 16px}
-#bfperiod,#bffilter{flex-wrap:wrap}
-.bfnamn{display:flex;flex-direction:column;max-width:280px;white-space:normal}
-.bfnamn b{font-weight:600}
-.bfnamn small{color:var(--svag);font-size:12px}
-.bfstatus{font-size:12px;border-radius:999px;padding:2px 9px;white-space:nowrap;background:var(--kort2);color:var(--svag)}
-.bfstatus.s1{background:color-mix(in srgb,var(--guld) 22%,var(--kort));color:var(--guldtext)}
-.bfstatus.s2{background:color-mix(in srgb,var(--plus) 16%,var(--kort));color:var(--plus)}
-#bftabell .bfsaltknapp{padding:5px 14px;font-size:13px;font-weight:700;background:var(--meny);color:var(--menytext);border-color:var(--meny)}
-.litendialog{max-width:420px}
-.bfresultat:empty{display:none}
-td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weight:600}
-#bftabell td,#bftabell th{text-align:left}
-#bftabell td.tal,#bftabell th:nth-child(3),#bftabell th:nth-child(4),#bftabell th:nth-child(5){text-align:right}
+.bfguld,.bfmork{font:inherit;font-size:14.5px;font-weight:700;border-radius:999px;padding:11px 20px;cursor:pointer;border:0}
+.bfguld{background:var(--guldknapp);color:#1a1408;box-shadow:0 8px 24px -8px color-mix(in srgb,var(--guld) 90%,transparent)}
+.bfmork{background:color-mix(in srgb,#000 30%,transparent);color:var(--text);border:1px solid color-mix(in srgb,var(--guld) 40%,transparent)}
+.bfmork:hover{border-color:var(--guld)}
+.bfmork:disabled{opacity:.7;cursor:wait}
+.bfhdiagram{margin-top:16px;border-top:1px solid #ffffff12;padding-top:12px}
+.bfhdhuvud{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:2px}
+.bfhdhuvud .segment{margin-left:auto}
+.bfvy .diagram{padding:4px 6px 4px 0;min-width:0}
+.bfvy .tips{border:1px solid var(--linje);background:#0b0f0a}
+.bfvy .tomt{padding:30px 16px;text-align:center;color:var(--svag)}
+/* Plaggen som kort */
+.bfverktyg{display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;padding:14px 16px 4px}
+.bfsok{flex:1 1 240px;display:flex;align-items:center;gap:8px;background:var(--falt);border:1px solid var(--linje);border-radius:12px;padding:0 12px;color:var(--svag)}
+.bfsok:focus-within{outline:2px solid var(--guld);outline-offset:1px}
+.bfsok svg{width:16px;height:16px;flex:none}
+.bfsok input{flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;padding:9px 0;color:var(--text);outline:none}
+.bfgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px;padding:12px 16px 16px}
+.bfvara{background:linear-gradient(180deg,var(--kort2),var(--kort));border:1px solid var(--linje);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;min-width:0;cursor:pointer;
+  transition:transform .25s cubic-bezier(.2,.9,.25,1.3),box-shadow .25s,border-color .25s}
+.bfvara:hover{transform:translateY(-6px);border-color:color-mix(in srgb,var(--guld) 65%,transparent);box-shadow:0 22px 44px -18px #000c,0 0 0 3px color-mix(in srgb,var(--guld) 22%,transparent)}
+.bfvara:hover .bfkbild img{transform:scale(1.06)}
+.bfgrid.tona .bfvara{animation:poppa .5s cubic-bezier(.2,.9,.25,1.2) backwards}
+.bfgrid.tona .bfvara:nth-child(2){animation-delay:.04s}.bfgrid.tona .bfvara:nth-child(3){animation-delay:.08s}.bfgrid.tona .bfvara:nth-child(4){animation-delay:.12s}
+.bfgrid.tona .bfvara:nth-child(5){animation-delay:.16s}.bfgrid.tona .bfvara:nth-child(6){animation-delay:.2s}.bfgrid.tona .bfvara:nth-child(7){animation-delay:.24s}
+.bfgrid.tona .bfvara:nth-child(8){animation-delay:.28s}.bfgrid.tona .bfvara:nth-child(n+9){animation-delay:.32s}
+.bfkbild{position:relative;aspect-ratio:1/1;overflow:hidden;background:radial-gradient(120% 90% at 30% 15%,#3b4837 0%,#2f3b2c 55%,#1f281d 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:30px 12px 22px;text-align:center}
+.bfkbild img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#eef1ea;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.bfkbild.harbild::before{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,#0008);z-index:1;pointer-events:none}
+.bfkbild.harbild .bfkmarke,.bfkbild.harbild .bfkkat{display:none}
+.bfkbild > span{z-index:2}
+.bfkmarke{font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.08em;color:var(--guldljus);font-size:19px;line-height:1.15;text-transform:uppercase;max-width:100%;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.bfkmarke.lang{font-size:14.5px;letter-spacing:.05em}
+.bfkkat{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#a2ad98}
+.bfkbadge{position:absolute;top:10px;left:10px;font-size:11px;font-weight:700;border-radius:999px;padding:2px 9px}
+.bfkbadge.sald{background:var(--guldknapp);color:#1a1408}
+.bfkbadge.lager{background:#ecefe6;color:#2f3b2c}
+.bfkbadge.upplagd{background:color-mix(in srgb,var(--plus) 85%,#000);color:#0b1a10}
+.bfkbadge.fast{background:var(--minus);color:#fff}
+.bfktagg{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;background:rgba(236,239,230,.14);color:#ecefe6;border:1px solid rgba(236,239,230,.22)}
+.bfkdagar{position:absolute;bottom:9px;right:10px;font-size:11px;font-weight:600;color:#a2ad98;font-variant-numeric:tabular-nums}
+.bfkbild.harbild .bfktagg{background:rgba(20,20,20,.55);border-color:transparent}
+.bfkbild.harbild .bfkdagar{background:rgba(20,20,20,.55);color:#f2f2ea;border-radius:999px;padding:1px 7px}
+.bfkamera{position:absolute;bottom:8px;left:8px;z-index:2;border-radius:999px;padding:4px 10px 4px 8px;font:600 11.5px Inter,system-ui,sans-serif;background:rgba(236,239,230,.16);color:#ecefe6;cursor:pointer;display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(236,239,230,.25)}
+.bfkamera:hover{background:rgba(236,239,230,.28)}
+.bfkamera svg{width:14px;height:14px}
+.bfkbild.harbild .bfkamera{background:rgba(20,20,20,.55);border-color:transparent;padding:5px 7px}
+.bfkbild.harbild .bfkamera .bt{display:none}
+.bfkinfo{padding:11px 13px 13px;display:flex;flex-direction:column;gap:9px;flex:1}
+.bfknamn{font-weight:600;font-size:14px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bfknamn small{display:block;font-weight:400;font-size:12px;color:var(--svag);overflow:hidden;text-overflow:ellipsis}
+.bfksiffror{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:end;margin-top:auto}
+.bfksiffror small{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--svag)}
+.bfksiffror b{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bfkvinst{text-align:right}
+.bfkvinst b{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.bfkvinst b.plus{color:var(--plus);text-shadow:0 0 18px color-mix(in srgb,var(--plus) 45%,transparent)}
+.bfkvinst b.minus{color:var(--minus)}
+.bfkvinst em{display:block;font-style:normal;font-size:11.5px;color:var(--svag);font-variant-numeric:tabular-nums}
+.bfsaltknapp{font:inherit;font-size:13px;font-weight:700;border:0;border-radius:999px;padding:6px 14px;background:var(--guldknapp);color:#1a1408;cursor:pointer}
+.bfmer{display:flex;justify-content:center;padding:0 16px 18px}
+.bfmer:empty{display:none}
+.bfmer button{border:0;border-radius:999px;padding:11px 26px;background:var(--guldknapp);color:#1a1408;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.bfvy .knapp{background:var(--kort2);color:var(--text);border-color:var(--linje)}
 .bffot{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;padding:12px 16px 16px;border-top:1px solid var(--linje)}
 .bffot .hjalp{flex:1 1 260px}
 .bffotknappar{display:flex;flex-wrap:wrap;gap:8px}
+/* Dialogerna */
+.litendialog{max-width:420px}
+.bfresultat:empty{display:none}
 #bfdialog select{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;border:1px solid var(--linje);background:var(--kort2);color:var(--text)}
 #bfdialog .bfrad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 #bfdialog [hidden]{display:none!important}
 #bfdialog input,#bfdialog select{width:100%;min-width:0}
+.bfbildval{display:flex;align-items:center;gap:12px}
+.bfbildval img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--linje)}
 .bfnotisrad{display:flex;gap:12px;align-items:flex-start}
 .bfnotisrad:has(> :not([hidden])){margin-bottom:2px}
 #bfbild{width:72px;max-height:130px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid var(--linje);flex:none}
@@ -156,7 +248,33 @@ td.plus{color:var(--plus);font-weight:600}td.minus{color:var(--minus);font-weigh
 .bfresultat{margin:0;font-size:15px;padding:10px 12px;border-radius:10px;background:var(--kort2)}
 .bfresultat.plus b{color:var(--plus)}.bfresultat.minus b{color:var(--minus)}
 .bfresultat span{color:var(--svag);font-size:13px}
-@media (max-width:480px){ .bfinnehall .bfsiffror{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .bfsiffror div{padding:12px 8px} .bfsiffror b{font-size:21px} }
+@media (max-width:900px){ .bfhrutor{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:760px){
+  .bfh{padding:18px 14px 8px;border-radius:20px}
+  .bfhrubrik{font-size:34px!important;margin:8px 0 12px!important}
+  .bfhtopp .segment{width:100%}
+  .bfhtopp .segment button{flex:1;justify-content:center}
+  .bfhrutor{gap:10px}
+  .bfhruta{padding:12px 13px;border-radius:15px}
+  .bfhruta.stjarna,.bfhruta:last-child{grid-column:1/-1}
+  .bfhruta b{font-size:21px}
+  .bfhruta.stjarna b{font-size:36px}
+  .bfknapprad > button{flex:1 1 100%}
+  .bfverktyg{padding:12px 12px 2px}
+  .bfgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:10px 12px 14px}
+  .bfkbild{padding:28px 8px 20px}
+  .bfkamera .bt{display:none}
+  .bfkamera{padding:5px 7px}
+  .bfkmarke{font-size:15px}
+  .bfkmarke.lang{font-size:11.5px;letter-spacing:.04em}
+  .bfkinfo{padding:9px 10px 11px}
+  .bfksiffror{grid-template-columns:1fr 1fr}
+  .bfkvinst{grid-column:1/-1;text-align:left;display:flex;align-items:baseline;gap:8px;border-top:1px solid color-mix(in srgb,var(--linje) 60%,transparent);padding-top:6px}
+  .bfkvinst small{margin-right:auto}
+  .bfkvinst em{display:inline;white-space:nowrap}
+  .bfkvinst b{font-size:15.5px;white-space:nowrap}
+  .bfkvinst .bfsaltknapp{margin-left:auto}
+}
 @media (max-width:560px){ #bfdialog .bfrad{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} #bfdialog{padding:18px 16px 16px} }
 
 /* Skriv beskrivning */
@@ -568,30 +686,35 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </section>
   </div>
 
-  <div class="vy" data-vy="bokforing">
+  <div class="vy bfvy" data-vy="bokforing">
+  <!-- Toppen: vinsten, de viktigaste siffrorna och hur vinsten vuxit -->
+  <section class="bfh">
+    <div class="bfhtopp"><span class="bfogon">Din bokföring</span><div class="segment" id="bfperiod"></div></div>
+    <h2 class="bfhrubrik">Din <em>vinst</em> just nu</h2>
+    <div class="bfhrutor" id="bfrutor"></div>
+    <div class="bfknapprad">
+      <button class="bfguld" id="bfny">+ Lägg till plagg</button>
+      <button class="bfmork" id="bfskarm">Lägg till från skärmbild</button>
+      <input type="file" id="bfskarmfil" accept="image/*" hidden>
+    </div>
+    <div class="bfhdiagram">
+      <div class="bfhdhuvud"><span class="bfetikett">Vinsten över tid</span><div class="segment" id="bfutv"></div></div>
+      <div class="diagram" id="bfdiagram"></div>
+    </div>
+  </section>
+
+  <!-- Plaggen som kort -->
   <section class="kort">
-    <div class="korthuvud">
-      <h2>Din bokföring</h2>
-      <span class="svag">Allt du köper och säljer på ett ställe. Lägg till ett plagg själv, eller ta en skärmbild när du har sålt något så fyller sidan i det mesta åt dig.</span>
+    <div class="korthuvud"><h2>Dina plagg</h2><span class="svag" id="bfinfo"></span></div>
+    <div class="bfverktyg">
+      <label class="bfsok"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" id="bfsok" placeholder="Sök plagg, märke eller kategori" autocomplete="off"></label>
+      <div class="segment" id="bffilter"></div>
     </div>
-    <div class="bfinnehall">
-      <div class="chips" id="bfperiod"><button class="chip" data-p="allt">Allt</button><button class="chip" data-p="manad">Den här månaden</button><button class="chip" data-p="ar">I år</button></div>
-      <div class="vsvar bfsiffror">
-        <div class="resultat"><span>Din vinst</span><b class="tal" id="bfvinst">0 kr</b><small id="bfvinstinfo">&nbsp;</small></div>
-        <div><span>Sålt för</span><b class="tal" id="bfsalt">–</b><small id="bfsaltinfo">&nbsp;</small></div>
-        <div><span>Vinst per plagg</span><b class="tal" id="bfsnitt">–</b><small>i snitt</small></div>
-        <div><span>I lager nu</span><b class="tal" id="bflager">–</b><small id="bflagerinfo">&nbsp;</small></div>
-      </div>
-      <div class="bfknapprad">
-        <button class="knapp primar" id="bfny">+ Lägg till plagg</button>
-        <button class="knapp primar" id="bfskarm">Lägg till från skärmbild</button>
-        <input type="file" id="bfskarmfil" accept="image/*" hidden>
-      </div>
-      <div class="chips" id="bffilter"><button class="chip" data-f="alla">Alla</button><button class="chip" data-f="I lager">I lager</button><button class="chip" data-f="Upplagd">Upplagda</button><button class="chip" data-f="Såld">Sålda</button></div>
-    </div>
-    <div class="tabellram"><table id="bftabell"></table></div>
+    <div class="bfgrid" id="bfvaror"></div>
+    <input type="file" id="bfbildfil" accept="image/*" hidden>
+    <div class="bfmer" id="bfmer"></div>
     <div class="bffot">
-      <span class="hjalp">Bokföringen sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
+      <span class="hjalp">Bokföringen och bilderna sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
       <span class="bffotknappar"><button class="knapp" id="bfexport">Ladda ner till Excel</button><button class="knapp" id="bfkopia">Spara säkerhetskopia</button><button class="knapp" id="bfaterstall">Läs in säkerhetskopia</button></span>
       <input type="file" id="bfaterfil" accept="application/json,.json" hidden>
     </div>
@@ -719,6 +842,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <h2 id="bftitel" style="margin-top:0">Lägg till plagg</h2>
   <form id="bfform" method="dialog">
     <div class="bfnotisrad"><img id="bfbild" alt="Skärmbilden" hidden><p class="bfnotis" id="bfnotis" hidden></p></div>
+    <div class="bfbildval"><img id="bfformbild" alt="" hidden><button type="button" class="knapp" id="bfformbildknapp">Lägg till bild på plagget</button><input type="file" id="bfformbildfil" accept="image/*" hidden></div>
     <label>Plagg<input name="namn" placeholder="Hollister hoodie, vit/röd" autocomplete="off"></label>
     <div class="bfrad">
       <label>Märke<input name="marke" list="bfmarken" placeholder="Hollister" autocomplete="off"></label>
