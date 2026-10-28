@@ -126,6 +126,23 @@ footer .inre{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 }
 @media (prefers-reduced-motion:reduce){ .puls{animation:none} }
 </style>
+<style>
+/* Mörkgrönt och guld, samma som i börsen och bokföringen */
+:root{
+  color-scheme:dark;
+  --bg:#121a11;--kort:#1b2419;--yta:#222d20;--text:#eef1e6;--svag:#9ba890;--linje:#34412f;
+  --guld:#c9a24f;--guldljus:#e6c47c;--guldtext:#e6c47c;--guldmork:#b8923f;
+  --gron:#52d394;--gronljus:color-mix(in srgb,#52d394 22%,#1b2419);--rod:#f07a62;--rodljus:color-mix(in srgb,#f07a62 22%,#1b2419);
+  --skugga:0 1px 2px #0006,0 20px 44px -18px #000c;--skugga-liten:0 1px 2px #0005;--skugga-hojd:0 2px 4px #0006,0 30px 60px -20px #000;--kant-ljus:inset 0 1px 0 #ffffff0d;
+}
+body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f 22%,transparent),transparent 70%),
+  radial-gradient(800px 420px at 100% 10%,color-mix(in srgb,#52d394 10%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+.hjalte{background:none}
+.knapp{background:linear-gradient(135deg,#f0d491,#c9a24f 55%,#a8823a);color:#1a1408}
+.knapp:hover{background:linear-gradient(135deg,#f6dea6,#d4ae5c 55%,#b38c40)}
+.etikett{background:color-mix(in srgb,var(--guld) 16%,var(--kort));border-color:color-mix(in srgb,var(--guld) 40%,transparent)}
+.last .lag{background:linear-gradient(180deg,#1b241900,#1b2419cc 40%)}
+</style>
 </head>
 <body>
 <div class="meny">
