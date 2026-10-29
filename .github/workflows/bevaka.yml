@@ -172,6 +172,8 @@ jobs:
           for sida in integritet villkor; do mkdir -p _site/$sida; cp hemsida/$sida.html _site/$sida/index.html; cp hemsida/tillganglig.js _site/$sida/; done
           # Typsnitten ligger hos oss själva, så att besökarna inte skickas till Google.
           for d in _site _site/borsen _site/vantelista _site/integritet _site/villkor; do cp -r hemsida/typsnitt "$d/"; done
+          # En sida per märke med vad det säljs för, för Google (plus sitemap.xml och robots.txt).
+          python3 markessidor.py _site
 
       - uses: actions/upload-pages-artifact@v3
         with:
