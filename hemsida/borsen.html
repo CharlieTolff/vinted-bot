@@ -12,9 +12,8 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
 <meta name="description" content="Märkesbörsen visar vilka märken som säljer på Vinted och Tradera, vad de säljs för och var marginalen finns.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="typsnitt/typsnitt.css" rel="stylesheet">
+<script src="tillganglig.js" defer></script>
 <style>
 :root{
   color-scheme:light;
@@ -146,7 +145,8 @@ section{padding:84px 0}
 .vem h3{font-size:20px;margin-bottom:6px}
 .vem p{margin:0;color:var(--svag)}
 .vem a{color:var(--guldtext);font-weight:600}
-.etikettpris{display:inline-block;background:var(--gron);color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.04em;padding:5px 12px;border-radius:999px;margin-bottom:12px}
+.etikettpris{display:inline-block;background:var(--gron);color:#0b1a10;font-size:12.5px;font-weight:700;letter-spacing:.04em;padding:5px 12px;border-radius:999px;margin-bottom:12px}
+.juridik{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-top:12px}.juridik a{color:inherit;text-underline-offset:3px}
 footer .friskriv{max-width:720px;margin:8px auto 0;font-size:12.5px;line-height:1.6}
 .lofte .nr{width:44px;height:44px;border-radius:14px;background:#141414;color:var(--guldljus);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;margin-bottom:18px}
 .lofte h3{font-size:21px;margin-bottom:8px}
@@ -253,8 +253,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 <div class="hjalte">
   <div class="inre">
     <div>
-      <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
-      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märken säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
+      <h1>Se vad det säljs för. <em>Innan du köper.</em></h1>
+      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märken säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
         <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
@@ -300,7 +300,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <h2>Från fynd till vinst i tre steg</h2>
     </div>
     <div class="loften">
-      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som faktiskt sålts, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
+      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som sålts på Tradera, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
       <div class="lofte"><div class="nr">2</div><h3>Räkna ut vinsten</h3><p>Skriv in vad du betalar och se direkt vad du får över. Du vet om fyndet är värt det innan du köper.</p></div>
       <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som blir populärare just nu.</p></div>
     </div>
@@ -331,7 +331,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   <div class="inre">
     <div class="rubrik">
       <div class="over">Öppet med siffrorna</div>
-      <h2>Du ska kunna lita på varje siffra</h2>
+      <h2>Så här tas siffrorna fram</h2>
       <p>Allt i börsen kommer från annonser som ligger ute, eller har sålts, på riktigt. Så här mycket mättes senast, och så här räknas det.</p>
     </div>
     <div class="oppet">
@@ -372,7 +372,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   <div class="inre">
     <div class="rubrik mitt">
       <div class="over">Ett pris, allt ingår</div>
-      <h2>Ett bra köp i månaden betalar för sig</h2>
+      <h2>Säg upp när du vill</h2>
     </div>
     <div class="priskort">
       <div class="etikettpris" id="lansering" hidden>Gratis under lanseringen</div>
@@ -380,7 +380,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <ul>
         <li>Vad varje märke säljs för, och vinsten på ditt inköp</li>
         <li>Vilka märken som blir populärare och vilka som minskar</li>
-        <li>De bästa köpen just nu, uppdaterat varje dag</li>
+        <li>Märken som säljer bra just nu, uppdaterat varje dag</li>
         <li>Diagram och historik för varje märke</li>
       </ul>
       <a class="knapp" id="prenumerera" href="app.html">Kom igång</a>
@@ -406,15 +406,16 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 
 <section class="slut">
   <div class="inre">
-    <h2>Vet vinsten innan du köper</h2>
-    <p>Nästa fynd ligger redan ute. Frågan är bara om du ser det före någon annan.</p>
+    <h2>Räkna på vinsten innan du köper</h2>
+    <p>Se vad märket brukar säljas för, och vad du får över, innan du slår till.</p>
     <a class="knapp" href="#pris">Kom igång</a>
   </div>
 </section>
 
 <footer>
   <div>Märkesbörsen · Marknadsdata från Vinted, Tradera och Plick</div>
-  <div class="friskriv">Märkesbörsen är en oberoende tjänst och är inte ansluten till Vinted, Tradera eller Plick. Siffrorna bygger på öppna annonser och är vägledning, inte en garanti för vinst. Den här sidan använder inga kakor.</div>
+  <div class="friskriv">Märkesbörsen är en oberoende tjänst och är inte ansluten till Vinted, Tradera eller Plick. Siffrorna bygger på öppna annonser och är vägledning, inte en garanti för vinst. Den här sidan använder inga kakor för spårning eller reklam.</div>
+  <nav class="juridik" aria-label="Om sidan"><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a><a href="../integritet/#kontakt">Kontakt</a></nav>
 </footer>
 
 <script>
@@ -422,8 +423,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 const BETALLANK = "";
 const PRIS = "99 kr";
 // Fyll i för mer förtroende: vem du är och hur man når dig (visas under "Vem står bakom?").
-const NAMN = "";
-const KONTAKT = "";
+const NAMN = "Charlie Tolff";
+const KONTAKT = "markesborsen@gmail.com";
 
 const $ = id => document.getElementById(id);
 const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));

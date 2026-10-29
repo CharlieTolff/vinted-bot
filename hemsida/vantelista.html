@@ -7,13 +7,12 @@
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
-<meta name="description" content="Märkesbörsen visar vad märkeskläder säljs för på Vinted och Tradera, vad du tjänar och vad som är populärt just nu. Skriv upp dig på väntelistan.">
+<meta name="description" content="Märkesbörsen visar vad märkeskläder säljs för på Vinted och Tradera, vad du kan tjäna och vad som är populärt just nu. Skriv upp dig på väntelistan.">
 <meta property="og:title" content="Märkesbörsen · Väntelista">
-<meta property="og:description" content="Vet vad det säljs för. Innan du köper. Skriv upp dig så får du veta först när Märkesbörsen öppnar.">
+<meta property="og:description" content="Se vad det säljs för. Innan du köper. Skriv upp dig så får du veta först när Märkesbörsen öppnar.">
 <meta name="theme-color" content="#2f3b2c">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="typsnitt/typsnitt.css" rel="stylesheet">
+<script src="tillganglig.js" defer></script>
 <style>
 :root{
   color-scheme:light;
@@ -104,7 +103,9 @@ section{padding:72px 0}
 .prov .fot{padding:14px 20px;border-top:1px solid var(--linje);font-size:13px;color:var(--svag)}
 
 footer{border-top:1px solid var(--linje);padding:28px 0 40px;font-size:13px;color:var(--svag)}
-footer .inre{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer .inre{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;align-items:center}
+.juridik{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0}.juridik a{color:inherit;text-underline-offset:3px}
+
 
 @media (max-width:920px){
   .hjalte .inre{grid-template-columns:minmax(0,1fr);gap:34px}
@@ -156,11 +157,11 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   <div class="inre">
     <div>
       <div class="etikett">Just nu: väntelista</div>
-      <h1>Vet vad det säljs för. <em>Innan du köper.</em></h1>
-      <p class="ingress">Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märkeskläder faktiskt säljs för, hur mycket du tjänar och vad som är populärt just nu.</p>
+      <h1>Se vad det säljs för. <em>Innan du köper.</em></h1>
+      <p class="ingress">Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märkeskläder säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
       <a class="knapp tillform" href="#ruta">Skriv upp dig på väntelistan ↓</a>
       <ul class="punkter">
-        <li><span class="bock">✓</span><div><b>Se vad det säljs för</b><span>Slutpriser från det som faktiskt sålts, inte bara vad folk begär.</span></div></li>
+        <li><span class="bock">✓</span><div><b>Se vad det säljs för</b><span>Slutpriser från det som sålts på Tradera, inte bara vad folk begär.</span></div></li>
         <li><span class="bock">✓</span><div><b>Räkna ut vinsten</b><span>Skriv in vad du betalar och se direkt vad du får över.</span></div></li>
         <li><span class="bock">✓</span><div><b>Hitta vad du ska köpa in</b><span>Se vilka märken som blir populärare just nu.</span></div></li>
       </ul>
@@ -170,17 +171,17 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <form class="anmal" id="anmal" novalidate>
         <div class="over">Dörrarna öppnar snart</div>
         <h2>Skriv upp dig på väntelistan</h2>
-        <p>Du får ett mejl, och ett sms om du vill, samma dag som Märkesbörsen öppnar.</p>
+        <p>Du får ett mejl, och ett sms om du vill, när Märkesbörsen öppnar.</p>
         <label class="falt">Mejl
           <input type="email" id="mejl" name="mejl" autocomplete="email" inputmode="email" placeholder="namn@exempel.se" required>
         </label>
         <label class="falt"><span>Mobilnummer <small>(frivilligt, för sms)</small></span>
           <input type="tel" id="tel" name="tel" autocomplete="tel" inputmode="tel" placeholder="070 123 45 67">
         </label>
-        <label class="kryss"><input type="checkbox" id="ok" required><span>Ja, meddela mig när Märkesbörsen öppnar. Jag kan avregistrera mig när jag vill.</span></label>
+        <label class="kryss"><input type="checkbox" id="ok" required><span>Ja, meddela mig när Märkesbörsen öppnar. Jag har läst <a href="../integritet/" target="_blank">hur mina uppgifter hanteras</a> och kan avregistrera mig när jag vill.</span></label>
         <button class="knapp" id="skicka" type="submit">Skriv upp mig</button>
         <div class="fel" id="fel" role="alert"></div>
-        <p class="integritet">Vi använder din mejl och ditt nummer bara för att berätta när Märkesbörsen öppnar. De säljs eller delas inte med någon annan, och du kan avregistrera dig via länken i mejlet.</p>
+        <p class="integritet">Vi använder din mejl och ditt nummer bara för att berätta när Märkesbörsen öppnar. Vi säljer dem inte. Brevo, som skickar mejlen och sms:en, hanterar dem åt oss. Du kan avregistrera dig via länken i mejlet. <a href="../integritet/" target="_blank">Läs integritetspolicyn</a>.</p>
       </form>
       <div class="klar" id="klar" hidden>
         <div class="stor">✓</div>
@@ -213,7 +214,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 </section>
 
 <footer>
-  <div class="inre"><span>© Märkesbörsen</span><span>Siffrorna är vägledning, inte en garanti.</span></div>
+  <div class="inre"><span>© Märkesbörsen</span><span>Siffrorna är vägledning, inte en garanti.</span><nav class="juridik" aria-label="Om sidan"><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a><a href="../integritet/#kontakt">Kontakt</a></nav></div>
 </footer>
 
 <script>

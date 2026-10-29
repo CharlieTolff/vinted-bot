@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Märkesbörsen · Integritet och kakor</title>
+<link rel="icon" href="/ikon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
+<link rel="apple-touch-icon" href="/ikon-180.png">
+<meta name="description" content="Hur Märkesbörsen hanterar personuppgifter, kakor och det du sparar i verktygen.">
+<meta name="theme-color" content="#121a11">
+<link href="typsnitt/typsnitt.css" rel="stylesheet">
+<script src="tillganglig.js" defer></script>
+<style>
+/* Samma mörkgröna och guld som resten av Märkesbörsen */
+:root{
+  color-scheme:dark;
+  --bg:#121a11;--kort:#1b2419;--yta:#222d20;--text:#eef1e6;--svag:#a3af98;--linje:#34412f;
+  --guld:#c9a24f;--guldljus:#e6c47c;
+}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font:16px/1.65 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f 18%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+a{color:var(--guldljus);text-underline-offset:3px}
+.inre{max-width:760px;margin:0 auto;padding:0 20px}
+.meny{border-bottom:1px solid var(--linje)}
+.meny .inre{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.logga{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:Cinzel,Georgia,serif;font-weight:700;font-size:18px;letter-spacing:.08em;color:var(--guldljus)}
+.logga i{width:26px;height:26px;border-radius:8px;background:var(--guld);display:inline-flex;align-items:flex-end;justify-content:center;gap:2px;padding:6px 5px}
+.logga i b{display:block;width:3px;background:#141414;border-radius:1px}
+.meny nav{display:flex;gap:18px;font-size:14px}
+.meny nav a{color:var(--svag)}.meny nav a[aria-current]{color:var(--text);text-decoration:none;font-weight:600}
+main{padding:44px 0 30px}
+h1{font-size:clamp(30px,6vw,42px);line-height:1.15;letter-spacing:-.03em;margin:0 0 10px}
+.datum{color:var(--svag);font-size:14px;margin:0 0 28px}
+h2{font-size:21px;letter-spacing:-.02em;margin:36px 0 8px;color:var(--guldljus)}
+p,li{color:var(--text)}
+ul{padding-left:22px}li{margin:4px 0}
+.kort{background:var(--kort);border:1px solid var(--linje);border-radius:16px;padding:18px 22px;margin:0 0 8px}
+.kort p:first-child{margin-top:0}.kort p:last-child,.kort ul:last-child{margin-bottom:0}
+table{width:100%;border-collapse:collapse;font-size:15px;margin:8px 0}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--linje)}
+th{color:var(--svag);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+footer{border-top:1px solid var(--linje);padding:24px 0 40px;font-size:13.5px;color:var(--svag)}
+footer .inre{display:flex;flex-wrap:wrap;gap:6px 18px}
+footer a{color:inherit}
+@media (max-width:560px){ .meny nav{gap:12px;font-size:13px} th,td{padding:8px 6px} }
+</style>
+</head>
+<body>
+<header class="meny">
+  <div class="inre">
+    <a class="logga" href="../"><i><b style="height:6px"></b><b style="height:11px"></b><b style="height:15px"></b></i>Märkesbörsen</a>
+    <nav aria-label="Om sidan"><a href="./" aria-current="page">Integritet</a><a href="../villkor/">Villkor</a></nav>
+  </div>
+</header>
+<main class="inre">
+  <h1>Integritet och kakor</h1>
+  <p class="datum">Senast ändrad 28 oktober 2026</p>
+
+  <div class="kort">
+    <p><b>Kort sagt:</b> Märkesbörsen samlar bara in det som behövs. Sidan har inga spårningskakor, ingen reklam och ingen besöksstatistik. Det du skriver in i bokföringen och verktygen stannar i din egen webbläsare.</p>
+  </div>
+
+  <h2 id="kontakt">Vem ansvarar för dina uppgifter?</h2>
+  <p>Personuppgiftsansvarig är Charlie Tolff, som driver Märkesbörsen. Har du frågor, eller vill du använda dina rättigheter nedan, mejla <a href="mailto:markesborsen@gmail.com">markesborsen@gmail.com</a>.</p>
+
+  <h2>Väntelistan</h2>
+  <table>
+    <tr><th scope="row">Vad</th><td>Din mejladress. Ditt mobilnummer om du själv fyller i det, det är frivilligt.</td></tr>
+    <tr><th scope="row">Varför</th><td>För att berätta, med ett mejl och ett sms om du vill, när Märkesbörsen öppnar. Inget annat.</td></tr>
+    <tr><th scope="row">Laglig grund</th><td>Ditt samtycke, när du kryssar i rutan. Du kan ta tillbaka det när du vill via länken i mejlet, eller genom att mejla oss.</td></tr>
+    <tr><th scope="row">Hur länge</th><td>Tills du avregistrerar dig, och som längst sex månader efter att Märkesbörsen har öppnat. Sedan raderas uppgifterna.</td></tr>
+    <tr><th scope="row">Vem mer</th><td>Brevo (Sendinblue SAS, Frankrike) skickar mejlen och sms:en åt oss och lagrar uppgifterna inom EU. Brevo får bara använda dem för det. Vi säljer inte dina uppgifter och lämnar inte ut dem till någon annan.</td></tr>
+  </table>
+  <p>När du har skrivit upp dig sparar din webbläsare en liten markering om det, så att formuläret inte visas igen.</p>
+
+  <h2>Bokföringen och verktygen</h2>
+  <ul>
+    <li>Det du skriver in i bokföringen, och bilderna du lägger till, sparas bara i din egen webbläsare. Vi kan inte se det, och det skickas inte till oss.</li>
+    <li>Bildverktyget och skärmbildsläsningen körs också i din webbläsare. Dina bilder lämnar inte din enhet.</li>
+    <li>Första gången du använder de verktygen hämtar webbläsaren programmen från jsDelivr, ett öppet nätverk för programfiler. Som vid alla nedladdningar ser jsDelivr då din IP-adress. Inga av dina uppgifter skickas med.</li>
+    <li>Rensar du webbplatsdata i webbläsaren försvinner bokföringen. Spara en säkerhetskopia med knappen i bokföringen om du vill ha kvar den.</li>
+  </ul>
+
+  <h2>Kakor och lagring i webbläsaren</h2>
+  <p>Märkesbörsen använder inga kakor. Sidan sparar bara sådant som behövs för att den ska fungera, i webbläsarens egen lagring (local storage och IndexedDB):</p>
+  <ul>
+    <li>dina val i börsen, till exempel vilken kategori du tittade på senast</li>
+    <li>bokföringen och bilderna till den</li>
+    <li>att du redan har skrivit upp dig på väntelistan</li>
+  </ul>
+  <p>Inget av det används för att spåra dig eller för reklam, och inget skickas till oss. Därför behöver sidan ingen kakruta. Du tar bort allt genom att rensa webbplatsdata för märkesbörsen.se i webbläsarens inställningar.</p>
+  <p>Typsnitten ligger på vår egen sida, så att din webbläsare inte behöver kontakta Google eller någon annan för att visa texten.</p>
+
+  <h2>Var sidan ligger</h2>
+  <p>Sidan visas via GitHub Pages (GitHub, Inc., USA). Som alla webbservrar tar GitHub emot din IP-adress när du besöker sidan och kan spara den en kort tid för säkerhet och drift. Vi får inte ta del av de uppgifterna. GitHub omfattas av EU:s och USA:s ramverk för dataskydd (Data Privacy Framework).</p>
+  <p>Klickar du på en länk till Vinted, Tradera eller Plick gäller deras egna regler för integritet och kakor.</p>
+
+  <h2>Dina rättigheter</h2>
+  <p>Enligt dataskyddsförordningen (GDPR) har du rätt att:</p>
+  <ul>
+    <li>få veta vilka uppgifter vi har om dig och få en kopia av dem</li>
+    <li>få fel uppgifter rättade</li>
+    <li>få dina uppgifter raderade</li>
+    <li>ta tillbaka ditt samtycke, när som helst</li>
+    <li>begränsa eller invända mot hur vi använder dem, och få dem flyttade till någon annan</li>
+  </ul>
+  <p>Mejla oss så hjälper vi dig, senast inom en månad. Tycker du att vi hanterar dina uppgifter fel kan du klaga hos Integritetsskyddsmyndigheten, <a href="https://www.imy.se" rel="noopener">imy.se</a>.</p>
+
+  <h2>Om något ändras</h2>
+  <p>Ändrar vi hur uppgifter hanteras uppdaterar vi den här sidan och datumet högst upp. Gäller ändringen väntelistan mejlar vi dig först.</p>
+</main>
+<footer>
+  <div class="inre"><span>© Märkesbörsen</span><a href="./">Integritet och kakor</a><a href="../villkor/">Villkor</a></div>
+</footer>
+</body>
+</html>
