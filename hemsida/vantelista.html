@@ -7,7 +7,7 @@
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
-<meta name="description" content="Märkesbörsen visar vad märkeskläder säljs för på Vinted och Tradera, vad du kan tjäna och vad som är populärt just nu. Skriv upp dig på väntelistan.">
+<meta name="description" content="Märkesbörsen visar vad märkeskläder säljs för på andrahandsmarknaden, vad du kan tjäna och vad som är populärt just nu. Skriv upp dig på väntelistan.">
 <meta property="og:title" content="Märkesbörsen · Väntelista">
 <meta property="og:description" content="Se vad det säljs för. Innan du köper. Skriv upp dig så får du veta först när Märkesbörsen öppnar.">
 <meta name="theme-color" content="#2f3b2c">
@@ -158,10 +158,10 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     <div>
       <div class="etikett">Just nu: väntelista</div>
       <h1>Se vad det säljs för. <em>Innan du köper.</em></h1>
-      <p class="ingress">Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märkeskläder säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
+      <p class="ingress">Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på andrahandsmarknaden varje dag, till exempel på Vinted, Tradera och Plick. Du ser vad märkeskläder säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
       <a class="knapp tillform" href="#ruta">Skriv upp dig på väntelistan ↓</a>
       <ul class="punkter">
-        <li><span class="bock">✓</span><div><b>Se vad det säljs för</b><span>Slutpriser från det som sålts på Tradera, inte bara vad folk begär.</span></div></li>
+        <li><span class="bock">✓</span><div><b>Se vad det säljs för</b><span>Slutpriser från det som faktiskt sålts i andra hand, inte bara vad folk begär.</span></div></li>
         <li><span class="bock">✓</span><div><b>Räkna ut vinsten</b><span>Skriv in vad du betalar och se direkt vad du får över.</span></div></li>
         <li><span class="bock">✓</span><div><b>Hitta vad du ska köpa in</b><span>Se vilka märken som blir populärare just nu.</span></div></li>
       </ul>
@@ -201,7 +201,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     </div>
     <div class="stats">
       <div class="stat"><b class="tal" id="statannonser">–</b><span>annonser i senaste mätningen</span></div>
-      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser på Tradera räknade</span></div>
+      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser räknade</span></div>
       <div class="stat"><b class="tal" id="statmarken">–</b><span>märken som följs</span></div>
     </div>
     <div class="lista prov" id="provlista" hidden>
@@ -293,7 +293,7 @@ function andelsPunkter(B, kalla, kat){
 }
 function forandringar(B){
   const ut = [];
-  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
+  for (const kat of B.kategorier || []) for (const kalla of ["tradera"]) {
     const pts = andelsPunkter(B, kalla, kat.id);
     if (pts.length < 2) continue;
     const slut = dag(pts.at(-1)[0]), inom = pts.filter(p => dag(p[0]) >= slut - 30 * 864e5);

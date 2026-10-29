@@ -11,7 +11,7 @@
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
-<meta name="description" content="Märkesbörsen visar vilka märken som säljer på Vinted och Tradera, vad de säljs för och var marginalen finns.">
+<meta name="description" content="Märkesbörsen visar vilka märken som säljer på andrahandsmarknaden, till exempel Vinted och Tradera, vad de säljs för och var marginalen finns.">
 <link href="typsnitt/typsnitt.css" rel="stylesheet">
 <script src="tillganglig.js" defer></script>
 <style>
@@ -254,7 +254,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   <div class="inre">
     <div>
       <h1>Se vad det säljs för. <em>Innan du köper.</em></h1>
-      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på Vinted och Tradera varje dag. Du ser vad märken säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
+      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på andrahandsmarknaden varje dag, till exempel på Vinted, Tradera och Plick. Du ser vad märken säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
         <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
@@ -300,7 +300,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <h2>Från fynd till vinst i tre steg</h2>
     </div>
     <div class="loften">
-      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som sålts på Tradera, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
+      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som faktiskt sålts i andra hand, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
       <div class="lofte"><div class="nr">2</div><h3>Räkna ut vinsten</h3><p>Skriv in vad du betalar och se direkt vad du får över. Du vet om fyndet är värt det innan du köper.</p></div>
       <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som blir populärare just nu.</p></div>
     </div>
@@ -320,7 +320,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
         <div id="salda"></div>
       </div>
       <div class="lista">
-        <div class="huvud"><h3>Minskar mest</h3><span>Senaste månaden</span></div>
+        <div class="huvud"><h3>Dyrast som säljer</h3><span>Minst 3 sålda, senaste 30 dagarna</span></div>
         <div id="forlorare"></div>
       </div>
     </div>
@@ -336,7 +336,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     </div>
     <div class="oppet">
       <div class="stat"><b class="tal" id="statannonser">–</b><span>annonser i senaste mätningen av kategorierna</span></div>
-      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser på Tradera i historiken, alla räknade</span></div>
+      <div class="stat"><b class="tal" id="statsalda">–</b><span>sålda annonser i historiken, alla räknade</span></div>
       <div class="stat"><b class="tal" id="statmarken">–</b><span>märken som följs i <span id="statkat">–</span> kategorier</span></div>
     </div>
     <div class="metod">
@@ -361,7 +361,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <div class="bild">M</div>
       <div>
         <h3>Vem står bakom?</h3>
-        <p id="omtext">Märkesbörsen är byggd av en reseller som själv köper och säljer märkeskläder på Vinted och Tradera. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.</p>
+        <p id="omtext">Märkesbörsen är byggd av en reseller som själv köper och säljer märkeskläder i andra hand. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.</p>
         <p id="kontakt" hidden></p>
       </div>
     </div>
@@ -394,7 +394,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     <div class="rubrik mitt"><h2>Vanliga frågor</h2></div>
     <div class="fragor">
       <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna på Vinted, Tradera och Plick. På Tradera räknas allt som sålts i varje kategori, med slutpriset, och allt som ligger ute. På Vinted och Plick räknas de nyaste annonserna och vanliga märken för sig.</p></details>
-      <details><summary>Hur räknas vinsten?</summary><p>Vinsten är vad märket brukar säljas för på Tradera, minus vad du betalar. "Brukar säljas för" är mittenpriset bland de plagg som sålts, så att några få dyra eller billiga inte drar iväg siffran. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
+      <details><summary>Hur räknas vinsten?</summary><p>Vinsten är vad märket brukar säljas för i andra hand, minus vad du betalar. Slutpriserna kommer från sålda annonser, i dag på Tradera, där slutpriset syns. "Brukar säljas för" är mittenpriset bland de plagg som sålts, så att några få dyra eller billiga inte drar iväg siffran. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
       <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som stickat, skjortor, dunjackor, jeans och skor.</p></details>
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
       <details><summary>Är börsen kopplad till Vinted eller Tradera?</summary><p>Nej. Märkesbörsen är en oberoende tjänst och har inget samarbete med Vinted, Tradera eller Plick. Vi läser bara det som syns i deras öppna annonser.</p></details>
@@ -413,7 +413,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 </section>
 
 <footer>
-  <div>Märkesbörsen · Marknadsdata från Vinted, Tradera och Plick</div>
+  <div>Märkesbörsen · Marknadsdata från andrahandsmarknaden, till exempel Vinted, Tradera och Plick</div>
   <div class="friskriv">Märkesbörsen är en oberoende tjänst och är inte ansluten till Vinted, Tradera eller Plick. Siffrorna bygger på öppna annonser och är vägledning, inte en garanti för vinst. Den här sidan använder inga kakor för spårning eller reklam.</div>
   <nav class="juridik" aria-label="Om sidan"><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a><a href="../integritet/#kontakt">Kontakt</a></nav>
 </footer>
@@ -438,7 +438,7 @@ $("prisbelopp").textContent = PRIS;
 $("ctapris").textContent = BETALLANK ? `${PRIS} i månaden · ingen bindningstid` : `Gratis under lanseringen · sedan ${PRIS} i månaden`;
 if (BETALLANK) $("prenumerera").href = BETALLANK;
 else { $("lansering").hidden = false; $("prisinfo").textContent = "Gratis att prova medan börsen är ny, sedan " + PRIS + " i månaden. Ingen bindningstid."; $("prenumerera").textContent = "Prova gratis"; }
-if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder på Vinted och Tradera. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
+if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder i andra hand. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
 if (KONTAKT) { $("kontakt").hidden = false; $("kontakt").innerHTML = `Frågor? Skriv till <a href="mailto:${esc(KONTAKT)}">${esc(KONTAKT)}</a>.`; }
 
 function spark(pts, upp){
@@ -461,9 +461,9 @@ function andelsPunkter(B, kalla, kat){
   return ((B.andel || {})[kalla] || {})[kat] || [];
 }
 function forandringar(B){
-  // Andelsändring senaste månaden för varje märke i varje kategori (Vinted och Tradera).
+  // Andelsändring senaste månaden för varje märke i varje kategori, räknat på det som säljs.
   const ut = [];
-  for (const kat of B.kategorier || []) for (const kalla of ["vinted", "tradera"]) {
+  for (const kat of B.kategorier || []) for (const kalla of ["tradera"]) {
     const pts = andelsPunkter(B, kalla, kat.id);
     if (pts.length < 2) continue;
     const slut = dag(pts.at(-1)[0]), inom = pts.filter(p => dag(p[0]) >= slut - 30 * 864e5);
@@ -516,9 +516,16 @@ async function start(){
   // Vinnare och förlorare
   const f = forandringar(B);
   const vinnare = unika([...f].filter(x => x.d > 0).sort((a, b) => b.d - a.d), 5);
-  const forlorare = unika([...f].filter(x => x.d < 0).sort((a, b) => a.d - b.d), 5);
+  // Dyrast som säljer: dyra märken säljer färre, men ger mest per plagg, så de syns aldrig bland de mest sålda.
+  const dyra = [];
+  for (const k of kats) {
+    const p = (((B.andel || {}).tradera || {})[k.id] || []).at(-1);
+    if (p) for (const [m, v] of Object.entries(p[2])) if (v[0] >= 3 && v[1] && !INTE.includes(m.toLowerCase())) dyra.push({m, kat: k, n: v[0], median: v[1]});
+  }
   $("vinnare").innerHTML = vinnare.length ? vinnare.map(rad).join("") : `<div class="rad"><span class="n">Vinnarna visas när marknaden mätts några dagar till.</span></div>`;
-  $("forlorare").innerHTML = forlorare.length ? forlorare.map(rad).join("") : `<div class="rad"><span class="n">Visas när marknaden mätts några dagar till.</span></div>`;
+  $("forlorare").innerHTML = unika(dyra.sort((a, b) => b.median - a.median), 5).map(x =>
+    `<div class="rad"><span class="n">${esc(x.m)}<small>${esc(x.kat.namn)}</small></span><span class="spark"></span><span class="v tal">${x.n} st</span><span class="f tal upp">${kr(x.median)}</span></div>`).join("") ||
+    `<div class="rad"><span class="n">Visas när marknaden mätts några dagar till.</span></div>`;
   if (vinnare.length) $("hjaltefot").textContent = `${vinnare[0].m} har ökat mest i ${vinnare[0].kat.namn.toLowerCase()}`;
 
   // Löpande band
@@ -553,7 +560,7 @@ async function start(){
   const vinst = ex.median - INKOP, plagg = ex.k.id === "stickat" ? "stickad tröja" : ex.k.namn.toLowerCase();
   $("kexempel").innerHTML = `Exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>`;
   $("ksalj").textContent = kr(ex.median);
-  $("ksaljinfo").textContent = `mittenpriset för ${ex.n} sålda på Tradera senaste 30 dagarna`;
+  $("ksaljinfo").textContent = `mittenpriset för ${ex.n} sålda i andra hand senaste 30 dagarna`;
   $("kvinst").textContent = "+" + kr(vinst);
   $("kvinstinfo").textContent = "före frakt och avgifter";
   $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
