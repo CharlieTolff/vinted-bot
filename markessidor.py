@@ -86,7 +86,7 @@ h1{font-size:clamp(28px,6vw,42px);line-height:1.15;letter-spacing:-.03em;margin:
 h2{font-size:21px;letter-spacing:-.02em;margin:34px 0 10px}
 .ingress{font-size:18px;color:var(--text);margin:0 0 6px}
 .datum{color:var(--svag);font-size:14px;margin:0 0 26px}
-.nyckel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0 8px}
+.nyckel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:24px 0 8px}
 .nyckel div{background:var(--kort);border:1px solid var(--linje);border-radius:16px;padding:16px 18px}
 .nyckel span{display:block;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--svag)}
 .nyckel b{display:block;font-size:28px;letter-spacing:-.03em;margin-top:2px;font-variant-numeric:tabular-nums}
@@ -103,6 +103,11 @@ td.tal,th.tal{text-align:right;font-variant-numeric:tabular-nums}
 .lankar{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none}
 .lankar a{display:inline-block;padding:7px 13px;border-radius:999px;background:var(--kort);border:1px solid var(--linje);color:var(--text);text-decoration:none;font-size:14.5px}
 .lankar small{color:var(--svag)}
+.last{list-style:none;padding:0;margin:0;background:var(--kort);border:1px solid var(--linje);border-radius:16px}
+.last li{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--linje)}
+.last li:last-child{border-bottom:0}
+.last b{font-weight:600;font-size:14px;color:var(--guldljus)}
+.last b{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .bokstav{font-size:15px;color:var(--guldljus);margin:26px 0 8px}
 .svag{color:var(--svag)}
 footer{border-top:1px solid var(--linje);padding:24px 0 40px;font-size:13.5px;color:var(--svag)}
@@ -145,6 +150,9 @@ def sida(titel, beskrivning, vag, djup, kropp):
 """
 
 
+LAS = ('<svg width="13" height="14" viewBox="0 0 13 14" aria-hidden="true"><rect x="1" y="6" width="11" height="8" rx="2" fill="currentColor"/>'
+       '<path d="M3.5 6V4.5a3 3 0 0 1 6 0V6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>')
+
 CTA = """<div class="cta">
   <h2>Se alla märken, trender och vad du tjänar</h2>
   <p>Märkesbörsen visar vad märkeskläder säljs för i andra hand, vilka märken som säljer dyrast och vad du kan tjäna på ett inköp, innan du köper.</p>
@@ -158,17 +166,11 @@ def markessida(m, rader, alla, bors):
     uppdaterad = max(r["dag"] for r in rader)
     dyrast = max(rader, key=lambda r: r["pris"])
 
-    def andring(v):
-        if v is None:
-            return "–"
-        return f'<span class="{"upp" if v > 0 else "ned" if v < 0 else ""}">{"+" if v > 0 else "−" if v < 0 else "±"}{abs(v)} %</span>'
-    tabell = "".join(
-        f'<tr><td>{e(r["namn"])}</td><td class="tal"><b>{kr(r["pris"])}</b></td><td class="tal dolj-mobil">{kr(r["lag"])}</td>'
-        f'<td class="tal">{r["salda"]}</td><td class="tal">{andring(r["andring"])}</td></tr>' for r in rader)
+    # Bara ett smakprov: ett pris och antal sålda. Resten (pris per kategori, trender, prisändring) finns i
+    # Märkesbörsen, så de siffrorna skrivs inte ens in i sidan.
+    lasta = "".join(f'<li><span>{e(r["namn"])}</span><b>{LAS}Visas i Märkesbörsen</b></li>' for r in rader[1:8])
     text = (f'{e(m)} har sålts <b>{total}</b> gånger de senaste 30 dagarna i de kategorier Märkesbörsen mäter. '
-            f'Mest säljs {e(forst["namn"].lower())}, för <b>{kr(forst["pris"])}</b> i mittenpris.')
-    if dyrast is not forst:
-        text += f' Dyrast är {e(dyrast["namn"].lower())}, som säljs för {kr(dyrast["pris"])}.'
+            f'Mest säljs {e(forst["namn"].lower())}, för ungefär <b>{kr(forst["pris"])}</b>.')
     # Fler märken i samma kategori och prisklass, så att Google och besökarna hittar vidare.
     pris = {x: next(y["pris"] for y in r if y["kat"] == forst["kat"]) for x, r in alla.items()
             if x != m and any(y["kat"] == forst["kat"] for y in r)}
@@ -181,20 +183,13 @@ def markessida(m, rader, alla, bors):
   <div class="nyckel">
     <div><span>Mittenpris</span><b>{kr(forst["pris"])}</b><small class="svag">{e(forst["namn"])}</small></div>
     <div><span>Sålda 30 dagar</span><b>{total}</b><small class="svag">alla kategorier</small></div>
-    <div><span>Säljs ofta från</span><b>{kr(forst["lag"])}</b><small class="svag">billigaste fjärdedelen</small></div>
   </div>
-  <h2>{e(m)} per kategori</h2>
-  <div class="tabell"><table>
-    <thead><tr><th>Kategori</th><th class="tal">Mittenpris</th><th class="tal dolj-mobil">Billigaste fjärdedelen</th><th class="tal">Sålda 30 dagar</th><th class="tal">Prisändring</th></tr></thead>
-    <tbody>{tabell}</tbody>
-  </table></div>
-  <h2>Så läser du siffrorna</h2>
-  <p><b>Mittenpris</b> betyder att hälften av plaggen såldes dyrare och hälften billigare, så att några få dyra eller billiga inte drar iväg siffran. <b>Billigaste fjärdedelen</b> är priset som en fjärdedel såldes för eller under. <b>Prisändring</b> jämför mittenpriset med för 30 dagar sedan.</p>
-  <p>Siffrorna kommer från sålda annonser på andrahandsmarknaden, i dag på Tradera, där slutpriset syns. Skick, storlek och modell påverkar vad ett plagg säljs för, så se dem som vägledning, inte som en garanti.</p>
+  {f'<h2>{e(m)} i fler kategorier</h2><ul class="last">{lasta}</ul>' if lasta else ""}
+  <p class="svag">Mittenpris betyder att hälften såldes dyrare och hälften billigare. Skick, storlek och modell påverkar priset, så se siffran som vägledning.</p>
   {CTA.format(upp="../../")}
-  {f'<h2>Fler märken i {e(forst["namn"].lower())} i samma prisklass</h2><ul class="lankar">{lankar}</ul>' if lankar else ""}"""
+  {f'<h2>Fler märken i {e(forst["namn"].lower())}</h2><ul class="lankar">{lankar}</ul>' if lankar else ""}"""
     beskrivning = (f"{m} säljs för {kr(forst['pris'])} i mittenpris i andra hand ({forst['namn'].lower()}). "
-                   f"Se slutpriser per kategori och hur många som sålts de senaste 30 dagarna.")
+                   f"Se hur många som sålts de senaste 30 dagarna.")
     return sida(f"Vad säljs {m} för i andra hand? · Märkesbörsen", beskrivning, f"marken/{slug(m)}/", 2, kropp)
 
 
@@ -204,11 +199,11 @@ def indexsida(alla):
         b = M.nyckel(m)[:1].upper()
         per.setdefault(b if b.isalpha() else "#", []).append(m)
     delar = "".join(f'<h2 class="bokstav">{b}</h2><ul class="lankar">' + "".join(
-        f'<li><a href="{slug(m)}/">{e(m)} <small>{kr(alla[m][0]["pris"])}</small></a></li>' for m in ms) + "</ul>"
+        f'<li><a href="{slug(m)}/">{e(m)}</a></li>' for m in ms) + "</ul>"
         for b, ms in per.items())
     kropp = f"""  <p class="over">Andrahandspriser</p>
   <h1>Vad säljs märkena för i andra hand?</h1>
-  <p class="ingress">{len(alla)} märken med slutpriser från sålda annonser, uppdaterat varje dag. Tryck på ett märke för att se priset per kategori.</p>
+  <p class="ingress">{len(alla)} märken med slutpriser från sålda annonser, uppdaterat varje dag. Tryck på ett märke för att se vad det säljs för.</p>
   {CTA.format(upp="../")}
   {delar}"""
     return sida("Vad säljs märkena för i andra hand? · Märkesbörsen",
