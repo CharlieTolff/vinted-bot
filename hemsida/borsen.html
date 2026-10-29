@@ -166,6 +166,20 @@ footer .friskriv{max-width:720px;margin:8px auto 0;font-size:12.5px;line-height:
 .priskort li{padding-left:30px;position:relative}
 .priskort li::before{content:"";position:absolute;left:0;top:3px;width:19px;height:19px;border-radius:50%;background:var(--gron) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
 .priskort .knapp{width:100%}
+.priskort .over{margin-bottom:0}
+.priskort a{color:var(--guldtext)}
+.planer{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:900px;margin:0 auto 18px}
+.plan{position:relative;border-radius:22px;padding:28px 22px 22px;background:var(--kort);border:1px solid var(--linje);box-shadow:var(--skugga),var(--kant-ljus);text-align:center;display:flex;flex-direction:column;gap:6px}
+.plan.bast{border:2px solid var(--guld)}
+.plan .etikettpris{position:absolute;top:-13px;left:50%;transform:translateX(-50%);margin:0;white-space:nowrap}
+.plan h3{font-size:17px;margin:0}
+.plan .belopp{font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1.1;margin-top:4px}
+.plan .per{color:var(--svag);font-size:14px}
+.plan .spar{color:var(--gron);font-size:14px;font-weight:600;min-height:21px}
+.plan .knapp{margin-top:12px;width:100%}
+.erbjudande{max-width:900px;margin:0 auto 26px;text-align:center;padding:12px 18px;border-radius:14px;background:color-mix(in srgb,var(--guld) 16%,var(--kort));border:1px solid color-mix(in srgb,var(--guld) 45%,transparent);font-size:15px}
+.erbjudande b{color:var(--guldljus)}
+@media (max-width:760px){ .planer{grid-template-columns:minmax(0,1fr);max-width:420px} }
 .priskort .liten{font-size:13.5px;color:var(--svag);margin:12px 0 0}
 
 .fragor{max-width:760px;margin:0 auto;display:grid;gap:10px}
@@ -259,7 +273,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
         <a class="knapp" href="#pris">Kom igång</a>
         <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
       </div>
-      <small class="ctapris" id="ctapris">99 kr i månaden · ingen bindningstid</small>
+      <small class="ctapris" id="ctapris">Från 108 kr i månaden</small>
       <div class="lofteslista"><span>Riktiga siffror från riktiga annonser</span><span>Ingen bindningstid</span><span>Oberoende tjänst</span></div>
       <div class="fortroende" id="fortroende"><span><span class="puls"></span>Mäts flera gånger om dagen</span></div>
     </div>
@@ -371,20 +385,20 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 <section id="pris">
   <div class="inre">
     <div class="rubrik mitt">
-      <div class="over">Ett pris, allt ingår</div>
-      <h2>Säg upp när du vill</h2>
+      <div class="over">Allt ingår, du väljer hur länge</div>
+      <h2>Ju längre, desto billigare</h2>
     </div>
+    <div class="erbjudande" id="erbjudande"><b>Står du på väntelistan?</b> De första 50 får sin första månad för 79 kr.</div>
+    <div class="planer" id="planer"></div>
     <div class="priskort">
-      <div class="etikettpris" id="lansering" hidden>Gratis under lanseringen</div>
-      <div class="belopp"><span id="prisbelopp">99 kr</span><small> / månad</small></div>
+      <div class="over">Det här ingår i alla</div>
       <ul>
         <li>Vad varje märke säljs för, och vinsten på ditt inköp</li>
         <li>Vilka märken som blir populärare och vilka som minskar</li>
         <li>Märken som säljer bra just nu, uppdaterat varje dag</li>
         <li>Diagram och historik för varje märke</li>
       </ul>
-      <a class="knapp" id="prenumerera" href="app.html">Kom igång</a>
-      <p class="liten" id="prisinfo">Ingen bindningstid. Säg upp när du vill.</p>
+      <p class="liten" id="prisinfo">1 månad har ingen bindningstid. 6 månader och 1 år betalas i förskott. <a href="../villkor/">Läs villkoren</a>.</p>
     </div>
   </div>
 </section>
@@ -399,7 +413,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
       <details><summary>Är börsen kopplad till Vinted eller Tradera?</summary><p>Nej. Märkesbörsen är en oberoende tjänst och har inget samarbete med Vinted, Tradera eller Plick. Vi läser bara det som syns i deras öppna annonser.</p></details>
       <details><summary>Lovar ni att jag tjänar pengar?</summary><p>Nej, och det ska ingen göra. Börsen visar vad som säljer och till vilket pris, så att du kan fatta bättre beslut. Skick, storlek, frakt och avgifter påverkar vad du tjänar på varje plagg.</p></details>
-      <details><summary>Kan jag säga upp?</summary><p>Ja, när du vill. Det finns ingen bindningstid.</p></details>
+      <details><summary>Kan jag säga upp?</summary><p>Ja. 1 månad kan du säga upp när du vill. 6 månader och 1 år betalar du i förskott, och du kan säga upp dem så att de inte förnyas. Du har alltid tillgång perioden ut, och 14 dagars ångerrätt.</p></details>
     </div>
   </div>
 </section>
@@ -421,7 +435,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 <script>
 // Ändra här när betalningen är klar: en betallänk (t.ex. Stripe) och priset.
 const BETALLANK = "";
-const PRIS = "99 kr";
+// De tre perioderna. Allt ingår i alla, längre period ger lägre pris per månad.
+const PLANER = [{namn: "1 månad", pris: 149, man: 1}, {namn: "6 månader", pris: 699, man: 6}, {namn: "1 år", pris: 1299, man: 12, bast: true}];
 // Fyll i för mer förtroende: vem du är och hur man når dig (visas under "Vem står bakom?").
 const NAMN = "Charlie Tolff";
 const KONTAKT = "markesborsen@gmail.com";
@@ -434,10 +449,16 @@ const kr = v => Math.round(v).toLocaleString("sv-SE") + " kr";
 const dag = s => new Date(s + "T12:00:00Z").getTime();
 const INTE = ["övriga", "vintage", "okänt", "no brand", "handgjord", "diverse"];
 
-$("prisbelopp").textContent = PRIS;
-$("ctapris").textContent = BETALLANK ? `${PRIS} i månaden · ingen bindningstid` : `Gratis under lanseringen · sedan ${PRIS} i månaden`;
-if (BETALLANK) $("prenumerera").href = BETALLANK;
-else { $("lansering").hidden = false; $("prisinfo").textContent = "Gratis att prova medan börsen är ny, sedan " + PRIS + " i månaden. Ingen bindningstid."; $("prenumerera").textContent = "Prova gratis"; }
+const manad = PLANER[0].pris;
+$("planer").innerHTML = PLANER.map(p => {
+  const per = Math.round(p.pris / p.man), spar = manad * p.man - p.pris;
+  return `<div class="plan ${p.bast ? "bast" : ""}">${p.bast ? `<div class="etikettpris">Mest prisvärt</div>` : ""}
+    <h3>${p.namn}</h3><div class="belopp">${kr(p.pris)}</div>
+    <div class="per">${p.man > 1 ? `${kr(per)} i månaden` : "ingen bindningstid"}</div>
+    <div class="spar">${spar > 0 ? `Du sparar ${kr(spar)}` : ""}</div>
+    <a class="knapp" href="${BETALLANK || "app.html"}">Välj ${p.namn}</a></div>`;
+}).join("");
+$("ctapris").textContent = `Från ${kr(Math.min(...PLANER.map(p => p.pris / p.man)))} i månaden`;
 if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder i andra hand. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
 if (KONTAKT) { $("kontakt").hidden = false; $("kontakt").innerHTML = `Frågor? Skriv till <a href="mailto:${esc(KONTAKT)}">${esc(KONTAKT)}</a>.`; }
 
