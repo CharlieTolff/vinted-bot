@@ -62,6 +62,7 @@ TRADERA_MAX_SIDOR = 125   # Tradera visar högst 125 sidor à 80 annonser
 TRADERA_SIDTAK = 10000    # alltså högst så många annonser per sökning
 TRADERA_UTE_SIDOR = 30    # så många sidor aktiva annonser per runda (alla gås igenom en gång per dygn)
 GAMLA_TOPP = 50           # så många märken per kategori får egna diagram (de som sålt mest), plus de med flest ute
+DYRA_TOPP = 20            # plus så många av de dyraste som säljer (minst 3 sålda på 30 dagar)
 UTE_TOPP = 20
 MARKE_DAGLIGT = 35        # märkenas diagram: en punkt per dag så här långt bak, sedan en per vecka (så filen inte blir för stor)
 AFFAR_DAGAR = 200         # så länge Tradera-affärerna sparas
@@ -956,6 +957,10 @@ def gamla_vyer(bors, alarm):
         # Märkena med egna diagram: de som sålt mest, de som har flest annonser ute och alla alarm-märken.
         topp = [m for m in sorted(salda, key=lambda m: -len(salda[m])) if m != M.UTAN and len(salda[m]) >= 3][:GAMLA_TOPP]
         topp += [m for m, n in ute_nu.most_common(UTE_TOPP + 1) if m != M.UTAN and n >= 3]
+        # Dyra märken säljer sällan många men ger mest per plagg, så de får också egna diagram.
+        f30 = dagstr(time.time() - (FONSTER - 1) * 86400)
+        senaste = {m: [p for d, p in v if d >= f30] for m, v in salda.items() if m != M.UTAN}
+        topp += sorted((m for m, v in senaste.items() if len(v) >= 3), key=lambda m: -(median(senaste[m]) or 0))[:DYRA_TOPP]
         topp = list(dict.fromkeys(topp + [m for m in alarm if m in salda or m in ute_nu]))
 
         # Veckor: hela veckor från den första som är komplett (och inte rensats bort), och den som pågår.
@@ -1027,6 +1032,11 @@ def sammanfatta(bors):
         logg("%s: %s sålda på Tradera senaste %d dagarna (median %s kr, %s utan märke, komplett från %s). Mest sålda: %s" % (
             kat_id, k["s"], FONSTER, k["p"], k["u"], k["fran"],
             ", ".join("%s %d st/%s kr" % (r["m"], r["s"], r.get("p")) for r in k["marken"][:12])))
+        # Dyra märken säljer sällan många, men ger mest per plagg: de syns inte bland de mest sålda.
+        dyra = sorted((r for r in k["marken"] if r["s"] >= 3 and r.get("p")), key=lambda r: -r["p"])[:15]
+        logg("%s: dyrast som säljer: %s" % (kat_id, ", ".join("%s %s kr/%d st/%s dgr/%s%% sålda" % (
+            r["m"], r["p"], r["s"], r.get("d"), round(100 * r["s"] / (r["s"] + r["o"])) if r.get("o") is not None else "?")
+            for r in dyra)))
 
 
 def vinted_kostnad(bors, kat, typ, marke):
