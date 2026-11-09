@@ -1,0 +1,16 @@
+# Märkesbörsens lås och betalning. Läggs upp av .github/workflows/las.yml.
+name = "markesborsen"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[vars]
+HEMSIDA = "https://xn--mrkesbrsen-q5a5t.se"
+AVSANDARE = "markesborsen@gmail.com"
+# Mejladresser som alltid kommer in utan att betala (ägaren).
+FRIA = "markesborsen@gmail.com"
+REPO = "CharlieTolff/vinted-bot"
+
+[[kv_namespaces]]
+binding = "DATA"
+id = "KV_ID"
