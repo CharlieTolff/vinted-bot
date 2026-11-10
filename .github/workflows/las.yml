@@ -36,6 +36,15 @@ jobs:
           H="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
           KONTO=$(curl -sf -H "$H" "$CF/accounts" | jq -r '.result[0].id')
           echo "CLOUDFLARE_ACCOUNT_ID=$KONTO" >> "$GITHUB_ENV"
+          # Låset nås på <namn>.<underdomän>.workers.dev. Underdomänen registreras första gången.
+          SUB=$(curl -s -H "$H" "$CF/accounts/$KONTO/workers/subdomain" | jq -r '.result.subdomain // empty')
+          if [ -z "$SUB" ]; then
+            for namn in markesborsen markesborsen-se markesborsen-$KONTO; do
+              SUB=$(curl -s -H "$H" -H "Content-Type: application/json" -X PUT -d "{\"subdomain\":\"$namn\"}" "$CF/accounts/$KONTO/workers/subdomain" | jq -r '.result.subdomain // empty')
+              [ -n "$SUB" ] && break
+            done
+          fi
+          echo "Låset nås på https://markesborsen.$SUB.workers.dev"
           ID=$(curl -sf -H "$H" "$CF/accounts/$KONTO/storage/kv/namespaces?per_page=100" | jq -r '.result[] | select(.title=="markesborsen") | .id')
           if [ -z "$ID" ]; then
             ID=$(curl -sf -H "$H" -H "Content-Type: application/json" -X POST -d '{"title":"markesborsen"}' "$CF/accounts/$KONTO/storage/kv/namespaces" | jq -r '.result.id')
