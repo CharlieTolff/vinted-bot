@@ -1,0 +1,25 @@
+name: Kolla Brevo (tillfällig)
+
+on:
+  push:
+    branches: [claude/project-thread-qbsovj]
+    paths: [".github/workflows/brevo-koll.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  koll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      BREVO_KEY: ${{ secrets.BREVO_KEY }}
+    steps:
+      - name: Avsändare, domäner och senaste mejlen till markesborsen@gmail.com
+        run: |
+          H="api-key: $BREVO_KEY"
+          echo "== Konto (plan) =="; curl -s -H "$H" https://api.brevo.com/v3/account | jq -c '{plan: [.plan[]?.type], relay: .relay.enabled}'
+          echo "== Avsändare =="; curl -s -H "$H" https://api.brevo.com/v3/senders | jq -c '.senders[]? | {email, active}'
+          echo "== Domäner =="; curl -s -H "$H" https://api.brevo.com/v3/senders/domains | jq -c '.domains[]? | {domain_name, authenticated, verified}'
+          echo "== Händelser =="; curl -s -H "$H" "https://api.brevo.com/v3/smtp/statistics/events?limit=20&days=1&email=markesborsen@gmail.com" | jq -c '.events[]? | {date, event, subject, reason, from}'
+          echo "== Fel om något =="; curl -s -H "$H" "https://api.brevo.com/v3/smtp/statistics/events?limit=1&days=1" | jq -c 'if .code then . else "ok" end'
