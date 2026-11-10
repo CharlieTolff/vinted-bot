@@ -162,8 +162,9 @@ async function hamtaKund(env, mejl) {
 
 // Har mejladressen tillgång just nu? Prenumerationer kollas mot Stripe med jämna mellanrum.
 async function harTillgang(env, mejl) {
-  if (String(env.FRIA || "").toLowerCase().split(",").map(s => s.trim()).includes(mejl)) return {mejl, plan: "fri"};
   const k = await hamtaKund(env, mejl);
+  // Fria adresser (ägaren) kommer alltid in, men har de köpt något visas köpet (så att det går att testa).
+  if (String(env.FRIA || "").toLowerCase().split(",").map(s => s.trim()).includes(mejl)) return k && k.kund ? k : {mejl, plan: "fri"};
   if (!k) return null;
   if (k.prenumeration && Date.now() - (k.kollad || 0) > KOLLA_IGEN) {
     try {
