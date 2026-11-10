@@ -50,7 +50,7 @@ export default {
       }
       return svar({fel: "finns inte"}, 404);
     } catch (e) {
-      return svar({fel: e.visas || "Något gick fel. Försök igen om en stund."}, e.status || 500);
+      return svar({fel: e.visas || "Något gick fel. Försök igen om en stund.", ...(e.orsak ? {orsak: e.orsak} : {})}, e.status || 500);
     }
   },
 };
@@ -90,7 +90,13 @@ async function stripe(env, metod, vag, data) {
     body: metod === "POST" ? formular(data || {}) : undefined,
   });
   const svar = await r.json();
-  if (!r.ok) throw fel("Betalningen krånglade. Försök igen om en stund.", 502);
+  if (!r.ok) {
+    // Orsaken (utan Stripes text, som kan visa delar av nyckeln) så att felet går att hitta.
+    const e = fel("Betalningen krånglade. Försök igen om en stund.", 502);
+    const f = svar.error || {};
+    e.orsak = [r.status, f.type, f.code, f.param].filter(Boolean).join(" ");
+    throw e;
+  }
   return svar;
 }
 
