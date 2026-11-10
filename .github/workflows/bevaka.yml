@@ -175,6 +175,23 @@ jobs:
           # En sida per märke med vad det säljs för, för Google (plus sitemap.xml och robots.txt).
           python3 markessidor.py _site
 
+      # Börsens siffror till låset hos Cloudflare, där bara de som betalat kommer åt dem.
+      - name: Skicka börsen till låset
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ ! -s bors.json ]; then echo "Inget lås än, hoppar över"; exit 0; fi
+          set -euo pipefail
+          CF=https://api.cloudflare.com/client/v4
+          H="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          KONTO=$(curl -sf -H "$H" "$CF/accounts" | jq -r '.result[0].id')
+          ID=$(curl -sf -H "$H" "$CF/accounts/$KONTO/storage/kv/namespaces?per_page=100" | jq -r '.result[] | select(.title=="markesborsen") | .id')
+          if [ -z "$ID" ]; then echo "Låset är inte upplagt än, hoppar över"; exit 0; fi
+          curl -sf -X PUT -H "$H" -H "Content-Type: application/octet-stream" --data-binary @bors.json "$CF/accounts/$KONTO/storage/kv/namespaces/$ID/values/bors" > /dev/null
+          echo "Börsen skickad till låset"
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

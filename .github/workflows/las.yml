@@ -1,0 +1,54 @@
+name: Lägg upp låset
+
+# Lägger upp Märkesbörsens lås och betalning (mappen betalning) hos Cloudflare.
+on:
+  push:
+    branches: [main]
+    paths: ["betalning/**", ".github/workflows/las.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  las:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      STRIPE_KEY: ${{ secrets.STRIPE_KEY }}
+      BREVO_KEY: ${{ secrets.BREVO_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kolla att Cloudflare-nyckeln finns
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Lägg in CLOUDFLARE_API_TOKEN under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+
+      # Lagret där börsens siffror och kunderna sparas. Skapas första gången.
+      - name: Hitta eller skapa lagret
+        run: |
+          set -euo pipefail
+          CF=https://api.cloudflare.com/client/v4
+          H="Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+          KONTO=$(curl -sf -H "$H" "$CF/accounts" | jq -r '.result[0].id')
+          echo "CLOUDFLARE_ACCOUNT_ID=$KONTO" >> "$GITHUB_ENV"
+          ID=$(curl -sf -H "$H" "$CF/accounts/$KONTO/storage/kv/namespaces?per_page=100" | jq -r '.result[] | select(.title=="markesborsen") | .id')
+          if [ -z "$ID" ]; then
+            ID=$(curl -sf -H "$H" -H "Content-Type: application/json" -X POST -d '{"title":"markesborsen"}' "$CF/accounts/$KONTO/storage/kv/namespaces" | jq -r '.result.id')
+          fi
+          sed -i "s/KV_ID/$ID/" betalning/wrangler.toml
+
+      - name: Lägg upp låset
+        working-directory: betalning
+        run: npx --yes wrangler@3 deploy
+
+      - name: Lägg in hemligheterna
+        working-directory: betalning
+        run: |
+          for namn in STRIPE_KEY BREVO_KEY; do
+            if [ -n "${!namn}" ]; then printf '%s' "${!namn}" | npx --yes wrangler@3 secret put "$namn"; else echo "$namn saknas än, hoppar över"; fi
+          done
