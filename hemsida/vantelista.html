@@ -313,7 +313,7 @@ function forandringar(B){
 
 (async () => {
   let B;
-  try { B = await fetch("../smakprov.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
+  try { B = await fetch("../bors.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
   if (!B || !B.kategorier) return;
   const marken = new Set();
   let annonser = 0;
@@ -323,16 +323,13 @@ function forandringar(B){
     annonser += p[1];
     Object.keys(p[2]).forEach(m => marken.add(m));
   }
-  // Smakprovet har bara räkningen kvar, inte alla märken.
-  if (B.antal) annonser = B.antal.annonser;
-  const antalMarken = B.antal ? B.antal.marken : marken.size;
   let salda = 0;
   for (const v of Object.values(B.tradera_veckor || {})) for (const p of v) salda += p[1];
   if (!annonser) return;
   $("antaltext").textContent = annonser > 1000 ? annonser.toLocaleString("sv-SE") : "tusentals";
   $("statannonser").textContent = annonser.toLocaleString("sv-SE");
   $("statsalda").textContent = salda ? salda.toLocaleString("sv-SE") : "–";
-  $("statmarken").textContent = antalMarken.toLocaleString("sv-SE");
+  $("statmarken").textContent = marken.size.toLocaleString("sv-SE");
   $("prov").hidden = false;
 
   const sett = new Set(), topp = [];

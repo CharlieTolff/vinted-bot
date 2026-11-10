@@ -1,7 +1,7 @@
 """Märkessidor för Google: en sida per märke med vad det säljs för i andra hand, byggd ur bors.json.
 
-Körs när hemsidan byggs (bevaka.yml): python3 markessidor.py _site bors.json
-Läser bors.json (som inte läggs ut öppet) och skriver _site/marken/index.html (alla märken), _site/marken/<märke>/index.html, sitemap.xml och robots.txt.
+Körs när hemsidan byggs (bevaka.yml): python3 markessidor.py _site
+Skriver _site/marken/index.html (alla märken), _site/marken/<märke>/index.html, sitemap.xml och robots.txt.
 Sidorna är vanlig HTML utan spärr, så att Google kan läsa dem, och leder vidare till väntelistan.
 """
 import html
@@ -217,9 +217,9 @@ def skriv(fil, text):
         f.write(text)
 
 
-def main(ut, data=None):
+def main(ut):
     try:
-        with open(data or os.path.join(ut, "bors.json"), encoding="utf-8") as f:
+        with open(os.path.join(ut, "bors.json"), encoding="utf-8") as f:
             bors = json.load(f)
     except (OSError, ValueError):
         bors = {}
@@ -236,4 +236,4 @@ def main(ut, data=None):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "_site", sys.argv[2] if len(sys.argv) > 2 else None)
+    main(sys.argv[1] if len(sys.argv) > 1 else "_site")

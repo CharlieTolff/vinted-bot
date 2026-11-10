@@ -145,7 +145,7 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js hemsida/las.js sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js sokningar.json _site/
           mkdir -p _site/modeller
           cp .fixabild/*.onnx .fixabild/*.json _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
@@ -153,8 +153,7 @@ jobs:
           # Bilderna på plaggen i bokföringen (krypterade med samma lösenord).
           cp -r hemsida/bokbilder _site/ 2>/dev/null || true
           cp traffar.json _site/ 2>/dev/null || echo "{}" > _site/traffar.json
-          # Börsens siffror ligger bakom låset (se steget "Skicka börsen till låset"). Öppet ligger bara smakprovet.
-          python3 smakprov.py bors.json _site/smakprov.json
+          cp bors.json _site/ 2>/dev/null || echo "{}" > _site/bors.json
           cp spaning.json _site/ 2>/dev/null || echo "{}" > _site/spaning.json
           cp spaningar.json _site/
           cp borskategorier.json _site/ 2>/dev/null || echo "[]" > _site/borskategorier.json
@@ -162,7 +161,7 @@ jobs:
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
-          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js hemsida/las.js _site/borsen/
+          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/tillganglig.js _site/borsen/
           # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
           # Ikonen i webbläsarfliken (och på hemskärmen på mobilen).
           cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/favicon.ico _site/
@@ -174,7 +173,7 @@ jobs:
           # Typsnitten ligger hos oss själva, så att besökarna inte skickas till Google.
           for d in _site _site/borsen _site/vantelista _site/integritet _site/villkor; do cp -r hemsida/typsnitt "$d/"; done
           # En sida per märke med vad det säljs för, för Google (plus sitemap.xml och robots.txt).
-          python3 markessidor.py _site bors.json
+          python3 markessidor.py _site
 
       # Börsens siffror till låset hos Cloudflare, där bara de som betalat kommer åt dem.
       - name: Skicka börsen till låset

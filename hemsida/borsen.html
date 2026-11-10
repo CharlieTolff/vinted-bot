@@ -14,7 +14,6 @@
 <meta name="description" content="Märkesbörsen visar vilka märken som säljer på andrahandsmarknaden, till exempel Vinted och Tradera, vad de säljs för och var marginalen finns.">
 <link href="typsnitt/typsnitt.css" rel="stylesheet">
 <script src="tillganglig.js" defer></script>
-<script src="las.js"></script>
 <style>
 :root{
   color-scheme:light;
@@ -180,15 +179,6 @@ footer .friskriv{max-width:720px;margin:8px auto 0;font-size:12.5px;line-height:
 .plan .knapp{margin-top:12px;width:100%}
 .erbjudande{max-width:900px;margin:0 auto 26px;text-align:center;padding:12px 18px;border-radius:14px;background:color-mix(in srgb,var(--guld) 16%,var(--kort));border:1px solid color-mix(in srgb,var(--guld) 45%,transparent);font-size:15px}
 .erbjudande b{color:var(--guldljus)}
-.konto{max-width:560px;margin:0 auto;text-align:center;padding:28px 24px;border-radius:22px;background:var(--kort);border:1px solid var(--linje);box-shadow:var(--skugga)}
-.konto h2{font-size:26px;margin-bottom:8px}
-.konto p{color:var(--svag);margin:0 0 18px}
-.konto form{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.konto input{flex:1 1 240px;font:inherit;padding:12px 16px;border-radius:999px;border:1px solid var(--linje);background:var(--bg);color:var(--text)}
-.konto .rad2{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.konto .svar{margin-top:14px;font-size:15px;min-height:1.5em}
-.meddelande{max-width:900px;margin:16px auto 0;padding:12px 18px;border-radius:14px;text-align:center;font-size:15px;background:var(--rodljus)}
-.plan .knapp:disabled{opacity:.7;cursor:default;transform:none}
 @media (max-width:760px){ .planer{grid-template-columns:minmax(0,1fr);max-width:420px} }
 .priskort .liten{font-size:13.5px;color:var(--svag);margin:12px 0 0}
 
@@ -269,8 +259,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 <div class="meny">
   <div class="inre">
     <a class="logga" href="index.html"><i><b style="height:6px"></b><b style="height:11px"></b><b style="height:15px"></b></i>Märkesbörsen</a>
-    <nav><a href="#kalkyl">Räkna vinst</a><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="#konto" id="menykonto">Logga in</a></nav>
-    <a class="knapp liten" href="#pris" id="menyknapp">Kom igång</a>
+    <nav><a href="#kalkyl">Räkna vinst</a><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="app.html">Öppna börsen</a></nav>
+    <a class="knapp liten" href="#pris">Kom igång</a>
   </div>
 </div>
 
@@ -413,30 +403,6 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   </div>
 </section>
 
-<section id="konto" style="padding-top:0">
-  <div class="inre">
-    <div class="konto" id="loggain">
-      <h2>Har du redan köpt?</h2>
-      <p>Skriv mejladressen du betalade med, så skickar vi en inloggningslänk. Du behöver inget lösenord.</p>
-      <form id="loggainform" novalidate>
-        <input type="email" id="loggainmejl" autocomplete="email" inputmode="email" placeholder="namn@exempel.se" aria-label="Din mejladress" required>
-        <button class="knapp" type="submit" id="loggainknapp">Skicka länk</button>
-      </form>
-      <div class="svar" id="loggainsvar" role="status"></div>
-    </div>
-    <div class="konto" id="inne" hidden>
-      <h2>Du är inloggad</h2>
-      <p id="innetext">Du har tillgång till hela Märkesbörsen.</p>
-      <div class="rad2">
-        <a class="knapp" href="app.html">Öppna börsen</a>
-        <button class="knapp" type="button" id="hantera" style="background:var(--yta)" hidden>Hantera prenumeration</button>
-        <button class="knapp" type="button" id="loggaut" style="background:var(--yta)">Logga ut</button>
-      </div>
-      <div class="svar" id="innesvar" role="status"></div>
-    </div>
-  </div>
-</section>
-
 <section style="padding-top:0">
   <div class="inre">
     <div class="rubrik mitt"><h2>Vanliga frågor</h2></div>
@@ -467,9 +433,10 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 </footer>
 
 <script>
-// Priserna. Själva köpet sker i Stripes kassa, via låset (las.js och mappen betalning).
+// Ändra här när betalningen är klar: en betallänk (t.ex. Stripe) och priset.
+const BETALLANK = "";
 // De tre perioderna. Allt ingår i alla, längre period ger lägre pris per månad.
-const PLANER = [{id: "manad", namn: "1 månad", pris: 149, man: 1}, {id: "halvar", namn: "6 månader", pris: 699, man: 6}, {id: "ar", namn: "1 år", pris: 1299, man: 12, bast: true}];
+const PLANER = [{namn: "1 månad", pris: 149, man: 1}, {namn: "6 månader", pris: 699, man: 6}, {namn: "1 år", pris: 1299, man: 12, bast: true}];
 // Fyll i för mer förtroende: vem du är och hur man når dig (visas under "Vem står bakom?").
 const NAMN = "Charlie Tolff";
 const KONTAKT = "markesborsen@gmail.com";
@@ -489,56 +456,8 @@ $("planer").innerHTML = PLANER.map(p => {
     <h3>${p.namn}</h3><div class="belopp">${kr(p.pris)}</div>
     <div class="per">${p.man > 1 ? `${kr(per)} i månaden` : "ingen bindningstid"}</div>
     <div class="spar">${spar > 0 ? `Du sparar ${kr(spar)}` : ""}</div>
-    <button class="knapp" type="button" data-plan="${p.id}">Välj ${p.namn}</button></div>`;
+    <a class="knapp" href="${BETALLANK || "app.html"}">Välj ${p.namn}</a></div>`;
 }).join("");
-$("planer").addEventListener("click", async e => {
-  const b = e.target.closest("[data-plan]");
-  if (!b) return;
-  const text = b.textContent;
-  b.disabled = true; b.textContent = "Öppnar kassan…";
-  try { await Las.kop(b.dataset.plan); }
-  catch (fel) { b.disabled = false; b.textContent = text; meddela(fel.message); }
-});
-
-// ---------- Konto: logga in, logga ut, hantera prenumerationen ----------
-function meddela(text){
-  let m = $("meddelande");
-  if (!m) { m = document.createElement("div"); m.id = "meddelande"; m.className = "meddelande"; m.setAttribute("role", "alert"); document.querySelector(".hjalte").before(m); }
-  m.textContent = text;
-  scrollTo({top: 0, behavior: "smooth"});
-}
-$("loggainform").addEventListener("submit", async e => {
-  e.preventDefault();
-  const mejl = $("loggainmejl").value.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mejl)) { $("loggainsvar").textContent = "Skriv en riktig mejladress."; return; }
-  $("loggainknapp").disabled = true; $("loggainsvar").textContent = "Skickar…";
-  try {
-    await Las.loggaIn(mejl);
-    $("loggainsvar").textContent = `Klart! Om ${mejl} har Märkesbörsen får du en inloggningslänk inom en minut. Kolla skräpposten om den inte syns.`;
-  } catch (fel) { $("loggainsvar").textContent = fel.message; }
-  $("loggainknapp").disabled = false;
-});
-$("loggaut").addEventListener("click", () => { Las.loggaUt(); visaKonto({inne: false}); });
-$("hantera").addEventListener("click", async () => {
-  try { await Las.hantera(); } catch (fel) { $("innesvar").textContent = fel.message; }
-});
-function visaKonto(s){
-  $("loggain").hidden = s.inne; $("inne").hidden = !s.inne;
-  $("menykonto").textContent = s.inne ? "Konto" : "Logga in";
-  $("menyknapp").textContent = s.inne ? "Öppna börsen" : "Kom igång";
-  $("menyknapp").href = s.inne ? "app.html" : "#pris";
-  if (!s.inne) return;
-  $("hantera").hidden = !s.prenumeration && !(s.plan && s.plan !== "fri");
-  $("innetext").textContent = s.plan === "fri" ? "Du har tillgång till hela Märkesbörsen." :
-    s.prenumeration ? `Inloggad som ${s.mejl}. Prenumerationen förnyas varje månad tills du säger upp den.` :
-    `Inloggad som ${s.mejl}. Du har tillgång till och med ${new Date(s.till).toLocaleDateString("sv-SE", {day: "numeric", month: "long", year: "numeric"})}.`;
-}
-(async () => {
-  const tillbaka = await Las.tillbaka();
-  if (tillbaka === true) { location.href = "app.html"; return; }
-  if (typeof tillbaka === "string") meddela(tillbaka);
-  visaKonto(await Las.status());
-})();
 $("ctapris").textContent = `Från ${kr(Math.min(...PLANER.map(p => p.pris / p.man)))} i månaden`;
 if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder i andra hand. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
 if (KONTAKT) { $("kontakt").hidden = false; $("kontakt").innerHTML = `Frågor? Skriv till <a href="mailto:${esc(KONTAKT)}">${esc(KONTAKT)}</a>.`; }
@@ -590,7 +509,7 @@ function unika(lista, n){
 
 async function start(){
   let B;
-  try { B = await fetch("../smakprov.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
+  try { B = await fetch("../bors.json", {cache: "no-store"}).then(r => r.json()); } catch { return; }
   if (!B || !B.kategorier) return;
   const kats = B.kategorier;
 
@@ -603,15 +522,12 @@ async function start(){
     annonser += p[1];
     Object.keys(p[2]).forEach(m => marken.add(m));
   }
-  // Smakprovet har bara räkningen kvar, inte alla märken.
-  if (B.antal) annonser = B.antal.annonser;
-  const antalMarken = B.antal ? B.antal.marken : marken.size;
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
   $("fortroende").innerHTML = (t ? `<span><span class="puls"></span>Uppdaterad <b>${t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})}</b></span>` : "") +
-    `<span><b>${annonser.toLocaleString("sv-SE")}</b> annonser</span><span><b>${antalMarken.toLocaleString("sv-SE")}</b> märken</span>`;
+    `<span><b>${annonser.toLocaleString("sv-SE")}</b> annonser</span><span><b>${marken.size.toLocaleString("sv-SE")}</b> märken</span>`;
   $("antaltext").textContent = annonser > 1000 ? annonser.toLocaleString("sv-SE") : "tusentals";
   $("statannonser").textContent = annonser.toLocaleString("sv-SE");
-  $("statmarken").textContent = antalMarken.toLocaleString("sv-SE");
+  $("statmarken").textContent = marken.size.toLocaleString("sv-SE");
   $("statkat").textContent = kats.length;
   let saldaTotalt = 0;
   for (const v of Object.values(B.tradera_veckor || {})) for (const p of v) saldaTotalt += p[1];
