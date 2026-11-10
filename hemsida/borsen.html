@@ -187,6 +187,7 @@ footer .friskriv{max-width:720px;margin:8px auto 0;font-size:12.5px;line-height:
 .konto input{flex:1 1 240px;font:inherit;padding:12px 16px;border-radius:999px;border:1px solid var(--linje);background:var(--bg);color:var(--text)}
 .konto .rad2{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 .konto .svar{margin-top:14px;font-size:15px;min-height:1.5em}
+.knapp.sek,.knapp.sek:hover{background:transparent;color:var(--text);border:1px solid var(--linje);box-shadow:none}
 .meddelande{max-width:900px;margin:16px auto 0;padding:12px 18px;border-radius:14px;text-align:center;font-size:15px;background:var(--rodljus)}
 .plan .knapp:disabled{opacity:.7;cursor:default;transform:none}
 @media (max-width:760px){ .planer{grid-template-columns:minmax(0,1fr);max-width:420px} }
@@ -429,8 +430,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <p id="innetext">Du har tillgång till hela Märkesbörsen.</p>
       <div class="rad2">
         <a class="knapp" href="app.html">Öppna börsen</a>
-        <button class="knapp" type="button" id="hantera" style="background:var(--yta)" hidden>Hantera prenumeration</button>
-        <button class="knapp" type="button" id="loggaut" style="background:var(--yta)">Logga ut</button>
+        <button class="knapp sek" type="button" id="hantera" hidden>Hantera prenumeration</button>
+        <button class="knapp sek" type="button" id="loggaut">Logga ut</button>
       </div>
       <div class="svar" id="innesvar" role="status"></div>
     </div>
