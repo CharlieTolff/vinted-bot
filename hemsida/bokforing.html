@@ -14,6 +14,7 @@
 <link rel="apple-touch-icon" href="/ikon-180.png">
 <link href="typsnitt/typsnitt.css" rel="stylesheet">
 <script src="tillganglig.js" defer></script>
+<script src="las.js"></script>
 <style>
 /* Samma färger som alarm-sidan och märkesbörsen */
 :root{
@@ -428,7 +429,7 @@ async function forsok(losen, spara){
     // Alarmen (för vinst per alarm) och börsen (för prisförslag). Saknas de visas resten ändå.
     [ALARM, B] = await Promise.all([
       fetch("sokningar.json", {cache: "no-store"}).then(r => r.ok ? r.json() : []).catch(() => []),
-      fetch("bors.json", {cache: "no-store"}).then(r => r.ok ? r.json() : null).catch(() => null),
+      Las.bors(),
     ]);
     forbered(); rita(); laddaBilder();
   } catch (e) {

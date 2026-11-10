@@ -923,12 +923,13 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   </form>
 </dialog>
 
+<script src="las.js"></script>
 <script>
 // Den publika börsen (borsen/app.html) visar samma sida, men utan alarm, egna analyser och bokföring.
 const PUBLIK = location.pathname.includes("/borsen/");
 document.documentElement.classList.toggle("publik", PUBLIK);
 if (PUBLIK) {
-  document.querySelector(".headin").innerHTML = `<a class="logga" href="index.html">Märkesbörsen</a><nav class="flikar"><a href="index.html">Start</a><a href="app.html" class="vald">Börsen</a></nav>`;
+  document.querySelector(".headin").innerHTML = `<a class="logga" href="index.html">Märkesbörsen</a><nav class="flikar"><a href="index.html">Start</a><a href="app.html" class="vald">Börsen</a><a href="index.html#konto">Konto</a></nav>`;
   for (const [id, text] of [["urval", ["Mätta märken", "Alla märken"]], ["lageval", ["Mätta märken", "Fler märken som säljer"]]])
     document.querySelectorAll(`#${id} button`).forEach((b, i) => b.textContent = text[i]);
 }
@@ -1943,12 +1944,14 @@ let storlek = 0;
 addEventListener("resize", () => { clearTimeout(storlek); storlek = setTimeout(() => { if (st.marke) ritaDiagram(); if (B && B.kategorier && st.vy === "ute") ritaUte(); }, 150); });
 
 async function start(){
-  try {
-    B = await fetch(PUBLIK ? "../bors.json" : "bors.json", {cache: "no-store"}).then(r => { if (!r.ok) throw 0; return r.json() });
-  } catch {
-    B = null;
+  // Siffrorna hämtas från låset, där bara den som betalat (och ägaren) kommer in.
+  B = await Las.bors();
+  if (!B) {
+    $("rutor").innerHTML = "";
+    $("tabell").innerHTML = `<tbody><tr><td class="tomt">Logga in för att se börsen. <a href="${PUBLIK ? "" : "borsen/"}index.html#konto">Logga in</a>${PUBLIK ? ` eller <a href="index.html#pris">välj hur länge du vill ha Märkesbörsen</a>` : ""}.</td></tr></tbody>`;
+    return;
   }
-  if (!B || !B.kategorier) {
+  if (!B.kategorier) {
     $("rutor").innerHTML = "";
     $("tabell").innerHTML = `<tbody><tr><td class="tomt">Märkesbörsen har inte gjort sin första mätning än. Den kör med botten, så titta igen om några minuter.</td></tr></tbody>`;
     return;
