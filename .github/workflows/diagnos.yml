@@ -42,11 +42,14 @@ jobs:
         run: python3 diagnos.py --tradera
       - name: Väntelistans formulär hos Brevo
         if: inputs.steg == 'brevo'
+        env:
+          BREVO_KEY: ${{ secrets.BREVO_KEY }}
         run: |
-          url=$(grep -o 'const BREVO_FORM = "[^"]*"' hemsida/vantelista.html | cut -d'"' -f2)
-          curl -sS -m 30 "$url" -o brevo.html -w "HTTP %{http_code}\n"
-          grep -oE '<form[^>]*>' brevo.html || true
-          grep -oE '<(input|select)[^>]*>' brevo.html | sed -E 's/ (class|style|placeholder|data-[a-z-]+)="[^"]*"//g' || true
+          H="api-key: $BREVO_KEY"
+          echo "== Konto"; curl -s -H "$H" https://api.brevo.com/v3/account | jq -c '{plan: [.plan[]?.type], relay: .relay.enabled, fel: .code}'
+          echo "== Avsändare"; curl -s -H "$H" https://api.brevo.com/v3/senders | jq -c '.senders[]? | {email, active}'
+          echo "== Domäner"; curl -s -H "$H" https://api.brevo.com/v3/senders/domains | jq -c '.domains[]? | {domain_name, authenticated, verified}'
+          echo "== Händelser"; curl -s -H "$H" "https://api.brevo.com/v3/smtp/statistics/events?limit=20&days=1&email=markesborsen@gmail.com" | jq -c '(.events[]? | {date, event, subject, reason, from}), (if .code then . else empty end)'
       - name: Svarar märkesbörsen.se
         if: inputs.steg == 'doman'
         run: |
