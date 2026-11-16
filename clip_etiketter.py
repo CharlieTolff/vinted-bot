@@ -25,6 +25,7 @@ PLAGG = {
     "Långärmad tröja": ["a long sleeve t-shirt"],
     "Pikétröja": ["a polo shirt with a collar"],
     "Skjorta": ["a button-up shirt", "a dress shirt"],
+    "Overshirt": ["an overshirt", "a heavy shirt jacket", "a thick flannel overshirt worn as a jacket"],
     "Linne": ["a tank top"],
     "Stickad tröja": ["a knitted sweater", "a knit jumper"],
     "Sweatshirt": ["a crewneck sweatshirt"],

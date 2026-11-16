@@ -166,7 +166,7 @@ const CLIP_MB = 88;
 // allmänna namnet, och är den osäker på allt lämnas rutan tom.
 const FAMILJER = {
   "Tröja": ["Långärmad tröja", "Stickad tröja", "Sweatshirt", "Hoodie", "Zip-hoodie", "Kofta", "Halvzip-tröja", "Fleecetröja"],
-  "Jacka": ["Jacka", "Dunjacka", "Jeansjacka", "Skinnjacka", "Rock", "Trenchcoat", "Väst", "Kavaj", "Fleecetröja"],
+  "Jacka": ["Jacka", "Dunjacka", "Jeansjacka", "Skinnjacka", "Rock", "Trenchcoat", "Väst", "Kavaj", "Fleecetröja", "Overshirt"],
   "Byxor": ["Jeans", "Byxor", "Mjukisbyxor"],
   "Skor": ["Sneakers", "Kängor", "Skor"],
 };
@@ -233,7 +233,8 @@ async function kannIgen(bild, visa){
   for (let p = 0; p < 224 * 224; p++) for (let k = 0; k < 3; k++) x[k * 224 * 224 + p] = (d[4 * p + k] / 255 - MEDEL[k]) / STD[k];
   const ut = await sess.run({[sess.inputNames[0]]: new ort.Tensor("float32", x, [1, 3, 224, 224])});
   const v = ut[sess.outputNames[0]].data, n = Math.hypot(...v), vn = Array.from(v, a => a / n);
-  return {plagg: valjPlagg(andelar(etiketter.plagg, vn)), monster: valjMonster(andelar(etiketter.monster, vn))};
+  const p = andelar(etiketter.plagg, vn);
+  return {plagg: valjPlagg(p), monster: valjMonster(andelar(etiketter.monster, vn)), p};
 }
 const lista = v => v.length > 1 ? v.slice(0, -1).join(", ") + " och " + v[v.length - 1] : v.join("");
 async function franBilder(filer){
@@ -289,6 +290,10 @@ async function franBilder(filer){
     visa(text); zon.classList.remove("laser"); $("abfil").value = "";
   }
 }
+// Fota lappen (vardera.js) läser bilderna på samma sätt.
+rot.AnnonsBild = {laddaTesseract, gra, kannIgen, plaggfarg, tolka};
+// Fyller i beskrivningen från Fota lappen.
+rot.AnnonsFyll = (v) => { if (!$("abform")) return; for (const [id, x] of Object.entries(v)) if (x && $(id)) $(id).value = x; rita(); };
 function init(){
   if (!$("abform")) return;
   $("abskick").innerHTML = Object.keys(SKICK).map(s => `<button type="button" class="chip" data-s="${s}">${s}</button>`).join("");
