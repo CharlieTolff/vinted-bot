@@ -25,6 +25,7 @@ PLAGG = {
     "Långärmad tröja": ["a long sleeve t-shirt"],
     "Pikétröja": ["a polo shirt with a collar"],
     "Skjorta": ["a button-up shirt", "a dress shirt"],
+    "Overshirt": ["an overshirt", "a heavy shirt jacket", "a thick flannel overshirt worn as a jacket"],
     "Linne": ["a tank top"],
     "Stickad tröja": ["a knitted sweater", "a knit jumper"],
     "Sweatshirt": ["a crewneck sweatshirt"],
@@ -66,6 +67,23 @@ MONSTER = {
     "Tryck på framsidan": ["a garment with a large graphic print", "a garment with a big printed logo"],
 }
 MALLAR = ["a photo of {}.", "a photo of a person wearing {}.", "a product photo of {}."]
+# Märkena läses också av CLIP (Fota lappen): den känner igen tydliga lappar och loggor även när
+# texten är för suddig eller sned för OCR. Testat: inga fel märken när den är minst 80 % säker.
+MARKE_MALLAR = ["a clothing label that says {}.", "the {} logo.", "a {} brand tag on clothing."]
+# Är bilden en närbild på lappen eller en bild på hela plagget?
+VY = {"lapp": ["a close-up photo of a clothing label with text", "a care label tag sewn into clothing"],
+      "plagg": ["a photo of a whole garment", "a product photo of a piece of clothing"]}
+
+
+def marken(snitt):
+    """Alla herrmärken i marken.py, packade som int8 i base64 (ungefär 200 kB i stället för 2 MB)."""
+    import base64
+    import marken as M
+    namn = [m for m in M.MARKEN if not M.ar_dam(m)]
+    v = np.array([snitt([m.format(n) for m in MARKE_MALLAR]) for n in namn])
+    skala = np.abs(v).max(axis=1)
+    q = np.round(v / skala[:, None] * 127).astype(np.int8)
+    return {"namn": namn, "skala": [round(float(x), 6) for x in skala], "vek": base64.b64encode(q.tobytes()).decode()}
 
 
 def main(ut):
@@ -73,13 +91,17 @@ def main(ut):
     ImageEmbedding(model_name=CLIP_BILD, cache_dir=CLIP_MAPP)  # laddar ner bilddelen om den saknas
     text = TextEmbedding(model_name=CLIP_TEXT, cache_dir=CLIP_MAPP)
 
-    def vektor(beskrivningar):
-        texter = [m.format(b) for b in beskrivningar for m in MALLAR]
+    def snitt(texter):
         v = np.mean([x / np.linalg.norm(x) for x in text.embed(texter)], axis=0)
         return [round(float(x), 5) for x in v / np.linalg.norm(v)]
 
+    def vektor(beskrivningar):
+        return snitt([m.format(b) for b in beskrivningar for m in MALLAR])
+
     data = {"plagg": {k: vektor(v) for k, v in PLAGG.items()},
-            "monster": {k: vektor(v) for k, v in MONSTER.items()}}
+            "monster": {k: vektor(v) for k, v in MONSTER.items()},
+            "vy": {k: snitt(v) for k, v in VY.items()},
+            "marken": marken(snitt)}
     os.makedirs(ut, exist_ok=True)
     with open(os.path.join(ut, "clip-etiketter.json"), "w") as f:
         json.dump(data, f, separators=(",", ":"))

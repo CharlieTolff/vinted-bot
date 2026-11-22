@@ -310,6 +310,40 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .abbildval{display:grid;gap:8px}
 .abzon{padding:18px 14px}
 .abzon.laser{opacity:.7;pointer-events:none}
+.vdinnehall{padding:16px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:20px;align-items:start}
+.vdvanster{display:grid;gap:12px}
+.vdform{margin-top:4px}
+.chips.vdkat{flex-wrap:wrap;overflow:visible}
+.chips.vdkat .chip.vald{display:inline-block!important}
+.vdtom{margin:0;padding:22px 16px;text-align:center;color:var(--svag);background:var(--kort2);border-radius:14px}
+.vdtopp{display:flex;gap:14px;align-items:center}
+.vdtopp h3{margin:2px 0;font-size:26px;letter-spacing:-.02em}
+.vdbild{width:76px;height:76px;object-fit:cover;border-radius:12px;flex:none;border:1px solid var(--linje)}
+.vdsvar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:14px}
+.vdtrend{margin:12px 0 0;font-weight:600}
+.vddiagram{margin-top:14px;background:var(--kort2);border-radius:14px;padding:12px 12px 4px}
+.vddiagram svg{width:100%;height:auto;display:block}
+.vdforklaring{display:flex;gap:16px;font-size:12.5px;color:var(--svag)}
+.vdforklaring span{display:inline-flex;align-items:center;gap:6px}
+.vdruta{width:11px;height:11px;border-radius:3px;background:var(--guld);opacity:.55}
+.vdstreck{width:16px;height:3px;border-radius:2px;background:var(--plus)}
+.vdstapel{fill:var(--guld);opacity:.55}
+.vdlinje{fill:none;stroke:var(--plus);stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.vdpunkt{fill:var(--plus)}
+.vdtext{fill:var(--text);font:700 22px Inter,system-ui,sans-serif}
+.vdaxel{fill:var(--svag);font:19px Inter,system-ui,sans-serif}
+.vdvinst{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-top:14px;align-items:stretch}
+.vdvinst label{display:grid;gap:5px;font-size:12.5px;font-weight:600;color:var(--svag);align-content:center}
+.vdvinst input{font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--linje);border-radius:10px;padding:10px;width:100%}
+.vdvinst div{border-radius:14px;padding:12px;background:var(--kort2);text-align:center}
+.vdvinst div span{display:block;font-size:13px;color:var(--svag)}
+.vdvinst div b{display:block;font-size:26px;font-weight:800;letter-spacing:-.03em}
+.vdvinst div b.plus{color:var(--plus)}.vdvinst div b.minus{color:var(--minus)}
+.vdvinst div small{color:var(--svag);font-size:12.5px}
+.vdresultat .hjalp{font-size:12.5px;color:var(--svag);margin:12px 0}
+.vdresultat .upp{color:var(--plus);font-weight:700}.vdresultat .ned{color:var(--minus);font-weight:700}
+.lankknapp{font:inherit;border:0;background:none;padding:0;color:var(--guldtext);text-decoration:underline;cursor:pointer;font-weight:600}
+@media (max-width:900px){ .vdinnehall{grid-template-columns:minmax(0,1fr)} }
 .abtips{margin:0;font-size:13px;color:var(--svag);line-height:1.45}
 .abnotis{margin:0;font-size:13.5px;line-height:1.45;background:var(--kort2);border-radius:10px;padding:10px 12px}
 .abknappar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
@@ -563,6 +597,10 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
   <nav class="sidopanel" id="vyer" aria-label="Välj vy">
     <a class="sidologga" href="index.html">Märkesbörsen</a>
     <div class="rubrik">Meny</div>
+    <button class="grupp" data-grupp="vardera" aria-expanded="false" title="Vad är plagget värt?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2.2l1.5-2.2h5.6L16.3 7h2.2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.8" r="3.4"/></svg><span class="gtext">Fota lappen<small>Vad är plagget värt?</small></span></button>
+    <div class="undermeny" data-grupp="vardera">
+      <button data-vy="vardera">Värdera ett plagg<small>Fota lappen, se priset</small></button>
+    </div>
     <button class="grupp" data-grupp="marknad" aria-expanded="false" title="Vad ska jag köpa in?"><svg class="ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="gtext">Marknaden<small>Vad ska jag köpa in?</small></span></button>
     <div class="undermeny" data-grupp="marknad">
       <button data-vy="andel">Andel av annonser<small>Märken per kategori</small></button>
@@ -737,6 +775,32 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <span class="hjalp">Bokföringen och bilderna sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
       <span class="bffotknappar"><button class="knapp" id="bfexport">Ladda ner till Excel</button><button class="knapp" id="bfkopia">Spara säkerhetskopia</button><button class="knapp" id="bfaterstall">Läs in säkerhetskopia</button></span>
       <input type="file" id="bfaterfil" accept="application/json,.json" hidden>
+    </div>
+  </section>
+  </div>
+
+  <div class="vy" data-vy="vardera">
+  <section class="kort">
+    <div class="korthuvud">
+      <h2>Fota lappen</h2>
+      <span class="svag">Ta en bild på lappen där märket syns, och gärna en på hela plagget. Börsen visar vad det brukar säljas för, vad du ska lägga ut det för och hur det går för märket.</span>
+    </div>
+    <div class="vdinnehall">
+      <div class="vdvanster">
+        <label class="fbzon abzon" id="vdzon">
+          <input type="file" id="vdfil" accept="image/*" multiple hidden>
+          <b>Fota eller välj bilder</b>
+          <span>En bild på lappen och en på plagget</span>
+        </label>
+        <p class="abtips">Bilderna stannar på din mobil eller dator. Första gången laddas AI:n ner, sedan går det fort.</p>
+        <p class="abnotis" id="vdnotis" hidden></p>
+        <div class="abform vdform">
+          <label>Märke<input id="vdmarke" list="vdmarken" placeholder="Skriv märket, t.ex. Ralph Lauren" autocomplete="off"></label>
+          <datalist id="vdmarken"></datalist>
+          <div><span class="ablabel">Vilken sorts plagg?</span><div class="chips vdkat" id="vdkat"></div></div>
+        </div>
+      </div>
+      <div class="vdresultat" id="vdanalys"></div>
     </div>
   </section>
   </div>
@@ -1567,7 +1631,7 @@ function ritaVy(){
   $("vyer").querySelectorAll(".grupp").forEach(b => { b.classList.toggle("aktiv", b.dataset.grupp === aktiv); b.setAttribute("aria-expanded", b.dataset.grupp === oppen); });
   $("vyer").querySelectorAll(".undermeny").forEach(u => u.hidden = u.dataset.grupp !== oppen);
   document.querySelectorAll(".vy").forEach(v => v.hidden = v.dataset.vy !== st.vy);
-  $("omkort").hidden = ["bilder", "bokforing", "beskrivning"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
+  $("omkort").hidden = ["bilder", "bokforing", "beskrivning", "vardera"].includes(st.vy);  // förklaringen gäller siffrorna, inte bildverktyget
 }
 const finnsVy = vy => !!vy && !!document.querySelector(`.vy[data-vy="${CSS.escape(vy)}"]`);
 function visaVy(vy){
@@ -1875,6 +1939,7 @@ function ritaOm(){
 function rita(){
   uteMinne = new Map();
   ritaVy(); ritaUte(); ritaVal(); ritaRutor(); ritaLagen(); ritaTabell(); ritaDetalj(); ritaOm(); ritaTrender(); ritaFart(); ritaVinst();
+  if (window.ritaVardera) ritaVardera();
 }
 
 // ---------- Händelser ----------
@@ -2237,5 +2302,6 @@ start();
 <script src="fixabild.js"></script>
 <script src="bokfor.js"></script>
 <script src="annons.js"></script>
+<script src="vardera.js"></script>
 </body>
 </html>

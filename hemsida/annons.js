@@ -10,11 +10,72 @@ const MATERIAL = [[/^(merino)/, "merinoull"], [/^(cotton|coton|baumwolle|bomull|
   [/^(viscose|viskos|viscosa)/, "viskos"], [/^(polyamid|nylon)/, "polyamid"], [/^(linen|leinen|lin$|linne)/, "linne"], [/^(silk|seide|soie|siden)/, "siden"],
   [/^(acryl|akryl)/, "akryl"], [/^(leather|leder|cuir|läder)/, "läder"], [/^(lyocell|tencel)/, "lyocell"], [/^(modal)/, "modal"], [/^(down|daun|dun)$/, "dun"], [/^(feather|federn|fjäder)/, "fjäder"]];
 const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "");
-function tolka(text, marken){
+// ---------- Märket på lappen ----------
+// Samma nyckel som marken.py: "Samsøe & Samsøe" -> ["samsoe", "samsoe"] ("och" räknas inte, OCR tappar ofta &).
+const nyckel = s => (String(s || "").toLowerCase().replace(/ø/g, "o").replace(/æ/g, "ae").replace(/ß/g, "ss")
+  .normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/['’´`]/g, "").match(/[a-z0-9]+/g) || []).filter(t => t !== "and");
+function avstand(a, b, max){
+  // Levenshtein, men ger upp (max + 1) så fort det blir för långt.
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let f = Array.from({length: b.length + 1}, (_, j) => j);
+  for (let i = 1; i <= a.length; i++) {
+    const n = [i]; let minst = i;
+    for (let j = 1; j <= b.length; j++) { n[j] = Math.min(f[j] + 1, n[j - 1] + 1, f[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); minst = Math.min(minst, n[j]); }
+    if (minst > max) return max + 1;
+    f = n;
+  }
+  return f[b.length];
+}
+// Märken som också är vanliga ord (Only, Next, Selected …) räknas bara när de står stort på lappen.
+const VANLIGA_ORD = new Set(["cotton", "wool", "made", "size", "linen", "silk", "down", "wash", "dry", "clean", "only", "next", "house", "hope", "sand",
+  "tiger", "on", "frame", "basic", "classic", "denim", "jeans", "sport", "original", "premium", "selected", "reserved", "champion", "guess", "kappa",
+  "lee", "gap", "mango", "jordan", "represent", "palace", "supreme", "columbia", "velour", "jules", "mustang", "playboy", "needles", "kapital",
+  "converse", "edwin", "riley", "brothers", "divided", "celio", "schott", "veja", "asket", "logg", "casablanca", "polo", "hugo", "nudie"]);
+let alias = {};  // variant -> märke (BOSS -> Hugo Boss), från marken-alias.json
+function sattAlias(a){ alias = a || {}; }
+// ord: Tesseracts ord [{t: text, c: säkerhet, h: höjd}] för en bild. Ger {marke, poang} eller null.
+function marketIOrd(ord, marken){
+  const finns = new Map();
+  for (const m of marken || []) { const k = nyckel(m).join(""); if (k) finns.set(k, m); }
+  for (const [v, m] of Object.entries(alias)) { const k = nyckel(v).join(""), namn = finns.get(nyckel(m).join("")); if (k && namn && !finns.has(k)) finns.set(k, namn); }
+  const st = [];
+  for (const o of ord || []) for (const t of nyckel(o.t)) st.push({t, h: o.h || 1, c: o.c ?? 90});
+  const hoga = st.filter(x => x.c >= 40 && x.t.length >= 2).map(x => x.h).sort((a, b) => b - a);
+  const maxH = hoga[0] || 1;
+  const nycklar = [...finns.keys()].filter(k => k.length >= 5);
+  let bast = null;
+  for (let i = 0; i < st.length; i++) {
+    for (let n = 1; n <= 4 && i + n <= st.length; n++) {
+      const del = st.slice(i, i + n), k = del.map(x => x.t).join("");
+      const storlek = del.reduce((s, x) => s + x.h, 0) / n / maxH, sak = del.reduce((s, x) => s + x.c, 0) / n;
+      let namn = finns.get(k), exakt = true;
+      if (!namn && k.length >= 5 && sak >= 30 && storlek >= 0.5) {
+        // Ett eller två felläsningar (RALPH LAUREM, NUDlE) är okej på långa namn.
+        const tal = k.length >= 10 ? 2 : 1;
+        let b = tal + 1;
+        for (const v of nycklar) { const a = avstand(k, v, tal); if (a < b) { b = a; namn = finns.get(v); } }
+        if (b > tal) namn = null;
+        exakt = false;
+      }
+      if (!namn) continue;
+      const nk = nyckel(namn).join("");
+      // Korta namn (COS, RRL) kan lika gärna vara brus, så de måste stå stort och tydligt.
+      if (k.length < 3 || (k.length === 3 && !(exakt && storlek >= 0.7 && sak >= 85))) continue;
+      if ((VANLIGA_ORD.has(k) || VANLIGA_ORD.has(nk)) && !(exakt && storlek >= 0.6)) continue;
+      const poang = Math.min(k.length, 12) * storlek * (exakt ? 1 : 0.6) * (sak >= 50 ? 1 : 0.7);
+      if (!bast || poang > bast.poang) bast = {marke: namn, poang, sak: Math.round(sak), exakt, storlek: Math.round(storlek * 100) / 100, las: del.map(x => x.t).join(" ")};
+    }
+  }
+  // Under 2,5 poäng är det oftast brus från tyget (testat på riktiga plaggbilder), inte ett märke.
+  return bast && bast.poang >= 2.5 ? bast : null;
+}
+// Texten (och orden, om de finns) från en eller flera bilder.
+function tolka(text, marken, ordPerBild){
   const rader = String(text || "").split(/\r?\n/).map(r => r.replace(/\s+/g, " ").trim()).filter(Boolean);
   const hel = rader.join("\n"), ut = {marke: "", storlek: "", material: ""};
-  const nh = norm(hel);
-  for (const m of marken || []) { const n = norm(m); if (n.length >= 3 && nh.includes(n) && n.length > norm(ut.marke).length) ut.marke = m; }
+  const bilder = ordPerBild && ordPerBild.length ? ordPerBild : [rader.flatMap(r => r.split(" ").map(t => ({t, h: 1, c: 90})))];
+  const bast = bilder.map(o => marketIOrd(o, marken)).filter(Boolean).sort((a, b) => b.poang - a.poang)[0];
+  if (bast) ut.marke = bast.marke;
   const s = hel.match(/(?:size|storlek|taille|gr(?:ö|o)(?:ß|ss)e|talla|gr\.)[:\s]*(W\s?\d{2}(?:\s?L\s?\d{2})?|XXXL|XXL|XL|XS|XXS|[SML]\b|\d{2,3}\b)/i)
     || hel.match(/\b(W\s?\d{2}\s?L\s?\d{2})\b/i)
     || hel.match(/^[^A-Za-z0-9]*(XXXL|XXL|XL|XS|XXS|S|M|L)(?=[\s\/|·.,-]|$)/m)
@@ -53,8 +114,9 @@ function fargnamn(r, g, b){
   return l < 0.3 ? "Vinröd" : "Rosa";
 }
 rot.AnnonsTolka = tolka;
+rot.AnnonsAlias = sattAlias;
 rot.AnnonsFarg = fargnamn;
-if (typeof document === "undefined") { if (typeof module !== "undefined") module.exports = {tolka, fargnamn}; return; }
+if (typeof document === "undefined") { if (typeof module !== "undefined") module.exports = {tolka, fargnamn, marketIOrd, sattAlias, nyckel}; return; }
 const $ = id => document.getElementById(id);
 const SKICK = {
   "Ny med lappar": "Ny med lappar kvar, aldrig använd",
@@ -114,12 +176,15 @@ function laddaTesseract(){
     document.head.appendChild(s);
   });
 }
-function rita2(bild, max){
-  const f = Math.min(1, max / Math.max(bild.width, bild.height));
+function rita2(bild, max, mitten){
+  // mitten: bara mittersta 60 %, där lappen brukar vara (då blir texten större).
+  const sx = mitten ? Math.round(bild.width * 0.2) : 0, sy = mitten ? Math.round(bild.height * 0.2) : 0;
+  const sw = bild.width - 2 * sx, sh = bild.height - 2 * sy;
+  const f = Math.min(1, max / Math.max(sw, sh));
   const c = document.createElement("canvas");
-  c.width = Math.max(1, Math.round(bild.width * f)); c.height = Math.max(1, Math.round(bild.height * f));
+  c.width = Math.max(1, Math.round(sw * f)); c.height = Math.max(1, Math.round(sh * f));
   const g = c.getContext("2d", {willReadFrequently: true});
-  g.drawImage(bild, 0, 0, c.width, c.height);
+  g.drawImage(bild, sx, sy, sw, sh, 0, 0, c.width, c.height);
   return [c, g];
 }
 function gra(bild){
@@ -136,6 +201,150 @@ function gra(bild){
   }
   g.putImageData(px, 0, 0);
   return c;
+}
+function troskel(bild, ljus, mitten){
+  // Svart där pixeln är tydligt mörkare (ljus: ljusare) än omgivningen, annars vitt. Då försvinner
+  // tyget runt lappen och bara texten blir kvar, även på färgade och mörka lappar.
+  const [c, g] = rita2(bild, 2000, mitten), w = c.width, h = c.height, R = 25, C = 12;
+  const px = g.getImageData(0, 0, w, h), d = px.data, l = new Float32Array(w * h), I = new Float64Array((w + 1) * (h + 1));
+  for (let i = 0; i < w * h; i++) { const v = d[4 * i] * 0.299 + d[4 * i + 1] * 0.587 + d[4 * i + 2] * 0.114; l[i] = ljus ? 255 - v : v; }
+  for (let y = 0; y < h; y++) { let rad = 0; for (let x = 0; x < w; x++) { rad += l[y * w + x]; I[(y + 1) * (w + 1) + x + 1] = I[y * (w + 1) + x + 1] + rad; } }
+  for (let y = 0; y < h; y++) {
+    const y0 = Math.max(0, y - R), y1 = Math.min(h, y + R + 1);
+    for (let x = 0; x < w; x++) {
+      const x0 = Math.max(0, x - R), x1 = Math.min(w, x + R + 1);
+      const m = (I[y1 * (w + 1) + x1] - I[y0 * (w + 1) + x1] - I[y1 * (w + 1) + x0] + I[y0 * (w + 1) + x0]) / ((y1 - y0) * (x1 - x0));
+      const i = 4 * (y * w + x); d[i] = d[i + 1] = d[i + 2] = l[y * w + x] < m - C ? 0 : 255; d[i + 3] = 255;
+    }
+  }
+  g.putImageData(px, 0, 0);
+  return c;
+}
+function vrid(c, grader){
+  const r = document.createElement("canvas"); r.width = c.height; r.height = c.width;
+  const g = r.getContext("2d"); g.translate(r.width / 2, r.height / 2); g.rotate(grader * Math.PI / 180); g.drawImage(c, -c.width / 2, -c.height / 2);
+  return r;
+}
+const ordFran = data => (data.words || []).map(o => ({t: o.text, c: o.confidence, h: o.bbox ? o.bbox.y1 - o.bbox.y0 : 1}));
+// Försöken när märket inte syns direkt, i den ordning som gav flest rätt märken per sekund på testlapparna:
+// g = gråskala, c = mittersta delen, t = hela bilden, 0/1 = mörk/ljus text, r90/r270 = vriden en kvarts varv.
+// 3 = vanlig sida, 11 = utspridd text. Inget av försöken gav fel märke på testlapparna.
+const FORSOK = [["gr90", "3"], ["gr270", "3"], ["c0", "3"], ["c1", "3"], ["c0", "11"], ["t1", "11"], ["t0", "11"], ["c1", "11"],
+  ["c0r90", "3"], ["c0r270", "3"], ["c1r90", "11"], ["c1r270", "11"]];
+const LAS_TID = 20000;  // ms för alla extraförsök: längre än så väntar ingen, och då är bilden oftast för suddig ändå
+const TAK_FORSTA = 20000, TAK_FORSOK = 8000;  // ms för en enda läsning, sedan ges den upp
+// Läser en bild men ger upp efter ms (stickat tyg kan ta en minut). Då startas en ny OCR i stället.
+async function lasMedTak(w, bild, ms){
+  let timer;
+  const jobb = w.worker.recognize(bild);
+  jobb.catch(() => {});
+  const r = await Promise.race([jobb, new Promise(ok => { timer = setTimeout(() => ok(null), ms); })]);
+  clearTimeout(timer);
+  if (r) return r;
+  await w.worker.terminate().catch(() => {});
+  w.worker = await Tesseract.createWorker(["swe", "eng"], 1);
+  w.psm = "3";
+  return null;
+}
+async function lasMarke(w, bild, marken, visa, tyg){
+  const klar = {}, start = Date.now();
+  const variant = v => {
+    if (klar[v]) return klar[v];
+    const [bas, grader] = v.split("r");
+    return klar[v] = grader ? vrid(variant(bas), +grader) : bas === "g" ? gra(bild) : troskel(bild, bas[1] === "1", bas[0] === "c");
+  };
+  try {
+    for (let i = 0; i < FORSOK.length && Date.now() - start < LAS_TID; i++) {
+      const [v, p] = FORSOK[i];
+      // Mycket "text" betyder att tyget läses som bokstäver. Då provas bara mitten av bilden (där lappen är).
+      if (tyg && !v.startsWith("c")) continue;
+      visa?.(i / FORSOK.length);
+      if (p !== w.psm) { await w.worker.setParameters({tessedit_pageseg_mode: p}); w.psm = p; }
+      const t0 = Date.now(), data = (await lasMedTak(w, variant(v), Math.min(TAK_FORSOK, LAS_TID - (Date.now() - start) + 1000)))?.data;
+      window.LAS_LOGG?.push([v, p, Date.now() - t0, data ? (data.words || []).length : "tak"]);
+      if (!data) continue;
+      if ((data.words || []).length > 120) tyg = true;
+      const b = marketIOrd(ordFran(data), marken);
+      if (b) return {...b, text: data.text || ""};
+    }
+  } finally {
+    if (w.psm !== "3") { await w.worker.setParameters({tessedit_pageseg_mode: "3"}).catch(() => {}); w.psm = "3"; }
+  }
+  return null;
+}
+let aliasLaddas = null;
+function laddaAlias(){
+  // Varianterna av märkena (BOSS -> Hugo Boss) byggs från marken.py när hemsidan byggs.
+  return aliasLaddas ??= fetch("marken-alias.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(a => { sattAlias(a); return a; });
+}
+// Alla märken som går att känna igen: börsens egna plus de kända från marken.py.
+async function kandaMarken(marken){ return [...new Set([...(marken || []), ...Object.values(await laddaAlias())])]; }
+// Det någon skriver ("boss", "levis") blir märkets riktiga namn om det är känt.
+function kanon(text, marken){
+  const k = nyckel(text).join("");
+  if (!k) return "";
+  const hit = (marken || []).find(m => nyckel(m).join("") === k);
+  if (hit) return hit;
+  const v = Object.entries(alias).find(([a]) => nyckel(a).join("") === k);
+  if (v) return (marken || []).find(m => nyckel(m).join("") === nyckel(v[1]).join("")) || v[1];
+  return String(text).trim();
+}
+// Så säker måste AI:n vara på märket för att det ska räknas (inga fel på testlapparna från 80 %).
+const CLIP_MARKE_SAKER = 0.8;
+// Läser bilderna. AI:n (CLIP) tittar först: vilket plagg det är, vilken bild som är lappen och märket om
+// det syns tydligt. Lappen läses sedan med OCR (texten, och märket om AI:n inte var säker).
+// text: false hoppar över OCR när AI:n redan sett märket (Fota lappen behöver inte storlek och material).
+async function lasBilder(filer, marken, visa, {text = true} = {}){
+  marken = await kandaMarken(marken);
+  const lasta = [];
+  for (const fil of filer) lasta.push({fil, bild: await createImageBitmap(fil), text: "", ord: 0, ordlista: [], ai: null});
+  for (let n = 0; n < lasta.length; n++) {
+    try {
+      lasta[n].ai = await kannIgen(lasta[n].bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %`
+        : lasta.length > 1 ? `Tittar på bild ${n + 1} av ${lasta.length} …` : "Tittar på bilden …"));
+    } catch (e) { console.error(e); break; }  // utan AI:n går det ändå med OCR
+  }
+  const medAi = lasta.every(l => l.ai && l.ai.lapp != null);
+  // Plaggbilden: den som AI:n tycker minst ser ut som en lapp (utan AI:n: den med minst text, se nedan).
+  let plagg = medAi ? [...lasta].sort((a, b) => a.ai.lapp - b.ai.lapp)[0] : null;
+  const lappar = medAi ? lasta.filter(l => lasta.length === 1 || l !== plagg) : lasta;
+  const t = {marke: "", storlek: "", material: ""};
+  const sedd = lappar.map(l => l.ai && l.ai.marke).filter(m => m && m.p >= CLIP_MARKE_SAKER).sort((a, b) => b.p - a.p)[0];
+  if (sedd) t.marke = (marken.find(m => nyckel(m).join("") === nyckel(sedd.namn).join("")) || sedd.namn);
+  if (!t.marke || text) {
+    await laddaTesseract();
+    const w = {worker: await Tesseract.createWorker(["swe", "eng"], 1), psm: "3"};
+    try {
+      for (let n = 0; n < lappar.length; n++) {
+        visa(lappar.length > 1 ? `Läser lapp ${n + 1} av ${lappar.length} …` : "Läser lappen …");
+        const l = lappar[n], t0 = Date.now(), data = (await lasMedTak(w, gra(l.bild), TAK_FORSTA))?.data;
+        window.LAS_LOGG?.push(["bild" + n, "3", Date.now() - t0, data ? (data.words || []).length : "tak"]);
+        if (!data) { l.tyg = true; continue; }
+        l.text = data.text || ""; l.ordlista = ordFran(data); l.tyg = (data.words || []).length > 120;
+        l.ord = (data.words || []).filter(x => x.confidence > 60 && /[a-zåäö]{2}|\d+\s*%/i.test(x.text)).length;
+      }
+      const o = tolka(lappar.map(l => l.text).join("\n"), marken, lappar.map(l => l.ordlista));
+      t.storlek = o.storlek; t.material = o.material;
+      if (!t.marke) t.marke = o.marke;
+      plagg ??= [...lasta].sort((a, b) => a.ord - b.ord)[0];
+      // En bild som AI:n ser som ett helt plagg letas det inte vidare i (tyget läses som bokstäver och tar lång tid).
+      const lapp = [...lappar].filter(l => lasta.length === 1 || l !== plagg).sort((a, b) => b.ord - a.ord)[0];
+      const baraPlagg = lasta.length === 1 && medAi && lasta[0].ai.lapp < 0.3;
+      if (!t.marke && lapp && !baraPlagg) {
+        const b = await lasMarke(w, lapp.bild, marken, p => visa(`Letar efter märket … ${Math.round(p * 100)} %`), lapp.tyg);
+        if (b) {
+          t.marke = b.marke;
+          const extra = tolka(b.text, []);
+          t.storlek ||= extra.storlek; t.material ||= extra.material;
+        }
+      }
+    } finally {
+      await w.worker.terminate().catch(() => {});
+    }
+  }
+  // En ensam bild är ett plagg om AI:n ser ett plagg (eller, utan AI:n, om den har lite text).
+  const harPlagg = lasta.length > 1 || (medAi ? lasta[0].ai.lapp < 0.5 : plagg.ord < 4);
+  return {lasta, t, plagg, harPlagg, marken};
 }
 function plaggfarg(bild){
   // Mitten av bilden (bålen), utan pixlar som liknar bakgrunden runt kanten.
@@ -166,7 +375,7 @@ const CLIP_MB = 88;
 // allmänna namnet, och är den osäker på allt lämnas rutan tom.
 const FAMILJER = {
   "Tröja": ["Långärmad tröja", "Stickad tröja", "Sweatshirt", "Hoodie", "Zip-hoodie", "Kofta", "Halvzip-tröja", "Fleecetröja"],
-  "Jacka": ["Jacka", "Dunjacka", "Jeansjacka", "Skinnjacka", "Rock", "Trenchcoat", "Väst", "Kavaj", "Fleecetröja"],
+  "Jacka": ["Jacka", "Dunjacka", "Jeansjacka", "Skinnjacka", "Rock", "Trenchcoat", "Väst", "Kavaj", "Fleecetröja", "Overshirt"],
   "Byxor": ["Jeans", "Byxor", "Mjukisbyxor"],
   "Skor": ["Sneakers", "Kängor", "Skor"],
 };
@@ -200,6 +409,12 @@ function laddaClip(visa){
     await laddaOrt();
     const [modell, etiketter] = await Promise.all([hamta(MAPP + "clip-bild.onnx", visa), fetch(MAPP + "clip-etiketter.json").then(r => r.json())]);
     visa?.(1);
+    // Märkenas vektorer ligger packade som int8 (se clip_etiketter.py).
+    const mk = etiketter.marken;
+    if (mk && mk.vek) {
+      const q = new Int8Array(Uint8Array.from(atob(mk.vek), c => c.charCodeAt(0)).buffer), d = q.length / mk.namn.length;
+      etiketter.markeVek = mk.namn.map((_, i) => Float32Array.from(q.subarray(i * d, (i + 1) * d), x => x / 127 * mk.skala[i]));
+    }
     return {sess: await ort.InferenceSession.create(modell, {executionProviders: ["wasm"]}), etiketter};
   })().catch(e => { clipLaddas = null; throw e; });
 }
@@ -233,7 +448,15 @@ async function kannIgen(bild, visa){
   for (let p = 0; p < 224 * 224; p++) for (let k = 0; k < 3; k++) x[k * 224 * 224 + p] = (d[4 * p + k] / 255 - MEDEL[k]) / STD[k];
   const ut = await sess.run({[sess.inputNames[0]]: new ort.Tensor("float32", x, [1, 3, 224, 224])});
   const v = ut[sess.outputNames[0]].data, n = Math.hypot(...v), vn = Array.from(v, a => a / n);
-  return {plagg: valjPlagg(andelar(etiketter.plagg, vn)), monster: valjMonster(andelar(etiketter.monster, vn))};
+  const p = andelar(etiketter.plagg, vn);
+  const ut2 = {plagg: valjPlagg(p), monster: valjMonster(andelar(etiketter.monster, vn)), p, marke: null, lapp: null};
+  if (etiketter.vy) ut2.lapp = andelar(etiketter.vy, vn).lapp;
+  if (etiketter.markeVek) {
+    const z = etiketter.markeVek.map(m => 100 * m.reduce((s, x, i) => s + x * vn[i], 0)), mx = Math.max(...z);
+    const e = z.map(x => Math.exp(x - mx)), sum = e.reduce((a, b) => a + b, 0), i = z.indexOf(mx);
+    ut2.marke = {namn: etiketter.marken.namn[i], p: e[i] / sum};
+  }
+  return ut2;
 }
 const lista = v => v.length > 1 ? v.slice(0, -1).join(", ") + " och " + v[v.length - 1] : v.join("");
 async function franBilder(filer){
@@ -243,29 +466,13 @@ async function franBilder(filer){
   const visa = t => { rubrik.textContent = t; };
   zon.classList.add("laser"); notis.hidden = true;
   try {
-    visa("Läser bilderna …");
-    await laddaTesseract();
-    const worker = await Tesseract.createWorker(["swe", "eng"], 1);
-    const lasta = [];
-    for (let n = 0; n < filer.length; n++) {
-      visa(filer.length > 1 ? `Läser bild ${n + 1} av ${filer.length} …` : "Läser bilden …");
-      const bild = await createImageBitmap(filer[n]);
-      const {data} = await worker.recognize(gra(bild));
-      const ord = (data.words || []).filter(w => w.confidence > 60 && /[a-zåäö]{2}|\d+\s*%/i.test(w.text)).length;
-      lasta.push({bild, text: data.text || "", ord});
-    }
-    await worker.terminate();
-    const marken = window.BokforMarken ? window.BokforMarken() : [];
-    const t = tolka(lasta.map(l => l.text).join("\n"), marken);
-    // Bilden med minst text är bilden på själva plagget.
-    const plagg = [...lasta].sort((a, b) => a.ord - b.ord)[0];
-    const harPlagg = lasta.length > 1 || plagg.ord < 4;
+    const {t, plagg, harPlagg} = await lasBilder(filer, window.BokforMarken ? window.BokforMarken() : [], visa);
     const farg = harPlagg ? plaggfarg(plagg.bild) : "";
     let ai = {plagg: "", monster: ""};
     if (harPlagg) {
       try {
         visa("Känner igen plagget …");
-        ai = await kannIgen(plagg.bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %` : "Känner igen plagget …"));
+        ai = plagg.ai || await kannIgen(plagg.bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %` : "Känner igen plagget …"));
       } catch (e) { console.error(e); }
     }
     const fyllt = [];
@@ -289,6 +496,10 @@ async function franBilder(filer){
     visa(text); zon.classList.remove("laser"); $("abfil").value = "";
   }
 }
+// Fota lappen (vardera.js) läser bilderna på samma sätt.
+rot.AnnonsBild = {laddaTesseract, gra, kannIgen, plaggfarg, tolka, lasBilder, laddaAlias, kanon};
+// Fyller i beskrivningen från Fota lappen.
+rot.AnnonsFyll = (v) => { if (!$("abform")) return; for (const [id, x] of Object.entries(v)) if (x && $(id)) $(id).value = x; rita(); };
 function init(){
   if (!$("abform")) return;
   $("abskick").innerHTML = Object.keys(SKICK).map(s => `<button type="button" class="chip" data-s="${s}">${s}</button>`).join("");
