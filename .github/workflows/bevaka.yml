@@ -65,7 +65,7 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: .fixabild
-          key: fixabild-modeller-2-${{ hashFiles('clip_etiketter.py') }}
+          key: fixabild-modeller-2-${{ hashFiles('clip_etiketter.py', 'marken.py') }}
 
       - name: Förbered bildmodellerna till Fixa bilder
         continue-on-error: true
@@ -158,11 +158,14 @@ jobs:
           cp spaning.json _site/ 2>/dev/null || echo "{}" > _site/spaning.json
           cp spaningar.json _site/
           cp borskategorier.json _site/ 2>/dev/null || echo "[]" > _site/borskategorier.json
+          # Märkenas varianter (BOSS -> Hugo Boss), så att Fota lappen och Skriv beskrivning känner igen lappen.
+          python3 -c 'import json, marken as M; a = {v: k for k, vs in M.MARKEN.items() for v in vs}; a.update({k: k for k in M.MARKEN}); json.dump(a, open("_site/marken-alias.json", "w"), ensure_ascii=False, separators=(",", ":"))'
           # Den publika börsen: en startsida och börsen utan alarm och egna analyser.
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
           cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/vardera.js hemsida/tillganglig.js hemsida/las.js _site/borsen/
+          cp _site/marken-alias.json _site/borsen/
           # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
           # Ikonen i webbläsarfliken (och på hemskärmen på mobilen).
           cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/favicon.ico _site/

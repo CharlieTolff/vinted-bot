@@ -12,7 +12,7 @@ const KAT_SAKER = 0.5;  // så säker måste AI:n vara på kategorin för att v�
 const INTE = ["övriga", "okänt", "no brand", "vintage", "handgjord", "diverse"];
 const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "");
 const avr = v => Math.max(10, Math.round(v / 10) * 10);
-let vd = {marke: "", kat: "", plagg: "", bild: "", x: null};
+let vd = {marke: "", markeFranBild: false, kat: "", plagg: "", bild: "", x: null};
 
 function kats(){ return (B && B.kategorier || []).filter(k => !k.vantar); }
 function allaMarken(){
@@ -23,9 +23,9 @@ function allaMarken(){
 }
 // Det kunden skriver blir börsens stavning av märket, om det finns.
 function hittaMarke(text){
-  const n = norm(text);
-  if (!n) return "";
-  return allaMarken().find(m => norm(m) === n) || text.trim();
+  if (!norm(text)) return "";
+  if (window.AnnonsBild) return window.AnnonsBild.kanon(text, allaMarken());
+  return allaMarken().find(m => norm(m) === norm(text)) || text.trim();
 }
 
 // ---------- Siffrorna för ett märke i en kategori ----------
@@ -76,7 +76,7 @@ function diagram(vk){
       ${staplar}
       ${linje.length > 1 ? `<polyline points="${punkter}" class="vdlinje"/>` : ""}
       ${linje.map(([a, b]) => `<circle cx="${a.toFixed(1)}" cy="${b.toFixed(1)}" r="3.5" class="vdpunkt"/>`).join("")}
-      ${sist ? `<text x="${Math.min(sist[0], w - 40).toFixed(1)}" y="${(sist[1] - 14).toFixed(1)}" class="vdtext" text-anchor="middle">${esc(kr(vk.at(-1).pris))}</text>` : ""}
+      ${sist ? `<text x="${Math.min(sist[0] + 10, w - 4).toFixed(1)}" y="${(sist[1] - 14).toFixed(1)}" class="vdtext" text-anchor="end">${esc(kr(vk.at(-1).pris))}</text>` : ""}
       <text x="${pl}" y="${h - 6}" class="vdaxel">${esc(etikett(0))}</text>
       <text x="${w - pr}" y="${h - 6}" class="vdaxel" text-anchor="end">${esc(etikett(vk.length - 1))}</text>
     </svg></div>`;
@@ -98,6 +98,7 @@ function ritaChips(){
 }
 function ritaVardera(){
   if (!B || !B.kategorier) return;
+  window.AnnonsBild?.laddaAlias();
   if (!$("vdmarken").options.length) $("vdmarken").innerHTML = allaMarken().map(m => `<option value="${esc(m)}">`).join("");
   ritaChips();
   const el = $("vdanalys"), m = vd.marke, kat = kats().find(k => k.id === vd.kat);
@@ -109,7 +110,7 @@ function ritaVardera(){
   const x = analys(m, kat.id);
   if (!x) {
     const andra = andraKategorier(m).map(id => kats().find(k => k.id === id));
-    el.innerHTML = `<p class="vdtom">Börsen har inga priser för <b>${esc(m)}</b> i ${esc(kat.namn.toLowerCase())} än.${andra.length ? ` Det finns priser i ${andra.map(k => `<button type="button" class="lankknapp" data-k="${k.id}">${esc(k.namn.toLowerCase())}</button>`).join(", ")}.` : " Kolla stavningen, eller prova ett liknande märke."}</p>`;
+    el.innerHTML = `<p class="vdtom">Börsen har inga priser för <b>${esc(m)}</b> i ${esc(kat.namn.toLowerCase())} än.${andra.length ? ` Det finns priser i ${andra.map(k => `<button type="button" class="lankknapp" data-k="${k.id}">${esc(k.namn.toLowerCase())}</button>`).join(", ")}.` : vd.markeFranBild ? " Börsen mäter inte det märket än." : " Kolla stavningen, eller prova ett liknande märke."}</p>`;
     return;
   }
   const tr = x.kalla === "tradera", forslag = avr(x.median * 1.1), betalt = $("vdpris") ? $("vdpris").value : "";
@@ -150,35 +151,26 @@ window.ritaVardera = ritaVardera;
 
 // ---------- Läsa bilderna ----------
 async function franBilder(filer){
-  filer = [...filer].filter(f => /^image\//.test(f.type)).slice(0, 3);
-  if (!filer.length || !window.AnnonsBild) return;
-  const {laddaTesseract, gra, kannIgen, tolka} = window.AnnonsBild;
-  const zon = $("vdzon"), rubrik = zon.querySelector("b"), notis = $("vdnotis"), text = rubrik.textContent;
+  const notis = $("vdnotis");
+  const alla = [...filer];
+  filer = alla.filter(f => /^image\//.test(f.type)).slice(0, 3);
+  if (!filer.length) {
+    if (alla.length) { notis.textContent = "Det där verkar inte vara en bild. Välj ett foto på lappen eller plagget."; notis.hidden = false; }
+    return;
+  }
+  if (!window.AnnonsBild) return;
+  const {lasBilder, kannIgen} = window.AnnonsBild;
+  const zon = $("vdzon"), rubrik = zon.querySelector("b"), text = rubrik.textContent;
   const visa = t => { rubrik.textContent = t; };
   zon.classList.add("laser"); notis.hidden = true;
   try {
-    visa("Läser lappen …");
-    await laddaTesseract();
-    const worker = await Tesseract.createWorker(["swe", "eng"], 1);
-    const lasta = [];
-    for (let n = 0; n < filer.length; n++) {
-      if (filer.length > 1) visa(`Läser bild ${n + 1} av ${filer.length} …`);
-      const bild = await createImageBitmap(filer[n]);
-      const {data} = await worker.recognize(gra(bild));
-      const ord = (data.words || []).filter(w => w.confidence > 60 && /[a-zåäö]{2}|\d+\s*%/i.test(w.text)).length;
-      lasta.push({fil: filer[n], bild, text: data.text || "", ord});
-    }
-    await worker.terminate();
-    const t = tolka(lasta.map(l => l.text).join("\n"), allaMarken());
-    // Bilden med minst text är bilden på själva plagget.
-    const plagg = [...lasta].sort((a, b) => a.ord - b.ord)[0];
-    const harPlagg = lasta.length > 1 || plagg.ord < 4;
+    const {t, plagg, harPlagg} = await lasBilder(filer, allaMarken(), visa, {text: false});
     let katVald = "", sakerhet = 0;
     vd.plagg = "";
     if (harPlagg) {
       try {
         visa("Känner igen plagget …");
-        const ai = await kannIgen(plagg.bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %` : "Känner igen plagget …"));
+        const ai = plagg.ai || await kannIgen(plagg.bild, p => visa(p < 1 ? `Laddar ner AI:n … ${Math.round(p * 100)} %` : "Känner igen plagget …"));
         const perKat = {};
         for (const [namn, andel] of Object.entries(ai.p || {})) if (TILL_KAT[namn]) perKat[TILL_KAT[namn]] = (perKat[TILL_KAT[namn]] || 0) + andel;
         [katVald, sakerhet] = Object.entries(perKat).sort((a, b) => b[1] - a[1])[0] || ["", 0];
@@ -187,10 +179,11 @@ async function franBilder(filer){
     }
     if (vd.bild) URL.revokeObjectURL(vd.bild);
     vd.bild = URL.createObjectURL(plagg.fil);
-    if (t.marke) { vd.marke = t.marke; $("vdmarke").value = t.marke; }
+    // Ett märke från en tidigare bild ska inte hänga kvar, men ett som man skrivit själv får stå kvar.
+    if (t.marke || vd.markeFranBild) { vd.marke = t.marke; vd.markeFranBild = !!t.marke; $("vdmarke").value = t.marke; }
     const sakerKat = katVald && sakerhet >= KAT_SAKER && kats().some(k => k.id === katVald);
     vd.kat = sakerKat ? katVald : "";
-    const saknas = [!t.marke && "skriva märket", !sakerKat && "trycka på vilken sorts plagg det är"].filter(Boolean);
+    const saknas = [!t.marke && "skriva märket", !sakerKat && (harPlagg ? "trycka på vilken sorts plagg det är" : "trycka på vilken sorts plagg det är (eller lägga till en bild på hela plagget)")].filter(Boolean);
     notis.innerHTML = t.marke && sakerKat ? `Jag hittade <b>${esc(t.marke)}</b>. Stämmer inte märket eller kategorin? Ändra här under.`
       : t.marke ? `Jag hittade <b>${esc(t.marke)}</b>. Nu behöver du ${saknas.join(" och ")}.`
       : `Jag kunde inte läsa märket på lappen. ${saknas.length ? "Du behöver " + saknas.join(" och ") + "." : ""} Tips: en skarp bild rakt framifrån i bra ljus.`;
@@ -212,7 +205,7 @@ const zon = $("vdzon");
 zon.addEventListener("dragover", e => { e.preventDefault(); zon.classList.add("over"); });
 zon.addEventListener("dragleave", () => zon.classList.remove("over"));
 zon.addEventListener("drop", e => { e.preventDefault(); zon.classList.remove("over"); franBilder(e.dataTransfer.files); });
-$("vdmarke").addEventListener("change", () => { vd.marke = hittaMarke($("vdmarke").value); $("vdmarke").value = vd.marke; ritaVardera(); });
+$("vdmarke").addEventListener("change", () => { vd.marke = hittaMarke($("vdmarke").value); vd.markeFranBild = false; $("vdmarke").value = vd.marke; ritaVardera(); });
 $("vdkat").addEventListener("click", e => {
   const b = e.target.closest("[data-k]"); if (!b) return;
   vd.kat = b.dataset.k;
