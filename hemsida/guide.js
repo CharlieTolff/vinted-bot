@@ -165,7 +165,8 @@ const sedd = () => { try { return !!localStorage.getItem(SEDD); } catch { return
 window.Guide = {
   starta,
   // Anropas när börsen har laddat: första gången (eller med ?guide i adressen) startar guiden.
-  forsta(){ if (/[?&]guide\b/.test(location.search) || !sedd()) setTimeout(starta, 500); },
+  forsta(){ if (!this.vantar && (/[?&]guide\b/.test(location.search) || !sedd())) { this.vantar = true; setTimeout(starta, 500); } },
 };
+if (window.BORS_KLAR) window.Guide.forsta();
 document.getElementById("visaguide")?.addEventListener("click", e => { e.preventDefault(); starta(); });
 })();

@@ -2052,7 +2052,8 @@ async function start(){
   $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
   laddaBevakade();
-  if (PUBLIK) window.Guide?.forsta();
+  // Guiden kan laddas efter att börsen är klar (guide.js ligger sist), så den kollar flaggan själv också.
+  if (PUBLIK) { window.BORS_KLAR = true; window.Guide?.forsta(); }
 }
 // ---------- Bevaka ett märke ----------
 // Kunden får ett mejl när mittenpriset på ett bevakat märke ändras mycket (låset kollar varje morgon).
