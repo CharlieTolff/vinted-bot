@@ -35,6 +35,9 @@ const Las = {
   // Skickar vidare till Stripes kassa.
   async kop(plan){ location.href = (await Las.anrop("/kop", {plan})).url; },
   async loggaIn(mejl){ return Las.anrop("/logga-in", {mejl}); },
+  // Bevakade märken: ett mejl när priset på märket ändras mycket.
+  async bevakningar(){ return (await Las.anrop("/bevaka")).lista || []; },
+  async bevaka(marke, kat, bort){ return (await Las.anrop("/bevaka", {marke, kat, bort: !!bort})).lista || []; },
   async hantera(){ location.href = (await Las.anrop("/hantera", {})).url; },
   // Tillbaka från Stripe (?betalt=) eller från inloggningsmejlet (?inloggning=): spara inloggningen.
   // Ger true om man just loggade in, ett felmeddelande om något gick snett, annars null.

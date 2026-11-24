@@ -18,6 +18,10 @@ const KOLLA_IGEN = 6 * 3600e3;           // hur ofta en prenumeration kollas mot
 const URSPRUNG = [/^https:\/\/xn--mrkesbrsen-q5a5t\.se$/, /^https:\/\/charlietolff\.github\.io$/, /^http:\/\/localhost(:\d+)?$/];
 
 export default {
+  // En gång om dagen (se wrangler.toml): mejla den som bevakar ett märke när priset ändrats mycket.
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(kollaBevakningar(env));
+  },
   async fetch(req, env) {
     const url = new URL(req.url);
     const ursprung = req.headers.get("Origin") || "";
@@ -36,6 +40,7 @@ export default {
       if (vag === "/klar" && req.method === "POST") return svar(await klar(kropp, env));
       if (vag === "/logga-in" && req.method === "POST") return svar(await loggaIn(kropp, hemsida, env));
       if (vag === "/token" && req.method === "POST") return svar(await bytLank(kropp, env));
+      if (vag === "/sluta") return new Response(await sluta(url.searchParams.get("t"), env), {headers: {"Content-Type": "text/html; charset=utf-8"}});
       const vem = await inloggad(req, env);
       if (vag === "/status") return svar(vem ? {inne: true, mejl: vem.mejl, plan: vem.plan || null, till: vem.till || null, prenumeration: !!vem.prenumeration} : {inne: false});
       if (vag === "/data") {
@@ -48,12 +53,108 @@ export default {
         const s = await stripe(env, "POST", "billing_portal/sessions", {customer: vem.kund, return_url: hemsida + "/borsen/app.html"});
         return svar({url: s.url});
       }
+      if (vag === "/bevaka") {
+        if (!vem) return svar({fel: "inte inloggad"}, 401);
+        const mejl = vem.mejl === "agare" ? agarMejl(env) : vem.mejl;
+        if (!mejl) return svar({fel: "Ingen mejladress att skicka till."}, 400);
+        return svar({lista: req.method === "POST" ? await bevaka(env, mejl, kropp) : await bevakningar(env, mejl)});
+      }
       return svar({fel: "finns inte"}, 404);
     } catch (e) {
       return svar({fel: e.visas || "Något gick fel. Försök igen om en stund.", ...(e.orsak ? {orsak: e.orsak} : {})}, e.status || 500);
     }
   },
 };
+
+// ---- Bevaka ett märke ----
+// Kunden bevakar ett märke i en kategori. Varje dag jämförs mittenpriset och hur många som säljs per vecka
+// med hur det var när kunden fick sitt senaste mejl (eller började bevaka). Ändras priset med minst 10 %,
+// eller säljer märket mycket mer, skickas ett mejl. Siffrorna (priser) läggs hit av bevaka.yml.
+const MAX_BEVAKNINGAR = 20;
+const PRIS_ANDRING = 0.10, FART_ANDRING = 0.5;
+
+const agarMejl = env => String(env.FRIA || "").split(",")[0].trim().toLowerCase();
+
+async function priser(env) {
+  try { return JSON.parse(await env.DATA.get("priser")) || {}; } catch { return {}; }
+}
+const nuFor = (P, kat, m) => ((P.p || {})[kat] || {})[m] || null;  // [mittenpris, sålda 30 dagar, sålda per vecka]
+
+async function bevakningar(env, mejl) {
+  try { return JSON.parse(await env.DATA.get(`bevaka:${mejl}`)) || []; } catch { return []; }
+}
+
+async function bevaka(env, mejl, k) {
+  const m = String(k.marke || "").trim().slice(0, 60), kat = String(k.kat || "");
+  if (!m || !/^[a-z0-9-]{1,30}$/.test(kat)) throw fel("Välj märke och kategori.", 400);
+  let lista = (await bevakningar(env, mejl)).filter(b => !(b.m === m && b.k === kat));
+  if (!k.bort) {
+    if (lista.length >= MAX_BEVAKNINGAR) throw fel(`Du kan bevaka högst ${MAX_BEVAKNINGAR} märken. Ta bort något först.`, 400);
+    const P = await priser(env), nu = nuFor(P, kat, m);
+    lista.push({m, k: kat, kn: (P.kat || {})[kat] || kat, pris: nu ? nu[0] : null, fart: nu ? nu[2] : null, sedan: new Date().toISOString().slice(0, 10)});
+  }
+  if (lista.length) await env.DATA.put(`bevaka:${mejl}`, JSON.stringify(lista));
+  else await env.DATA.delete(`bevaka:${mejl}`);
+  return lista;
+}
+
+async function sluta(t, env) {
+  const d = await las(env, String(t || ""));
+  const sida = text => `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Märkesbörsen</title>
+    <body style="font-family:Arial,sans-serif;max-width:480px;margin:60px auto;padding:0 16px;line-height:1.5;color:#1b2219"><h1 style="font-size:22px">Märkesbörsen</h1><p>${text}</p>
+    <p><a href="${env.HEMSIDA}/borsen/app.html">Till börsen</a></p></body>`;
+  if (!d || d.t !== "sluta") return sida("Länken stämmer inte. Du kan ta bort dina bevakningar inne i börsen.");
+  await env.DATA.delete(`bevaka:${d.m}`);
+  return sida("Klart. Du bevakar inga märken längre och får inga fler mejl om priser.");
+}
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const krText = v => Math.round(v).toLocaleString("sv-SE") + " kr";
+
+async function kollaBevakningar(env) {
+  const P = await priser(env);
+  if (!P.p) return;
+  let cursor;
+  do {
+    const sida = await env.DATA.list({prefix: "bevaka:", cursor});
+    for (const {name} of sida.keys) {
+      const mejl = name.slice(7);
+      try { await kollaEn(env, P, mejl); } catch (e) { console.log("bevakning misslyckades", e && e.message); }
+    }
+    cursor = sida.list_complete ? null : sida.cursor;
+  } while (cursor);
+}
+
+async function kollaEn(env, P, mejl) {
+  const lista = await bevakningar(env, mejl);
+  if (!lista.length) return;
+  // Bara den som fortfarande har börsen får mejl.
+  if (mejl !== agarMejl(env) && !(await harTillgang(env, mejl))) return;
+  const rader = [];
+  let andrad = false;
+  for (const b of lista) {
+    const nu = nuFor(P, b.k, b.m);
+    if (!nu || !nu[0]) continue;
+    if (b.pris == null) { b.pris = nu[0]; b.fart = nu[2]; andrad = true; continue; }
+    const kat = (P.kat || {})[b.k] || b.k, dPris = (nu[0] - b.pris) / b.pris;
+    const merFart = b.fart != null && nu[2] >= 3 && nu[2] >= b.fart * (1 + FART_ANDRING);
+    if (Math.abs(dPris) < PRIS_ANDRING && !merFart) continue;
+    const delar = [];
+    if (Math.abs(dPris) >= PRIS_ANDRING)
+      delar.push(`mittenpriset har gått ${dPris > 0 ? "upp" : "ner"} från ${krText(b.pris)} till <b>${krText(nu[0])}</b> (${dPris > 0 ? "+" : "−"}${Math.round(Math.abs(dPris) * 100)} %)`);
+    if (merFart) delar.push(`det säljer mer: ${nu[2].toLocaleString("sv-SE", {maximumFractionDigits: 1})} i veckan mot ${b.fart.toLocaleString("sv-SE", {maximumFractionDigits: 1})} tidigare`);
+    rader.push(`<li><a href="${env.HEMSIDA}/borsen/app.html?kat=${encodeURIComponent(b.k)}#${encodeURIComponent(b.m)}"><b>${esc(b.m)}</b></a> (${esc(kat.toLowerCase())}): ${delar.join(", och ")}.</li>`);
+    b.pris = nu[0]; b.fart = nu[2]; andrad = true;
+  }
+  if (rader.length) {
+    const t = await signera(env, {m: mejl, t: "sluta", u: Date.now() + 400 * 864e5});
+    await skickaMejl(env, mejl, rader.length === 1 ? "Ett märke du bevakar har ändrats" : `${rader.length} märken du bevakar har ändrats`,
+      `<p>Hej!</p><p>Det här har hänt med märkena du bevakar på Märkesbörsen:</p><ul>${rader.join("")}</ul>
+       <p>Mittenpriset är vad märket brukar säljas för i andra hand. Skick, storlek och modell påverkar vad just ditt plagg går för.</p>
+       <p style="font-size:13px;color:#55604e">Vill du inte ha de här mejlen? <a href="${env.LAS_URL}/sluta?t=${t}">Sluta bevaka alla märken</a>.</p>`);
+  }
+  if (andrad) await env.DATA.put(`bevaka:${mejl}`, JSON.stringify(lista));
+}
 
 function hemsidaFor(ursprung, env) {
   return URSPRUNG.some(r => r.test(ursprung)) ? ursprung : env.HEMSIDA;

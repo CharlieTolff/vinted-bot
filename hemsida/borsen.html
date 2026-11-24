@@ -12,9 +12,24 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
 <meta name="description" content="Märkesbörsen visar vilka märken som säljer på andrahandsmarknaden, till exempel Vinted och Tradera, vad de säljs för och var marginalen finns.">
+<link rel="manifest" href="/borsen/manifest.webmanifest">
+<meta name="theme-color" content="#2f3b2c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Märkesbörsen">
+<meta property="og:title" content="Märkesbörsen: se vad det säljs för, innan du köper">
+<meta property="og:description" content="Fota lappen och se vad märkesplagget säljs för i andra hand. Räkna ut vinsten innan du köper.">
+<meta property="og:url" content="https://xn--mrkesbrsen-q5a5t.se/borsen/">
+<meta property="og:image" content="https://xn--mrkesbrsen-q5a5t.se/dela.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Märkesbörsen: fota lappen och se vad plagget säljs för">
+<meta property="og:locale" content="sv_SE">
+<meta name="twitter:card" content="summary_large_image">
 <link href="typsnitt/typsnitt.css" rel="stylesheet">
+<link href="demo.css" rel="stylesheet">
 <script src="tillganglig.js" defer></script>
 <script src="las.js"></script>
+<script src="hemskarm.js" defer></script>
 <style>
 :root{
   color-scheme:light;
@@ -265,13 +280,45 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
 .knapp{background:linear-gradient(135deg,#f0d491,#c9a24f 55%,#a8823a);color:#1a1408}
 .knapp:hover{background:linear-gradient(135deg,#f6dea6,#d4ae5c 55%,#b38c40)}
 .lofte .nr{background:var(--yta);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--guld) 40%,transparent)}
+/* Vinstexemplet i toppen */
+.heroexempel{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:-14px 0 26px;padding:10px 14px;border-radius:14px;background:var(--kort);border:1px solid var(--linje);font-size:15px;color:var(--svag);max-width:34em}
+.heroexempel b{color:var(--text)}.heroexempel .plus{color:var(--gron);font-weight:800}
+/* De fyra verktygen */
+.verktyg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:980px;margin:0 auto}
+.verktygkort{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;border:1px solid var(--linje);border-radius:22px;padding:14px 14px 20px;background:var(--kort);box-shadow:var(--skugga),var(--kant-ljus);transition:transform .18s ease,box-shadow .18s ease}
+.verktygkort:hover{transform:translateY(-3px);box-shadow:var(--skugga-hojd),var(--kant-ljus)}
+.verktygkort .gdv{height:132px;margin-bottom:16px}
+.verktygkort h3{font-size:19px;margin:0 6px 6px}
+.verktygkort p{margin:0 6px;color:var(--svag);font-size:15px}
+.verktygnot{text-align:center;color:var(--svag);font-size:13.5px;margin:22px 0 0}
+@media (max-width:600px){ .verktyg{grid-template-columns:minmax(0,1fr)} }
+/* Knappen längst ner på mobilen */
+.mobilknapp{display:none}
+@media (max-width:760px){
+  .mobilknapp{display:flex;align-items:center;gap:12px;position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-top:1px solid var(--linje);
+    transform:translateY(110%);transition:transform .25s ease}
+  .mobilknapp.syns{transform:none}
+  .mobilknapp .knapp{flex:1}
+  .mobilknapp small{color:var(--svag);font-size:13px;white-space:nowrap}
+  footer{padding-bottom:110px}
+}
+@media (prefers-reduced-motion:reduce){ .mobilknapp{transition:none} }
+/* Bevakade märken under kontot */
+.bevakningar{margin-top:18px;padding-top:16px;border-top:1px solid var(--linje);text-align:left}
+.bevakningar h3{font-size:16px;margin:0 0 4px}
+.bevakningar p{font-size:14px;margin:0 0 10px}
+.bevakningar ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.bevakningar li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:var(--yta);font-size:14.5px}
+.bevakningar li small{color:var(--svag)}
+.bevakningar button{font:inherit;font-size:13px;background:none;border:0;color:var(--guldtext);cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="meny">
   <div class="inre">
     <a class="logga" href="index.html"><i><b style="height:6px"></b><b style="height:11px"></b><b style="height:15px"></b></i>Märkesbörsen</a>
-    <nav><a href="#kalkyl">Räkna vinst</a><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="#konto" id="menykonto">Logga in</a></nav>
+    <nav><a href="#verktyg">Funktioner</a><a href="#kalkyl">Räkna vinst</a><a href="#marknaden">Marknaden</a><a href="#pris">Pris</a><a href="#konto" id="menykonto">Logga in</a></nav>
     <a class="knapp liten" href="#pris" id="menyknapp">Kom igång</a>
   </div>
 </div>
@@ -280,10 +327,11 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   <div class="inre">
     <div>
       <h1>Se vad det säljs för. <em>Innan du köper.</em></h1>
-      <p>Det svåraste med att sälja vidare är att veta vad saker går för. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser på andrahandsmarknaden varje dag, till exempel på Vinted, Tradera och Plick. Du ser vad märken säljs för, hur mycket du kan tjäna och vad som är populärt just nu.</p>
+      <p>Fota lappen och se vad plagget säljs för i andra hand. Märkesbörsen kollar <span id="antaltext">tusentals</span> annonser varje dag, så du vet vad du tjänar innan du köper.</p>
+      <div class="heroexempel" id="heroex" hidden></div>
       <div class="cta">
         <a class="knapp" href="#pris">Kom igång</a>
-        <a class="lank" href="#kalkyl">Räkna på ett köp ↓</a>
+        <a class="lank" href="#verktyg">Se vad som ingår ↓</a>
       </div>
       <small class="ctapris" id="ctapris">Från 108 kr i månaden</small>
       <div class="lofteslista"><span>Riktiga siffror från riktiga annonser</span><span>Ingen bindningstid</span><span>Oberoende tjänst</span></div>
@@ -319,17 +367,49 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
   </div>
 </section>
 
-<section style="padding-top:0">
+<section id="verktyg">
   <div class="inre">
-    <div class="rubrik">
-      <div class="over">Så använder du börsen</div>
-      <h2>Från fynd till vinst i tre steg</h2>
+    <div class="rubrik mitt">
+      <div class="over">Allt det här ingår</div>
+      <h2>Från fynd till vinst, i mobilen</h2>
+      <p>Fyra verktyg som hjälper dig att köpa rätt, sälja för rätt pris och hålla koll på vinsten.</p>
     </div>
-    <div class="loften">
-      <div class="lofte"><div class="nr">1</div><h3>Se vad det säljs för</h3><p>Slutpriser från det som faktiskt sålts i andra hand, inte bara vad folk begär. Då vet du vad du kan lägga ut plagget för, och slipper sälja för billigt.</p></div>
-      <div class="lofte"><div class="nr">2</div><h3>Räkna ut vinsten</h3><p>Skriv in vad du betalar och se direkt vad du får över. Du vet om fyndet är värt det innan du köper.</p></div>
-      <div class="lofte"><div class="nr">3</div><h3>Hitta vad du ska köpa in</h3><p>Osäker på vad du ska leta efter? Se vilka märken som blir populärare just nu.</p></div>
+    <div class="verktyg">
+      <div class="verktygkort">
+        <div class="gdv gdlapp">
+          <div class="gdlappen"><b>RALPH LAUREN</b><small>100% COTTON · M</small><i class="gdskanna"></i></div>
+          <div class="gdsvar"><small>Hittade</small><b>Ralph Lauren · Stickat</b><small>Säljs normalt för</small><b class="gdguld">350 kr</b></div>
+        </div>
+        <h3>Fota lappen</h3>
+        <p>Ta en bild på lappen i plagget. Börsen läser märket och visar vad det brukar säljas för och vad du ska lägga ut det för.</p>
+      </div>
+      <div class="verktygkort">
+        <div class="gdv gdmarknad">
+          <div><span>Ralph Lauren</span><i style="--b:88%"></i><b class="gdupp">+18 %</b></div>
+          <div><span>Nudie Jeans</span><i style="--b:66%"></i><b class="gdupp">+12 %</b></div>
+          <div><span>Morris</span><i style="--b:48%"></i><b class="gdupp">+9 %</b></div>
+        </div>
+        <h3>Se vad som säljer</h3>
+        <p>Vilka märken som säljer mest, vilka som ökar och var marginalen är störst. Bevaka ett märke, så får du ett mejl när priset ändras.</p>
+      </div>
+      <div class="verktygkort">
+        <div class="gdv gdbok">
+          <div class="gdboktopp"><small>Vinst den här månaden</small><b>+2 340 kr</b></div>
+          <svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M2 54 L30 48 L58 50 L86 36 L114 38 L142 22 L170 18 L198 6"/></svg>
+        </div>
+        <h3>Räkna vinsten och bokför</h3>
+        <p>Skriv vad du betalar och se direkt vad du får över. Lägg in det du köper och säljer, så räknas vinsten ihop åt dig.</p>
+      </div>
+      <div class="verktygkort">
+        <div class="gdv gdannons">
+          <div class="gdfoto"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 10l10 6 10-6 14 8-5 12-6-3v27H19V27l-6 3-5-12z"/></svg></div>
+          <div class="gdtext"><i style="--b:92%"></i><i style="--b:78%"></i><i style="--b:85%"></i><i style="--b:50%"></i></div>
+        </div>
+        <h3>Fixa annonsen</h3>
+        <p>Gör bakgrunden vit utan att plagget ändras, och få en färdig annonstext att kopiera.</p>
+      </div>
     </div>
+    <p class="verktygnot">Bilderna är exempel. Börsen fungerar i mobilen och kan läggas på hemskärmen som en app.</p>
   </div>
 </section>
 
@@ -405,10 +485,11 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     <div class="priskort">
       <div class="over">Det här ingår i alla</div>
       <ul>
-        <li>Vad varje märke säljs för, och vinsten på ditt inköp</li>
-        <li>Vilka märken som blir populärare och vilka som minskar</li>
-        <li>Märken som säljer bra just nu, uppdaterat varje dag</li>
-        <li>Diagram och historik för varje märke</li>
+        <li>Fota lappen och se vad plagget säljs för</li>
+        <li>Vad varje märke säljs för, med diagram och historik</li>
+        <li>Vilka märken som ökar, och mejl när ett bevakat märke ändras</li>
+        <li>Vinstkalkyl och bokföring över det du köper och säljer</li>
+        <li>Vit bakgrund och färdig annonstext</li>
       </ul>
       <p class="liten" id="prisinfo">1 månad har ingen bindningstid. 6 månader och 1 år betalas i förskott. <a href="../villkor/">Läs villkoren</a>.</p>
     </div>
@@ -435,6 +516,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
         <button class="knapp sek" type="button" id="loggaut">Logga ut</button>
       </div>
       <div class="svar" id="innesvar" role="status"></div>
+      <div class="bevakningar" id="bevakningar" hidden></div>
     </div>
   </div>
 </section>
@@ -446,6 +528,7 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
       <details><summary>Var kommer siffrorna ifrån?</summary><p>Från annonserna på Vinted, Tradera och Plick. På Tradera räknas allt som sålts i varje kategori, med slutpriset, och allt som ligger ute. På Vinted och Plick räknas de nyaste annonserna och vanliga märken för sig.</p></details>
       <details><summary>Hur räknas vinsten?</summary><p>Vinsten är vad märket brukar säljas för i andra hand, minus vad du betalar. Slutpriserna kommer från sålda annonser, i dag på Tradera, där slutpriset syns. "Brukar säljas för" är mittenpriset bland de plagg som sålts, så att några få dyra eller billiga inte drar iväg siffran. Frakt, avgifter, skick och storlek är inte med, så räkna med lite marginal.</p></details>
       <details><summary>Vilka kategorier finns?</summary><p id="katlista">Herrkläder som stickat, skjortor, dunjackor, jeans och skor.</p></details>
+      <details><summary>Fungerar det i mobilen?</summary><p>Ja. Börsen är gjord för mobilen, och du kan lägga den på hemskärmen så att den öppnas som en app. Bilderna du fotar stannar i din mobil.</p></details>
       <details><summary>Hur ofta uppdateras börsen?</summary><p>Mätningarna går flera gånger om dagen, och varje märke och kategori mäts om ungefär en gång per dygn.</p></details>
       <details><summary>Är börsen kopplad till Vinted eller Tradera?</summary><p>Nej. Märkesbörsen är en oberoende tjänst och har inget samarbete med Vinted, Tradera eller Plick. Vi läser bara det som syns i deras öppna annonser.</p></details>
       <details><summary>Lovar ni att jag tjänar pengar?</summary><p>Nej, och det ska ingen göra. Börsen visar vad som säljer och till vilket pris, så att du kan fatta bättre beslut. Skick, storlek, frakt och avgifter påverkar vad du tjänar på varje plagg.</p></details>
@@ -461,6 +544,8 @@ body{background:radial-gradient(900px 480px at 10% -5%,color-mix(in srgb,#c9a24f
     <a class="knapp" href="#pris">Kom igång</a>
   </div>
 </section>
+
+<div class="mobilknapp" id="mobilknapp" aria-hidden="true"><a class="knapp" href="#pris" tabindex="-1">Kom igång</a><small id="mobilpris"></small></div>
 
 <footer>
   <div>Märkesbörsen · Marknadsdata från andrahandsmarknaden, till exempel Vinted, Tradera och Plick</div>
@@ -529,7 +614,10 @@ function visaKonto(s){
   $("menykonto").textContent = s.inne ? "Konto" : "Logga in";
   $("menyknapp").textContent = s.inne ? "Öppna börsen" : "Kom igång";
   $("menyknapp").href = s.inne ? "app.html" : "#pris";
+  const mk = $("mobilknapp").querySelector("a");
+  mk.textContent = s.inne ? "Öppna börsen" : "Kom igång"; mk.href = s.inne ? "app.html" : "#pris"; $("mobilpris").hidden = s.inne;
   if (!s.inne) return;
+  visaBevakningar();
   $("hantera").hidden = !s.prenumeration && !(s.plan && s.plan !== "fri");
   $("innetext").textContent = s.plan === "fri" ? "Du har tillgång till hela Märkesbörsen." :
     s.prenumeration ? `Inloggad som ${s.mejl}. Prenumerationen förnyas varje månad tills du säger upp den.` :
@@ -542,6 +630,30 @@ function visaKonto(s){
   visaKonto(await Las.status());
 })();
 $("ctapris").textContent = `Från ${kr(Math.min(...PLANER.map(p => p.pris / p.man)))} i månaden`;
+$("mobilpris").textContent = $("ctapris").textContent.replace(" i månaden", "/mån");
+// Knappen längst ner på mobilen syns när toppens knapp är borta, men inte när priserna redan syns.
+(() => {
+  const k = $("mobilknapp"), syns = new Map();
+  const visa = () => { const pa = !syns.get("topp") && !syns.get("pris") && !syns.get("slut") && !syns.get("konto"); k.classList.toggle("syns", pa); k.setAttribute("aria-hidden", !pa); k.querySelector("a").tabIndex = pa ? 0 : -1; };
+  const o = new IntersectionObserver(es => { for (const e of es) syns.set(e.target.dataset.mk, e.isIntersecting); visa(); });
+  for (const [namn, el] of [["topp", document.querySelector(".hjalte .cta")], ["pris", $("pris")], ["slut", document.querySelector(".slut")], ["konto", $("konto")]]) if (el) { el.dataset.mk = namn; o.observe(el); }
+})();
+// Märken man bevakar (visas när man är inloggad).
+async function visaBevakningar(){
+  let lista = [];
+  try { lista = await Las.bevakningar(); } catch { return; }
+  const el = $("bevakningar");
+  el.hidden = false;
+  el.innerHTML = `<h3>Märken du bevakar</h3>` + (lista.length
+    ? `<p>Du får ett mejl när mittenpriset på något av dem ändras mycket.</p><ul>${lista.map(b => `<li><span>${esc(b.m)} <small>${esc((b.kn || b.k).toLowerCase())}</small></span><button type="button" data-m="${esc(b.m)}" data-k="${esc(b.k)}">Sluta bevaka</button></li>`).join("")}</ul>`
+    : `<p>Inga än. Tryck på Bevaka märket inne i börsen, så får du ett mejl när priset ändras.</p>`);
+}
+$("bevakningar").addEventListener("click", async e => {
+  const b = e.target.closest("[data-m]"); if (!b) return;
+  b.disabled = true;
+  try { await Las.bevaka(b.dataset.m, b.dataset.k, true); } catch (fel) { $("innesvar").textContent = fel.message; }
+  visaBevakningar();
+});
 if (NAMN) { $("omtext").textContent = `Märkesbörsen är byggd av ${NAMN}, som själv köper och säljer märkeskläder i andra hand. Problemet var alltid detsamma: att inte veta vad saker kunde säljas för. Därför byggdes börsen, för att räkna ut vinsten i stället för att gissa.`; document.querySelector(".vem .bild").textContent = NAMN[0].toUpperCase(); }
 if (KONTAKT) { $("kontakt").hidden = false; $("kontakt").innerHTML = `Frågor? Skriv till <a href="mailto:${esc(KONTAKT)}">${esc(KONTAKT)}</a>.`; }
 
@@ -669,6 +781,8 @@ async function start(){
   $("ksalj").textContent = kr(ex.median);
   $("ksaljinfo").textContent = `mittenpriset för ${ex.n} sålda i andra hand senaste 30 dagarna`;
   $("kvinst").textContent = "+" + kr(vinst);
+  $("heroex").innerHTML = `<span>Till exempel: en ${esc(plagg)} från <b>${esc(ex.m)}</b>.</span><span>Köp för <b>${kr(INKOP)}</b>, säljs ofta för <b>${kr(ex.median)}</b>.</span><span class="plus">+${kr(vinst)}</span>`;
+  $("heroex").hidden = false;
   $("kvinstinfo").textContent = "före frakt och avgifter";
   $("knot").textContent = `Riktigt slutpris ur börsen, mätt ${new Date(dag(ex.d)).toLocaleDateString("sv-SE", {day: "numeric", month: "long"})}. Inköpspriset är ett exempel. Skick och storlek påverkar priset.`;
 }

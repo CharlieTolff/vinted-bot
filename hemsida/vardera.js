@@ -12,7 +12,7 @@ const KAT_SAKER = 0.5;  // så säker måste AI:n vara på kategorin för att v�
 const INTE = ["övriga", "okänt", "no brand", "vintage", "handgjord", "diverse"];
 const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g, "");
 const avr = v => Math.max(10, Math.round(v / 10) * 10);
-let vd = {marke: "", markeFranBild: false, kat: "", plagg: "", bild: "", x: null};
+let vd = {marke: "", markeFranBild: false, kat: "", plagg: "", bild: "", fil: null, x: null};
 
 function kats(){ return (B && B.kategorier || []).filter(k => !k.vantar); }
 function allaMarken(){
@@ -127,14 +127,15 @@ function ritaVardera(){
       <div><span>Säljs ofta från</span><b class="tal">${kr(x.p25)}</b><small>en fjärdedel säljs billigare</small></div>
       <div><span>Sålda per vecka</span><b class="tal">${x.perVecka != null ? Math.round(x.perVecka).toLocaleString("sv-SE") : "–"}</b><small>${x.antalUtv != null ? `${utv(x.antalUtv)} mot förra månaden` : tr ? "på " + esc(KALLOR.tradera.namn) : "uppskattat"}</small></div>
     </div>
-    ${trendText(x) ? `<p class="vdtrend">${esc(trendText(x))}.</p>` : ""}
+    ${trendText(x) || window.bevakaKnapp?.(m, kat.id) ? `<div class="vdtrendrad">${trendText(x) ? `<p class="vdtrend">${esc(trendText(x))}.</p>` : ""}${window.bevakaKnapp?.(m, kat.id) || ""}</div>` : ""}
     ${diagram(x.veckor)}
     <div class="vdvinst">
       <label>Vad betalade du? (kr)<input id="vdpris" type="number" inputmode="decimal" min="0" step="1" placeholder="199" value="${esc(betalt)}"></label>
       <div><span>Din vinst</span><b class="tal" id="vdvinst">–</b><small id="vdvinstinfo">skriv vad du betalade</small></div>
     </div>
     <p class="hjalp">Skick, storlek och modell påverkar priset. Siffrorna är vägledning, inte en garanti.</p>
-    <div class="abknappar"><button type="button" class="knapp primar" id="vdbeskriv">Skriv annonsen</button><button type="button" class="knapp" id="vdborsen">Se märket i börsen</button></div>`;
+    <div class="abknappar"><button type="button" class="knapp primar" id="vdspara">Spara i Mina affärer</button><button type="button" class="knapp" id="vdbeskriv">Skriv annonsen</button><button type="button" class="knapp" id="vdborsen">Se märket i börsen</button></div>
+    <p class="vdsparat" id="vdsparat" hidden></p>`;
   ritaVinsten();
 }
 function ritaVinsten(){
@@ -148,6 +149,22 @@ function ritaVinsten(){
   info.textContent = lag == null ? "före frakt och avgifter" : `${tecken(lag)} om det säljs i underkant`;
 }
 window.ritaVardera = ritaVardera;
+
+// ---------- Spara i Mina affärer ----------
+function sparaAffar(){
+  const x = vd.x, kat = kats().find(k => k.id === vd.kat);
+  if (!x || !kat || !window.BokforNy) return;
+  const betalt = parseFloat($("vdpris")?.value);
+  const sort = vd.plagg && TILL_KAT[vd.plagg] === kat.id ? vd.plagg.toLowerCase() : kat.namn.toLowerCase();
+  window.BokforNy({namn: `${vd.marke} ${sort}`, marke: vd.marke, kategori: kat.namn, inkop: isNaN(betalt) ? null : betalt,
+    anteckning: `Säljs normalt för ${kr(x.median)}, lägg ut för ${kr(avr(x.median * 1.1))} (Märkesbörsen ${new Date().toLocaleDateString("sv-SE")})`},
+    vd.fil, "Från Fota lappen. Fyll i det som saknas, till exempel storleken, och tryck på Spara.");
+}
+addEventListener("bokforing-sparad", e => {
+  const el = $("vdsparat"); if (!el || !document.querySelector('.vy[data-vy="vardera"]:not([hidden])')) return;
+  el.innerHTML = `Sparat i Mina affärer. <button type="button" class="lankknapp" id="vdtillaffarer">Öppna Mina affärer</button>`;
+  el.hidden = false;
+});
 
 // ---------- Läsa bilderna ----------
 async function franBilder(filer){
@@ -178,7 +195,7 @@ async function franBilder(filer){
       } catch (e) { console.error(e); }
     }
     if (vd.bild) URL.revokeObjectURL(vd.bild);
-    vd.bild = URL.createObjectURL(plagg.fil);
+    vd.bild = URL.createObjectURL(plagg.fil); vd.fil = plagg.fil;
     // Ett märke från en tidigare bild ska inte hänga kvar, men ett som man skrivit själv får stå kvar.
     if (t.marke || vd.markeFranBild) { vd.marke = t.marke; vd.markeFranBild = !!t.marke; $("vdmarke").value = t.marke; }
     const sakerKat = katVald && sakerhet >= KAT_SAKER && kats().some(k => k.id === katVald);
@@ -218,6 +235,8 @@ $("vdanalys").addEventListener("click", e => {
   const k = e.target.closest("[data-k]");
   if (k) { vd.kat = k.dataset.k; ritaVardera(); return; }
   if (e.target.closest("#vdborsen")) { oppnaMarke(vd.marke, vd.kat, "tradera"); return; }
+  if (e.target.closest("#vdspara")) { sparaAffar(); return; }
+  if (e.target.closest("#vdtillaffarer")) { visaVy("bokforing"); scrollTo({top: 0, behavior: "smooth"}); return; }
   if (e.target.closest("#vdbeskriv")) {
     window.AnnonsFyll?.({abmarke: vd.marke, abplagg: vd.plagg});
     visaVy("beskrivning"); scrollTo({top: 0, behavior: "smooth"});

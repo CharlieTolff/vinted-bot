@@ -1,0 +1,40 @@
+/* Små animationer som visar hur börsens verktyg fungerar. Används av guiden (guide.js) och startsidan. */
+.gdv{position:relative;height:118px;color:#eef1e6;font-size:14px;line-height:1.45;text-align:left;border-radius:12px;background:#121a11;border:1px solid #34412f;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:12px;padding:12px}
+.gdvalk i{width:12px;border-radius:3px;background:linear-gradient(180deg,#f0d491,#a8823a);align-self:center;animation:gdvaxa 1.6s ease-in-out infinite alternate}
+.gdvalk i:nth-child(1){height:22px}.gdvalk i:nth-child(2){height:38px;animation-delay:.2s}.gdvalk i:nth-child(3){height:54px;animation-delay:.4s}
+.gdvalk span{font-family:Cinzel,Georgia,serif;font-weight:700;letter-spacing:.08em;color:#e6c47c;font-size:19px;margin-left:6px}
+@keyframes gdvaxa{from{transform:scaleY(.6)}to{transform:scaleY(1)}}
+.gdlappen{position:relative;width:118px;height:84px;background:#f4efe2;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#1b2219;box-shadow:0 6px 14px #0008;overflow:hidden;transform:rotate(-4deg)}
+.gdlappen b{font-family:Georgia,serif;font-size:13px;letter-spacing:.06em}.gdlappen small{font-size:8.5px;letter-spacing:.08em}
+.gdskanna{position:absolute;left:0;right:0;height:3px;background:#e6c47c;box-shadow:0 0 12px 3px rgba(230,196,124,.8);animation:gdskanna 2.4s ease-in-out infinite}
+@keyframes gdskanna{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}
+.gdsvar{display:flex;flex-direction:column;gap:1px;animation:gdin 2.4s ease infinite}
+.gdsvar small{font-size:11px;color:#9ba890}.gdsvar b{font-size:13.5px}.gdguld{color:#e6c47c;font-size:22px!important;font-family:"Playfair Display",Georgia,serif}
+@keyframes gdin{0%,30%{opacity:0;transform:translateX(8px)}45%,100%{opacity:1;transform:none}}
+.gdmarknad{flex-direction:column;align-items:stretch;gap:9px}
+.gdmarknad div{display:grid;grid-template-columns:92px 1fr 46px;align-items:center;gap:8px;font-size:12.5px}
+.gdmarknad i{height:9px;border-radius:5px;background:linear-gradient(90deg,#a8823a,#e6c47c);width:var(--b);animation:gdstapel 2.6s ease infinite}
+.gdmarknad div:nth-child(2) i{animation-delay:.15s}.gdmarknad div:nth-child(3) i{animation-delay:.3s}
+@keyframes gdstapel{0%{width:0}40%,100%{width:var(--b)}}
+.gdupp{color:#52d394;text-align:right}
+.gdvinst{gap:8px}.gdvinst div{display:flex;flex-direction:column;align-items:center;gap:2px}.gdvinst small{font-size:11px;color:#9ba890}.gdvinst b{font-size:16px}
+.gdvinst>span{color:#9ba890}
+.gdres{background:rgba(82,211,148,.1);border:1px solid rgba(82,211,148,.35);border-radius:10px;padding:6px 9px;animation:gdpuls 2.4s ease infinite}
+.gdres b{color:#52d394;font-size:19px}
+@keyframes gdpuls{0%,35%{opacity:.2;transform:scale(.92)}55%,100%{opacity:1;transform:none}}
+.gdbok{flex-direction:column;align-items:stretch;gap:4px}
+.gdboktopp{display:flex;flex-wrap:wrap;gap:0 10px;justify-content:space-between;align-items:baseline}.gdboktopp small{font-size:11.5px;color:#9ba890}.gdboktopp b{color:#52d394;font-size:18px}
+.gdbok svg{width:100%;height:62px}.gdbok path{fill:none;stroke:#e6c47c;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:260;animation:gdrita 2.6s ease infinite}
+@keyframes gdrita{0%{stroke-dashoffset:260}55%,100%{stroke-dashoffset:0}}
+.gdannons{justify-content:flex-start}
+.gdfoto{flex:none;width:86px;height:92px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#fff 50%,#6d6a5c 50%);background-size:200% 100%;animation:gdbyt 2.8s ease infinite}
+.gdfoto svg{width:58px;fill:#3a5a8a}
+@keyframes gdbyt{0%,20%{background-position:100% 0}55%,100%{background-position:0 0}}
+.gdtext{flex:1;display:flex;flex-direction:column;gap:9px}
+.gdtext i{height:8px;border-radius:4px;background:#3e4b3a;width:var(--b);animation:gdskriv 2.8s ease infinite}
+.gdtext i:nth-child(2){animation-delay:.15s}.gdtext i:nth-child(3){animation-delay:.3s}.gdtext i:nth-child(4){animation-delay:.45s}
+@keyframes gdskriv{0%,20%{width:0}60%,100%{width:var(--b)}}
+.gdklart svg{width:64px;height:64px}.gdklart circle{fill:none;stroke:#34412f;stroke-width:3}
+.gdklart path{fill:none;stroke:#52d394;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;animation:gdbock 1.2s ease forwards}
+@keyframes gdbock{from{stroke-dashoffset:40}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.gdv *{animation:none!important}}
