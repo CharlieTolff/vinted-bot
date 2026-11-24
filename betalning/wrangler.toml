@@ -10,6 +10,12 @@ AVSANDARE = "markesborsen@gmail.com"
 # Mejladresser som alltid kommer in utan att betala (ägaren).
 FRIA = "markesborsen@gmail.com"
 REPO = "CharlieTolff/vinted-bot"
+# Låsets egen adress (för länken i bevakningsmejlen).
+LAS_URL = "https://markesborsen.markesborsen.workers.dev"
+
+# Bevakade märken kollas varje morgon (06:30 UTC).
+[triggers]
+crons = ["30 6 * * *"]
 
 [[kv_namespaces]]
 binding = "DATA"

@@ -1,0 +1,20 @@
+{
+  "name": "Märkesbörsen",
+  "short_name": "Märkesbörsen",
+  "description": "Se vad märkeskläder säljs för i andra hand, fota lappen och håll koll på vinsten.",
+  "lang": "sv",
+  "start_url": "/borsen/app.html",
+  "scope": "/borsen/",
+  "display": "standalone",
+  "background_color": "#121a11",
+  "theme_color": "#121a11",
+  "icons": [
+    {"src": "/ikon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/ikon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "/ikon-maskbar-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Fota lappen", "short_name": "Fota lappen", "url": "/borsen/app.html?vy=vardera", "icons": [{"src": "/ikon-192.png", "sizes": "192x192"}]},
+    {"name": "Mina affärer", "short_name": "Mina affärer", "url": "/borsen/app.html?vy=bokforing", "icons": [{"src": "/ikon-192.png", "sizes": "192x192"}]}
+  ]
+}

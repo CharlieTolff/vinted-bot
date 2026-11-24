@@ -145,7 +145,7 @@ jobs:
       - name: Bygg hemsidan
         run: |
           mkdir -p _site
-          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/vardera.js hemsida/tillganglig.js hemsida/las.js sokningar.json _site/
+          cp hemsida/index.html hemsida/bors.html hemsida/bokforing.html hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/vardera.js hemsida/guide.js hemsida/hemskarm.js hemsida/tillganglig.js hemsida/las.js sokningar.json _site/
           mkdir -p _site/modeller
           cp .fixabild/*.onnx .fixabild/*.json _site/modeller/ 2>/dev/null || true
           cp -r exempelbilder _site/ 2>/dev/null || true
@@ -164,11 +164,11 @@ jobs:
           mkdir -p _site/borsen
           cp hemsida/borsen.html _site/borsen/index.html
           cp hemsida/bors.html _site/borsen/app.html
-          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/vardera.js hemsida/tillganglig.js hemsida/las.js _site/borsen/
+          cp hemsida/stil.css hemsida/fixabild.js hemsida/bokfor.js hemsida/annons.js hemsida/vardera.js hemsida/guide.js hemsida/demo.css hemsida/hemskarm.js hemsida/sw.js hemsida/manifest.webmanifest hemsida/tillganglig.js hemsida/las.js _site/borsen/
           cp _site/marken-alias.json _site/borsen/
           # Väntelistan: det enda besökare ser på märkesbörsen.se före lanseringen.
           # Ikonen i webbläsarfliken (och på hemskärmen på mobilen).
-          cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/favicon.ico _site/
+          cp hemsida/ikon.svg hemsida/ikon-180.png hemsida/ikon-192.png hemsida/ikon-512.png hemsida/ikon-maskbar-512.png hemsida/dela.png hemsida/favicon.ico _site/
           mkdir -p _site/vantelista
           cp hemsida/vantelista.html _site/vantelista/index.html
           cp hemsida/tillganglig.js _site/vantelista/
@@ -195,6 +195,9 @@ jobs:
           if [ -z "$ID" ]; then echo "Låset är inte upplagt än, hoppar över"; exit 0; fi
           curl -sf -X PUT -H "$H" -H "Content-Type: application/octet-stream" --data-binary @bors.json "$CF/accounts/$KONTO/storage/kv/namespaces/$ID/values/bors" > /dev/null
           echo "Börsen skickad till låset"
+          # Senaste priset per märke, som låset jämför med när det mejlar dem som bevakar ett märke.
+          python3 bevakningspriser.py bors.json priser.json
+          curl -sf -X PUT -H "$H" -H "Content-Type: application/octet-stream" --data-binary @priser.json "$CF/accounts/$KONTO/storage/kv/namespaces/$ID/values/priser" > /dev/null
 
       - uses: actions/upload-pages-artifact@v3
         with:

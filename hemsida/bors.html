@@ -16,6 +16,12 @@ if (location.pathname.includes("/borsen/")) document.documentElement.classList.a
 <link rel="icon" href="/ikon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32 48x48">
 <link rel="apple-touch-icon" href="/ikon-180.png">
+<link rel="manifest" href="/borsen/manifest.webmanifest">
+<meta name="theme-color" content="#121a11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Märkesbörsen">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href="typsnitt/typsnitt.css" rel="stylesheet">
 <script src="tillganglig.js" defer></script>
 <style>
@@ -320,7 +326,8 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .vdtopp h3{margin:2px 0;font-size:26px;letter-spacing:-.02em}
 .vdbild{width:76px;height:76px;object-fit:cover;border-radius:12px;flex:none;border:1px solid var(--linje)}
 .vdsvar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-top:14px}
-.vdtrend{margin:12px 0 0;font-weight:600}
+.vdtrendrad{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 12px;margin:12px 0 0}
+.vdtrend{margin:0;font-weight:600}
 .vddiagram{margin-top:14px;background:var(--kort2);border-radius:14px;padding:12px 12px 4px}
 .vddiagram svg{width:100%;height:auto;display:block}
 .vdforklaring{display:flex;gap:16px;font-size:12.5px;color:var(--svag)}
@@ -347,6 +354,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .abtips{margin:0;font-size:13px;color:var(--svag);line-height:1.45}
 .abnotis{margin:0;font-size:13.5px;line-height:1.45;background:var(--kort2);border-radius:10px;padding:10px 12px}
 .abknappar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.vdsparat{margin:10px 0 0;padding:9px 12px;border-radius:10px;background:color-mix(in srgb,var(--plus) 14%,transparent);border:1px solid color-mix(in srgb,var(--plus) 40%,transparent);font-size:13.5px}
 @media (max-width:900px){ .abinnehall{grid-template-columns:minmax(0,1fr)} .abresultat{position:static} }
 
 /* Fixa bilder */
@@ -424,6 +432,11 @@ svg.spark{display:block;margin-left:auto}
 .nyckeltal small{font-size:13px}
 .taggar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tagg{font-size:12.5px;background:#141414;color:var(--guldljus);border-radius:8px;padding:2px 9px;text-decoration:none}
+.bevakaknapp{font:inherit;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--guld);background:none;color:var(--guldtext);border-radius:999px;padding:3px 11px 3px 9px;cursor:pointer}
+.bevakaknapp svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bevakaknapp.pa{background:var(--guldknapp);color:#1a1408;border-color:transparent}.bevakaknapp.pa svg{fill:currentColor}
+.bevakaknapp:disabled{opacity:.6;cursor:wait}
+#bevakatoast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;max-width:min(440px,calc(100vw - 32px));background:var(--kort);color:var(--text);border:1px solid var(--linje);border-radius:12px;padding:11px 15px;box-shadow:var(--skugga-hojd,var(--skugga));font-size:14px}
 .lank{font-size:13px;color:var(--guldtext);font-weight:600;text-decoration:none;border:1px solid color-mix(in srgb,var(--guld) 50%,var(--linje));border-radius:999px;padding:3px 11px;background:color-mix(in srgb,var(--guld) 8%,var(--kort))}
 .diagramval{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 18px 0}
 .diagramsum{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px;padding:6px 18px 0}
@@ -623,7 +636,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
       <button data-vy="bilder">Vit bakgrund<small>Byt bakgrund, plagget ändras inte</small></button>
       <button data-vy="beskrivning">Skriv beskrivning<small>Färdig text att kopiera</small></button>
     </div>
-    <div class="sidojuridik"><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a></div>
+    <div class="sidojuridik"><a href="#" data-hemskarm hidden>Lägg på hemskärmen</a><a href="#" id="visaguide">Visa guiden igen</a><a href="../integritet/">Integritet och kakor</a><a href="../villkor/">Villkor</a></div>
   </nav>
   <div>
   <div class="vy" data-vy="analyser">
@@ -1674,7 +1687,7 @@ function ritaDetalj(){
       <div style="flex:1 1 260px;min-width:0">
         <div class="svag">${esc(kat ? kat.namn : "")} · ${K.namn}</div>
         <h2>${esc(m)}</h2>
-        <div class="taggar">${alarm.map(a => `<a class="tagg" href="index.html#${encodeURIComponent(a)}">★ ${esc(a)}</a>`).join("")}${vl ? `<a class="lank" href="${vl}" target="_blank" rel="noopener">${PUBLIK ? "Se annonser" : "Se på Vinted"} ↗</a>` : ""}<a class="skapa" href="${alarmLank(m, st.kat, vi && vi[3] ? vi[3] : tr && tr[2] ? tr[2] * 0.5 : null)}">+ Skapa alarm</a></div>
+        <div class="taggar">${alarm.map(a => `<a class="tagg" href="index.html#${encodeURIComponent(a)}">★ ${esc(a)}</a>`).join("")}${vl ? `<a class="lank" href="${vl}" target="_blank" rel="noopener">${PUBLIK ? "Se annonser" : "Se på Vinted"} ↗</a>` : ""}<a class="skapa" href="${alarmLank(m, st.kat, vi && vi[3] ? vi[3] : tr && tr[2] ? tr[2] * 0.5 : null)}">+ Skapa alarm</a>${bevakaKnapp(m, st.kat)}</div>
       </div>
       <div class="nyckeltal">
         <div><span class="svag">${K.andel}</span><b>${pct(r.andel)}</b><small>${utv(r.andelUtv, " %")} <span class="svag">${PERIODER[st.period][0]}</span></small></div>
@@ -2033,10 +2046,49 @@ async function start(){
   if (vyParam && finnsVy(vyParam)) st.vy = vyParam;
   const h = decodeURIComponent(location.hash.slice(1));
   if (h) { st.marke = h; st.vy = "andel"; }
+  const katParam = new URLSearchParams(location.search).get("kat");  // från bevakningsmejlen
+  if (katParam && (B.kategorier || []).some(k => k.id === katParam)) st.kat = katParam;
   const t = B.uppdaterad ? new Date(B.uppdaterad) : null;
   $("uppdaterad").textContent = t ? "Senast mätt " + t.toLocaleString("sv-SE", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : "";
   rita();
+  laddaBevakade();
+  if (PUBLIK) window.Guide?.forsta();
 }
+// ---------- Bevaka ett märke ----------
+// Kunden får ett mejl när mittenpriset på ett bevakat märke ändras mycket (låset kollar varje morgon).
+let bevakade = null;
+const KLOCKA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg>`;
+const bevakas = (m, k) => !!(bevakade && bevakade.some(b => b.m === m && b.k === k));
+function bevakaKnapp(m, k){
+  if (!PUBLIK || !bevakade || !m || !k || String(k).startsWith("vantar")) return "";
+  const pa = bevakas(m, k);
+  return `<button type="button" class="bevakaknapp${pa ? " pa" : ""}" data-bevaka="${esc(m)}" data-kat="${esc(k)}" aria-pressed="${pa}" title="Få ett mejl när priset ändras mycket">${KLOCKA}${pa ? "Bevakas" : "Bevaka märket"}</button>`;
+}
+window.bevakaKnapp = bevakaKnapp;
+function bevakaToast(text){
+  let t = $("bevakatoast");
+  if (!t) { t = Object.assign(document.createElement("div"), {id: "bevakatoast", role: "status"}); document.body.appendChild(t); }
+  t.textContent = text; t.hidden = false;
+  clearTimeout(bevakaToast.tid); bevakaToast.tid = setTimeout(() => t.hidden = true, 5000);
+}
+async function laddaBevakade(){
+  if (!PUBLIK) return;
+  try { bevakade = await Las.bevakningar(); } catch { bevakade = null; return; }
+  if (st.marke) ritaDetalj();
+  window.ritaVardera?.();
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-bevaka]"); if (!b) return;
+  const m = b.dataset.bevaka, k = b.dataset.kat, bort = bevakas(m, k);
+  b.disabled = true;
+  try {
+    bevakade = await Las.bevaka(m, k, bort);
+    const kat = (B.kategorier || []).find(x => x.id === k);
+    bevakaToast(bort ? `Du bevakar inte ${m} längre.` : `Du får ett mejl när priset på ${m}${kat ? " (" + kat.namn.toLowerCase() + ")" : ""} ändras mycket.`);
+  } catch (fel) { bevakaToast(fel.message); }
+  document.querySelectorAll("[data-bevaka]").forEach(x => { if (x.dataset.bevaka === m && x.dataset.kat === k) x.outerHTML = bevakaKnapp(m, k); });
+});
+
 // ---------- Egna kategorier ----------
 const EGNA_FIL = "borskategorier.json";
 let egnaKat = [];
@@ -2303,5 +2355,7 @@ start();
 <script src="bokfor.js"></script>
 <script src="annons.js"></script>
 <script src="vardera.js"></script>
+<script src="guide.js"></script>
+<script src="hemskarm.js"></script>
 </body>
 </html>

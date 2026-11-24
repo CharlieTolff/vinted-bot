@@ -308,7 +308,14 @@ function sparaForm(e){
   spara();
   $("bfdialog").close();
   (nyBild ? sparaBild(p.id, nyBild) : Promise.resolve()).then(rita);
+  if (!gammal) dispatchEvent(new CustomEvent("bokforing-sparad", {detail: p}));
 }
+// Fota lappen lägger in plagget härifrån: formuläret öppnas ifyllt, med bilden på plagget.
+window.BokforNy = (p, fil, notis) => {
+  if (!$("bfform")) return;
+  oppna({status: "I lager", inkopsdatum: idag(), ...p}, notis, null, p.inkop == null ? "inkop" : "storlek");
+  if (fil) { nyBild = fil; visaFormBild(URL.createObjectURL(fil)); }
+};
 
 // ---------- Skärmbild ----------
 let tessLaddas = null;
