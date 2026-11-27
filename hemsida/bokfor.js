@@ -3,7 +3,7 @@
 // skärmbild av en försäljning på Vinted eller Tradera; texten läses av med
 // Tesseract (OCR) direkt i webbläsaren, så bilden skickas aldrig någonstans.
 (() => {
-const NYCKEL = "bokforing-v1";
+const NYCKEL = "bokforing-v1", BORTA = "bokforing-borttagna", OSYNKAT = "bokforing-osynkat", KONTO = "bokforing-konto", NYA_BILDER = "bokforing-nya-bilder";
 const TESS = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
 const STATUS = ["I lager", "Upplagd", "Såld"];
 const KOPT = ["Vinted", "Tradera", "Plick", "Loppis", "Second hand-butik", "Leverantör", "Annat"];
@@ -21,10 +21,25 @@ const tal = s => { const v = parseFloat(String(s ?? "").replace(/\s/g, "").repla
 const idag = () => new Date().toLocaleDateString("sv-SE");
 
 let poster = [];
-function las(){ try { poster = JSON.parse(localStorage.getItem(NYCKEL)) || []; } catch { poster = []; } }
-function spara(){
-  try { localStorage.setItem(NYCKEL, JSON.stringify(poster)); }
+// Varje plagg får en tid när det ändrats (andrad), och borttagna plagg sparas med tid, så att
+// bokföringen kan slås ihop med kontot (se Synk längre ner) utan att något försvinner eller kommer tillbaka.
+let borttagna = [], sigs = new Map();
+const sig = p => { const {andrad, ...rest} = p; return JSON.stringify(rest); };
+function las(){
+  try { poster = JSON.parse(localStorage.getItem(NYCKEL)) || []; } catch { poster = []; }
+  try { borttagna = JSON.parse(localStorage.getItem(BORTA)) || []; } catch { borttagna = []; }
+  sigs = new Map(poster.map(p => [p.id, sig(p)]));
+}
+function spara(franKonto){
+  if (!franKonto) {
+    const nu = Date.now(), finns = new Set();
+    for (const p of poster) { finns.add(p.id); if (sigs.get(p.id) !== sig(p)) p.andrad = nu; }
+    for (const id of sigs.keys()) if (!finns.has(id)) borttagna = [...borttagna.filter(b => b.id !== id), {id, andrad: nu}];
+  }
+  sigs = new Map(poster.map(p => [p.id, sig(p)]));
+  try { localStorage.setItem(NYCKEL, JSON.stringify(poster)); localStorage.setItem(BORTA, JSON.stringify(borttagna)); }
   catch { alert("Det gick inte att spara. Webbläsaren kanske är i privat läge."); }
+  if (!franKonto) synkaSnart();
 }
 let filter = "alla", period = "allt", utv = "max", sok = "", visa = 12;
 try {
@@ -90,12 +105,91 @@ async function sparaBild(id, fil){
     await bildlager("put", blob, id);
     if (BILD[id]) URL.revokeObjectURL(BILD[id]);
     BILD[id] = URL.createObjectURL(blob);
+    markeraNyBild(id); synkaSnart();
   } catch { alert("Det gick inte att spara bilden. Prova en annan bild, eller kolla att webbläsaren inte är i privat läge."); }
 }
 async function taBortBild(id){
   try { await bildlager("delete", id); } catch {}
   if (BILD[id]) { URL.revokeObjectURL(BILD[id]); delete BILD[id]; }
 }
+
+// ---------- Synk med kontot ----------
+// Inloggad (kund eller ägare) sparas bokföringen och bilderna även på kontot, via låset (las.js).
+// Varje enhet skickar sina ändringar, och den senaste ändringen av ett plagg vinner. Ett borttaget plagg
+// tas bort överallt. Utan inloggning fungerar allt som förut, bara i den här webbläsaren.
+const harKonto = () => typeof Las !== "undefined" && !!Las.huvud();
+const lasLista = k => { try { return JSON.parse(localStorage.getItem(k)) || []; } catch { return []; } };
+function markeraNyBild(id){ try { localStorage.setItem(NYA_BILDER, JSON.stringify([...new Set([...lasLista(NYA_BILDER), id])])); } catch {} }
+function slaIhop(a, b){
+  const ps = new Map(), borta = new Map();
+  for (const x of [...(a.borttagna || []), ...(b.borttagna || [])]) if (x && x.id && (borta.get(x.id) || 0) < (+x.andrad || 0)) borta.set(x.id, +x.andrad || 0);
+  for (const p of [...(a.poster || []), ...(b.poster || [])]) { if (!p || !p.id) continue; const g = ps.get(p.id); if (!g || (+p.andrad || 0) > (+g.andrad || 0)) ps.set(p.id, p); }
+  for (const [id, t] of borta) if (ps.has(id) && (+ps.get(id).andrad || 0) <= t) ps.delete(id);
+  return {poster: [...ps.values()], borttagna: [...borta].map(([id, andrad]) => ({id, andrad}))};
+}
+let synkTid = 0, synkar = false, igen = false;
+function visaSynk(text){ const el = $("bfsynk"); if (el) { el.textContent = text; el.hidden = !text; } }
+function synkaSnart(){
+  if (!harKonto()) return;
+  try { localStorage.setItem(OSYNKAT, "1"); } catch {}
+  visaSynk("Sparar på kontot …");
+  clearTimeout(synkTid); synkTid = setTimeout(synka, 1500);
+}
+const tillData = blob => new Promise(ok => { const r = new FileReader(); r.onload = () => ok(r.result); r.readAsDataURL(blob); });
+async function synka(){
+  if (!harKonto()) return;
+  if (synkar) { igen = true; return; }
+  synkar = true;
+  try {
+    // Först kontots bokföring. Är enheten använd av ett annat konto, och allt därifrån redan sparat, börjar vi om.
+    const server = await Las.anrop("/bokforing", {});
+    let forra = null, osynkat = false;
+    try { forra = localStorage.getItem(KONTO); osynkat = !!localStorage.getItem(OSYNKAT); } catch {}
+    if (forra && forra !== server.konto && !osynkat) {
+      for (const p of poster) await taBortBild(p.id);
+      poster = []; borttagna = []; try { localStorage.removeItem(NYA_BILDER); } catch {}
+    }
+    try { localStorage.setItem(KONTO, server.konto); } catch {}
+    const ihop = slaIhop(server, {poster, borttagna});
+    const andratPaKontot = JSON.stringify(slaIhop(server, {})) !== JSON.stringify(ihop);
+    const slutlig = andratPaKontot ? await Las.anrop("/bokforing", ihop) : server;
+    const ids = new Set(slutlig.poster.map(p => p.id));
+    for (const p of poster) if (!ids.has(p.id)) await taBortBild(p.id);
+    poster = slutlig.poster; borttagna = slutlig.borttagna;
+    spara(true);
+    // Bilderna: skicka de nya härifrån, hämta de som saknas här.
+    const paKontot = new Set(slutlig.bilder || []), nya = new Set(lasLista(NYA_BILDER));
+    for (const id of ids) {
+      let lokal = null;
+      try { lokal = await bildlager("get", id); } catch {}
+      if (lokal && (!paKontot.has(id) || nya.has(id))) {
+        // En bild som låset inte tar emot (t.ex. för stor) hoppas över, resten fortsätter.
+        try { await Las.anrop("/bokbild", {id, data: await tillData(lokal)}); }
+        catch (e) { if (e.status !== 400 && e.status !== 409) throw e; }
+      } else if (!lokal && paKontot.has(id)) {
+        try {
+          const {data} = await Las.anrop("/bokbild?id=" + encodeURIComponent(id));
+          const blob = await (await fetch(data)).blob();
+          await bildlager("put", blob, id);
+          if (BILD[id]) URL.revokeObjectURL(BILD[id]);
+          BILD[id] = URL.createObjectURL(blob);
+        } catch {}
+      }
+      nya.delete(id);
+    }
+    try { localStorage.setItem(NYA_BILDER, JSON.stringify([...nya].filter(id => ids.has(id)))); localStorage.removeItem(OSYNKAT); } catch {}
+    rita();
+    visaSynk("Sparat på ditt konto");
+  } catch (e) {
+    console.error(e);
+    visaSynk(e.status === 401 ? "" : "Kunde inte spara på kontot just nu. Försöker igen.");
+    if (e.status !== 401) { clearTimeout(synkTid); synkTid = setTimeout(synka, 30000); }
+  } finally {
+    synkar = false;
+    if (igen) { igen = false; synka(); }
+  }
+}
+window.BokforSynka = synka;
 
 // ---------- Ritning ----------
 const IKON = {
@@ -433,6 +527,11 @@ function exportera(){
 function init(){
   if (!$("bfform")) return;
   las(); rita();
+  if (harKonto()) {
+    $("bfplats").textContent = "Bokföringen och bilderna sparas på ditt konto, så de finns på alla mobiler och datorer där du loggar in. De sparas också i den här webbläsaren, så det fungerar utan nät.";
+    synka();
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") synka(); });
+  }
   $("bfny").addEventListener("click", () => oppna(null));
   $("bfskarm").addEventListener("click", () => $("bfskarmfil").click());
   $("bfskarmfil").addEventListener("change", e => { const f = e.target.files[0]; e.target.value = ""; if (f) franSkarmbild(f); });

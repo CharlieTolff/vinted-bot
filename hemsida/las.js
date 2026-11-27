@@ -5,7 +5,17 @@ const LAS = "https://markesborsen.markesborsen.workers.dev";
 const Las = {
   token(){ try { return localStorage.getItem("inloggning") || ""; } catch { return ""; } },
   sparaToken(t){ try { localStorage.setItem("inloggning", t); } catch {} },
-  loggaUt(){ try { localStorage.removeItem("inloggning"); } catch {} },
+  // När man själv loggar ut tas bokföringen bort från enheten om allt redan är sparat på kontot,
+  // så att nästa person på samma mobil eller dator inte ser den. Den finns kvar på kontot.
+  loggaUt(rensa){
+    try {
+      localStorage.removeItem("inloggning");
+      if (rensa && localStorage.getItem("bokforing-konto") && !localStorage.getItem("bokforing-osynkat")) {
+        for (const k of ["bokforing-v1", "bokforing-borttagna", "bokforing-konto", "bokforing-nya-bilder"]) localStorage.removeItem(k);
+        indexedDB.deleteDatabase("bokforing-bilder");
+      }
+    } catch {}
+  },
   // Ägaren kommer in med GitHub-nyckeln som hans egna sidor redan sparat, kunderna med sin inloggning.
   huvud(){
     const t = Las.token();
