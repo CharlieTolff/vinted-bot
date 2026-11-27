@@ -53,6 +53,14 @@ export default {
         const s = await stripe(env, "POST", "billing_portal/sessions", {customer: vem.kund, return_url: hemsida + "/borsen/app.html"});
         return svar({url: s.url});
       }
+      if (vag === "/bokforing" || vag === "/bokbild") {
+        if (!vem) return svar({fel: "inte inloggad"}, 401);
+        const mejl = vem.mejl === "agare" ? agarMejl(env) : vem.mejl;
+        if (vag === "/bokforing") return svar(await synkaBokforing(env, mejl, req.method === "POST" ? kropp : {}));
+        if (req.method === "POST") return svar(await sparaBokbild(env, mejl, kropp));
+        const data = await env.DATA.get(`bokbild:${mejl}:${rensaId(url.searchParams.get("id"))}`);
+        return data ? svar({data}) : svar({fel: "finns inte"}, 404);
+      }
       if (vag === "/bevaka") {
         if (!vem) return svar({fel: "inte inloggad"}, 401);
         const mejl = vem.mejl === "agare" ? agarMejl(env) : vem.mejl;
@@ -65,6 +73,52 @@ export default {
     }
   },
 };
+
+// ---- Bokföringen på kontot ----
+// Kundens bokföring (Mina affärer) sparas på kontot, så att den finns på alla enheter man loggar in på.
+// Varje enhet skickar det den har, och låset slår ihop: för varje plagg vinner den senaste ändringen,
+// och ett borttaget plagg (med tid) tar bort äldre versioner. Bilderna ligger var för sig.
+const MAX_POSTER = 3000, MAX_BILD = 600e3;
+const rensaId = id => /^[a-z0-9]{4,40}$/i.test(String(id || "")) ? String(id) : "x";
+
+function slaIhop(a, b) {
+  const poster = new Map(), borta = new Map();
+  for (const x of [...(a.borttagna || []), ...(b.borttagna || [])])
+    if (x && rensaId(x.id) === x.id && (borta.get(x.id) || 0) < (+x.andrad || 0)) borta.set(x.id, +x.andrad || 0);
+  for (const p of [...(a.poster || []), ...(b.poster || [])]) {
+    if (!p || rensaId(p.id) !== p.id) continue;
+    const g = poster.get(p.id);
+    if (!g || (+p.andrad || 0) > (+g.andrad || 0)) poster.set(p.id, p);
+  }
+  for (const [id, t] of borta) if (poster.has(id) && (+poster.get(id).andrad || 0) <= t) poster.delete(id);
+  return {poster: [...poster.values()], borttagna: [...borta].map(([id, andrad]) => ({id, andrad}))};
+}
+
+async function synkaBokforing(env, mejl, k) {
+  let lagrad = {};
+  try { lagrad = JSON.parse(await env.DATA.get(`bok:${mejl}`)) || {}; } catch {}
+  const inkommet = {poster: Array.isArray(k.poster) ? k.poster : [], borttagna: Array.isArray(k.borttagna) ? k.borttagna : []};
+  const ny = slaIhop(lagrad, inkommet);
+  if (ny.poster.length > MAX_POSTER) throw fel(`Bokföringen kan ha högst ${MAX_POSTER} plagg.`, 400);
+  ny.bilder = (lagrad.bilder || []).filter(id => ny.poster.some(p => p.id === id));
+  const bort = (lagrad.bilder || []).filter(id => !ny.bilder.includes(id));
+  if (JSON.stringify(ny) !== JSON.stringify({poster: lagrad.poster || [], borttagna: lagrad.borttagna || [], bilder: lagrad.bilder || []})) {
+    await env.DATA.put(`bok:${mejl}`, JSON.stringify(ny));
+    for (const id of bort) await env.DATA.delete(`bokbild:${mejl}:${id}`);
+  }
+  return {...ny, konto: mejl};
+}
+
+async function sparaBokbild(env, mejl, k) {
+  const id = rensaId(k.id), data = String(k.data || "");
+  if (id === "x" || !/^data:image\/(jpeg|png|webp);base64,/.test(data) || data.length > MAX_BILD) throw fel("Bilden kunde inte sparas.", 400);
+  let lagrad = {};
+  try { lagrad = JSON.parse(await env.DATA.get(`bok:${mejl}`)) || {}; } catch {}
+  if (!(lagrad.poster || []).some(p => p.id === id)) throw fel("Plagget finns inte på kontot än.", 409);
+  await env.DATA.put(`bokbild:${mejl}:${id}`, data);
+  if (!(lagrad.bilder || []).includes(id)) { lagrad.bilder = [...(lagrad.bilder || []), id]; await env.DATA.put(`bok:${mejl}`, JSON.stringify(lagrad)); }
+  return {ok: true};
+}
 
 // ---- Bevaka ett märke ----
 // Kunden bevakar ett märke i en kategori. Varje dag jämförs mittenpriset och hur många som säljs per vecka

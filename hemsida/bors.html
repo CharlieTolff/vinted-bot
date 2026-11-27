@@ -354,6 +354,7 @@ h2{font-family:"Playfair Display",Georgia,serif;font-size:21px;margin:0}
 .abtips{margin:0;font-size:13px;color:var(--svag);line-height:1.45}
 .abnotis{margin:0;font-size:13.5px;line-height:1.45;background:var(--kort2);border-radius:10px;padding:10px 12px}
 .abknappar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.bfsynk{display:inline-block;margin-left:4px;font-weight:600;color:var(--guldtext)}
 .vdsparat{margin:10px 0 0;padding:9px 12px;border-radius:10px;background:color-mix(in srgb,var(--plus) 14%,transparent);border:1px solid color-mix(in srgb,var(--plus) 40%,transparent);font-size:13.5px}
 @media (max-width:900px){ .abinnehall{grid-template-columns:minmax(0,1fr)} .abresultat{position:static} }
 
@@ -785,7 +786,7 @@ dialog input{font:inherit;font-size:14px;padding:9px 11px;border-radius:10px;bor
     <input type="file" id="bfbildfil" accept="image/*" hidden>
     <div class="bfmer" id="bfmer"></div>
     <div class="bffot">
-      <span class="hjalp">Bokföringen och bilderna sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span>
+      <span class="hjalp"><span id="bfplats">Bokföringen och bilderna sparas bara i den här webbläsaren. Spara en säkerhetskopia ibland, så försvinner inget om du byter mobil.</span> <span id="bfsynk" class="bfsynk" hidden></span></span>
       <span class="bffotknappar"><button class="knapp" id="bfexport">Ladda ner till Excel</button><button class="knapp" id="bfkopia">Spara säkerhetskopia</button><button class="knapp" id="bfaterstall">Läs in säkerhetskopia</button></span>
       <input type="file" id="bfaterfil" accept="application/json,.json" hidden>
     </div>

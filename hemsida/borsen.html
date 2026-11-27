@@ -605,7 +605,7 @@ $("loggainform").addEventListener("submit", async e => {
   } catch (fel) { $("loggainsvar").textContent = fel.message; }
   $("loggainknapp").disabled = false;
 });
-$("loggaut").addEventListener("click", () => { Las.loggaUt(); visaKonto({inne: false}); });
+$("loggaut").addEventListener("click", () => { Las.loggaUt(true); visaKonto({inne: false}); });
 $("hantera").addEventListener("click", async () => {
   try { await Las.hantera(); } catch (fel) { $("innesvar").textContent = fel.message; }
 });
